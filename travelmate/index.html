@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TravelMate · Provider Profile</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <button class="icon-button menu-toggle" aria-label="Toggle menu" id="menuToggle" aria-expanded="false">☰</button>
+      <div class="brand">
+        <div class="logo">T</div>
+        <span class="brand-name">TravelMate</span>
+      </div>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#">Destinations</a>
+        <a href="#">Plan Trip</a>
+        <a href="#">Experiences</a>
+        <a href="#">Stay</a>
+        <a href="#">Blog</a>
+      </nav>
+      <div class="user-chip" id="userChip" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">
+        <div class="avatar avatar--sm" style="background-image:url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=256&h=256&fit=crop&crop=faces&auto=format');"></div>
+        <span class="username">Username</span>
+        <span class="chev">▾</span>
+        <div class="dropdown" id="userDropdown" role="menu">
+          <a href="#" role="menuitem">Profile</a>
+          <a href="#" role="menuitem">Settings</a>
+          <a href="#" role="menuitem">Sign out</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main">
+    <div class="layout">
+      <aside class="sidebar" id="sidebar">
+        <nav class="side-nav" aria-label="Provider">
+          <a class="side-link active" href="#listings">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h10v2H4v-2z"/></svg>
+            <span>My Listings</span>
+          </a>
+          <a class="side-link" href="#bookings">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 1v5h5"/></svg>
+            <span>Bookings</span>
+          </a>
+          <a class="side-link" href="#settings">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm8.94 3a7.94 7.94 0 0 1 0 2l2.06 1.6-2 3.46-2.44-.5a8.05 8.05 0 0 1-1.73 1l-.37 2.47H7.54l-.37-2.47a8.05 8.05 0 0 1-1.73-1l-2.44.5-2-3.46L3.06 13a7.94 7.94 0 0 1 0-2L1 9.4l2-3.46 2.44.5a8.05 8.05 0 0 1 1.73-1L7.54 3h8.92l.37 2.47c.6.25 1.18.58 1.73 1l2.44-.5 2 3.46L20.94 11z"/></svg>
+            <span>Profile Setting</span>
+          </a>
+        </nav>
+      </aside>
+
+      <section class="content">
+        <section class="profile-hero" aria-label="Profile">
+          <div class="cover" style="background-image:url('https://images.unsplash.com/photo-1551776235-dde6d4829808?q=80&w=1600&auto=format&fit=crop');"></div>
+          <div class="profile-bar">
+            <div class="profile-left">
+              <div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=256&h=256&fit=crop&crop=faces&auto=format');"></div>
+              <div class="profile-text">
+                <h1 class="profile-name">Chamuditha Lakmal</h1>
+                <p class="profile-email">lakmal123@gmail.com</p>
+              </div>
+            </div>
+            <div class="profile-actions">
+              <button class="btn btn-primary" id="listPropertyBtn">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/></svg>
+                <span>List Your Property</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section class="my-listings" id="listings">
+          <div class="section-head">
+            <h2>My Listings</h2>
+          </div>
+          <div class="cards">
+            <article class="card">
+              <div class="card-media" style="background-image:url('https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1200&auto=format&fit=crop');"></div>
+              <div class="card-body">
+                <h3 class="card-title">Enjoy a week-long adventure in Egypt</h3>
+                <div class="card-meta">
+                  <span class="stars" aria-label="Rated 4.8 out of 5">★★★★★</span>
+                  <span class="reviews">(1 Review)</span>
+                </div>
+                <div class="card-info">
+                  <span>9 Nights, 8 days</span>
+                  <span class="price">From $1500</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-media" style="background-image:url('https://images.unsplash.com/photo-1496412705862-e0088f16f791?q=80&w=1200&auto=format&fit=crop');"></div>
+              <div class="card-body">
+                <h3 class="card-title">Immerse yourself in USA adventures</h3>
+                <div class="card-meta">
+                  <span class="stars" aria-label="Rated 4.9 out of 5">★★★★★</span>
+                  <span class="reviews">(1 Review)</span>
+                </div>
+                <div class="card-info">
+                  <span>10 Nights, 9 days</span>
+                  <span class="price">From $2200</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="badge">20% off</div>
+              <div class="card-media" style="background-image:url('https://images.unsplash.com/photo-1528909514045-2fa4ac7a08ba?q=80&w=1200&auto=format&fit=crop');"></div>
+              <div class="card-body">
+                <h3 class="card-title">Explore historical castles of Spain</h3>
+                <div class="card-meta">
+                  <span class="stars" aria-label="Rated 4.7 out of 5">★★★★★</span>
+                  <span class="reviews">(1 Review)</span>
+                </div>
+                <div class="card-info">
+                  <span>7 Nights, 8 days</span>
+                  <span class="price"><span class="price-old">$1200</span> From $960</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="performance" aria-label="Performance Summary">
+          <h2 class="visually-hidden">Performance Summary</h2>
+          <div class="performance-card">
+            <h3>Performance Summary</h3>
+            <div class="stats">
+              <div class="stat">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Listings</div>
+              </div>
+              <div class="stat">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Bookings Received</div>
+              </div>
+              <div class="stat">
+                <div class="stat-number">6</div>
+                <div class="stat-label">Vlogs Posted</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <div class="brand brand--footer">
+          <div class="logo">T</div>
+          <span class="brand-name">TravelMate</span>
+        </div>
+        <p class="muted">Your trusted companion for exploring the beautiful island of Sri Lanka. Discover authentic experiences, plan perfect trips, and create lasting memories.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <ul class="link-list">
+          <li><a href="#">Destinations</a></li>
+          <li><a href="#">Plan Trip</a></li>
+          <li><a href="#">Experiences</a></li>
+          <li><a href="#">Accommodation</a></li>
+          <li><a href="#">Travel Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <ul class="link-list">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Cancellation Policy</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Stay Connected</h4>
+        <ul class="contact-list">
+          <li>+94 11 123 4567</li>
+          <li>hello@travelmate.lk</li>
+          <li>123 Galle Road, Colombo 03, Sri Lanka</li>
+        </ul>
+        <form class="newsletter" id="newsletter">
+          <label for="email" class="visually-hidden">Email</label>
+          <input id="email" name="email" type="email" placeholder="Your email" required>
+          <button type="submit" class="btn btn-primary">Subscribe</button>
+        </form>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p>© 2024 TravelMate Sri Lanka. All rights reserved.</p>
+      <nav class="footer-legal">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Cookies</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>
