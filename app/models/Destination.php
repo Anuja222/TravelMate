@@ -1,0 +1,114 @@
+<?php
+namespace App\Models;
+
+class Destination
+{
+    public $id;
+    public $title;
+    public $slug;
+    public $description;
+    public $image;
+
+    public function __construct($data = [])
+    {
+        foreach ($data as $k => $v) {
+            $prop = lcfirst($k);
+            if (property_exists($this, $prop)) $this->$prop = $v;
+        }
+    }
+
+    public function create($conn)
+    {
+        $sql = "INSERT INTO destinations (title, slug, description, image, created_at) VALUES (?, ?, ?, ?, NOW())";
+        $stmt = $conn->prepare($sql);
+        $res = $stmt->execute([
+            $this->title,
+            $this->slug,
+            $this->description,
+            $this->image
+        ]);
+        return $res ? $conn->lastInsertId() : false;
+    }
+
+    public function update($conn)
+    {
+        $sql = "UPDATE destinations SET title = ?, slug = ?, description = ?, image = ?, updated_at = NOW() WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        return $stmt->execute([
+            $this->title,
+            $this->slug,
+            $this->description,
+            $this->image,
+            $this->id
+        ]);
+    }
+
+    public static function deleteById($conn, $id)
+    {
+        $sql = "DELETE FROM destinations WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        return $stmt->execute([$id]);
+    }
+
+    public static function findAll($conn)
+    {
+        $sql = "SELECT * FROM destinations ORDER BY created_at DESC";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public static function findById($conn, $id)
+    {
+        $sql = "SELECT * FROM destinations WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    // Places (child items)
+    public static function createPlace($conn, $destinationId, $title, $slug, $description, $image)
+    {
+        $sql = "INSERT INTO destination_places (destination_id, title, slug, description, image, created_at) VALUES (?, ?, ?, ?, ?, NOW())";
+        $stmt = $conn->prepare($sql);
+        $res = $stmt->execute([$destinationId, $title, $slug, $description, $image]);
+        return $res ? $conn->lastInsertId() : false;
+    }
+
+    public static function listPlaces($conn, $destinationId)
+    {
+        $sql = "SELECT * FROM destination_places WHERE destination_id = ? ORDER BY created_at DESC";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$destinationId]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public static function deletePlaceById($conn, $id)
+    {
+        $sql = "DELETE FROM destination_places WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        return $stmt->execute([$id]);
+    }
+
+    public static function findPlaceById($conn, $id)
+    {
+        $sql = "SELECT * FROM destination_places WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public static function updatePlace($conn, $id, $title, $slug, $description, $image)
+    {
+        // removed 'updated_at' column to match database schema
+        $sql = "UPDATE destination_places SET title = ?, slug = ?, description = ?, image = ? WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        return $stmt->execute([
+            $title,
+            $slug,
+            $description,
+            $image,
+            $id
+        ]);
+    }
+}

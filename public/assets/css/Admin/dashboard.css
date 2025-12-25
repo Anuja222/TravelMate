@@ -1,0 +1,54 @@
+/* Dashboard Cards */
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 50px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  border-left: 6px solid #1abc5b; /* Green accent */
+  width: 200px;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(26, 188, 91, 0.2);
+}
+
+/* Card Title & Value */
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 10px;
+}
+
+.card-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #1abc5b;
+}
+
+.page-title h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 30px;
+  border-bottom: 3px solid #1abc5b;
+  display: inline-block;
+  padding-bottom: 8px;
+}
+
+
+
+
+
+ 

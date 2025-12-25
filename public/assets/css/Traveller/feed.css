@@ -1,0 +1,160 @@
+body{
+    font-family: 'Inter', Arial, sans-serif;
+    background: #f8f9fa;
+    color: #222;
+    margin: 0;
+    padding: 0;
+}
+
+.feed-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2em;
+}
+
+.feed-header {
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+.feed-header h1 {
+    color: #222;
+    font-size: 2.5em;
+    font-weight: 700;
+    margin-bottom: 0.5em;
+}
+
+.feed-header p {
+    color: #666;
+    font-size: 1.1em;
+}
+
+.create-post-btn {
+    background: #1abc5b;
+    color: white;
+    padding: 1em 2em;
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 2em;
+    font-size: 1em;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.create-post-btn:hover {
+    background: #169d4a;
+    transform: translateY(-2px);
+}
+
+.post-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    margin-bottom: 2em;
+    transition: all 0.3s ease;
+}
+
+.post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.post-header {
+    padding: 1.5em 1.5em 1em;
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-info h4 {
+    margin: 0;
+    color: #222;
+    font-weight: 600;
+}
+
+.user-info p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.post-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.post-content {
+    padding: 1.5em;
+}
+
+.post-content h3 {
+    color: #222;
+    font-size: 1.3em;
+    font-weight: 600;
+    margin-bottom: 0.5em;
+}
+
+.post-content p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 1em;
+}
+
+.post-actions {
+    display: flex;
+    gap: 1em;
+    padding-top: 1em;
+    border-top: 1px solid #eee;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.action-btn:hover {
+    color: #1abc5b;
+}
+
+.filter-tabs {
+    display: flex;
+    gap: 1em;
+    margin-bottom: 2em;
+    justify-content: center;
+}
+
+.tab-btn {
+    background: none;
+    border: 2px solid #1abc5b;
+    color: #1abc5b;
+    padding: 0.7em 1.5em;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.tab-btn.active,
+.tab-btn:hover {
+    background: #1abc5b;
+    color: white;
+}

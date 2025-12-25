@@ -1,0 +1,22 @@
+# Enable RewriteEngine
+RewriteEngine On
+
+# Set the base directory (adjust if needed)
+RewriteBase /TravelMate/public/
+
+# Allow access to existing files and directories
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Route everything else to index.php
+RewriteRule ^(.*)$ index.php?url=$1 [L,QSA]
+
+# Enable error display (remove in production)
+php_flag display_errors on
+php_value error_reporting E_ALL
+
+# Set upload limits
+php_value upload_max_filesize 10M
+php_value post_max_size 12M
+php_value max_execution_time 300
+php_value max_input_time 300

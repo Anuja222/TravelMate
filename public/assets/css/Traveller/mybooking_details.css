@@ -1,0 +1,194 @@
+/* ==============================
+   Booking Details Page Styles
+   ============================== */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background: #f4f6f9;
+    color: #222;
+}
+
+/* Container */
+.booking-details-container {
+    max-width: 900px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    padding: 32px 36px 40px 36px;
+    min-height: 600px;
+    animation: fadeInUp 0.5s ease-in-out;
+}
+
+/* Heading */
+.booking-details-container h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 28px;
+    color: #111;
+    text-align: center;
+}
+
+/* Two-Column Form */
+.details-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.form-group label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+}
+.form-group input,
+.form-group select {
+    padding: 10px 14px;
+    border: 1px solid #d1d1d1;
+    border-radius: 6px;
+    font-size: 16px;
+    background: #fafafa;
+    color: #222;
+    transition: all 0.2s ease;
+}
+.form-group input:focus,
+.form-group select:focus {
+    outline: 2px solid #1886f7;
+    border-color: #1886f7;
+}
+
+/* Status Dropdown */
+#bookingStatus {
+    font-weight: 600;
+}
+
+/* Info Box */
+.details-info-box {
+    background: #f0f8ff;
+    border-left: 4px solid #1886f7;
+    border-radius: 6px;
+    padding: 14px 18px;
+    font-size: 15px;
+    color: #222;
+    margin-bottom: 28px;
+}
+
+/* Buttons */
+.form-actions {
+    margin-top: 32px;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+.btn {
+    border: none;
+    border-radius: 8px;
+    padding: 12px 28px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.btn-primary {
+    background: #1886f7;
+    color: #fff;
+}
+.btn-primary:hover {
+    background: #0f6ad1;
+}
+.btn-secondary {
+    background: #6c757d;
+    color: #fff;
+}
+.btn-secondary:hover {
+    background: #545b62;
+}
+
+/* Messages */
+.error-message {
+    color: #d8000c;
+    font-weight: 600;
+    margin-top: 10px;
+}
+.success-message {
+    color: #1db954;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+/* Progress Bar */
+.booking-progress {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+}
+.booking-progress .step {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: #555;
+    flex: 1;
+    position: relative;
+}
+.booking-progress .step .circle {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #e0e0e0;
+    color: #222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    margin-right: 10px;
+    border: 2px solid #e0e0e0;
+}
+.booking-progress .step.active .circle,
+.booking-progress .step.done .circle {
+    background: #1886f7;
+    color: #fff;
+    border-color: #1886f7;
+}
+.booking-progress .step:not(:last-child)::after {
+    content: "";
+    flex: 1;
+    height: 3px;
+    background: #ccc;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 2px;
+}
+.booking-progress .step.active {
+    color: #1886f7;
+}
+.booking-progress .step.done {
+    color: #1db954;
+}
+
+/* Animation */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+    }
+    .booking-progress {
+        flex-direction: column;
+        gap: 12px;
+    }
+}

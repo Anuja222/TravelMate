@@ -1,0 +1,8 @@
+/* Delete property confirmation styles */
+.delete-section{ max-width:720px; margin:60px auto; padding:24px; background:#fff; border-radius:10px; box-shadow:0 12px 30px rgba(6,22,34,0.08); text-align:center }
+.delete-section h1{ font-size:22px; margin-bottom:12px }
+.delete-box{ padding:18px }
+.delete-box p{ font-size:16px; color:#333 }
+.delete-actions{ display:flex; gap:12px; justify-content:center; margin-top:18px }
+.yes-btn{ background:#e53e3e; color:#fff; border:0; padding:10px 16px; border-radius:8px; cursor:pointer }
+.no-btn{ background:#f3f4f6; color:#111; border:0; padding:10px 16px; border-radius:8px; cursor:pointer }

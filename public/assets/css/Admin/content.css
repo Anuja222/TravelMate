@@ -1,0 +1,123 @@
+.content h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+.vlogs {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.vlogs li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f9f9f9;
+  margin-bottom: 15px;
+  padding: 15px 20px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vlogs li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.vlog-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.vlog-info img {
+  width: 60px;
+  height: 60px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
+
+.vlog-details h2 {
+  font-size: 1.1rem;
+  margin: 0;
+  color: #34495e;
+}
+
+.view-link {
+  font-size: 0.9rem;
+  color: #1abc5b;
+  text-decoration: none;
+}
+
+.view-link:hover {
+  text-decoration: underline;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button.approve {
+  background: #1abc5b;
+  color: #fff;
+}
+
+button.approve:hover {
+  background: #17a34a;
+}
+
+button.reject {
+  background: #e74c3c;
+  color: #fff;
+}
+
+button.reject:hover {
+  background: #c0392b;
+}
+
+
+/*
+.vlogs { 
+    list-style: none;
+     padding: 0;
+     }
+
+.vlogs li {
+     background: #e9f6ee; 
+     margin-bottom: 10px; 
+     padding: 10px; 
+     border-radius: 6px;
+     }
+
+button {
+     background: #1abc5b; 
+     color: #fff; 
+     border: none;
+      padding: 6px 12px; 
+      margin-left: 10px;
+       cursor: pointer;
+     }
+
+button.reject { 
+    background: #e74c3c; 
+}
+
+button:hover { 
+    opacity: 0.8;
+ }

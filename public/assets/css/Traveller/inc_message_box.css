@@ -1,0 +1,21 @@
+/* Message Box Component Styles */
+.inc-message-box {
+    display: flex;
+    align-items: center;
+    background: #e9f6ff;
+    border: 1.5px solid #1886f7;
+    color: #1886f7;
+    border-radius: 6px;
+    padding: 14px 18px;
+    font-size: 16px;
+    margin: 18px 0;
+    box-shadow: 0 2px 8px rgba(24,134,247,0.07);
+    gap: 10px;
+}
+.inc-message-icon {
+    font-size: 22px;
+    margin-right: 8px;
+}
+.inc-message-text {
+    flex: 1;
+}
