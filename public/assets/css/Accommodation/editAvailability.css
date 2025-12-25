@@ -1,0 +1,274 @@
+body {
+  background: #fff;
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #000;
+  color: #fff;
+  padding: 0 32px;
+  height: 64px;
+  position: fixed;
+  top:0;
+  width:96%;
+}
+
+.tm-header-left {
+  display: flex;
+  align-items: center;
+}
+
+.tm-logo {
+  background: #19c37d;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.5em;
+  border-radius: 4px;
+  padding: 4px 10px;
+  margin-right: 10px;
+}
+
+.tm-title {
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+.tm-nav a {
+  color: #fff;
+  text-decoration: none;
+  margin: 0 12px;
+  font-size: 1em;
+  position: relative;
+}
+
+.tm-nav a.tm-stay {
+  background: #19c37d;
+  color: #000;
+  border-radius: 4px;
+  padding: 2px 10px;
+}
+
+.tm-header-right {
+  display: flex;
+  align-items: center;
+}
+
+.tm-username {
+  background: #19c37d;
+  color: #000;
+  border-radius: 6px;
+  padding: 6px 18px;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.tm-usericon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #222;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.tm-menu-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5em;
+  margin-right: 16px;
+  cursor: pointer;
+}
+
+.tm-menu-icon {
+  display: inline-block;
+  width: 24px;
+  height: 3px;
+  background: #fff;
+  border-radius: 2px;
+  position: relative;
+  top: 2px;
+}
+
+.tm-menu-icon:after,
+.tm-menu-icon:before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 3px;
+  background: #fff;
+  border-radius: 2px;
+  position: absolute;
+  left: 0;
+}
+
+.tm-menu-icon:before {
+  top: -8px;
+}
+
+.tm-menu-icon:after {
+  top: 8px;
+}
+
+.edit-availability-container {
+  max-width: 700px;
+  margin: 150px auto 100px auto;
+  padding: 0 16px;
+  align-items: center;  
+}
+
+.edit-availability-container h1 {
+  font-size: 1.7em;
+  margin-bottom: 32px;
+  font-weight: 700;
+  margin-left: 55px;
+}
+
+.editBedroomsForm{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.max-bedrooms-label {
+  font-size: 1.2em;
+  margin-bottom: 24px;
+  margin-left: 60px;
+  display: block;
+}
+
+.bedroom-box {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  padding: 36px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 48px;
+  margin-left: 60px;
+  border: 1.5px solid #ccc;
+  width: 80%;
+}
+
+.bedroom-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bedroom-label {
+  font-size: 1.3em;
+  margin-right: 32px;
+  font-weight: 500;
+}
+
+.bedroom-counter {
+  display: flex;
+  align-items: center;
+}
+
+.counter-btn {
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid #bbb;
+  background: #fff;
+  color: #222;
+  font-size: 1.5em;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.counter-btn:active {
+  background: #f0f0f0;
+}
+
+.bedroom-value {
+  width: 48px;
+  text-align: center;
+  font-size: 1.3em;
+  border: none;
+  background: transparent;
+  font-weight: 600;
+}
+
+.update-btn {
+    display: block;
+    width: 25%;
+    background: #22b33a;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 0;
+    margin: 30px auto 0 auto;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.save-btn:hover {
+    background: #1a8c2b;
+}
+
+.tm-footer {
+    background: #111;
+    color: #fff;
+    padding: 40px 0 0 0;
+    margin-top: 40px;
+}
+.tm-footer-content {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+}
+.tm-footer-col {
+    flex: 1;
+    margin-right: 32px;
+}
+.tm-footer-brand {
+    max-width: 260px;
+}
+.tm-footer-newsletter input[type="email"] {
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: none;
+    margin-right: 8px;
+}
+.tm-footer-newsletter button {
+    background: #22b33a;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 16px;
+    cursor: pointer;
+}
+.tm-footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 32px;
+    border-top: 1px solid #333;
+    font-size: 0.95rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.tm-footer-links a {
+    color: #fff;
+    margin-left: 16px;
+    text-decoration: none;
+}
+
+@media (max-width: 900px) {
+  .tm-footer-content {
+    flex-direction: column;
+  }
+  .tm-footer-col {
+    margin-bottom: 24px;
+  }
+}

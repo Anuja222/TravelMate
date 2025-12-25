@@ -1,0 +1,220 @@
+/* Common General Styles */
+body {
+  margin: 0;
+  font-family: 'Inter', Arial, sans-serif;
+  background: #f8f9fa;
+  color: #222;
+  padding-top: 80px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.btn {
+  background: #28A745;
+  color: #fff;
+  padding: 0.7em 1.4em;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.btn:hover,
+.btn.learn:hover,
+.btn.demo:hover,
+.btn.login:hover,
+.btn.signup:hover {
+  background: #169d4a;
+}
+
+.btn.login {
+  background: #222;
+}
+
+.btn.signup {
+  background: #1abc5b;
+  margin-right: 8px;
+}
+header {
+  background: #111;
+  color: #fff;
+  margin: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8em 2em;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.logo {
+  max-width: 5vw;
+  max-height: 5vh;
+  height: auto;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2em;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li a {
+  color: #fff;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-links li a:hover,
+.nav-links li a.active {
+  color: #1abc5b;
+}
+
+.nav-actions {
+  display: flex;
+  gap: 0.5em;
+}
+
+/* .nav-links li a:hover, */
+/* Common Hero Content Styles */
+.hero img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 110%; /* Increased height for hero image */
+  min-height: 500px; /* Further increase minimum height */
+  object-fit: cover;
+  z-index: 0;
+}
+
+.hero {
+  position: relative;
+  min-height: 65vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  height: 110%; /* Increased height for hero image */
+  min-height: 500px; /* Further increase minimum height */
+  background: rgba(24, 28, 18, 0.55);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  margin-top: 10em;
+  text-align: center;
+  max-width: 650px;
+  margin: 0 auto;
+}
+.hero-content h1 {
+  font-size: 4em;
+  font-weight: bold;
+  margin-top: 1em;
+  margin-bottom: 0.25em;
+  line-height: 1.2;
+}
+.hero-content h1 span {
+  color: #1abc5b;
+}
+.hero-content p {
+  font-size: 1.13em;
+  margin-bottom: 2em;
+}
+.nav-links li a.active {
+  color: #1abc5b;
+}
+
+.nav-actions {
+  display: flex;
+  gap: 0.5em;
+}
+
+/* Footer */
+footer {
+  background: #222;
+  color: #fff;
+  padding: 2.5em 0 1em;
+  margin-top: auto;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 2em;
+  padding: 0 2em;
+}
+
+.footer-section h4 {
+  color: #1abc5b;
+  margin-bottom: 1em;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+.footer-section.company p {
+  color: #bbb;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 0.7em;
+}
+
+.footer-section ul li a {
+  color: #bbb;
+  transition: color 0.2s;
+  font-size: 0.95em;
+}
+
+.footer-section ul li a:hover {
+  color: #1abc5b;
+}
+
+.footer-section.connect p {
+  color: #bbb;
+  margin: 0;
+  line-height: 1.8;
+}
+
+.footer-bottom {
+  border-top: 1px solid #333;
+  margin-top: 2em;
+  padding: 1.5em 2em 0;
+  text-align: center;
+  color: #999;
+  font-size: 0.9em;
+}

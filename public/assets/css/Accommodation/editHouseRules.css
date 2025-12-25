@@ -1,0 +1,190 @@
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    background: #fff;
+    margin: 0;
+}
+
+.navbar {
+    background: #000;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 56px;
+    position: fixed;
+    top: 0;
+    width: 96%;
+}
+
+.tm-logo {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.tm-nav a {
+    color: #fff;
+    margin: 0 12px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.tm-user {
+    display: flex;
+    align-items: center;
+}
+
+.tm-user-icon {
+    width: 32px;
+    height: 32px;
+    background: #eee;
+    border-radius: 50%;
+    margin-left: 8px;
+}
+
+.rules-section {
+    max-width: 700px;
+    margin: 150px auto 0 auto;
+    align-items: center;
+}
+
+.rules-section h1 {
+    font-size: 1.7rem;
+    margin-bottom: 32px;
+}
+
+.rules-form {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 2px 8px #0001;
+    margin-bottom: 80px;
+    width: 70%;
+}
+
+.toggle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.toggle-switch {
+    width: 40px;
+    height: 20px;
+    accent-color: #22c55e;
+    border-radius: 12px;
+    margin-right: 50px;
+}
+
+.pets-row {
+    margin-bottom: 24px;
+}
+
+.radio-group {
+    display: flex;
+    gap: 32px;
+    margin-top: 8px;
+}
+
+.radio-group label {
+    font-size: 18px;
+}
+
+.checkin-row,
+.checkout-row {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 24px;
+}
+
+.checkin-row label,
+.checkout-row label {
+    font-size: 16px;
+}
+
+select {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.continue-btn {
+    display: block;
+    width: 30%;
+    background: #22b33a;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 0;
+    margin: 30px auto 0 auto;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.continue-btn:hover {
+    background: #1a8c2b;
+}
+
+.tm-footer {
+    background: #000;
+    color: #fff;
+    padding: 40px 32px 16px 32px;
+    margin-top: 64px;
+}
+
+.footer-cols {
+    display: flex;
+    justify-content: space-between;
+    gap: 32px;
+}
+
+.footer-cols div {
+    flex: 1;
+}
+
+.footer-cols h4 {
+    margin-bottom: 8px;
+}
+
+.footer-cols ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-cols li {
+    margin-bottom: 6px;
+    font-size: 14px;
+}
+
+.newsletter {
+    margin-top: 8px;
+}
+
+.newsletter input {
+    padding: 6px;
+    border-radius: 4px;
+    border: none;
+    margin-right: 4px;
+}
+
+.newsletter button {
+    background: #22c55e;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    font-size: 13px;
+    color: #aaa;
+}

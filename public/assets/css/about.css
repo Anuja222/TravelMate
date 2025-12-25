@@ -1,0 +1,401 @@
+/* General styles */
+/* ...existing code... */
+
+/* Navbar */
+/* header {
+  background: #111;
+  color: #fff;
+} */
+
+/* .navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8em 2em;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.logo {
+  max-width: 5vw;
+  max-height: 5vh;
+  height: auto;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2em;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li a {
+  color: #fff;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-links li a:hover,
+.nav-links li a.active {
+  color: #1abc5b;
+}
+
+.nav-actions {
+  display: flex;
+  gap: 0.5em;
+} */
+
+
+/* Welcome Section */
+.welcome-section {
+  background: #fff;
+  padding: 4em 2em;
+}
+
+.welcome-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.welcome-content h2 {
+  font-size: 2.2em;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 1.5em;
+  color: #222;
+}
+
+.welcome-content .highlight {
+  color: #1abc5b;
+}
+
+.welcome-content p {
+  font-size: 1.1em;
+  line-height: 1.7;
+  color: #555;
+  margin-bottom: 1.5em;
+  max-width: none;
+}
+
+.welcome-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* Why Choose Us Section */
+.why-choose-section {
+  background: #f8f9fa;
+  padding: 4em 2em;
+}
+
+.why-choose-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4em;
+  align-items: center;
+}
+
+.image-section {
+  position: relative;
+}
+
+.feature-image {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.content-section h2 {
+  font-size: 2em;
+  font-weight: 700;
+  margin-bottom: 2em;
+  color: #222;
+}
+
+.features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.features-list li {
+  margin-bottom: 1.5em;
+}
+
+.feature-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 1em;
+}
+
+.bullet {
+  width: 8px;
+  height: 8px;
+  background: #1abc5b;
+  border-radius: 50%;
+  margin-top: 0.5em;
+  flex-shrink: 0;
+}
+
+.feature-point span:last-child {
+  font-size: 1.1em;
+  line-height: 1.6;
+  color: #444;
+}
+
+/* Journey Section */
+.journey-section {
+  background: #fff;
+  padding: 4em 2em;
+  text-align: center;
+}
+
+.journey-content h2 {
+  font-size: 2.5em;
+  font-weight: 700;
+  margin-bottom: 2em;
+  color: #222;
+}
+
+.journey-buttons {
+  display: flex;
+  gap: 1.5em;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-journey {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 1em 2em;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  justify-content: center;
+}
+
+.btn-journey.back {
+  background: #f8f9fa;
+  color: #666;
+  border: 2px solid #ddd;
+}
+
+.btn-journey.back:hover {
+  background: #e9ecef;
+  border-color: #ccc;
+  transform: translateY(-2px);
+}
+
+.btn-journey.next {
+  background: #1abc5b;
+  color: white;
+  border: 2px solid #1abc5b;
+}
+
+.btn-journey.next:hover {
+  background: #169d4a;
+  border-color: #169d4a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(26, 188, 91, 0.3);
+}
+
+.btn-journey svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Footer */
+/* footer {
+  background: #222;
+  color: #fff;
+  padding: 2.5em 0 1em;
+  margin-top: auto;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 2em;
+  padding: 0 2em;
+}
+
+.footer-section h4 {
+  color: #1abc5b;
+  margin-bottom: 1em;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+.footer-section.company p {
+  color: #bbb;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 0.7em;
+}
+
+.footer-section ul li a {
+  color: #bbb;
+  transition: color 0.2s;
+  font-size: 0.95em;
+}
+
+.footer-section ul li a:hover {
+  color: #1abc5b;
+}
+
+.footer-section.connect p {
+  color: #bbb;
+  margin: 0;
+  line-height: 1.8;
+}
+
+.footer-bottom {
+  border-top: 1px solid #333;
+  margin-top: 2em;
+  padding: 1.5em 2em 0;
+  text-align: center;
+  color: #999;
+  font-size: 0.9em;
+} */
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .why-choose-container {
+    grid-template-columns: 1fr;
+    gap: 3em;
+    text-align: center;
+  }
+  
+  .feature-image {
+    height: 300px;
+  }
+  
+  .welcome-section,
+  .why-choose-section,
+  .journey-section {
+    padding: 3em 2em;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    gap: 1em;
+    padding: 1em;
+  }
+  
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5em;
+  }
+  
+  .hero-content h1 {
+    font-size: 2.8em;
+  }
+  
+  .welcome-content h2 {
+    font-size: 1.8em;
+  }
+  
+  .content-section h2 {
+    font-size: 1.7em;
+  }
+  
+  .journey-content h2 {
+    font-size: 2em;
+  }
+  
+  .journey-buttons {
+    flex-direction: column;
+    gap: 1em;
+  }
+  
+  .btn-journey {
+    width: 100%;
+    max-width: 200px;
+  }
+  
+  .footer-content {
+    flex-direction: column;
+    gap: 2em;
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    gap: 1em;
+    text-align: center;
+  }
+  
+  .welcome-section,
+  .why-choose-section,
+  .journey-section {
+    padding: 2.5em 1.5em;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content h1 {
+    font-size: 2.2em;
+  }
+  
+  .welcome-content h2 {
+    font-size: 1.5em;
+  }
+  
+  .welcome-content p,
+  .feature-point span:last-child {
+    font-size: 1em;
+  }
+  
+  .content-section h2 {
+    font-size: 1.5em;
+  }
+  
+  .journey-content h2 {
+    font-size: 1.7em;
+  }
+  
+  .feature-image {
+    height: 250px;
+  }
+  
+  .subscribe-form {
+    flex-direction: column;
+    gap: 0.5em;
+  }
+  
+  .subscribe-form input {
+    width: 100%;
+  }
+  
+  .welcome-section,
+  .why-choose-section,
+  .journey-section {
+    padding: 2em 1em;
+  }
+}

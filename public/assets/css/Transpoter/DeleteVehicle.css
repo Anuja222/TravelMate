@@ -1,0 +1,252 @@
+body {
+  background-color: #f5f7fa;
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.main-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  padding: 30px;
+  margin-top: 30px;
+  margin-bottom: 100px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.main-content:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.page-title {
+  color: #2c3e50;
+  margin-bottom: 10px;
+  font-size: 28px;
+  position: relative;
+  padding-bottom: 15px;
+}
+
+.page-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: #1abc5b;
+  border-radius: 2px;
+}
+
+.confirmation-text {
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 30px;
+  line-height: 1.8;
+}
+
+.confirmation-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 30px 0;
+}
+
+.btn {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  min-width: 120px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.4s;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn-danger {
+  background: #1abc5b;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #17a34a;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(26, 188, 91, 0.3);
+}
+
+.btn-secondary {
+  background: #e74c3c;
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+}
+
+.divider {
+  height: 1px;
+  background: #eee;
+  margin: 40px 0;
+  position: relative;
+}
+
+.divider::before, .divider::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  width: 10px;
+  height: 10px;
+  background: #1abc5b;
+  border-radius: 50%;
+}
+
+.divider::before {
+  left: 30%;
+}
+
+.divider::after {
+  right: 30%;
+}
+
+.vehicle-details {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+  text-align: left;
+}
+
+.vehicle-details h3 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+
+.vehicle-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.vehicle-info div {
+  flex: 1;
+  min-width: 200px;
+}
+
+.vehicle-info strong {
+  color: #2c3e50;
+  display: block;
+  margin-bottom: 5px;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .nav-links {
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .confirmation-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .btn {
+    width: 100%;
+    max-width: 200px;
+  }
+  
+  .footer-content {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  
+  .subscribe-form {
+    flex-direction: column;
+  }
+  
+  .page-title {
+    font-size: 24px;
+  }
+  
+  .confirmation-text {
+    font-size: 16px;
+  }
+  
+  .main-content {
+    padding: 20px;
+    margin: 20px 10px;
+  }
+  
+  .divider::before, .divider::after {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 10px;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+  
+  .vehicle-info {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+
+.confirmation-icon {
+      font-size: 60px;
+      color: #e74c3c;
+      margin-bottom: 20px;
+    }
+    
+    .warning-text {
+      background: #fff4f4;
+      border-left: 4px solid #e74c3c;
+      padding: 15px;
+      margin: 20px 0;
+      text-align: left;
+      border-radius: 4px;
+    }

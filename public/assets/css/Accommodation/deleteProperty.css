@@ -1,0 +1,153 @@
+body {
+  margin: 0;
+  padding-top: 100px;
+  font-family: 'Inter', Arial, sans-serif;
+  background: #f8f9fa;
+  color: #222;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #111;
+    color: #fff;
+    padding: 0 32px;
+    height: 56px;
+    position: fixed;
+    top: 0;
+    width: 96%;  
+}
+
+.tm-logo {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.tm-nav a {
+    color: #fff;
+    margin: 0 12px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.tm-user {
+    display: flex;
+    align-items: center;
+}
+
+.tm-user-icon {
+    width: 32px;
+    height: 32px;
+    background: #eee;
+    border-radius: 50%;
+    margin-left: 8px;
+}
+
+.delete-section {
+    text-align: center;
+    margin: 64px auto 100px auto;
+}
+
+.delete-section h1 {
+    font-size: 1.7rem;
+    margin-bottom: 32px;
+}
+
+.delete-box {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 48px 24px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.delete-box p {
+    font-size: 20px;
+    margin-bottom: 40px;
+}
+
+.property-name {
+    color: #22c55e;
+}
+
+.delete-actions {
+    display: flex;
+    justify-content: center;
+    gap: 64px;
+}
+
+.delete-actions button {
+    background: none;
+    border: none;
+    font-size: 22px;
+    font-weight: bold;
+    color: #222;
+    cursor: pointer;
+    padding: 8px 25px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.delete-actions .yes-btn {
+    color: #22c55e;
+}
+
+.delete-actions .no-btn {
+    color: #222;
+}
+
+.delete-actions button:hover {
+    background: #68e0a2;
+}
+
+.tm-footer {
+    background: #111;
+    color: #fff;
+    padding: 40px 0 0 0;
+    margin-top: 40px;
+}
+.tm-footer-content {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+}
+.tm-footer-col {
+    flex: 1;
+    margin-right: 32px;
+}
+.tm-footer-brand {
+    max-width: 260px;
+}
+.tm-footer-newsletter input[type="email"] {
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: none;
+    margin-right: 8px;
+}
+.tm-footer-newsletter button {
+    background: #22b33a;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 16px;
+    cursor: pointer;
+}
+.tm-footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 32px;
+    border-top: 1px solid #333;
+    font-size: 0.95rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.tm-footer-links a {
+    color: #fff;
+    margin-left: 16px;
+    text-decoration: none;
+}

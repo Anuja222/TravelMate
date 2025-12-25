@@ -1,0 +1,200 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', Arial, sans-serif;
+  background: #f8f9fa;
+  color: #222;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  max-width: 1200px;
+  margin: 2em auto 50px;
+  padding: 0 20px;
+}
+
+.vehicle-listing h2 {
+  font-size: 1.8em;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.5em;
+}
+
+.vehicle-listing p {
+  color: #7f8c8d;
+  margin-bottom: 1.5em;
+}
+
+.vehicle-cards {
+  display: flex;
+  gap: 1.5em;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 2em;
+}
+
+.vehicle-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  padding: 1.5em;
+  width: 200px;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.vehicle-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.vehicle-card.selected {
+  border-color: #1abc5b;
+  box-shadow: 0 8px 20px rgba(26, 188, 91, 0.2);
+}
+
+.vehicle-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: contain;
+  margin-bottom: 1em;
+  transition: transform 0.3s;
+}
+
+.vehicle-card:hover img {
+  transform: scale(1.05);
+}
+
+.vehicle-card h3 {
+  margin: 0.5em 0;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.btn-list-vehicle {
+  background: #1abc5b;
+  color: #fff;
+  padding: 0.7em 1.4em;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  width: 100%;
+}
+
+.btn-list-vehicle:hover {
+  background: #169d4a;
+  transform: translateY(-2px);
+}
+
+.ownership-section {
+  background: #fff;
+  padding: 2em;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  margin: 30px 0;
+}
+  
+.section-title {
+  font-size: 1.5em;
+  color: #2c3e50;
+  margin-bottom: 1.2em;
+  font-weight: 600;
+}
+  
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.radio-option:hover {
+  background: #f1f8ff;
+}
+  
+.radio-option input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #1abc5b;
+}
+  
+.radio-option label {
+  font-size: 16px;
+  color: #34495e;
+  cursor: pointer;
+}
+
+.continue-btn {
+  background: #1abc5b;
+  color: white;
+  border: none;
+  padding: 14px 35px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  display: block;
+  margin: 30px auto 10px;
+}
+
+.continue-btn:hover {
+  background: #16a085;
+  transform: translateY(-2px);
+}
+
+.continue-btn:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.error-message {
+  color: #e74c3c;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 14px;
+  display: none;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .vehicle-cards {
+    gap: 1em;
+  }
+  
+  .vehicle-card {
+    width: calc(50% - 1em);
+    padding: 1em;
+  }
+  
+  .ownership-section {
+    padding: 1.5em;
+  }
+}
+
+@media (max-width: 480px) {
+  .vehicle-card {
+    width: 100%;
+  }
+  
+  .radio-option {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

@@ -1,0 +1,544 @@
+/* General styles */
+body {
+  font-family: 'Inter', Arial, sans-serif;
+  background: #f8f9fa;
+  color: #222;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Surfing-specific Hero Section Override */
+.hero-section {
+  height: 90vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('../../images/surfingmain.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg, 
+    rgba(26, 188, 91, 0.6) 0%, 
+    rgba(22, 160, 133, 0.7) 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-content {
+  text-align: center;
+  color: white;
+  max-width: 800px;
+  padding: 0 2em;
+  animation: fadeInUp 1s ease-out;
+}
+
+.hero-content h1 {
+  font-size: 3.5em;
+  font-weight: 700;
+  margin-bottom: 0.5em;
+  text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  line-height: 1.2;
+}
+
+.hero-content p {
+  font-size: 1.3em;
+  margin-bottom: 2em;
+  opacity: 0.95;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Beaches Section Override for Surfing */
+.beaches-section {
+  padding: 4em 0;
+  background: white;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 4em;
+}
+
+.section-header h2 {
+  font-size: 2.8em;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 0.5em;
+}
+
+/* Surf Spots Grid - 2x2 Layout */
+.beaches-grid {
+  display: grid;
+  gap: 2em;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  margin-top: 3em;
+}
+
+
+/* Back Button */
+.back-button-container {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 4em;
+}
+
+.back-btn {
+  background: #1abc5b;
+  color: white;
+  padding: 0.8em 1.5em;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.back-btn:hover {
+  background: #169d4a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(26, 188, 91, 0.3);
+}
+
+.back-icon {
+  font-size: 1.2em;
+}
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  z-index: 2000;
+  backdrop-filter: blur(5px);
+}
+
+.modal.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideIn 0.3s ease;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5em 2em;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-header h3 {
+  font-size: 1.5em;
+  font-weight: 600;
+  color: #222;
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 2em;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.close-btn:hover {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.modal-body {
+  padding: 2em;
+}
+
+/* Surf Spot Details Modal */
+.beach-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+}
+
+.beach-image {
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.beach-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.beach-info h4 {
+  font-size: 1.8em;
+  color: #222;
+  margin-bottom: 1em;
+}
+
+.beach-info p {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 1.5em;
+  font-size: 1em;
+}
+
+.beach-features h5 {
+  color: #222;
+  margin-bottom: 0.5em;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+.beach-features ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5em 0;
+}
+
+.beach-features li {
+  padding: 0.5em 0;
+  color: #666;
+  font-size: 0.95em;
+}
+
+.beach-features li:before {
+  content: "✓";
+  color: #1abc5b;
+  font-weight: bold;
+  margin-right: 0.8em;
+  font-size: 1.1em;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1em;
+  flex-wrap: wrap;
+  margin-top: 1em;
+}
+
+.modal-actions .user-btn {
+  padding: 0.8em 1.5em;
+  border-radius: 8px;
+  font-size: 0.95em;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modal-actions .user-btn:first-child {
+  background: #1abc5b;
+  color: white;
+}
+
+.modal-actions .user-btn:first-child:hover {
+  background: #169d4a;
+  transform: translateY(-2px);
+}
+
+/* Focus Accessibility */
+.user-btn:focus,
+.explore-btn:focus,
+.back-btn:focus,
+.close-btn:focus {
+  outline: 2px solid #1abc5b;
+  outline-offset: 2px;
+}
+
+/* Animation Classes */
+.fade-in {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.6s ease-out;
+}
+
+.slide-in-right {
+  animation: slideInRight 0.6s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Surfing-specific Responsive Design */
+@media (max-width: 1024px) {
+  .hero-content h1 {
+    font-size: 2.8em;
+  }
+  
+  .hero-content p {
+    font-size: 1.2em;
+  }
+  
+  .beaches-grid {
+    gap: 2em;
+  }
+  
+  .beach-card {
+    animation: none; /* Disable floating animation on smaller screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 2.2em;
+  }
+  
+  .hero-content p {
+    font-size: 1.1em;
+  }
+  
+  .section-header h2 {
+    font-size: 2.2em;
+  }
+  
+  .beaches-grid {
+    grid-template-columns: 1fr;
+    gap: 2em;
+    max-width: 400px;
+    margin: 3em auto 0;
+  }
+  
+  .beach-card .card-image {
+    height: 220px;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
+  
+  .modal-actions .user-btn {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .beach-details {
+    gap: 1.5em;
+  }
+  
+  .beaches-section {
+    padding: 3em 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 1em;
+  }
+  
+  .hero-content {
+    padding: 0 1em;
+  }
+  
+  .hero-content h1 {
+    font-size: 1.8em;
+  }
+  
+  .hero-content p {
+    font-size: 1em;
+  }
+  
+  .beaches-section {
+    padding: 2em 0;
+  }
+  
+  .section-header h2 {
+    font-size: 1.8em;
+  }
+  
+  .beaches-grid {
+    gap: 1.5em;
+  }
+  
+  .beach-card .card-content {
+    padding: 1.2em;
+    min-height: 60px;
+  }
+  
+  .beach-card .card-content h3 {
+    font-size: 1.1em;
+  }
+  
+  .modal-content {
+    width: 95%;
+    margin: 1em;
+  }
+  
+  .modal-header {
+    padding: 1em 1.5em;
+  }
+  
+  .modal-body {
+    padding: 1.5em;
+  }
+  
+  .beach-image {
+    height: 250px;
+  }
+  
+  .back-button-container {
+    margin-top: 2em;
+  }
+  
+  .beach-info h4 {
+    font-size: 1.5em;
+  }
+}
+
+/* Parallax Effect for larger screens */
+@media (min-width: 1024px) {
+  .hero-background {
+    background-attachment: fixed;
+  }
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Loading state */
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Custom scrollbar for modal */
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: #1abc5b;
+  border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: #169d4a;
+}
+
+
+/* Additional surf-specific styling */
+.surf-difficulty {
+  display: inline-block;
+  background: #1abc5b;
+  color: white;
+  padding: 0.3em 0.8em;
+  border-radius: 15px;
+  font-size: 0.8em;
+  font-weight: 600;
+  margin-top: 0.5em;
+}
+
+.surf-difficulty.beginner {
+  background: #2ecc71;
+}
+
+.surf-difficulty.intermediate {
+  background: #f39c12;
+}
+
+.surf-difficulty.advanced {
+  background: #e74c3c;
+}
+
+/* Wave icon animation */
+.wave-icon {
+  display: inline-block;
+  animation: wave 2s ease-in-out infinite;
+}
+
+@keyframes wave {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg); }
+  75% { transform: rotate(-5deg); }
+}

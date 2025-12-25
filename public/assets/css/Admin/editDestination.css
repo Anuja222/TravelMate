@@ -1,0 +1,378 @@
+/* editDestination.css - Enhanced */
+body {
+  background-color: #f5f7fa;
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.page-containerr {
+  max-width: 1000px;
+  margin: 0 auto 0 auto;
+  padding: 4em 14em;
+}
+
+.content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  padding: 30px;
+  margin-top: 30px;
+  margin-bottom: 50px;
+}
+
+h1 {
+  color: #2c3e50;
+  margin-bottom: 25px;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+h2 {
+  /* color: #2c3e50; */
+  margin-bottom: 20px;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+h3 {
+  color: #34495e;
+  margin-top: 25px;
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background: #eee;
+  margin: 40px 0;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+form > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+label {
+  font-weight: 600;
+  color: #34495e;
+  font-size: 15px;
+}
+
+input[type="text"],
+input[type="hidden"],
+input[type="file"],
+textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+input[type="file"]:focus,
+textarea:focus {
+  outline: none;
+  border-color: #1abc5b;
+  box-shadow: 0 0 0 2px rgba(26, 188, 91, 0.2);
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+input[type="file"] {
+  padding: 10px;
+  cursor: pointer;
+}
+
+input[type="file"]::file-selector-button {
+  background: #1abc5b;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-right: 10px;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background: #16a085;
+}
+
+form > div:last-child {
+  flex-direction: row;
+  gap: 15px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+
+button {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.1s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+.btn-primary,
+button[type="submit"] {
+  background: #1abc5b;
+  color: white;
+}
+
+.btn-primary:hover,
+button[type="submit"]:hover {
+  background: #16a085;
+}
+
+.btn-primary:disabled,
+button[type="submit"]:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+}
+
+button[type="button"],
+.btn-secondary {
+  background: #95a5a6;
+  color: white;
+}
+
+button[type="button"]:hover,
+.btn-secondary:hover {
+  background: #7f8c8d;
+}
+
+/* Places Section */
+#placesSection {
+  margin-top: 40px;
+}
+
+#placesList {
+  margin-bottom: 30px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  min-height: 100px;
+}
+
+#placesList p {
+  color: #7f8c8d;
+  margin: 0;
+}
+
+.place-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s;
+}
+
+.place-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.place-item img {
+  max-width: 160px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 15px;
+}
+
+.place-item > div:nth-child(2) {
+  flex: 1;
+  margin-right: 15px;
+}
+
+.place-item strong {
+  color: #2c3e50;
+  font-size: 16px;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.place-item small {
+  color: #7f8c8d;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.place-item > div:last-child {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn-edit-place {
+  background: #3498db;
+  color: white;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.btn-edit-place:hover {
+  background: #2980b9;
+}
+
+.btn-delete-place {
+  background: #e74c3c;
+  color: white;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.btn-delete-place:hover {
+  background: #c0392b;
+}
+
+#addPlaceForm {
+  background: #f8f9fa;
+  padding: 25px;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+#cancelEditPlace {
+  margin-left: 8px;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 0.875rem;
+  margin-top: 5px;
+  display: block;
+}
+
+.success-message {
+  color: #1abc5b;
+  font-size: 0.875rem;
+  margin-top: 5px;
+  display: block;
+}
+
+.required-asterisk {
+  color: #e74c3c;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .page-container {
+    padding: 15px;
+  }
+
+  .content {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  h3 {
+    font-size: 16px;
+  }
+
+  form > div:last-child {
+    flex-direction: column-reverse;
+  }
+
+  button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .place-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .place-item img {
+    margin-right: 0;
+    margin-bottom: 12px;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .place-item > div:nth-child(2) {
+    margin-right: 0;
+    margin-bottom: 12px;
+  }
+
+  .place-item > div:last-child {
+    width: 100%;
+  }
+
+  .btn-edit-place,
+  .btn-delete-place {
+    flex: 1;
+  }
+
+  #addPlaceForm {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  h1 {
+    font-size: 22px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  input[type="text"],
+  input[type="file"],
+  textarea {
+    font-size: 14px;
+  }
+
+  .place-item strong {
+    font-size: 15px;
+  }
+
+  .place-item small {
+    font-size: 13px;
+  }
+}
