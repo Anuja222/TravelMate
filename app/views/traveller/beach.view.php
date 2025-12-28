@@ -40,7 +40,7 @@
           </div>
           <div class="card-content">
             <h3>Blue Beach</h3>
-            <p>Blue Beach (also called Blue Beach Island) is a small scenic beach/island located near Nilwella, between Dickwella and Tangalle on Sri Lanka’s southern coast.</p>
+            <p>Blue Beach is a small scenic beach/island located near Nilwella, between Dickwella and Tangalle on Sri Lanka’s southern coast.</p>
           </div>
         </div>
         <!-- Thalpe -->
