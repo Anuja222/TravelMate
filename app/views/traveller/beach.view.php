@@ -53,7 +53,7 @@
           </div>
           <div class="card-content">
             <h3>Thalpe</h3>
-            <p>The beach has unique rock pools carved into coral reefs which fill with ocean water. These make for calm shallow bathing areas. It’s relatively less crowded than nearby tourist hotspots, offering peace, golden sand, palm trees, and scenic views.</p>
+            <p>The Beach has unique rock pools carved into coral reefs which fill with ocean water. These make for calm shallow bathing areas. It’s relatively less crowded than nearby tourist hotspots, offering peace, golden sand, palm trees, and scenic views.</p>
           </div>
         </div>
         <!-- Jungle -->
