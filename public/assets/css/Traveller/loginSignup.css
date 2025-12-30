@@ -925,16 +925,6 @@ footer {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
 .profile-photo-upload {
   display: flex;
   flex-direction: column;
@@ -1095,4 +1085,149 @@ select option:checked {
     width: 100%;
     justify-content: center;
   }
+}
+
+/* Success Modal Styles */
+.success-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-modal.show {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.success-modal-content {
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.4s ease;
+}
+
+.success-icon {
+  margin-bottom: 24px;
+  animation: scaleIn 0.5s ease 0.2s both;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.success-modal-content h2 {
+  color: #10b981;
+  font-size: 28px;
+  margin: 0 0 12px 0;
+  font-weight: 700;
+}
+
+.success-modal-content p {
+  color: #6b7280;
+  font-size: 16px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Error Modal Styles */
+.error-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-modal.show {
+  display: flex;
+}
+
+.error-modal-content {
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.4s ease;
+}
+
+.error-icon {
+  margin-bottom: 24px;
+  animation: scaleIn 0.5s ease 0.2s both;
+}
+
+.error-modal-content h2 {
+  color: #ef4444;
+  font-size: 28px;
+  margin: 0 0 12px 0;
+  font-weight: 700;
+}
+
+.error-modal-content p {
+  color: #6b7280;
+  font-size: 16px;
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+}
+
+.btn-close-modal {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-close-modal:hover {
+  background: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
