@@ -16,7 +16,7 @@
       <div class="hero-overlay">
         <div class="hero-content">
           <h1>Discover Paradise</h1>
-          <p>Explore the most beautiful beaches Sri Lanka has to offer</p>
+          <p>Explore The most beautiful Beaches Sri Lanka has to offer</p>
         </div>
       </div>
     </div>
