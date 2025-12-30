@@ -86,6 +86,22 @@
     </div>
   </div>
 
+  <!-- Error Modal -->
+  <div id="errorModal" class="error-modal">
+    <div class="error-modal-content">
+      <div class="error-icon">
+        <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="30" cy="30" r="28" stroke="#ef4444" stroke-width="3" fill="#fef2f2"/>
+          <path d="M30 20V32" stroke="#ef4444" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="30" cy="40" r="2" fill="#ef4444"/>
+        </svg>
+      </div>
+      <h2>Login Failed</h2>
+      <p id="errorMessage">Invalid email or password</p>
+      <button class="btn-close-modal" onclick="document.getElementById('errorModal').classList.remove('show')">Try Again</button>
+    </div>
+  </div>
+
   <script src="../public/assets/js/login.js"></script>
 </body>
 </html>

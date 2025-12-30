@@ -31,11 +31,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }, 1500);
             }else {
+                // Show error modal
+                const errorModal = document.getElementById('errorModal');
+                const errorMessage = document.getElementById('errorMessage');
+                
                 let msg = '';
                 for (const key in data.errors) {
-                    msg += data.errors[key] + '\n';
+                    msg += data.errors[key] + ' ';
                 }
-                alert(msg);
+                
+                errorMessage.textContent = msg || 'Invalid email or password';
+                errorModal.classList.add('show');
             }
         })
         .catch(() => alert('Error occurred. Please try again.'));
