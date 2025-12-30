@@ -76518,3 +76518,506 @@ Stack trace:
 
 [29-Dec-2025 15:39:54 Europe/Berlin] Processed URI: /api/destination/list
 [29-Dec-2025 15:39:54 Europe/Berlin] Page: list
+[30-Dec-2025 05:24:00 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:24:00 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:24:00 Europe/Berlin] URI: /TravelMate/public/
+[30-Dec-2025 05:24:00 Europe/Berlin] GET: Array
+(
+)
+
+[30-Dec-2025 05:24:00 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:24:00 Europe/Berlin] Processed URI: /home
+[30-Dec-2025 05:24:00 Europe/Berlin] Page: home
+[30-Dec-2025 05:24:00 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:24:00 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:24:00 Europe/Berlin] URI: /TravelMate/public/script.js
+[30-Dec-2025 05:24:00 Europe/Berlin] GET: Array
+(
+    [url] => script.js
+)
+
+[30-Dec-2025 05:24:00 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:24:00 Europe/Berlin] Processed URI: /script.js
+[30-Dec-2025 05:24:00 Europe/Berlin] Page: script.js
+[30-Dec-2025 05:24:02 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:24:02 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:24:02 Europe/Berlin] URI: /TravelMate/public/login
+[30-Dec-2025 05:24:02 Europe/Berlin] GET: Array
+(
+    [url] => login
+)
+
+[30-Dec-2025 05:24:02 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:24:02 Europe/Berlin] Processed URI: /login
+[30-Dec-2025 05:24:02 Europe/Berlin] Page: login
+[30-Dec-2025 05:24:02 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:24:02 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:24:02 Europe/Berlin] URI: /TravelMate/public/assets/css/images/sri-lanka-landscape.jpg
+[30-Dec-2025 05:24:02 Europe/Berlin] GET: Array
+(
+    [url] => assets/css/images/sri-lanka-landscape.jpg
+)
+
+[30-Dec-2025 05:24:02 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:24:02 Europe/Berlin] Processed URI: /assets/css/images/sri-lanka-landscape.jpg
+[30-Dec-2025 05:24:02 Europe/Berlin] Page: sri-lanka-landscape.jpg
+[30-Dec-2025 05:24:14 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:24:14 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:24:14 Europe/Berlin] URI: /TravelMate/public/homet
+[30-Dec-2025 05:24:14 Europe/Berlin] GET: Array
+(
+    [url] => homet
+)
+
+[30-Dec-2025 05:24:14 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:24:14 Europe/Berlin] Processed URI: /homet
+[30-Dec-2025 05:24:14 Europe/Berlin] Page: homet
+[30-Dec-2025 05:24:14 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:24:14 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:24:14 Europe/Berlin] URI: /TravelMate/public/api/destination/list
+[30-Dec-2025 05:24:14 Europe/Berlin] GET: Array
+(
+    [url] => api/destination/list
+)
+
+[30-Dec-2025 05:24:14 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:24:14 Europe/Berlin] Processed URI: /api/destination/list
+[30-Dec-2025 05:24:14 Europe/Berlin] Page: list
+[30-Dec-2025 05:24:21 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:24:21 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:24:21 Europe/Berlin] URI: /TravelMate/public/accommodationdetail
+[30-Dec-2025 05:24:21 Europe/Berlin] GET: Array
+(
+    [url] => accommodationdetail
+)
+
+[30-Dec-2025 05:24:21 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:24:21 Europe/Berlin] Processed URI: /accommodationdetail
+[30-Dec-2025 05:24:21 Europe/Berlin] Page: accommodationdetail
+[30-Dec-2025 05:27:00 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:27:00 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:27:00 Europe/Berlin] URI: /TravelMate/public/logout
+[30-Dec-2025 05:27:00 Europe/Berlin] GET: Array
+(
+    [url] => logout
+)
+
+[30-Dec-2025 05:27:00 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:27:01 Europe/Berlin] Processed URI: /logout
+[30-Dec-2025 05:27:01 Europe/Berlin] Page: logout
+[30-Dec-2025 05:27:01 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:27:01 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:27:01 Europe/Berlin] URI: /TravelMate/public/home
+[30-Dec-2025 05:27:01 Europe/Berlin] GET: Array
+(
+    [url] => home
+)
+
+[30-Dec-2025 05:27:01 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:27:01 Europe/Berlin] Processed URI: /home
+[30-Dec-2025 05:27:01 Europe/Berlin] Page: home
+[30-Dec-2025 05:27:02 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:27:02 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:27:02 Europe/Berlin] URI: /TravelMate/public/script.js
+[30-Dec-2025 05:27:02 Europe/Berlin] GET: Array
+(
+    [url] => script.js
+)
+
+[30-Dec-2025 05:27:02 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:27:02 Europe/Berlin] Processed URI: /script.js
+[30-Dec-2025 05:27:02 Europe/Berlin] Page: script.js
+[30-Dec-2025 05:27:04 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:27:04 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:27:04 Europe/Berlin] URI: /TravelMate/public/login
+[30-Dec-2025 05:27:04 Europe/Berlin] GET: Array
+(
+    [url] => login
+)
+
+[30-Dec-2025 05:27:04 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:27:04 Europe/Berlin] Processed URI: /login
+[30-Dec-2025 05:27:04 Europe/Berlin] Page: login
+[30-Dec-2025 05:27:05 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:27:05 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:27:05 Europe/Berlin] URI: /TravelMate/public/assets/css/images/sri-lanka-landscape.jpg
+[30-Dec-2025 05:27:05 Europe/Berlin] GET: Array
+(
+    [url] => assets/css/images/sri-lanka-landscape.jpg
+)
+
+[30-Dec-2025 05:27:05 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:27:05 Europe/Berlin] Processed URI: /assets/css/images/sri-lanka-landscape.jpg
+[30-Dec-2025 05:27:05 Europe/Berlin] Page: sri-lanka-landscape.jpg
+[30-Dec-2025 05:30:05 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:30:05 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:30:05 Europe/Berlin] URI: /TravelMate/public/home
+[30-Dec-2025 05:30:05 Europe/Berlin] GET: Array
+(
+    [url] => home
+)
+
+[30-Dec-2025 05:30:05 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:30:05 Europe/Berlin] Processed URI: /home
+[30-Dec-2025 05:30:05 Europe/Berlin] Page: home
+[30-Dec-2025 05:30:05 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:30:05 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:30:05 Europe/Berlin] URI: /TravelMate/public/script.js
+[30-Dec-2025 05:30:05 Europe/Berlin] GET: Array
+(
+    [url] => script.js
+)
+
+[30-Dec-2025 05:30:05 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:30:05 Europe/Berlin] Processed URI: /script.js
+[30-Dec-2025 05:30:05 Europe/Berlin] Page: script.js
+[30-Dec-2025 05:30:08 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:30:08 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:30:08 Europe/Berlin] URI: /TravelMate/public/login
+[30-Dec-2025 05:30:08 Europe/Berlin] GET: Array
+(
+    [url] => login
+)
+
+[30-Dec-2025 05:30:08 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:30:08 Europe/Berlin] Processed URI: /login
+[30-Dec-2025 05:30:08 Europe/Berlin] Page: login
+[30-Dec-2025 05:30:09 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:30:09 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:30:09 Europe/Berlin] URI: /TravelMate/public/assets/css/images/sri-lanka-landscape.jpg
+[30-Dec-2025 05:30:09 Europe/Berlin] GET: Array
+(
+    [url] => assets/css/images/sri-lanka-landscape.jpg
+)
+
+[30-Dec-2025 05:30:09 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:30:09 Europe/Berlin] Processed URI: /assets/css/images/sri-lanka-landscape.jpg
+[30-Dec-2025 05:30:09 Europe/Berlin] Page: sri-lanka-landscape.jpg
+[30-Dec-2025 05:30:27 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:30:27 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:30:27 Europe/Berlin] URI: /TravelMate/public/homet
+[30-Dec-2025 05:30:27 Europe/Berlin] GET: Array
+(
+    [url] => homet
+)
+
+[30-Dec-2025 05:30:27 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:30:27 Europe/Berlin] Processed URI: /homet
+[30-Dec-2025 05:30:27 Europe/Berlin] Page: homet
+[30-Dec-2025 05:30:27 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:30:27 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:30:27 Europe/Berlin] URI: /TravelMate/public/api/destination/list
+[30-Dec-2025 05:30:27 Europe/Berlin] GET: Array
+(
+    [url] => api/destination/list
+)
+
+[30-Dec-2025 05:30:27 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:30:27 Europe/Berlin] Processed URI: /api/destination/list
+[30-Dec-2025 05:30:27 Europe/Berlin] Page: list
+[30-Dec-2025 05:30:33 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:30:33 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:30:33 Europe/Berlin] URI: /TravelMate/public/logout
+[30-Dec-2025 05:30:33 Europe/Berlin] GET: Array
+(
+    [url] => logout
+)
+
+[30-Dec-2025 05:30:33 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:30:33 Europe/Berlin] Processed URI: /logout
+[30-Dec-2025 05:30:33 Europe/Berlin] Page: logout
+[30-Dec-2025 05:30:33 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:30:33 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:30:33 Europe/Berlin] URI: /TravelMate/public/home
+[30-Dec-2025 05:30:33 Europe/Berlin] GET: Array
+(
+    [url] => home
+)
+
+[30-Dec-2025 05:30:33 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:30:33 Europe/Berlin] Processed URI: /home
+[30-Dec-2025 05:30:33 Europe/Berlin] Page: home
+[30-Dec-2025 05:30:34 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:30:34 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:30:34 Europe/Berlin] URI: /TravelMate/public/script.js
+[30-Dec-2025 05:30:34 Europe/Berlin] GET: Array
+(
+    [url] => script.js
+)
+
+[30-Dec-2025 05:30:34 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:30:34 Europe/Berlin] Processed URI: /script.js
+[30-Dec-2025 05:30:34 Europe/Berlin] Page: script.js
+[30-Dec-2025 05:30:35 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:30:35 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:30:35 Europe/Berlin] URI: /TravelMate/public/login
+[30-Dec-2025 05:30:35 Europe/Berlin] GET: Array
+(
+    [url] => login
+)
+
+[30-Dec-2025 05:30:35 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:30:35 Europe/Berlin] Processed URI: /login
+[30-Dec-2025 05:30:35 Europe/Berlin] Page: login
+[30-Dec-2025 05:31:30 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:31:30 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:31:30 Europe/Berlin] URI: /TravelMate/public/login
+[30-Dec-2025 05:31:30 Europe/Berlin] GET: Array
+(
+    [url] => login
+)
+
+[30-Dec-2025 05:31:30 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:31:30 Europe/Berlin] Processed URI: /login
+[30-Dec-2025 05:31:30 Europe/Berlin] Page: login
+[30-Dec-2025 05:31:56 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:31:56 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:31:56 Europe/Berlin] URI: /TravelMate/public/login
+[30-Dec-2025 05:31:56 Europe/Berlin] GET: Array
+(
+    [url] => login
+)
+
+[30-Dec-2025 05:31:56 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:31:56 Europe/Berlin] Processed URI: /login
+[30-Dec-2025 05:31:56 Europe/Berlin] Page: login
+[30-Dec-2025 05:33:35 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:33:35 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:33:35 Europe/Berlin] URI: /TravelMate/public/login
+[30-Dec-2025 05:33:35 Europe/Berlin] GET: Array
+(
+    [url] => login
+)
+
+[30-Dec-2025 05:33:35 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:33:35 Europe/Berlin] Processed URI: /login
+[30-Dec-2025 05:33:35 Europe/Berlin] Page: login
+[30-Dec-2025 05:33:41 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:33:41 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:33:41 Europe/Berlin] URI: /TravelMate/public/login
+[30-Dec-2025 05:33:41 Europe/Berlin] GET: Array
+(
+    [url] => login
+)
+
+[30-Dec-2025 05:33:41 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:33:41 Europe/Berlin] Processed URI: /login
+[30-Dec-2025 05:33:41 Europe/Berlin] Page: login
+[30-Dec-2025 05:33:41 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:33:41 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:33:41 Europe/Berlin] URI: /TravelMate/public/assets/css/images/sri-lanka-landscape.jpg
+[30-Dec-2025 05:33:41 Europe/Berlin] GET: Array
+(
+    [url] => assets/css/images/sri-lanka-landscape.jpg
+)
+
+[30-Dec-2025 05:33:41 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:33:41 Europe/Berlin] Processed URI: /assets/css/images/sri-lanka-landscape.jpg
+[30-Dec-2025 05:33:41 Europe/Berlin] Page: sri-lanka-landscape.jpg
+[30-Dec-2025 05:33:44 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:33:44 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:33:44 Europe/Berlin] URI: /TravelMate/public/login
+[30-Dec-2025 05:33:44 Europe/Berlin] GET: Array
+(
+    [url] => login
+)
+
+[30-Dec-2025 05:33:44 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:33:44 Europe/Berlin] Processed URI: /login
+[30-Dec-2025 05:33:44 Europe/Berlin] Page: login
+[30-Dec-2025 05:34:57 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:34:57 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:34:57 Europe/Berlin] URI: /TravelMate/public/homet
+[30-Dec-2025 05:34:57 Europe/Berlin] GET: Array
+(
+    [url] => homet
+)
+
+[30-Dec-2025 05:34:57 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:34:57 Europe/Berlin] Processed URI: /homet
+[30-Dec-2025 05:34:57 Europe/Berlin] Page: homet
+[30-Dec-2025 05:34:58 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:34:58 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:34:58 Europe/Berlin] URI: /TravelMate/public/api/destination/list
+[30-Dec-2025 05:34:58 Europe/Berlin] GET: Array
+(
+    [url] => api/destination/list
+)
+
+[30-Dec-2025 05:34:58 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:34:58 Europe/Berlin] Processed URI: /api/destination/list
+[30-Dec-2025 05:34:58 Europe/Berlin] Page: list
+[30-Dec-2025 05:35:03 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:35:03 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:35:03 Europe/Berlin] URI: /TravelMate/public/logout
+[30-Dec-2025 05:35:03 Europe/Berlin] GET: Array
+(
+    [url] => logout
+)
+
+[30-Dec-2025 05:35:03 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:35:03 Europe/Berlin] Processed URI: /logout
+[30-Dec-2025 05:35:03 Europe/Berlin] Page: logout
+[30-Dec-2025 05:35:03 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:35:03 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:35:03 Europe/Berlin] URI: /TravelMate/public/home
+[30-Dec-2025 05:35:03 Europe/Berlin] GET: Array
+(
+    [url] => home
+)
+
+[30-Dec-2025 05:35:03 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:35:03 Europe/Berlin] Processed URI: /home
+[30-Dec-2025 05:35:03 Europe/Berlin] Page: home
+[30-Dec-2025 05:35:03 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:35:03 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:35:03 Europe/Berlin] URI: /TravelMate/public/script.js
+[30-Dec-2025 05:35:03 Europe/Berlin] GET: Array
+(
+    [url] => script.js
+)
+
+[30-Dec-2025 05:35:03 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:35:03 Europe/Berlin] Processed URI: /script.js
+[30-Dec-2025 05:35:03 Europe/Berlin] Page: script.js
+[30-Dec-2025 05:35:05 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:35:05 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:35:05 Europe/Berlin] URI: /TravelMate/public/login
+[30-Dec-2025 05:35:05 Europe/Berlin] GET: Array
+(
+    [url] => login
+)
+
+[30-Dec-2025 05:35:05 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:35:05 Europe/Berlin] Processed URI: /login
+[30-Dec-2025 05:35:05 Europe/Berlin] Page: login
+[30-Dec-2025 05:36:22 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:36:22 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:36:22 Europe/Berlin] URI: /TravelMate/public/homet
+[30-Dec-2025 05:36:22 Europe/Berlin] GET: Array
+(
+    [url] => homet
+)
+
+[30-Dec-2025 05:36:22 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:36:23 Europe/Berlin] Processed URI: /homet
+[30-Dec-2025 05:36:23 Europe/Berlin] Page: homet
+[30-Dec-2025 05:36:23 Europe/Berlin] === NEW REQUEST ===
+[30-Dec-2025 05:36:23 Europe/Berlin] METHOD: GET
+[30-Dec-2025 05:36:23 Europe/Berlin] URI: /TravelMate/public/api/destination/list
+[30-Dec-2025 05:36:23 Europe/Berlin] GET: Array
+(
+    [url] => api/destination/list
+)
+
+[30-Dec-2025 05:36:23 Europe/Berlin] POST: Array
+(
+)
+
+[30-Dec-2025 05:36:23 Europe/Berlin] Processed URI: /api/destination/list
+[30-Dec-2025 05:36:23 Europe/Berlin] Page: list
