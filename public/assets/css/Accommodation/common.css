@@ -1,0 +1,175 @@
+/*Header*/
+/* header {
+  background: #111111;
+  color: #fff;
+  
+  width: 100%;
+}
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8em 2em;
+}
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+.logo {
+  background: #1abc5b;
+  color: #fff;
+  font-weight: 700;
+  padding: 0.4em 0.7em;
+  border-radius: 6px;
+}
+.nav-links {
+  display: flex;
+  gap: 2em;
+  list-style-type: none;
+  margin-left: -7.5em;
+}
+.nav-links li a {
+  color: #fff;
+  font-weight: 500;
+  text-decoration: none;
+}
+.nav-links li a:hover {
+  cursor: pointer;
+  color: #1abc5b;
+}
+.nav-actions {
+  display: flex;
+  gap: 0.5em;
+}
+.user-btn {
+  background: #1abc5b;
+  color: #fff;
+  border: none;
+  border-radius: 22px;
+  padding: 0.5em 1.4em;
+  font-size: 1em;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.user-btn:hover {
+  background: #169d4a;
+}
+.user-icon {
+  font-size: 1.2em;
+} */
+
+/*Side Bar*/
+.sidebar {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  width: 10em;
+  padding: 2em 1em;
+  margin-right: 1em;
+  margin-top: 1em;
+  max-width: 10em;
+  height: 14em;
+}
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+.sidebar ul li {
+  margin-top: 1.6em;
+  margin-bottom: 1.6em;
+}
+.sidebar ul li a {
+  color: #222;
+  font-size: 1em;
+  font-weight: 500;
+  display: block;
+  padding: 0.6em 1em;
+  border-radius: 6px;
+  transition: background 0.15s;
+  text-decoration: none;
+}
+.sidebar ul li a:hover {
+  background: #e9f6ee;
+  color: #1abc5b;
+}
+
+
+/*Footer*/
+footer {
+  background: #222;
+  color: #fff;
+  padding: 1em 0 1em;
+  margin-top: auto;
+  width: 100%;
+}
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 2em;
+  padding: 0 2em;
+}
+.footer-section h4 {
+  color: #1abc5b;
+  margin-bottom: 1em;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+.footer-section.company p {
+  color: #bbb;
+  line-height: 1.6;
+  margin: 0;
+}
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.footer-section ul li {
+  margin-bottom: 0.7em;
+}
+.footer-section ul li a {
+  color: #bbb;
+  transition: color 0.2s;
+  font-size: 0.95em;
+  text-decoration: none;
+}
+.footer-section ul li a:hover {
+  color: #1abc5b;
+}
+.footer-section.connect p {
+  color: #bbb;
+  margin: 0;
+  line-height: 1.8;
+}
+.footer-bottom {
+  border-top: 1px solid #333;
+  margin-top: 2em;
+  padding: 1.5em 2em 0;
+  text-align: center;
+  color: #999;
+  font-size: 0.9em;
+}
+
+.btn-subscribe {
+      background: #1abc5b;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .btn-subscribe:hover {
+      background: #16a085;
+    }
+    
