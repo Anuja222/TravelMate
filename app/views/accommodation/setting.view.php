@@ -39,7 +39,7 @@
        <ul>
         <li><a href="ac_dashboard"><i ></i> Dashboard</a></li>
         <li><a href="accommodationbookings"><i ></i> Bookings</a></li>
-        <li><a href="setting" class="active"><i></i> Settings</a></li>
+        <li><a href="acc_setting" class="active"><i></i> Settings</a></li>
       </ul>
     </aside>
 
