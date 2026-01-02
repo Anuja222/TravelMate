@@ -89,7 +89,7 @@ class VehicleController
             $vehicleId = $vehicle->create($pdo);
             error_log("Vehicle created with ID: " . $vehicleId);
 
-            if (!$vehicleId) {
+            if (!$vehicleId) { 
                 throw new \Exception('Failed to create vehicle - no ID returned');
             }
 
