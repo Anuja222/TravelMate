@@ -48,9 +48,9 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
   <main>
     <aside class="sidebar">
       <ul>
-        <li><a href="ac_dashboard">My Listings</a></li>
+        <li><a href="ac_dashboard">Dashboard</a></li>
         <li><a href="ac_dashboard">Bookings</a></li>
-        <li><a href="ac_dashboard">Profile Settings</a></li>
+        <li><a href="acc_setting">Settings</a></li>
       </ul>
     </aside>
     <section class="dashboard-content">
