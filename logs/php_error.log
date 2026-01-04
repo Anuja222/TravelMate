@@ -1,0 +1,216 @@
+[04-Jan-2026 16:01:24 Europe/Berlin] === NEW REQUEST ===
+[04-Jan-2026 16:01:24 Europe/Berlin] METHOD: GET
+[04-Jan-2026 16:01:24 Europe/Berlin] URI: /TravelMate/public/homet
+[04-Jan-2026 16:01:24 Europe/Berlin] GET: Array
+(
+    [url] => homet
+)
+
+[04-Jan-2026 16:01:24 Europe/Berlin] POST: Array
+(
+)
+
+[04-Jan-2026 16:01:24 Europe/Berlin] Processed URI: /homet
+[04-Jan-2026 16:01:24 Europe/Berlin] Page: homet
+[04-Jan-2026 16:01:24 Europe/Berlin] === NEW REQUEST ===
+[04-Jan-2026 16:01:24 Europe/Berlin] METHOD: GET
+[04-Jan-2026 16:01:24 Europe/Berlin] URI: /TravelMate/public/api/destination/list
+[04-Jan-2026 16:01:24 Europe/Berlin] GET: Array
+(
+    [url] => api/destination/list
+)
+
+[04-Jan-2026 16:01:24 Europe/Berlin] POST: Array
+(
+)
+
+[04-Jan-2026 16:01:24 Europe/Berlin] Processed URI: /api/destination/list
+[04-Jan-2026 16:01:24 Europe/Berlin] Page: list
+[04-Jan-2026 16:01:26 Europe/Berlin] === NEW REQUEST ===
+[04-Jan-2026 16:01:26 Europe/Berlin] METHOD: GET
+[04-Jan-2026 16:01:26 Europe/Berlin] URI: /TravelMate/public/accommodationdetail
+[04-Jan-2026 16:01:26 Europe/Berlin] GET: Array
+(
+    [url] => accommodationdetail
+)
+
+[04-Jan-2026 16:01:26 Europe/Berlin] POST: Array
+(
+)
+
+[04-Jan-2026 16:01:26 Europe/Berlin] Processed URI: /accommodationdetail
+[04-Jan-2026 16:01:26 Europe/Berlin] Page: accommodationdetail
+[04-Jan-2026 16:01:30 Europe/Berlin] === NEW REQUEST ===
+[04-Jan-2026 16:01:30 Europe/Berlin] METHOD: GET
+[04-Jan-2026 16:01:30 Europe/Berlin] URI: /TravelMate/public/booking_availability
+[04-Jan-2026 16:01:30 Europe/Berlin] GET: Array
+(
+    [url] => booking_availability
+)
+
+[04-Jan-2026 16:01:30 Europe/Berlin] POST: Array
+(
+)
+
+[04-Jan-2026 16:01:30 Europe/Berlin] Processed URI: /booking_availability
+[04-Jan-2026 16:01:30 Europe/Berlin] Page: booking_availability
+[04-Jan-2026 16:01:31 Europe/Berlin] === NEW REQUEST ===
+[04-Jan-2026 16:01:31 Europe/Berlin] METHOD: GET
+[04-Jan-2026 16:01:31 Europe/Berlin] URI: /TravelMate/public/booking_details
+[04-Jan-2026 16:01:31 Europe/Berlin] GET: Array
+(
+    [url] => booking_details
+)
+
+[04-Jan-2026 16:01:31 Europe/Berlin] POST: Array
+(
+)
+
+[04-Jan-2026 16:01:31 Europe/Berlin] === NEW REQUEST ===
+[04-Jan-2026 16:01:31 Europe/Berlin] METHOD: GET
+[04-Jan-2026 16:01:31 Europe/Berlin] URI: /TravelMate/public/booking_details
+[04-Jan-2026 16:01:31 Europe/Berlin] GET: Array
+(
+    [url] => booking_details
+)
+
+[04-Jan-2026 16:01:31 Europe/Berlin] POST: Array
+(
+)
+
+[04-Jan-2026 16:01:31 Europe/Berlin] Processed URI: /booking_details
+[04-Jan-2026 16:01:31 Europe/Berlin] Page: booking_details
+[04-Jan-2026 16:01:31 Europe/Berlin] Processed URI: /booking_details
+[04-Jan-2026 16:01:31 Europe/Berlin] Page: booking_details
+[04-Jan-2026 16:01:35 Europe/Berlin] === NEW REQUEST ===
+[04-Jan-2026 16:01:35 Europe/Berlin] METHOD: GET
+[04-Jan-2026 16:01:35 Europe/Berlin] URI: /TravelMate/public/booking_payment
+[04-Jan-2026 16:01:35 Europe/Berlin] GET: Array
+(
+    [url] => booking_payment
+)
+
+[04-Jan-2026 16:01:35 Europe/Berlin] POST: Array
+(
+)
+
+[04-Jan-2026 16:01:35 Europe/Berlin] Processed URI: /booking_payment
+[04-Jan-2026 16:01:35 Europe/Berlin] Page: booking_payment
+[04-Jan-2026 16:01:46 Europe/Berlin] === NEW REQUEST ===
+[04-Jan-2026 16:01:46 Europe/Berlin] METHOD: GET
+[04-Jan-2026 16:01:46 Europe/Berlin] URI: /TravelMate/public/booking_finish
+[04-Jan-2026 16:01:46 Europe/Berlin] GET: Array
+(
+    [url] => booking_finish
+)
+
+[04-Jan-2026 16:01:46 Europe/Berlin] POST: Array
+(
+)
+
+[04-Jan-2026 16:01:46 Europe/Berlin] Processed URI: /booking_finish
+[04-Jan-2026 16:01:46 Europe/Berlin] Page: booking_finish
+[04-Jan-2026 16:01:47 Europe/Berlin] === NEW REQUEST ===
+[04-Jan-2026 16:01:47 Europe/Berlin] METHOD: POST
+[04-Jan-2026 16:01:47 Europe/Berlin] URI: /TravelMate/public/api/booking/create
+[04-Jan-2026 16:01:47 Europe/Berlin] GET: Array
+(
+    [url] => api/booking/create
+)
+
+[04-Jan-2026 16:01:47 Europe/Berlin] POST: Array
+(
+)
+
+[04-Jan-2026 16:01:48 Europe/Berlin] Processed URI: /api/booking/create
+[04-Jan-2026 16:01:48 Europe/Berlin] Page: create
+[04-Jan-2026 16:01:48 Europe/Berlin] === NEW REQUEST ===
+[04-Jan-2026 16:01:48 Europe/Berlin] METHOD: GET
+[04-Jan-2026 16:01:48 Europe/Berlin] URI: /TravelMate/public/mybookings
+[04-Jan-2026 16:01:48 Europe/Berlin] GET: Array
+(
+    [url] => mybookings
+)
+
+[04-Jan-2026 16:01:48 Europe/Berlin] POST: Array
+(
+)
+
+[04-Jan-2026 16:01:48 Europe/Berlin] Processed URI: /mybookings
+[04-Jan-2026 16:01:48 Europe/Berlin] Page: mybookings
+[04-Jan-2026 16:01:49 Europe/Berlin] === NEW REQUEST ===
+[04-Jan-2026 16:01:49 Europe/Berlin] METHOD: GET
+[04-Jan-2026 16:01:49 Europe/Berlin] URI: /TravelMate/public/api/booking/user
+[04-Jan-2026 16:01:49 Europe/Berlin] GET: Array
+(
+    [url] => api/booking/user
+)
+
+[04-Jan-2026 16:01:49 Europe/Berlin] POST: Array
+(
+)
+
+[04-Jan-2026 16:01:49 Europe/Berlin] Processed URI: /api/booking/user
+[04-Jan-2026 16:01:49 Europe/Berlin] Page: user
+[04-Jan-2026 16:01:52 Europe/Berlin] === NEW REQUEST ===
+[04-Jan-2026 16:01:52 Europe/Berlin] METHOD: POST
+[04-Jan-2026 16:01:52 Europe/Berlin] URI: /TravelMate/public/api/booking/cancel
+[04-Jan-2026 16:01:52 Europe/Berlin] GET: Array
+(
+    [url] => api/booking/cancel
+)
+
+[04-Jan-2026 16:01:52 Europe/Berlin] POST: Array
+(
+)
+
+[04-Jan-2026 16:01:52 Europe/Berlin] Processed URI: /api/booking/cancel
+[04-Jan-2026 16:01:52 Europe/Berlin] Page: cancel
+[04-Jan-2026 16:01:52 Europe/Berlin] Raw input: {"bookingId":"BK176753890798538"}
+[04-Jan-2026 16:01:52 Europe/Berlin] Decoded data: Array
+(
+    [bookingId] => BK176753890798538
+)
+
+[04-Jan-2026 16:01:53 Europe/Berlin] === NEW REQUEST ===
+[04-Jan-2026 16:01:53 Europe/Berlin] METHOD: GET
+[04-Jan-2026 16:01:53 Europe/Berlin] URI: /TravelMate/public/api/booking/user
+[04-Jan-2026 16:01:53 Europe/Berlin] GET: Array
+(
+    [url] => api/booking/user
+)
+
+[04-Jan-2026 16:01:53 Europe/Berlin] POST: Array
+(
+)
+
+[04-Jan-2026 16:01:53 Europe/Berlin] Processed URI: /api/booking/user
+[04-Jan-2026 16:01:53 Europe/Berlin] Page: user
+[04-Jan-2026 16:01:59 Europe/Berlin] === NEW REQUEST ===
+[04-Jan-2026 16:01:59 Europe/Berlin] METHOD: POST
+[04-Jan-2026 16:01:59 Europe/Berlin] URI: /TravelMate/public/api/booking/delete
+[04-Jan-2026 16:01:59 Europe/Berlin] GET: Array
+(
+    [url] => api/booking/delete
+)
+
+[04-Jan-2026 16:01:59 Europe/Berlin] POST: Array
+(
+)
+
+[04-Jan-2026 16:01:59 Europe/Berlin] Processed URI: /api/booking/delete
+[04-Jan-2026 16:01:59 Europe/Berlin] Page: delete
+[04-Jan-2026 16:02:00 Europe/Berlin] === NEW REQUEST ===
+[04-Jan-2026 16:02:00 Europe/Berlin] METHOD: GET
+[04-Jan-2026 16:02:00 Europe/Berlin] URI: /TravelMate/public/api/booking/user
+[04-Jan-2026 16:02:00 Europe/Berlin] GET: Array
+(
+    [url] => api/booking/user
+)
+
+[04-Jan-2026 16:02:00 Europe/Berlin] POST: Array
+(
+)
+
+[04-Jan-2026 16:02:00 Europe/Berlin] Processed URI: /api/booking/user
+[04-Jan-2026 16:02:00 Europe/Berlin] Page: user
