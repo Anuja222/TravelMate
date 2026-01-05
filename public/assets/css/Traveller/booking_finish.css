@@ -226,3 +226,129 @@
 .complete-booking-btn:hover {
     background: #169c43;
 }
+
+/* Booking Confirmation Modal Styles */
+.confirmation-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    animation: fadeIn 0.3s ease;
+    align-items: center;
+    justify-content: center;
+}
+
+.confirmation-modal.show {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.confirmation-modal-content {
+    background: white;
+    border-radius: 20px;
+    padding: 48px 40px 40px 40px;
+    text-align: center;
+    max-width: 480px;
+    width: 90%;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+    animation: slideUp 0.4s ease;
+}
+
+.confirmation-icon {
+    margin-bottom: 24px;
+    animation: scaleIn 0.6s ease 0.2s both;
+}
+
+.confirmation-modal-content h2 {
+    color: #10b981;
+    font-size: 32px;
+    margin: 0 0 16px 0;
+    font-weight: 700;
+}
+
+.booking-id-label {
+    color: #6b7280;
+    font-size: 14px;
+    margin: 0 0 8px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.booking-id-display {
+    background: #f3f4f6;
+    color: #1f2937;
+    font-size: 24px;
+    font-weight: 700;
+    padding: 16px 24px;
+    border-radius: 12px;
+    margin: 0 0 20px 0;
+    letter-spacing: 1px;
+    font-family: 'Courier New', monospace;
+    border: 2px solid #e5e7eb;
+}
+
+.confirmation-text {
+    color: #6b7280;
+    font-size: 15px;
+    margin: 0 0 32px 0;
+    line-height: 1.6;
+}
+
+.confirmation-text span {
+    color: #1f2937;
+    font-weight: 600;
+}
+
+.btn-view-bookings {
+    background: #10b981;
+    color: white;
+    border: none;
+    padding: 14px 36px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.btn-view-bookings:hover {
+    background: #059669;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}

@@ -177,11 +177,8 @@ async function completeBooking() {
             localStorage.removeItem('userDetails');
             localStorage.removeItem('paymentDetails');
             
-            // Show success message
-            alert(`Booking confirmed! Your booking ID is: ${bookingId}\n\nA confirmation email has been sent to ${userDetails.email}`);
-            
-            // Redirect to profile/bookings page
-            window.location.href = '/TravelMate/public/mybookings';
+            // Show success modal with booking ID
+            showConfirmationModal(bookingId, userDetails.email);
             
         } else {
             // Handle error
@@ -197,5 +194,24 @@ async function completeBooking() {
     } catch (error) {
         console.error('Error completing booking:', error);
         alert('An error occurred while completing your booking. Please try again.');
+    }
+}
+
+// Show confirmation modal
+function showConfirmationModal(bookingId, email) {
+    const modal = document.getElementById('confirmationModal');
+    const bookingIdElement = document.getElementById('modalBookingId');
+    const emailElement = document.getElementById('confirmationEmail');
+    
+    if (bookingIdElement) {
+        bookingIdElement.textContent = bookingId;
+    }
+    
+    if (emailElement) {
+        emailElement.textContent = email;
+    }
+    
+    if (modal) {
+        modal.classList.add('show');
     }
 }
