@@ -15,6 +15,12 @@ document.addEventListener('DOMContentLoaded', function() {
     window.getBaseUrl = getBaseUrl;
     console.log('accommodation.js loaded, baseUrl=', baseUrl);
 
+    // Helper function to capitalize first letter
+    function capitalizeFirst(str) {
+        if (!str) return '';
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    }
+
     // ========== PROPERTY LISTING START PAGE ==========
     const propertyTypes = document.querySelectorAll('.property-type');
     if (propertyTypes.length > 0) {
@@ -304,8 +310,8 @@ document.addEventListener('DOMContentLoaded', function() {
                          class="property-image" onerror="this.src='${baseUrl}/assets/images/default-property.jpg'">
                 </div>
                 <div class="property-card-content">
-                    <h3>${property.title}</h3>
-                    <p class="property-type">${property.property_type}</p>
+                    <h3>${capitalizeFirst(property.title)}</h3>
+                    <p class="property-type">${capitalizeFirst(property.property_type)}</p>
                     <p class="property-location">${property.location}</p>
                     <div class="property-details">
                         <span>${property.rooms} Rooms</span>
