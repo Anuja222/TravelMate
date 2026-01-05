@@ -215,6 +215,22 @@
     </div>
   </div>  -->
 
+  <!-- Validation Error Modal -->
+  <div id="validationModal" class="validation-modal">
+    <div class="validation-modal-content">
+      <div class="validation-icon">
+        <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="30" cy="30" r="28" stroke="#f59e0b" stroke-width="3" fill="#fffbeb"/>
+          <path d="M30 20V32" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="30" cy="40" r="2" fill="#f59e0b"/>
+        </svg>
+      </div>
+      <h2>Incomplete Information</h2>
+      <p id="validationMessage">Please fill in all required fields</p>
+      <button class="btn-close-validation" onclick="document.getElementById('validationModal').classList.remove('show')">Got it</button>
+    </div>
+  </div>
+
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
   <script src="assets/js/accommodationdetail.js"></script>

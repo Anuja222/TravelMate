@@ -122,31 +122,151 @@ function viewBookingDetails(bookingId) {
 }
 
 // Cancel booking
-async function cancelBooking(bookingId) {
-    if (!confirm('Are you sure you want to cancel this booking?')) {
+// Store booking ID temporarily for cancel operation
+let bookingIdToCancel = null;
+
+// Show cancel confirmation modal
+function cancelBooking(bookingId) {
+    console.log('cancelBooking called with ID:', bookingId);
+    
+    if (!bookingId || bookingId === 'undefined' || bookingId === 'null') {
+        alert('Invalid booking ID. Please refresh the page and try again.');
         return;
+    }
+    
+    bookingIdToCancel = bookingId;
+    console.log('Stored booking ID:', bookingIdToCancel);
+    
+    const modal = document.getElementById('cancelConfirmModal');
+    if (modal) {
+        modal.classList.add('show');
+    } else {
+        console.error('Cancel confirmation modal not found!');
+    }
+}
+
+// Close confirmation modal
+function closeConfirmModal() {
+    const modal = document.getElementById('cancelConfirmModal');
+    if (modal) {
+        modal.classList.remove('show');
+    }
+    // Don't clear bookingIdToCancel here, keep it until after cancellation
+}
+
+// Proceed with cancellation
+async function proceedWithCancel() {
+    if (!bookingIdToCancel) {
+        showErrorModal('Booking ID is missing. Please try again.');
+        return;
+    }
+    
+    // Store booking ID in a local variable before clearing
+    const bookingIdToProcess = String(bookingIdToCancel).trim();
+    
+    console.log('=== CANCEL BOOKING DEBUG ==');
+    console.log('Booking ID to cancel:', bookingIdToProcess);
+    console.log('Booking ID type:', typeof bookingIdToProcess);
+    console.log('BASE_PATH:', BASE_PATH);
+    
+    // Close confirmation modal
+    const confirmModal = document.getElementById('cancelConfirmModal');
+    if (confirmModal) {
+        confirmModal.classList.remove('show');
     }
 
     try {
-        const response = await fetch(`${BASE_PATH}/api/booking/cancel`, {
+        const requestData = { bookingId: bookingIdToProcess };
+        console.log('Request data:', JSON.stringify(requestData));
+        
+        const url = `${BASE_PATH}/api/booking/cancel`;
+        console.log('Request URL:', url);
+        
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             },
-            body: JSON.stringify({ bookingId: bookingId })
+            body: JSON.stringify(requestData)
         });
 
-        const result = await response.json();
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        
+        const responseText = await response.text();
+        console.log('Response text:', responseText);
+        
+        let result;
+        try {
+            result = JSON.parse(responseText);
+        } catch (e) {
+            console.error('Failed to parse JSON:', e);
+            showErrorModal('Server returned invalid response. Please check the server logs.');
+            return;
+        }
+        
+        console.log('Parsed result:', result);
 
         if (result.success) {
-            alert('Booking cancelled successfully!');
-            loadUserBookings(); // Reload bookings
+            // Show success modal
+            showCancelSuccessModal();
+            // Reload bookings after a short delay
+            setTimeout(() => {
+                loadUserBookings();
+            }, 500);
         } else {
-            alert('Failed to cancel booking: ' + (result.errors.general || 'Please try again.'));
+            let errorMsg = '';
+            if (result.errors) {
+                if (result.errors.general) {
+                    errorMsg = result.errors.general;
+                } else if (result.errors.auth) {
+                    errorMsg = result.errors.auth;
+                } else {
+                    errorMsg = JSON.stringify(result.errors);
+                }
+            } else {
+                errorMsg = 'Unknown error occurred';
+            }
+            showErrorModal(errorMsg);
         }
     } catch (error) {
         console.error('Error cancelling booking:', error);
-        alert('An error occurred while cancelling the booking.');
+        showErrorModal('An error occurred while cancelling the booking. Please try again.');
+    }
+    
+    bookingIdToCancel = null;
+}
+
+// Show cancel success modal
+function showCancelSuccessModal() {
+    const modal = document.getElementById('cancelSuccessModal');
+    modal.classList.add('show');
+}
+
+// Close cancel success modal
+function closeCancelSuccessModal() {
+    const modal = document.getElementById('cancelSuccessModal');
+    modal.classList.remove('show');
+}
+
+// Show error modal
+function showErrorModal(message) {
+    const modal = document.getElementById('errorModal');
+    const messageElement = document.getElementById('errorModalMessage');
+    if (messageElement) {
+        messageElement.textContent = message;
+    }
+    if (modal) {
+        modal.classList.add('show');
+    }
+}
+
+// Close error modal
+function closeErrorModal() {
+    const modal = document.getElementById('errorModal');
+    if (modal) {
+        modal.classList.remove('show');
     }
 }
 

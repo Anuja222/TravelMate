@@ -234,7 +234,7 @@ function calculatePrice() {
     
     // Validation
     if (!checkinDate || !checkoutDate || !roomType.value) {
-        alert('Please fill in all required fields');
+        showValidationModal('Please fill in all required fields');
         return;
     }
     
@@ -243,7 +243,7 @@ function calculatePrice() {
     const nights = Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24));
     
     if (nights <= 0) {
-        alert('Please select valid dates');
+        showValidationModal('Please select valid check-in and check-out dates');
         return;
     }
     
@@ -290,12 +290,20 @@ function calculatePrice() {
     sessionStorage.setItem('tempBooking', JSON.stringify(bookingData));
 }
 
+// Show validation modal
+function showValidationModal(message) {
+    const modal = document.getElementById('validationModal');
+    const messageElement = document.getElementById('validationMessage');
+    messageElement.textContent = message;
+    modal.classList.add('show');
+}
+
 // Confirm booking and redirect
 function confirmBooking() {
     const tempBooking = JSON.parse(sessionStorage.getItem('tempBooking'));
     
     if (!tempBooking) {
-        alert('Please calculate price first');
+        showValidationModal('Please calculate price first');
         return;
     }
     
