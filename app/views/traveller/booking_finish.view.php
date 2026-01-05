@@ -91,6 +91,23 @@ $id = $isLoggedIn ? $_SESSION['user']['id'] : '';
         </div>
     </div>
 
+    <!-- Booking Confirmation Modal -->
+    <div id="confirmationModal" class="confirmation-modal">
+        <div class="confirmation-modal-content">
+            <div class="confirmation-icon">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="38" stroke="#10b981" stroke-width="3" fill="#ecfdf5"/>
+                    <path d="M25 40L35 50L55 30" stroke="#10b981" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <h2>Booking Confirmed!</h2>
+            <p class="booking-id-label">Your Booking ID</p>
+            <div class="booking-id-display" id="modalBookingId">BK1234567890</div>
+            <p class="confirmation-text">A confirmation email has been sent to <span id="confirmationEmail">your email</span></p>
+            <button class="btn-view-bookings" onclick="window.location.href='/TravelMate/public/mybookings'">View My Bookings</button>
+        </div>
+    </div>
+
     <script src="/TravelMate/public/assets/js/booking_finish.js"></script>
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 </body>
