@@ -14,7 +14,7 @@
 
   <div class="container">
     <h1 class="page-title">Payment Details</h1>
-    <p class="page-subtitle">View complete payment information for this booking</p>
+    <p class="page-subtitle">View Complete payment information for this booking</p>
     
     <div class="booking-container">
       <div class="payment-form-container">
