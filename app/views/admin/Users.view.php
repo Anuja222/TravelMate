@@ -254,11 +254,70 @@
       document.querySelector('.selected-count').textContent = `${selectedUsers.length} users selected`;
     }
 
+    // Filter functionality
+    function filterUsers() {
+      const searchText = document.getElementById('searchBox').value.toLowerCase();
+      const userTypeFilter = document.getElementById('userTypeFilter').value.toLowerCase();
+      const statusFilter = document.getElementById('statusFilter').value.toLowerCase();
+      
+      const rows = document.querySelectorAll('.users-table tbody tr');
+      
+      rows.forEach(row => {
+        const name = row.querySelector('.user-name strong')?.textContent.toLowerCase() || '';
+        const email = row.querySelectorAll('td')[2]?.textContent.toLowerCase() || '';
+        const phone = row.querySelector('.user-name small')?.textContent.toLowerCase() || '';
+        const userType = row.querySelector('.user-type')?.textContent.toLowerCase() || '';
+        const status = row.querySelector('.status')?.textContent.toLowerCase() || '';
+        
+        // Check search text match
+        const matchesSearch = searchText === '' || 
+                            name.includes(searchText) || 
+                            email.includes(searchText) || 
+                            phone.includes(searchText);
+        
+        // Check user type filter
+        const matchesUserType = userTypeFilter === 'all' || userType.includes(userTypeFilter);
+        
+        // Check status filter
+        const matchesStatus = statusFilter === 'all' || status.includes(statusFilter);
+        
+        // Show or hide row
+        if (matchesSearch && matchesUserType && matchesStatus) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
     // Add event listeners to checkboxes
     document.addEventListener('DOMContentLoaded', function() {
       const checkboxes = document.querySelectorAll('.user-checkbox');
       checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', updateSelectedUsers);
+      });
+      
+      // Add filter event listeners
+      const searchBox = document.getElementById('searchBox');
+      const userTypeFilter = document.getElementById('userTypeFilter');
+      const statusFilter = document.getElementById('statusFilter');
+      const applyFilter = document.getElementById('applyFilter');
+      
+      // Real-time search as user types
+      searchBox.addEventListener('input', filterUsers);
+      
+      // Filter on dropdown change
+      userTypeFilter.addEventListener('change', filterUsers);
+      statusFilter.addEventListener('change', filterUsers);
+      
+      // Filter on button click
+      applyFilter.addEventListener('click', filterUsers);
+      
+      // Filter on Enter key in search box
+      searchBox.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          filterUsers();
+        }
       });
     });
 
