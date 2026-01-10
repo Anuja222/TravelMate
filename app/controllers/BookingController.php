@@ -261,37 +261,64 @@ class BookingController
     {
         global $pdo;
         
-        // Get raw input and log it for debugging
-        $rawInput = file_get_contents('php://input');
-        error_log("Raw input: " . $rawInput);
-        
-        $data = json_decode($rawInput, true);
-        error_log("Decoded data: " . print_r($data, true));
-
-        if (!isset($_SESSION['user']['id'])) {
-            $this->sendResponse(false, ['auth' => 'Please login to cancel booking']);
-            return;
-        }
-
-        // Check if data is received properly
-        if (!$data || !is_array($data)) {
-            $this->sendResponse(false, ['general' => 'Invalid request data']);
-            return;
-        }
-
-        if (empty($data['bookingId'])) {
-            error_log("Booking ID is empty or not set. Data: " . print_r($data, true));
-            $this->sendResponse(false, ['general' => 'Booking ID is required']);
-            return;
-        }
-
-        $booking = new Booking();
-        $result = $booking->cancelBooking($pdo, $data['bookingId'], $_SESSION['user']['id']);
-
-        if ($result) {
-            $this->sendResponse(true, [], ['message' => 'Booking cancelled successfully']);
-        } else {
-            $this->sendResponse(false, ['general' => 'Failed to cancel booking']);
+        try {
+            // Check session first
+            if (!isset($_SESSION['user']['id'])) {
+                $this->sendResponse(false, ['auth' => 'Please login to cancel booking']);
+                return;
+            }
+            
+            // Get raw input
+            $rawInput = file_get_contents('php://input');
+            
+            // Validate raw input
+            if (empty($rawInput)) {
+                $this->sendResponse(false, ['general' => 'No data received']);
+                return;
+            }
+            
+            // Decode JSON
+            $data = json_decode($rawInput, true);
+            
+            // Check if JSON decode was successful
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                $this->sendResponse(false, ['general' => 'Invalid JSON: ' . json_last_error_msg()]);
+                return;
+            }
+            
+            // Check if data is array
+            if (!is_array($data)) {
+                $this->sendResponse(false, ['general' => 'Invalid request format']);
+                return;
+            }
+            
+            // Check if bookingId exists and is not empty
+            if (!isset($data['bookingId']) || empty(trim($data['bookingId']))) {
+                $this->sendResponse(false, ['general' => 'Booking ID is required']);
+                return;
+            }
+            
+            // Get and validate booking ID
+            $bookingId = trim($data['bookingId']);
+            
+            // Check if booking ID is the string "null" or "undefined"
+            if ($bookingId === 'null' || $bookingId === 'undefined') {
+                $this->sendResponse(false, ['general' => 'Invalid booking ID']);
+                return;
+            }
+            
+            // Try to cancel the booking
+            $booking = new Booking();
+            $result = $booking->cancelBooking($pdo, $bookingId, $_SESSION['user']['id']);
+            
+            if ($result) {
+                $this->sendResponse(true, [], ['message' => 'Booking cancelled successfully']);
+            } else {
+                $this->sendResponse(false, ['general' => 'Failed to cancel booking. Booking may not exist or you do not have permission.']);
+            }
+            
+        } catch (Exception $e) {
+            $this->sendResponse(false, ['general' => 'Server error: ' . $e->getMessage()]);
         }
     }
 
