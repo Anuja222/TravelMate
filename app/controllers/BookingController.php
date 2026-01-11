@@ -260,14 +260,27 @@ class BookingController
     public function cancelBooking()
     {
         global $pdo;
-        $data = json_decode(file_get_contents('php://input'), true);
+        
+        // Get raw input and log it for debugging
+        $rawInput = file_get_contents('php://input');
+        error_log("Raw input: " . $rawInput);
+        
+        $data = json_decode($rawInput, true);
+        error_log("Decoded data: " . print_r($data, true));
 
         if (!isset($_SESSION['user']['id'])) {
             $this->sendResponse(false, ['auth' => 'Please login to cancel booking']);
             return;
         }
 
+        // Check if data is received properly
+        if (!$data || !is_array($data)) {
+            $this->sendResponse(false, ['general' => 'Invalid request data']);
+            return;
+        }
+
         if (empty($data['bookingId'])) {
+            error_log("Booking ID is empty or not set. Data: " . print_r($data, true));
             $this->sendResponse(false, ['general' => 'Booking ID is required']);
             return;
         }
