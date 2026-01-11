@@ -68,6 +68,13 @@ class Accommodation {
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    public static function findAll($conn) {
+        $sql = "SELECT * FROM accommodations WHERE status = 'active' ORDER BY created_at DESC";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     public static function findById($conn, $id, $userId = null) {
         if ($userId) {
             $sql = "SELECT * FROM accommodations WHERE id = ? AND user_id = ?";
