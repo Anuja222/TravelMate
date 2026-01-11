@@ -359,6 +359,143 @@
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
   
-  <script src="assets/js/accommodation.js"></script>
+  <script>
+    // Load accommodations dynamically
+    document.addEventListener('DOMContentLoaded', function() {
+      loadAccommodations();
+    });
+
+    function getBaseUrl() {
+      const path = window.location.pathname;
+      if (path.includes('/TravelMate')) {
+        return '/TravelMate/public';
+      }
+      return '';
+    }
+
+    async function loadAccommodations() {
+      try {
+        const baseUrl = getBaseUrl();
+        const response = await fetch(baseUrl + '/api/accommodation/listAll');
+        
+        if (!response.ok) {
+          console.error('Failed to fetch accommodations:', response.status);
+          return;
+        }
+
+        const result = await response.json();
+        
+        if (result.success && result.data && result.data.length > 0) {
+          displayAccommodations(result.data);
+        } else {
+          console.log('No accommodations found');
+        }
+      } catch (error) {
+        console.error('Error loading accommodations:', error);
+      }
+    }
+
+    function displayAccommodations(accommodations) {
+      const grid = document.getElementById('accommodationsGrid');
+      if (!grid) return;
+
+      // Clear existing static content
+      grid.innerHTML = '';
+
+      accommodations.forEach(accommodation => {
+        const card = createAccommodationCard(accommodation);
+        grid.appendChild(card);
+      });
+    }
+
+    function createAccommodationCard(accommodation) {
+      const card = document.createElement('div');
+      card.className = 'accommodation-card';
+      card.setAttribute('data-type', accommodation.property_type || '');
+      card.setAttribute('data-location', accommodation.location || '');
+      
+      const imageUrl = accommodation.main_image 
+        ? getBaseUrl() + '/' + accommodation.main_image 
+        : 'assets/images/default-accommodation.png';
+      
+      const price = accommodation.price_per_night || 0;
+      const priceRange = price > 45000 ? 'luxury' : price > 15000 ? 'mid' : 'budget';
+      card.setAttribute('data-price', priceRange);
+      
+      card.innerHTML = `
+        <div class="card-image">
+          <img src="${imageUrl}" alt="${escapeHtml(accommodation.title)}" onerror="this.src='assets/images/default-accommodation.png'">
+          <div class="card-overlay">
+            <a href="accommodationdetail?id=${accommodation.id}" class="book-btn">Book Now</a>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="card-header">
+            <h3>${escapeHtml(accommodation.title)}</h3>
+          </div>
+          <p class="location">📍 ${escapeHtml(accommodation.location || 'Sri Lanka')}</p>
+          <p class="description">${escapeHtml(accommodation.description || '').substring(0, 100)}${accommodation.description && accommodation.description.length > 100 ? '...' : ''}</p>
+          <div class="card-features">
+            <span class="feature">🛏️ ${accommodation.rooms || 0} Rooms</span>
+            <span class="feature">🚿 ${accommodation.bathrooms || 0} Bathrooms</span>
+            <span class="feature">👥 ${accommodation.max_guests || 0} Guests</span>
+          </div>
+          <div class="card-footer">
+            <div class="price">
+              <span class="price-amount">Rs.${formatPrice(price)}</span>
+              <span class="price-period">/ night</span>
+            </div>
+            <button class="btn-primary view-btn" onclick="viewDetails(${accommodation.id})">View Details</button>
+          </div>
+        </div>
+      `;
+      
+      return card;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text || '';
+      return div.innerHTML;
+    }
+
+    function formatPrice(price) {
+      return parseFloat(price || 0).toLocaleString('en-US');
+    }
+
+    function viewDetails(accommodationId) {
+      window.location.href = 'accommodationdetail?id=' + accommodationId;
+    }
+
+    function applyFilters() {
+      const location = document.getElementById('location').value.toLowerCase();
+      const type = document.getElementById('type').value.toLowerCase();
+      const price = document.getElementById('price').value;
+      
+      const cards = document.querySelectorAll('.accommodation-card');
+      
+      cards.forEach(card => {
+        const cardLocation = card.getAttribute('data-location').toLowerCase();
+        const cardType = card.getAttribute('data-type').toLowerCase();
+        const cardPrice = card.getAttribute('data-price');
+        
+        let show = true;
+        
+        if (location && !cardLocation.includes(location)) {
+          show = false;
+        }
+        
+        if (type && !cardType.includes(type)) {
+          show = false;
+        }
+        
+        if (price && cardPrice !== price) {
+          show = false;
+        }
+        
+        card.style.display = show ? 'block' : 'none';
+      });
+    }
+  </script>
 </body>
 </html>
