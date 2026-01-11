@@ -20,7 +20,7 @@ h2 {
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     padding: 40px 32px;
-    margin: 0 auto 40px auto;
+    margin: 20px auto 40px auto;
     border: 2px solid #ccc;
     max-width: 800px;
 }
@@ -46,6 +46,31 @@ input[type="checkbox"] {
     height: 20px;
     
 }
+
+.form-group{
+    margin-bottom: 18px;
+}
+/* .form-group label{
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #333;
+}*/
+.form-group input[type="text"]{
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: border-box;
+    transition: border-color 0.5s;
+}
+.form-group input[type="text"]:focus{
+    outline: none;
+    border-color:#22b33a;
+    box-shadow: 0 0 4px rgba(34,179,58,0.2);
+}
+
 .save-btn {
     display: block;
     width: 20%;
