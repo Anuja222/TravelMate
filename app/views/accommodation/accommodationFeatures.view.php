@@ -22,8 +22,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
     <!-- Page Content -->
-    <h2>What can guests use at your place?</h2>
     <form class="features-form" id="featuresForm">
+        <fieldset>
+            <legend><h2>Property Information</h2></legend>
+            <div class="form-group">
+                <label for="title">Accommodation Name *</label>
+                <input type="text" id="title" name="title" placeholder="Accommodation Name" required>
+            </div>
+            <div class="form-group">
+                <label for="location">Location *</label>
+                <input type="text" id="location" name="location" placeholder="Address" required>
+            </div>
+        </fieldset>
+
+        <h2>What can guests use at your place?</h2>
         <fieldset>
             <legend>General</legend>
             <label><input type="checkbox" name="feature_air_conditioning" value="1"> Air conditioning</label>
