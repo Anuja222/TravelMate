@@ -79,6 +79,14 @@ elseif ($requestUri === '/api/vehicle/list' && $_SERVER['REQUEST_METHOD'] === 'G
     exit;
 } 
 
+elseif ($requestUri === '/api/vehicle/listAll' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    error_log(">>> Routing to Vehicle List All");
+    require_once __DIR__ . '/../app/controllers/VehicleController.php';
+    $vehicleController = new App\Controllers\VehicleController();
+    $vehicleController->listAll();
+    exit;
+} 
+
 elseif ($requestUri === '/api/vehicle/get' && $_SERVER['REQUEST_METHOD'] === 'GET') {
     error_log(">>> Routing to Vehicle Get");
     require_once __DIR__ . '/../app/controllers/VehicleController.php';
@@ -120,6 +128,12 @@ elseif ($requestUri === '/api/accommodation/list' && $_SERVER['REQUEST_METHOD'] 
     error_log(">>> Routing to Accommodation List");
     $controller = new AccommodationController();
     $controller->listByUser();
+    exit;
+} 
+elseif ($requestUri === '/api/accommodation/listAll' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    error_log(">>> Routing to Accommodation List All");
+    $controller = new AccommodationController();
+    $controller->listAll();
     exit;
 } 
 elseif ($requestUri === '/api/accommodation/get' && $_SERVER['REQUEST_METHOD'] === 'GET') {
