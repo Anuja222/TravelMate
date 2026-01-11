@@ -18,7 +18,7 @@
   padding: 12px 15px;
   border-radius: 8px;
   border: 1px solid #dcdcdc;
-  font-size: 14px;
+  font-size: 16px;
   transition: border 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -29,13 +29,17 @@
   outline: none;
 }
 
+.filter-bar input::placeholder {
+  font-size: 15px;
+}
+
 .filter-bar button {
   background: #1abc5b;
   color: #fff;
   padding: 12px 24px;
   border: none;
   border-radius: 10px;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.3s ease, transform 0.2s ease;
@@ -65,13 +69,14 @@
   padding: 15px 12px;
   text-align: left;
   border-bottom: 1px solid #f0f0f0;
+  font-size: 1rem;
 }
 
 .users-table th {
   background: #f8f9fa;
   font-weight: 600;
   color: #333;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -104,21 +109,22 @@
 /* User Name Column */
 .user-name strong {
   display: block;
-  font-size: 0.95rem;
+  font-size: 1.025rem;
   color: #222;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
+  font-weight: 600;
 }
 
 .user-name small {
   color: #666;
-  font-size: 0.8rem;
+  font-size: 0.875rem;
 }
 
 /* User Type Badges */
 .user-type {
   padding: 4px 12px;
   border-radius: 20px;
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   font-weight: 600;
   text-transform: uppercase;
   color: #fff;
@@ -140,7 +146,7 @@
 .status {
   padding: 4px 12px;
   border-radius: 20px;
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   font-weight: 600;
   text-transform: uppercase;
 }
@@ -174,7 +180,7 @@
   height: 35px;
   border: none;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 0.925rem;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
