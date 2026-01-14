@@ -7,6 +7,7 @@ class Accommodation {
     public $propertyType;
     public $title;
     public $description;
+    public $location;
     public $rooms;
     public $bathrooms;
     public $maxGuests;
@@ -28,12 +29,12 @@ class Accommodation {
 
     public function create($conn) {
         $sql = "INSERT INTO accommodations (
-            user_id, property_type, title, description,
+            user_id, property_type, title, description, location,
             rooms, bathrooms, max_guests,
             smoking, parties, pets, check_in_start, check_in_end,
             check_out_time, status, created_at
         ) VALUES (
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
         )";
         
         $stmt = $conn->prepare($sql);
@@ -42,6 +43,7 @@ class Accommodation {
             $this->propertyType,
             $this->title,
             $this->description,
+            $this->location,
             $this->rooms,
             $this->bathrooms,
             $this->maxGuests,
