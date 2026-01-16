@@ -2,8 +2,8 @@
 <html>
 <head>
   <title>Delete Users</title>
-  <link rel="stylesheet" href="assets/css/Admin/Users.css">
-  <link rel="stylesheet" href="assets/css/Admin/common.css">
+  <link rel="stylesheet" href="assets/css/Admin/Users.css?v=<?php echo time(); ?>">
+  <link rel="stylesheet" href="assets/css/Admin/common.css?v=<?php echo time(); ?>">
 </head>
 <body>
 
