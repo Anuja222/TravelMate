@@ -195,10 +195,7 @@ document.getElementById('bookingForm').addEventListener('submit', async function
         console.log('Update result:', result);
 
         if (result.success) {
-            showSuccess('Booking updated successfully!');
-            setTimeout(() => {
-                window.location.href = `${BASE_PATH}/mybookings`;
-            }, 2000);
+            showUpdateSuccessModal();
         } else {
             const errorMsg = result.errors?.general || 
                            result.errors?.auth || 
@@ -245,6 +242,19 @@ function showSuccess(message) {
     
     // Scroll to message
     successDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// Show update success modal
+function showUpdateSuccessModal() {
+    const modal = document.getElementById('updateSuccessModal');
+    if (modal) {
+        modal.style.display = 'block';
+    }
+}
+
+// Navigate to my bookings page
+function goToMyBookings() {
+    window.location.href = `${BASE_PATH}/mybookings`;
 }
 
 // Load booking details on page load
