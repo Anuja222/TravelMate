@@ -232,37 +232,6 @@
           </table>
         </div>
       </div>
-
-      <!-- Quick Actions -->
-      <div class="quick-actions">
-        <h3 style="margin: 0 0 20px 0; color: #222;">Quick Actions</h3>
-        <div class="actions-grid">
-          <div class="action-btn" onclick="window.location.href='Users'">
-            <div class="action-icon">👥</div>
-            <div class="action-label">Manage Users</div>
-          </div>
-          <div class="action-btn" onclick="window.location.href='content'">
-            <div class="action-icon">📝</div>
-            <div class="action-label">Content Moderation</div>
-          </div>
-          <div class="action-btn" onclick="window.location.href='ViewListing'">
-            <div class="action-icon">🏨</div>
-            <div class="action-label">View Listings</div>
-          </div>
-          <div class="action-btn" onclick="generateReport()">
-            <div class="action-icon">📊</div>
-            <div class="action-label">Generate Report</div>
-          </div>
-          <div class="action-btn" onclick="systemSettings()">
-            <div class="action-icon">⚙️</div>
-            <div class="action-label">System Settings</div>
-          </div>
-          <div class="action-btn" onclick="backupSystem()">
-            <div class="action-icon">💾</div>
-            <div class="action-label">Backup System</div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
