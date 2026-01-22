@@ -61,9 +61,9 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
       </div>
       <!-- Profile -->
       <div class="profile-section">
-  <img src="/TravelMate/public/assets/images/profile.jpg" alt="User" class="profile-pic">
+  <!-- <img src="/TravelMate/public/assets/images/profile.jpg" alt="User" class="profile-pic"> -->
         <div>
-          <h2><?php echo htmlspecialchars($firstName); ?> <?php echo htmlspecialchars($lastName); ?></h2>
+          <h2>Hello <?php echo htmlspecialchars($firstName); ?> <?php echo htmlspecialchars($lastName); ?></h2>
           <span class="profile-email"><?php echo htmlspecialchars($_SESSION['user']['email']); ?></span>
         </div>
       </div>
@@ -72,15 +72,15 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
         <h3>Activity Summary</h3>
         <div class="summary-stats">
           <div class="stat">
-            <span class="stat-num">0</span>
+            <span class="stat-num"><?php echo htmlspecialchars($listingsCount ?? 0); ?></span>
             <span class="stat-label">Listings</span>
           </div>
           <div class="stat">
-            <span class="stat-num">0</span>
+            <span class="stat-num"><?php echo htmlspecialchars($bookedCount ?? 0); ?></span>
             <span class="stat-label">Booked</span>
           </div>
           <div class="stat">
-            <span class="stat-num">0</span>
+            <span class="stat-num"><?php echo htmlspecialchars($bookingRecievedCount ?? 0); ?></span>
             <span class="stat-label">Bookings Received</span>
           </div>
         </div>
