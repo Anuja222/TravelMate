@@ -72,15 +72,15 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
         <h3>Activity Summary</h3>
         <div class="summary-stats">
           <div class="stat">
-            <span class="stat-num">0</span>
+            <span class="stat-num"><?php echo htmlspecialchars($listingsCount ?? 0); ?></span>
             <span class="stat-label">Listings</span>
           </div>
           <div class="stat">
-            <span class="stat-num">0</span>
+            <span class="stat-num"><?php echo htmlspecialchars($bookedCount ?? 0); ?></span>
             <span class="stat-label">Booked</span>
           </div>
           <div class="stat">
-            <span class="stat-num">0</span>
+            <span class="stat-num"><?php echo htmlspecialchars($bookingRecievedCount ?? 0); ?></span>
             <span class="stat-label">Bookings Received</span>
           </div>
         </div>

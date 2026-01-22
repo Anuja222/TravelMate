@@ -379,6 +379,18 @@ elseif ($page === 'tr_dashboard') {
 
 //accomodation pages
 elseif ($page === 'ac_dashboard') {
+    if(isset($_SESSION['user'])){
+        require_once __DIR__ . '/../app/models/Accommodation.php'; //include accommodatin model
+        require_once __DIR__ . '/../config/database.php'; //load database connection where create the $pdo object
+
+        $userId = $_SESSION['user']['id']; //get user id from session/logged in user
+
+        $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM accommodations WHERE user_id = ?"); //COUNT = total accommodations listed by the user
+        $stmt->execute([$userId]); // replace '?' with actual $userId and excute the query
+        $listingsCount = $stmt->fetch(PDO::FETCH_ASSOC)['total']; //extract the total count and store in $listingsCount
+    }else{
+        $listingsCount = 0;
+    }
     include '../app/views/accommodation/newerDashboard.view.php';
 } elseif ($page === 'photoUpload') {
     include '../app/views/accommodation/photoUpload.view.php';
