@@ -22,9 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
     <!-- Page Content -->
-    <form class="features-form" id="featuresForm">
+    <form class="features-form" id="featuresForm" method="POST" action="/TravelMate/public/api/accommodation/create">
         <fieldset>
             <legend><h2>Property Information</h2></legend>
+            <div class="form-group">
+                <label for="property_type">Property Type *</label>
+                <input type="text" id="property_type" name="property_type" placeholder="Property Type" readonly style="background-color: #f0f0f0;">
+            </div>
             <div class="form-group">
                 <label for="title">Accommodation Name *</label>
                 <input type="text" id="title" name="title" placeholder="Accommodation Name" required>
@@ -32,6 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="form-group">
                 <label for="location">Location *</label>
                 <input type="text" id="location" name="location" placeholder="Address" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description *</label>
+                <textarea id="description" name="description" placeholder="Describe your property" required></textarea>
             </div>
         </fieldset>
 

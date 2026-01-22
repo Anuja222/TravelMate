@@ -68,6 +68,23 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
         </div>
       </div>
       <!-- Favourites -->
+      <div class="activity-summary">
+        <h3>Activity Summary</h3>
+        <div class="summary-stats">
+          <div class="stat">
+            <span class="stat-num">0</span>
+            <span class="stat-label">Listings</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">0</span>
+            <span class="stat-label">Booked</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">0</span>
+            <span class="stat-label">Bookings Received</span>
+          </div>
+        </div>
+      </div>      
      <section class="favourite">
         <div class="section-header">
           <h3>My Properties</h3>
@@ -85,7 +102,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
         </div>
       </section>
       <!-- Activity Summary -->
-      <div class="activity-summary">
+      <!-- <div class="activity-summary">
         <h3>Activity Summary</h3>
         <div class="summary-stats">
           <div class="stat">
@@ -101,7 +118,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
             <span class="stat-label">Bookings Received</span>
           </div>
         </div>
-      </div>
+      </div> -->
     </section>
   </main>
   <!-- Footer -->

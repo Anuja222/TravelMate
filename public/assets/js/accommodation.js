@@ -46,6 +46,15 @@ document.addEventListener('DOMContentLoaded', function() {
     if (featuresForm) {
         const features = {};
         
+        // Load property type from localStorage and display it
+        const propertyType = localStorage.getItem('property_type');
+        if (propertyType) {
+            const propertyTypeInput = document.getElementById('property_type');
+            if (propertyTypeInput) {
+                propertyTypeInput.value = propertyType;
+            }
+        }
+        
         // Load any existing data
         const savedFeatures = localStorage.getItem('property_features');
         if (savedFeatures) {
@@ -67,12 +76,19 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Collect all form data
             const formData = new FormData(this);
+            const propertyTypeValue = localStorage.getItem('property_type');
+            
+            // Ensure property_type is in the features object
+            features['property_type'] = propertyTypeValue;
+            
             formData.forEach((value, key) => {
                 features[key] = value;
             });
             
             // Store in localStorage
             localStorage.setItem('property_features', JSON.stringify(features));
+            
+            console.log('Features stored:', features);
             
             // Navigate to next page
             window.location.href = 'propertyDetails';

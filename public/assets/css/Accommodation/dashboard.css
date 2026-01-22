@@ -97,6 +97,7 @@ main {
   max-width: 1300px;
   margin: 0 auto 0 auto;
   padding: 2em 0 0 0;
+  position: relative;
 }
 .sidebar {
   background: #fff;
@@ -108,6 +109,10 @@ main {
   margin-top: 1em;
   max-width: 10em;
   height: 14em;
+  position:fixed;
+  top: 100px;
+  left: calc((100vw - 1300px) / 2 );
+  z-index: 100;
 }
 .sidebar ul {
   list-style-type: none;
@@ -133,10 +138,11 @@ main {
   color: #1abc5b;
 }
 
-.dashboard-content {
+.dashboard-content { 
   flex: 1;
   margin-top: 1em;
   margin-bottom: 100px;
+  margin-left: 13em;
 }
 
 .section-header {
@@ -427,13 +433,15 @@ main {
     padding: 0.5em;
   }
   .sidebar {
+    position: static;
     width: 100%;
-    margin: 8em 0 1em 0;
+    margin: 1em 0;
     min-height: unset;
     padding: 1em 0.5em;
   }
   .dashboard-content {
     margin-top: 0;
+    margin-left: 0;
   }
   .summary-stats {
     gap: 3em;
@@ -460,6 +468,10 @@ main {
     gap: 1em;
     padding-left: 0;
     margin-top: -44px;
+  }
+  .sidebar {
+    position: static;
+    width: 100%;
   }
   .fav-cards {
     flex-direction: column;
