@@ -20,7 +20,7 @@
         <div class="property-types">
             <div class="property-row">
                 <!-- <a href="/TravelMate/Accomodation_provider/accommodationFeatures" style="text-decoration:none;color:inherit;"> -->
-                    <div class="property-type hotel-link" data-type="hotel" style="cursor:pointer;">
+                    <div class="property-type hotel-link" data-type="Hotel" style="cursor:pointer;">
                         <div class="icon hotel-icon">
                             <img src="/TravelMate/public/assets/images/hotel.png" alt="Hotel" />
                         </div>
@@ -29,7 +29,7 @@
                     </div>
                 </a>
                 <!-- <a href="/TravelMate/Accomodation_provider/accommodationFeatures" style="text-decoration:none;color:inherit;"> -->
-                    <div class="property-type guest-house-link" data-type="guest_house" style="cursor:pointer;">
+                    <div class="property-type guest-house-link" data-type="Guest House" style="cursor:pointer;">
                         <div class="icon guest-house-icon">
                             <img src="/TravelMate/public/assets/images/guesthouse.png" alt="Guest House" />
                         </div>
@@ -38,7 +38,7 @@
                     </div>
                 </a>
                 <!-- <a href="/TravelMate/Accomodation_provider/accommodationFeatures" style="text-decoration:none;color:inherit;"> -->
-                    <div class="property-type home-stay-link" data-type="home_stay" style="cursor:pointer;">
+                    <div class="property-type home-stay-link" data-type="Home Stay" style="cursor:pointer;">
                         <div class="icon home-stay-icon">
                             <img src="/TravelMate/public/assets/images/homestay.png" alt="Home Stay" />
                         </div>
@@ -49,7 +49,7 @@
             </div>
             <div class="property-row">
                 <!-- <a href="/TravelMate/Accomodation_provider/accommodationFeatures" style="text-decoration:none;color:inherit;"> -->
-                    <div class="property-type villa-link" data-type="villa" style="cursor:pointer;">
+                    <div class="property-type villa-link" data-type="Villa" style="cursor:pointer;">
                         <div class="icon villa-icon">
                             <img src="/TravelMate/public/assets/images/villa.png" alt="Villa" />
                         </div>
@@ -58,7 +58,7 @@
                     </div>
                 </a>
                 <!-- <a href="/TravelMate/Accomodation_provider/accommodationFeatures" style="text-decoration:none;color:inherit;"> -->
-                    <div class="property-type apartment-link" data-type="apartment" style="cursor:pointer;">
+                    <div class="property-type apartment-link" data-type="Apartment" style="cursor:pointer;">
                         <div class="icon apartment-icon">
                             <img src="/TravelMate/public/assets/images/apartment.png" alt="Apartment" />
                         </div>
@@ -67,7 +67,7 @@
                     </div>
                 </a>
                 <!-- <a href="/TravelMate/Accomodation_provider/accommodationFeatures" style="text-decoration:none;color:inherit;"> -->
-                    <div class="property-type alternative-link" data-type="alternative" style="cursor:pointer;">
+                    <div class="property-type alternative-link" data-type="Alternative" style="cursor:pointer;">
                         <div class="icon alternative-icon">
                             <img src="/TravelMate/public/assets/images/alterplaces.png" alt="Alternative Places" />
                         </div>
