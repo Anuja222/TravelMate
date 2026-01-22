@@ -118,6 +118,29 @@ class AccommodationController {
         }
     }
 
+    public function accommodationActivitySummary(){
+        global $pdo;
+
+        if(!isset($_SESSION['user'])){
+            header('Location: /TravelMate/public/login');
+            exit;
+        }
+
+        $userId = $_SESSION['user']['id'];
+
+        //get activity summary counts
+        //listingsCount
+        $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM accommodations WHERE user_id = ?");
+        $stmt->execute([$userId]);
+        $listingsCount = $stmt->fetch(\PDO::FETCH_ASSOC)['total'];
+
+        //bookedCount
+        //bookingRecievedCount
+
+
+        include __DIR__ . '/../views/accommodation/newerDashboard.view.php'; //load view
+    }
+
     // Temporary upload endpoint used by client-side uploaders (returns JSON)
     public function uploadTemp() {
         // Accept POST file uploads and return JSON with saved paths

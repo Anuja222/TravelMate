@@ -153,4 +153,5 @@ class Accommodation {
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result ? $result['image_path'] : null;
     }
+    
 }
