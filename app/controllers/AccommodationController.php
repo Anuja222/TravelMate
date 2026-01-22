@@ -363,5 +363,11 @@ class AccommodationController {
             error_log("Error deleting accommodation: " . $e->getMessage());
             $this->sendResponse(false, ['Failed to delete accommodation']);
         }
-    }
+
+        if ($result) {
+            // Instead of JSON response, redirect to dashboard
+            header('Location: /TravelMate/public/ac_dashboard');
+            exit;
+        }
+    } 
 }
