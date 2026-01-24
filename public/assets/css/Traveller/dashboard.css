@@ -100,15 +100,101 @@ main {
 }
 .sidebar {
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  width: 10em;
-  padding: 2em 1em;
-  margin-right: 1em;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  width: 280px;
+  padding: 1.5em 0;
+  margin-right: 2em;
   margin-top: 1em;
-  max-width: 10em;
-  height: 14em;
+  position: sticky;
+  top: 100px;
+  height: fit-content;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
 }
+
+.sidebar-menu {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-item {
+  margin: 0;
+}
+
+.sidebar-link {
+  color: #555;
+  font-size: 15px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  padding: 1em 1.5em;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  border-left: 4px solid transparent;
+}
+
+.sidebar-link:hover {
+  background: linear-gradient(90deg, #e9f6ee 0%, transparent 100%);
+  color: #1abc5b;
+  border-left-color: #1abc5b;
+}
+
+.sidebar-icon {
+  font-size: 1.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+}
+
+.sidebar-text {
+  flex: 1;
+}
+
+.sidebar-logout {
+  border-top: 1px solid #e9ecef;
+  margin-top: 1em;
+}
+
+.logout-link {
+  color: #dc3545;
+}
+
+.logout-link:hover {
+  background: linear-gradient(90deg, #ffe9ec 0%, transparent 100%);
+  color: #b02a37;
+  border-left-color: #dc3545;
+}
+
+/* Active state for current page */
+.sidebar-link.active {
+  background: linear-gradient(90deg, #e9f6ee 0%, transparent 100%);
+  color: #1abc5b;
+  border-left-color: #1abc5b;
+  font-weight: 600;
+}
+
+/* Scrollbar styling for sidebar */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #1abc5b;
+  border-radius: 10px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: #169d4a;
+}
+
 .sidebar ul {
   list-style-type: none;
   padding: 0;
