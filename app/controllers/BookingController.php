@@ -224,7 +224,7 @@ class BookingController
                 $this->sendResponse(false, ['general' => 'Failed to update booking. Please check if the booking exists.']);
             }
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             error_log('Booking update error: ' . $e->getMessage());
             $this->sendResponse(false, ['general' => 'An error occurred while updating the booking']);
         }
@@ -317,7 +317,7 @@ class BookingController
                 $this->sendResponse(false, ['general' => 'Failed to cancel booking. Booking may not exist or you do not have permission.']);
             }
             
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->sendResponse(false, ['general' => 'Server error: ' . $e->getMessage()]);
         }
     }
