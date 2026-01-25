@@ -412,4 +412,67 @@ class AccommodationController {
             exit;
         }
     } 
+    
+    public function saveFeatures() {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') { //check whether  the form is submited using POST method
+            // Store all POST data in session
+            $_SESSION['accommodation_features'] = $_POST;
+            
+            // Redirect to next page
+            header('Location: /TravelMate/public/propertyDetails');
+            exit;
+        }
+    }
+
+    public function saveDetails() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $_SESSION['accommodation_details'] = $_POST;
+            header('Location: /TravelMate/public/photoUpload');
+            exit;
+        }
+    }
+
+    public function savePhoto() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Store photo data in session
+            $_SESSION['accommodation_photos'] = $_POST;
+            
+            // Store uploaded images if any
+            if (isset($_FILES['images'])) {
+                $_SESSION['accommodation_images'] = $_FILES['images'];
+            }
+            
+            header('Location: /TravelMate/public/houseRules');
+            exit;
+        }
+    }
+
+    public function saveAccommodation() {
+    global $pdo;
+    
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Combine all session data
+        $features = $_SESSION['accommodation_features'] ?? [];
+        $details = $_SESSION['accommodation_details'] ?? [];
+        $rules = $_POST;
+        
+        // Get the title and other fields
+        $title = $features['title'] ?? '';
+        $property_type = $features['property_type'] ?? '';
+        $location = $features['location'] ?? '';
+        $description = $features['description'] ?? '';
+        
+        // Insert into database
+        $stmt = $pdo->prepare("INSERT INTO accommodations (...) VALUES (...)");
+        // ... rest of insert logic
+        
+        // Clear session data
+            unset($_SESSION['accommodation_features']);
+            unset($_SESSION['accommodation_details']);
+
+            header('Location: /TravelMate/public/success');
+            exit;
+        }
+
+    }
 }

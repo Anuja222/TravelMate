@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
     <!-- Page Content -->
-    <form class="features-form" id="featuresForm" method="POST" action="/TravelMate/public/api/accommodation/create">
+    <form class="features-form" method="POST" action="/TravelMate/public/saveFeatures">
         <fieldset>
             <legend><h2>Property Information</h2></legend>
             <div class="form-group">
