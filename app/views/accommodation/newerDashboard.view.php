@@ -94,11 +94,61 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
         </div>
 
         <div class="property-cards-grid">
-          <!-- Property cards will be loaded here dynamically -->
-          <div class="loading-message" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">
-            <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i>
-            <p>Loading your properties...</p>
-          </div>
+          <?php
+          global $pdo;
+          if(isset($_SESSION['user'])){
+            $userId = $_SESSION['user']['id'];
+
+            //fetch all accommodations for this user
+            $stmt = $pdo->prepare("
+            SELECT a.id, a.title, a.property_type, a.location, a.rooms, a.bathrooms, a.max_guests, a.status, (SELECT image_path FROM accommodation_images WHERE accommodation_id = a.id AND is_main = 1 LIMIT 1) as main_image 
+            FROM accommodations a
+            WHERE a.user_id = ?
+            ORDER BY a.created_at DESC
+            ");
+
+            $stmt->execute([$userId]);
+            $accommodations = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            if(!empty($accommodations)){
+              foreach ($accommodations as $property){
+                $imagePath = $property['main_image'] ?? 'assets/images/default-property.jpg'; //use main image if exists. otherwise use default image
+                $statusClass = strtolower($property['status']) === 'active' ? 'status-active' : 'status-inactive';
+                ?>
+                <div class="property-card">
+                  <div class="property-card-header">
+                    <div class="property-status <?php echo htmlspecialchars($statusClass); ?>">
+                      <?php echo htmlspecialchars(strtoupper($property['status'])); ?>
+                    </div>
+                    <img src="/TravelMate/public/<?php echo htmlspecialchars($imagePath); ?>"
+                    alt="<?php echo htmlspecialchars($property['title']); ?>"
+                    class="property-image"
+                    onerror="this.src='/TravelMate/public/assets/images/default-property.jpg'">
+                  </div>
+                  <div class="property-card-content">
+                    <h3><?php echo htmlspecialchars($property['title']); ?></h3>
+                    <p class="property-type"><?php echo htmlspecialchars(ucfirst($property['property_type'])); ?></p>
+                    <p class="property-location"><?php echo htmlspecialchars($property['location']); ?></p>
+                    <div class="property-details">
+                      <span><?php echo htmlspecialchars($property['rooms']); ?> Rooms</span>
+                      <span><?php echo htmlspecialchars($property['bathrooms']); ?> Bathrooms</span>
+                      <span><?php echo htmlspecialchars($property['max_guests']); ?> Guests</span>
+                    </div>
+                    <div class="property-actions">
+                      <button type="button" class="view-btn" onclick="window.location.href='/TravelMate/public/accommodationdetail/<?php echo htmlspecialchars($property['id']); ?>';">View</button>
+                      <button type="button" class="edit-btn" onclick="window.location.href='/TravelMate/public/editAccommodationFeatures/<?php echo htmlspecialchars($property['id']); ?>';">Update</button>
+                      <button type="button" class="delete-btn" onclick="if(confirm('Are you sure?')) { window.location.href='/TravelMate/public/deleteAccommodation/<?php echo htmlspecialchars($property['id']); ?>'; }">Delete</button>
+                    </div>
+                  </div>
+                </div>
+                <?php
+              }
+            } else {
+              echo '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;"><p>No properties listed yet.</p></div>';
+            }
+          }
+          ?>
+           
         </div>
       </section>
       <!-- Activity Summary -->
