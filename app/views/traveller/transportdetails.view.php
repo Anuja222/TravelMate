@@ -47,7 +47,7 @@
 
           <div class="transport-location">
             <span class="location-icon">📍</span>
-            <span id="pickupLocation">Colombo International Airport</span>
+            <span id="defaultLocation">Colombo International Airport</span>
             <button class="map-btn" onclick="showMap()">View on Map</button>
           </div>
 
@@ -142,12 +142,12 @@
 
             <div class="form-group">
               <label>Pickup Location</label>
-              <input type="text" id="pickupLocation" placeholder="Enter pickup address" required>
+              <input type="text" id="pickupLocationInput" placeholder="Enter pickup address" required>
             </div>
 
             <div class="form-group">
               <label>Drop-off Location</label>
-              <input type="text" id="dropoffLocation" placeholder="Enter drop-off address" required>
+              <input type="text" id="dropoffLocationInput" placeholder="Enter drop-off address" required>
             </div>
 
             <div class="passengers-group">
@@ -213,6 +213,234 @@
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
+  <!-- Transport Booking Success Modal -->
+  <div id="bookingSuccessModal" class="booking-success-modal">
+    <div class="booking-success-content">
+      <div class="success-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+      </div>
+      <h2>Booking Confirmed!</h2>
+      <p>Your transport booking has been successfully confirmed.</p>
+      <div class="booking-id-display">
+        <span class="label">Booking ID:</span>
+        <span class="booking-id" id="modalBookingId">TB12345678</span>
+      </div>
+      <p class="confirmation-note">A confirmation email has been sent to your registered email address.</p>
+      <div class="modal-actions">
+        <button onclick="goToTransportBookings()" class="btn-view-bookings">
+          <i class="fas fa-list"></i> View My Bookings
+        </button>
+        <button onclick="closeBookingModal()" class="btn-close-modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .booking-success-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 10000;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .booking-success-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      animation: slideUp 0.4s ease-out;
+    }
+
+    .booking-success-modal .success-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: scaleIn 0.5s ease-out 0.2s both;
+    }
+
+    .booking-success-modal .success-icon svg {
+      width: 45px;
+      height: 45px;
+      color: white;
+    }
+
+    .booking-success-content h2 {
+      font-size: 26px;
+      color: #1f2937;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .booking-success-content p {
+      font-size: 15px;
+      color: #6b7280;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .booking-id-display {
+      background: #f3f4f6;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .booking-id-display .label {
+      font-size: 13px;
+      color: #6b7280;
+      font-weight: 500;
+    }
+
+    .booking-id-display .booking-id {
+      font-size: 20px;
+      color: #1abc5b;
+      font-weight: 700;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 1px;
+    }
+
+    .confirmation-note {
+      font-size: 13px !important;
+      color: #9ca3af !important;
+      margin-bottom: 25px !important;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 25px;
+    }
+
+    .btn-view-bookings {
+      background: linear-gradient(135deg, #1abc5b, #149647);
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      font-size: 15px;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-view-bookings:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(26, 188, 91, 0.4);
+    }
+
+    .btn-close-modal {
+      background: #f3f4f6;
+      color: #6b7280;
+      border: 2px solid #e5e7eb;
+      padding: 12px 28px;
+      font-size: 15px;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-close-modal:hover {
+      background: #e5e7eb;
+      border-color: #d1d5db;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -40%);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .modal-actions {
+        flex-direction: column;
+      }
+      
+      .btn-view-bookings,
+      .btn-close-modal {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+
   <script src="assets/js/transportdetails.js"></script>
+  <script>
+    // Modal helper functions
+    function showBookingSuccessModal(bookingId) {
+      const modal = document.getElementById('bookingSuccessModal');
+      const bookingIdEl = document.getElementById('modalBookingId');
+      if (modal && bookingIdEl) {
+        bookingIdEl.textContent = bookingId;
+        modal.style.display = 'block';
+      }
+    }
+
+    function closeBookingModal() {
+      const modal = document.getElementById('bookingSuccessModal');
+      if (modal) {
+        modal.style.display = 'none';
+        // Reset form
+        document.getElementById('bookingForm').reset();
+        document.getElementById('bookingSummary').style.display = 'none';
+        document.querySelector('.book-now-btn').style.display = 'block';
+        document.querySelector('.confirm-booking-btn').style.display = 'none';
+      }
+    }
+
+    function goToTransportBookings() {
+      window.location.href = 'mytransportbookings';
+    }
+  </script>
 </body>
 </html>
