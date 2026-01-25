@@ -25,10 +25,37 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
 
   <main>
     <aside class="sidebar">
-      <ul>
-        <li><a href="mybookings">My Bookings</a></li>
-        <li><a href="#">My Vlogs</a></li>
-        <li><a href="profile_setting">Profile Settings</a></li>
+      <ul class="sidebar-menu">
+        <li class="sidebar-item">
+          <a href="mybookings" class="sidebar-link">
+            <!-- <span class="sidebar-icon">🏨</span> -->
+            <span class="sidebar-text">My Accommodation Bookings</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="mytransportbookings" class="sidebar-link">
+            <!-- <span class="sidebar-icon">🚗</span> -->
+            <span class="sidebar-text">My Transport Bookings</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#" class="sidebar-link">
+            <!-- <span class="sidebar-icon">📹</span> -->
+            <span class="sidebar-text">My Vlogs</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="profile_setting" class="sidebar-link">
+            <!-- <span class="sidebar-icon">⚙️</span> -->
+            <span class="sidebar-text">Profile Settings</span>
+          </a>
+        </li>
+        <li class="sidebar-item sidebar-logout">
+          <a href="logout.php" class="sidebar-link logout-link">
+            <!-- <span class="sidebar-icon">🚪</span> -->
+            <span class="sidebar-text">Log Out</span>
+          </a>
+        </li>
       </ul>
     </aside>
     <section class="dashboard-content">
