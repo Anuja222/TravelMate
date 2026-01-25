@@ -155,6 +155,32 @@ elseif ($requestUri === '/api/accommodation/delete' && $_SERVER['REQUEST_METHOD'
     exit;
 }
 
+// Accommodation form page handlers
+elseif ($requestUri === '/saveFeatures' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Accommodation saveFeatures");
+    $controller = new AccommodationController();
+    $controller->saveFeatures();
+    exit;
+}
+elseif ($requestUri === '/saveDetails' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Accommodation saveDetails");
+    $controller = new AccommodationController();
+    $controller->saveDetails();
+    exit;
+}
+elseif ($requestUri === '/savePhoto' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Accommodation savePhoto");
+    $controller = new AccommodationController();
+    $controller->savePhoto();
+    exit;
+}
+elseif ($requestUri === '/saveAccommodation' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Accommodation saveAccommodation");
+    $controller = new AccommodationController();
+    $controller->saveAccommodation();
+    exit;
+}
+
 // Accommodation page routes
 elseif (strpos($requestUri, '/accommodation/') === 0) {
     $page = substr($requestUri, strlen('/accommodation/'));
