@@ -221,6 +221,25 @@ class AccommodationController {
         }
     }
 
+    public function listAll() {
+        global $pdo;
+        
+        try {
+            $accommodations = Accommodation::findAll($pdo);
+            
+            // Get main image for each accommodation
+            foreach ($accommodations as &$accommodation) {
+                $accommodation['main_image'] = Accommodation::getMainImage($pdo, $accommodation['id']);
+            }
+            
+            $this->sendResponse(true, [], $accommodations);
+            
+        } catch (\Exception $e) {
+            error_log("Error listing all accommodations: " . $e->getMessage());
+            $this->sendResponse(false, ['Failed to list accommodations']);
+        }
+    }
+
     public function get() {
         global $pdo;
         
