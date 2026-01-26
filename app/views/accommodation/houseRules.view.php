@@ -14,7 +14,7 @@
     <!-- Header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
     <h1>House Rules</h1>
-    <form class="house-rules-form" action="success" method="get">
+    <form class="house-rules-form" action="/TravelMate/public/saveAccommodation" method="POST">
         <div class="toggle-row">
             <label>Smoking allowed</label>
             <input type="checkbox" name="smoking" class="toggle-switch">

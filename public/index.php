@@ -155,6 +155,38 @@ elseif ($requestUri === '/api/accommodation/delete' && $_SERVER['REQUEST_METHOD'
     exit;
 }
 
+// Accommodation form page handlers
+elseif ($requestUri === '/selectPropertyType' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to selectPropertyType");
+    $controller = new AccommodationController();
+    $controller->selectPropertyType();
+    exit;
+}
+elseif ($requestUri === '/saveFeatures' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Accommodation saveFeatures");
+    $controller = new AccommodationController();
+    $controller->saveFeatures();
+    exit;
+}
+elseif ($requestUri === '/saveDetails' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Accommodation saveDetails");
+    $controller = new AccommodationController();
+    $controller->saveDetails();
+    exit;
+}
+elseif ($requestUri === '/savePhoto' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Accommodation savePhoto");
+    $controller = new AccommodationController();
+    $controller->savePhoto();
+    exit;
+}
+elseif ($requestUri === '/saveAccommodation' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Accommodation saveAccommodation");
+    $controller = new AccommodationController();
+    $controller->saveAccommodation();
+    exit;
+}
+
 // Accommodation page routes
 elseif (strpos($requestUri, '/accommodation/') === 0) {
     $page = substr($requestUri, strlen('/accommodation/'));
@@ -164,6 +196,14 @@ elseif (strpos($requestUri, '/accommodation/') === 0) {
         exit;
     }
 }
+elseif (preg_match('#^/deleteAccommodation/(\d+)$#', $requestUri, $matches)) {
+    $id = $matches[1];
+    $controller = new AccommodationController();
+    $_POST['id'] = $id;
+    $controller->delete();
+    exit;
+}
+
 
 // Destination API routes
 elseif ($requestUri === '/api/destination/create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
