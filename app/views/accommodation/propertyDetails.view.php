@@ -13,7 +13,7 @@
     <!-- Header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
     <h1>Your Property Details</h1>
-    <form class="property-details-form" action="photoUpload" method="get">
+    <form class="property-details-form" action="/TravelMate/public/saveDetails" method="POST">
         <div class="property-rooms">
             <fieldset>
                 <legend> Bedrooms </legend>

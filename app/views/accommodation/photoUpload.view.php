@@ -14,13 +14,13 @@
     <!-- Header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
     <h1>What does your place look like?</h1>
-    <form class="photo-upload-form" action="houseRules" method="get">
+    <form class="photo-upload-form" action="/TravelMate/public/savePhoto" method="POST" enctype="multipart/form-data">
         <label>Upload photos of your property</label>
         <div class="photo-upload-box">
-            <input type="file" id="photoInput" multiple accept="image/*">
+            <input type="file" id="photoInput" name="images" multiple accept="image/*">
             <label for="photoInput" class="photo-upload-label">
                 <span class="photo-upload-icon"></span>
-                Uploads photos
+                Upload photos
             </label>
         </div>
         <div class="property-description-section">
