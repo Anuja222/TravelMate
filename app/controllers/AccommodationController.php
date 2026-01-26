@@ -411,15 +411,31 @@ class AccommodationController {
             header('Location: /TravelMate/public/ac_dashboard');
             exit;
         }
-    } 
+    }
+    
+    public function selectPropertyType() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $propertyType = $_POST['property_type'] ?? '';
+            if (!empty($propertyType)) {
+                $_SESSION['accommodation_features'] = ['property_type' => $propertyType];
+                header('Location: /TravelMate/public/accommodationFeatures');
+                exit;
+            } else {
+                header('Location: /TravelMate/public/propertyListingStart');
+                exit;
+            }
+        }
+    }
     
     public function saveFeatures() {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') { //check whether  the form is submited using POST method
             // Store all POST data in session
-            $_SESSION['accommodation_features'] = $_POST;
-            
+            //$_SESSION , $_POST are superglobal variables (built in)
+            $_SESSION['accommodation_features'] = $_POST; //'accommodation_features' - session keyname
+            //$_POST - all form input values
+
             // Redirect to next page
-            header('Location: /TravelMate/public/propertyDetails');
+            header('Location: /TravelMate/public/propertyDetails'); //header() - sends HTTP response
             exit;
         }
     }
@@ -448,31 +464,109 @@ class AccommodationController {
     }
 
     public function saveAccommodation() {
-    global $pdo;
-    
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Combine all session data
-        $features = $_SESSION['accommodation_features'] ?? [];
-        $details = $_SESSION['accommodation_details'] ?? [];
-        $rules = $_POST;
+        global $pdo;
         
-        // Get the title and other fields
-        $title = $features['title'] ?? '';
-        $property_type = $features['property_type'] ?? '';
-        $location = $features['location'] ?? '';
-        $description = $features['description'] ?? '';
-        
-        // Insert into database
-        $stmt = $pdo->prepare("INSERT INTO accommodations (...) VALUES (...)");
-        // ... rest of insert logic
-        
-        // Clear session data
-            unset($_SESSION['accommodation_features']);
-            unset($_SESSION['accommodation_details']);
-
-            header('Location: /TravelMate/public/success');
-            exit;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!isset($_SESSION['user'])) {
+                header('Location: /TravelMate/public/login');
+                exit;
+            }
+            
+            $userId = $_SESSION['user']['id'];
+            
+            // Combine all session data
+            $features = $_SESSION['accommodation_features'] ?? []; //other pages' details
+            $details = $_SESSION['accommodation_details'] ?? []; //other pages' details
+            $photos = $_SESSION['accommodation_photos'] ?? []; //other pages' details
+            $rules = $_POST; //curent page details
+            
+            // Get all fields
+            $title = $features['title'] ?? '';
+            $property_type = $features['property_type'] ?? '';
+            $location = $features['location'] ?? '';
+            $description = $photos['propertyDescription'] ?? $features['description'] ?? '';
+            $rooms = $details['rooms'] ?? 0;
+            $bathrooms = $details['bathrooms'] ?? 0;
+            $maxGuests = $details['max_guests'] ?? 0;
+            $smoking = isset($rules['smoking']) ? 1 : 0;
+            $parties = isset($rules['parties']) ? 1 : 0;
+            $pets = $rules['pets'] ?? 'no';
+            $checkInStart = $rules['check_in_start'] ?? '';
+            $checkInEnd = $rules['check_in_end'] ?? '';
+            $checkOutTime = $rules['check_out_time'] ?? '';
+            $status = 'active';
+            
+            try {
+                $pdo->beginTransaction();
+                
+                // Insert accommodation
+                $sql = "INSERT INTO accommodations (
+                    user_id, property_type, title, description, location,
+                    rooms, bathrooms, max_guests,
+                    smoking, parties, pets, check_in_start, check_in_end,
+                    check_out_time, status, created_at
+                ) VALUES (
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
+                )";
+                
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([
+                    $userId,
+                    $property_type,
+                    $title,
+                    $description,
+                    $location,
+                    $rooms,
+                    $bathrooms,
+                    $maxGuests,
+                    $smoking,
+                    $parties,
+                    $pets,
+                    $checkInStart,
+                    $checkInEnd,
+                    $checkOutTime,
+                    $status
+                ]);
+                
+                $accommodationId = $pdo->lastInsertId();
+                
+                // Handle image uploads from session if any
+                if (isset($_SESSION['accommodation_images'])) {
+                    $images = $_SESSION['accommodation_images'];
+                    if (!empty($images['name'][0])) {
+                        $totalFiles = count($images['name']);
+                        
+                        for ($i = 0; $i < $totalFiles; $i++) {
+                            if ($images['error'][$i] === UPLOAD_ERR_OK) {
+                                $tmpName = $images['tmp_name'][$i];
+                                $originalName = $images['name'][$i];
+                                $filePath = $this->saveFile($tmpName, $originalName);
+                                
+                                if ($filePath) {
+                                    Accommodation::addImage($pdo, $accommodationId, $filePath, $i === 0);
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                $pdo->commit();
+                
+                // Clear session data
+                unset($_SESSION['accommodation_features']);
+                unset($_SESSION['accommodation_details']);
+                unset($_SESSION['accommodation_photos']);
+                unset($_SESSION['accommodation_images']);
+                
+                header('Location: /TravelMate/public/success');
+                exit;
+                
+            } catch (\Exception $e) {
+                $pdo->rollBack(); //cancel database transaction
+                error_log("Error saving accommodation: " . $e->getMessage()); //write the error to error server log
+                echo "Error: " . $e->getMessage(); //display error msg on screen
+                exit;
+            }
         }
-
     }
 }
