@@ -2,12 +2,13 @@
 <html>
 <head>
   <title>Admin Dashboard - System Reports</title>
-  <link rel="stylesheet" href="assets/css/Admin/common.css">
-  <link rel="stylesheet" href="assets/css/Admin/report.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/report.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
+  <?php include __DIR__ . '/../traveller/header.view.php'; ?>
 
   <div class="page-container">
 
@@ -141,7 +142,7 @@
               <tr>
                 <td>
                   <div style="display: flex; align-items: center; gap: 10px;">
-                    <img src="assets/images/profile.jpg" alt="User" class="user-avatar">
+                    <img src="<?= ROOT ?>/assets/images/profile.jpg" alt="User" class="user-avatar">
                     <span>Amal Kumarasinghe</span>
                   </div>
                 </td>
@@ -152,7 +153,7 @@
               <tr>
                 <td>
                   <div style="display: flex; align-items: center; gap: 10px;">
-                    <img src="assets/images/profile.jpg" alt="User" class="user-avatar">
+                    <img src="<?= ROOT ?>/assets/images/profile.jpg" alt="User" class="user-avatar">
                     <span>Sunil Perera</span>
                   </div>
                 </td>
@@ -163,7 +164,7 @@
               <tr>
                 <td>
                   <div style="display: flex; align-items: center; gap: 10px;">
-                    <img src="assets/images/profile.jpg" alt="User" class="user-avatar">
+                    <img src="<?= ROOT ?>/assets/images/profile.jpg" alt="User" class="user-avatar">
                     <span>Mala Fernando</span>
                   </div>
                 </td>
@@ -174,7 +175,7 @@
               <tr>
                 <td>
                   <div style="display: flex; align-items: center; gap: 10px;">
-                    <img src="assets/images/profile.jpg" alt="User" class="user-avatar">
+                    <img src="<?= ROOT ?>/assets/images/profile.jpg" alt="User" class="user-avatar">
                     <span>Ravi Jayasuriya</span>
                   </div>
                 </td>

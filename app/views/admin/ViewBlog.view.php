@@ -2,12 +2,13 @@
 <html>
 <head>
   <title>View Blog - TravelMate</title>
-  <link rel="stylesheet" href="assets/css/Admin/common.css">
-  <link rel="stylesheet" href="assets/css/Admin/ViewBlog.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/ViewBlog.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
+  <?php include __DIR__ . '/../traveller/header.view.php'; ?>
 
   <?php
   // Sample blog data - in a real application, this would come from a database
@@ -257,7 +258,7 @@
           <div class="vlog-meta">
             <div class="author-info">
               <div class="author-avatar">
-                <img src="assets/images/profile.jpg" alt="<?php echo htmlspecialchars($blog['author']); ?>">
+                <img src="<?= ROOT ?>/assets/images/profile.jpg" alt="<?php echo htmlspecialchars($blog['author']); ?>">
               </div>
               <div class="author-details">
                 <h3><?php echo htmlspecialchars($blog['author']); ?></h3>
@@ -321,7 +322,7 @@
         <div class="related-grid">
           <div class="related-card">
             <div class="related-image">
-              <img src="assets/images/cultural.png" alt="Temple visit">
+              <img src="<?= ROOT ?>/assets/images/cultural.png" alt="Temple visit">
             </div>
             <div class="related-info">
               <h4>Ancient Temples of the Cultural Triangle</h4>
@@ -334,7 +335,7 @@
 
           <div class="related-card">
             <div class="related-image">
-              <img src="assets/images/tea.png" alt="Tea plantation">
+              <img src="<?= ROOT ?>/assets/images/tea.png" alt="Tea plantation">
             </div>
             <div class="related-info">
               <h4>Hiking Through Sri Lanka's Tea Country</h4>
@@ -347,7 +348,7 @@
 
           <div class="related-card">
             <div class="related-image">
-              <img src="assets/images/wild.png" alt="Wildlife">
+              <img src="<?= ROOT ?>/assets/images/wild.png" alt="Wildlife">
             </div>
             <div class="related-info">
               <h4>Wildlife Encounters in Yala National Park</h4>
@@ -360,7 +361,7 @@
 
           <div class="related-card">
             <div class="related-image">
-              <img src="assets/images/cultural.png" alt="Galle Fort">
+              <img src="<?= ROOT ?>/assets/images/cultural.png" alt="Galle Fort">
             </div>
             <div class="related-info">
               <h4>Historic Galle Fort: A Dutch Colonial Legacy</h4>
@@ -373,7 +374,7 @@
 
           <div class="related-card">
             <div class="related-image">
-              <img src="assets/images/tuktuk.png" alt="Tuk-tuk">
+              <img src="<?= ROOT ?>/assets/images/tuktuk.png" alt="Tuk-tuk">
             </div>
             <div class="related-info">
               <h4>Traveling Sri Lanka by Tuk-Tuk: A Local's Guide</h4>
@@ -386,7 +387,7 @@
 
           <div class="related-card">
             <div class="related-image">
-              <img src="assets/images/coastal.png" alt="Surfing">
+              <img src="<?= ROOT ?>/assets/images/coastal.png" alt="Surfing">
             </div>
             <div class="related-info">
               <h4>Best Surfing Spots on the Southern Coast</h4>
@@ -399,7 +400,7 @@
 
           <div class="related-card">
             <div class="related-image">
-              <img src="assets/images/tea.png" alt="Food">
+              <img src="<?= ROOT ?>/assets/images/tea.png" alt="Food">
             </div>
             <div class="related-info">
               <h4>Sri Lankan Street Food: A Culinary Adventure</h4>
@@ -412,7 +413,7 @@
 
           <div class="related-card">
             <div class="related-image">
-              <img src="assets/images/wild.png" alt="Ella">
+              <img src="<?= ROOT ?>/assets/images/wild.png" alt="Ella">
             </div>
             <div class="related-info">
               <h4>Ella: The Mountain Paradise of Sri Lanka</h4>
@@ -425,7 +426,7 @@
 
           <div class="related-card">
             <div class="related-image">
-              <img src="assets/images/cultural.png" alt="Sigiriya">
+              <img src="<?= ROOT ?>/assets/images/cultural.png" alt="Sigiriya">
             </div>
             <div class="related-info">
               <h4>Climbing Sigiriya Rock: The Lion's Fortress</h4>
