@@ -209,6 +209,14 @@ elseif (preg_match('#^/deleteAccommodation/(\d+)$#', $requestUri, $matches)) {
     $controller->delete();
     exit;
 }
+elseif (preg_match('#^/viewProperty/(\d+)$#', $requestUri, $matches)) {
+    $accommodationId = $matches[1];
+    $viewFile = __DIR__ . '/../app/views/accommodation/viewProperty.view.php';
+    if (file_exists($viewFile)) {
+        require_once $viewFile;
+        exit;
+    }
+}
 
 
 // Destination API routes
