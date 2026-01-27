@@ -1,6 +1,6 @@
 <?php
 // Populate property type from session if it exists
-$propertyType = $_SESSION['accommodation_type']['property_type'] ?? '';
+$propertyType = $_SESSION['accommodation_features']['property_type'] ?? '';
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -32,6 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="form-group">
                 <label for="property_type">Property Type *</label>
                 <input type="text" id="property_type" name="property_type" value="<?php echo htmlspecialchars($propertyType); ?>" placeholder="Property Type" readonly style="background-color: #f0f0f0;">
+                <!-- Hidden field to ensure property_type is submitted in POST -->
+                <input type="hidden" name="property_type" value="<?php echo htmlspecialchars($propertyType); ?>">
             </div>
             <div class="form-group">
                 <label for="title">Accommodation Name *</label>

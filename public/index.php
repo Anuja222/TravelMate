@@ -3,7 +3,13 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('log_errors', 1);
-ini_set('error_log', __DIR__ . '/../logs/php_error.log');
+
+// Ensure logs directory exists
+$logsDir = __DIR__ . '/../logs';
+if (!is_dir($logsDir)) {
+    mkdir($logsDir, 0777, true);
+}
+ini_set('error_log', $logsDir . '/php_error.log');
 
 // Log all requests for debugging
 error_log("=== NEW REQUEST ===");
