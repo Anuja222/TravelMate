@@ -43,6 +43,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const photoInput = document.getElementById('photoInput');
         console.log('photoInput element found:', photoInput);
 
+        const getPreviewContainer = () => {
+            let container = document.getElementById('imagePreviews') || document.querySelector('.image-previews');
+            if (!container) {
+                container = document.createElement('div');
+                container.className = 'image-previews';
+                container.id = 'imagePreviews';
+                const target = document.querySelector('.photo-upload-box');
+                if (target) {
+                    target.after(container);
+                }
+            }
+            return container;
+        };
+
         function fileToDataURL(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();

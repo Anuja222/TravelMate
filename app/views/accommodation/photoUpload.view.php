@@ -28,6 +28,7 @@
                 Upload photos
             </label>
         </div>
+        <div id="imagePreviews" class="image-previews" aria-live="polite"></div>
         <div class="property-description-section">
             <label for="propertyDescription">Write a description about your property</label>
             <textarea id="propertyDescription" name="propertyDescription" rows="5" maxlength="1000" placeholder="Describe your property, its features, and what makes it special..." required style="width:100%;resize:vertical;margin-top:10px;"></textarea>
