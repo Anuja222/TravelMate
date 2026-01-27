@@ -13,7 +13,7 @@
     <!-- Header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
     <h1>What does your place look like?</h1>
-+    <form class="photo-upload-form" action="/TravelMate/public/savePhoto" method="POST" enctype="multipart/form-data">
+    <form class="photo-upload-form" action="/TravelMate/public/savePhoto" method="POST" enctype="multipart/form-data">
         <label>Upload photos of your property</label>
         <div class="photo-upload-box">
             <input type="file" id="photoInput" name="images[]" multiple accept="image/*">
@@ -22,6 +22,7 @@
                 Upload photos
             </label>
         </div>
+        <div id="previewContainer" class="image-previews" aria-live="polite"></div>
         <div class="property-description-section">
             <label for="propertyDescription">Write a description about your property</label>
             <textarea id="propertyDescription" name="propertyDescription" rows="5" maxlength="1000" placeholder="Describe your property, its features, and what makes it special..." required style="width:100%;resize:vertical;margin-top:10px;"></textarea>
@@ -30,6 +31,39 @@
     </form>
     <!-- Footer -->
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
-    <script></script>
+    <script>
+    (() => {
+        const input = document.getElementById('photoInput');
+        const preview = document.getElementById('previewContainer');
+
+        const renderPreviews = files => {
+            preview.innerHTML = '';
+            if (!files || !files.length) {
+                return;
+            }
+
+            Array.from(files).forEach(file => {
+                if (!file.type.startsWith('image/')) {
+                    return;
+                }
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'image-preview';
+
+                const img = document.createElement('img');
+                img.alt = file.name;
+                img.src = URL.createObjectURL(file);
+                img.onload = () => URL.revokeObjectURL(img.src);
+
+                wrapper.appendChild(img);
+                preview.appendChild(wrapper);
+            });
+        };
+
+        input.addEventListener('change', event => {
+            renderPreviews(event.target.files);
+        });
+    })();
+    </script>
 </body>
 </html>
