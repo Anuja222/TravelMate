@@ -190,11 +190,26 @@ class AccommodationController {
         $extension = pathinfo($originalName, PATHINFO_EXTENSION);
         $newFileName = uniqid() . '_' . time() . '.' . $extension;
         $targetPath = $this->uploadDir . '/' . $newFileName;
+        $logFile = __DIR__ . '/../../logs/php_error.log';
         
-        if (move_uploaded_file($tmpPath, $targetPath)) {
-            return 'uploads/accommodations/' . $newFileName;
+        file_put_contents($logFile, "[" . date('d-M-Y H:i:s e') . "] DEBUG saveFile: tmpPath=$tmpPath, targetPath=$targetPath, uploadDir=$this->uploadDir\n", FILE_APPEND);
+        
+        // Ensure directory exists
+        if (!is_dir($this->uploadDir)) {
+            if (!mkdir($this->uploadDir, 0777, true)) {
+                file_put_contents($logFile, "[" . date('d-M-Y H:i:s e') . "] DEBUG saveFile: Failed to create directory: $this->uploadDir\n", FILE_APPEND);
+                return false;
+            }
+            file_put_contents($logFile, "[" . date('d-M-Y H:i:s e') . "] DEBUG saveFile: Created directory: $this->uploadDir\n", FILE_APPEND);
         }
         
+        if (move_uploaded_file($tmpPath, $targetPath)) {
+            $relativePath = 'uploads/accommodations/' . $newFileName;
+            file_put_contents($logFile, "[" . date('d-M-Y H:i:s e') . "] DEBUG saveFile: Successfully saved file to $relativePath\n", FILE_APPEND);
+            return $relativePath;
+        }
+        
+        file_put_contents($logFile, "[" . date('d-M-Y H:i:s e') . "] DEBUG saveFile: Failed to move file from $tmpPath to $targetPath\n", FILE_APPEND);
         return false;
     }
 
@@ -456,10 +471,37 @@ class AccommodationController {
             // Store photo data in session
             $_SESSION['accommodation_photos'] = $_POST;
             
-            // Store uploaded images if any
-            if (isset($_FILES['images'])) {
-                $_SESSION['accommodation_images'] = $_FILES['images'];
+            $uploadedImages = [];
+
+            // Move uploaded images immediately so tmp files do not disappear between steps
+            if (isset($_FILES['images']) && isset($_FILES['images']['name'])) {
+                error_log("DEBUG savePhoto - FILES['images']: " . print_r($_FILES['images'], true));
+                $files = $_FILES['images'];
+
+                if (is_array($files['name'])) {
+                    $totalFiles = count($files['name']);
+                    for ($i = 0; $i < $totalFiles; $i++) {
+                        if ($files['error'][$i] === UPLOAD_ERR_OK) {
+                            $path = $this->saveFile($files['tmp_name'][$i], $files['name'][$i]);
+                            if ($path) {
+                                $uploadedImages[] = $path;
+                            }
+                        }
+                    }
+                } else {
+                    if ($files['error'] === UPLOAD_ERR_OK) {
+                        $path = $this->saveFile($files['tmp_name'], $files['name']);
+                        if ($path) {
+                            $uploadedImages[] = $path;
+                        }
+                    }
+                }
+            } else {
+                error_log("DEBUG savePhoto - No images uploaded");
             }
+
+            // Persist paths for final save step
+            $_SESSION['accommodation_uploaded_images'] = $uploadedImages;
             
             header('Location: /TravelMate/public/houseRules');
             exit;
@@ -506,6 +548,7 @@ class AccommodationController {
             
             // DEBUG: Log extracted values
             error_log("DEBUG title: $title, property_type: $property_type, location: $location");
+            error_log("DEBUG accommodation_uploaded_images in session: " . print_r($_SESSION['accommodation_uploaded_images'] ?? 'NOT SET', true));
             
             try {
                 $pdo->beginTransaction();
@@ -540,38 +583,15 @@ class AccommodationController {
                 ]);
                 
                 $accommodationId = $pdo->lastInsertId();
+                $logFile = __DIR__ . '/../../logs/php_error.log';
                 
-                // Handle image uploads from session if any
-                if (isset($_SESSION['accommodation_images'])) {
-                    $images = $_SESSION['accommodation_images'];
-                    // Handle both single file and array of files
-                    if (isset($images['name'])) {
-                        if (is_array($images['name'])) {
-                            // Multiple files
-                            $totalFiles = count($images['name']);
-                            for ($i = 0; $i < $totalFiles; $i++) {
-                                if ($images['error'][$i] === UPLOAD_ERR_OK) {
-                                    $tmpName = $images['tmp_name'][$i];
-                                    $originalName = $images['name'][$i];
-                                    $filePath = $this->saveFile($tmpName, $originalName);
-                                    
-                                    if ($filePath) {
-                                        Accommodation::addImage($pdo, $accommodationId, $filePath, $i === 0);
-                                    }
-                                }
-                            }
-                        } else {
-                            // Single file
-                            if ($images['error'] === UPLOAD_ERR_OK) {
-                                $tmpName = $images['tmp_name'];
-                                $originalName = $images['name'];
-                                $filePath = $this->saveFile($tmpName, $originalName);
-                                
-                                if ($filePath) {
-                                    Accommodation::addImage($pdo, $accommodationId, $filePath, true);
-                                }
-                            }
-                        }
+                // Handle already-moved image paths from session
+                if (!empty($_SESSION['accommodation_uploaded_images'])) {
+                    $imagePaths = $_SESSION['accommodation_uploaded_images'];
+                    file_put_contents($logFile, "[" . date('d-M-Y H:i:s e') . "] DEBUG saveAccommodation: Found " . count($imagePaths) . " uploaded image paths\n", FILE_APPEND);
+                    foreach ($imagePaths as $index => $path) {
+                        file_put_contents($logFile, "[" . date('d-M-Y H:i:s e') . "] DEBUG saveAccommodation: Adding image: accommodation_id=$accommodationId, path=$path, is_main=" . ($index === 0 ? '1' : '0') . "\n", FILE_APPEND);
+                        Accommodation::addImage($pdo, $accommodationId, $path, $index === 0);
                     }
                 }
                 
@@ -582,6 +602,7 @@ class AccommodationController {
                 unset($_SESSION['accommodation_details']);
                 unset($_SESSION['accommodation_photos']);
                 unset($_SESSION['accommodation_images']);
+                unset($_SESSION['accommodation_uploaded_images']);
                 
                 header('Location: /TravelMate/public/success');
                 exit;
