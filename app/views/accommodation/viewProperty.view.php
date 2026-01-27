@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Property - TravelMate</title>
-    <link rel="stylesheet" href="/TravelMate/public/assets/css/Accomodation_provider/viewProperty.css">
+    <link rel="stylesheet" href="/TravelMate/public/assets/css/Accommodation/viewProperty.css">
     <link rel="stylesheet" href="/TravelMate/public/assets/css/Traveller/usermain.css">
 </head>
 <body>
