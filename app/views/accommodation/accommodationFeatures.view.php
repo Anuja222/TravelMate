@@ -1,6 +1,7 @@
 <?php
 // Populate property type from session if it exists
-$propertyType = $_SESSION['accommodation_features']['property_type'] ?? '';
+$propertyType = $_SESSION['accommodation_type']['property_type'] ?? '';
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // You can process form data here if needed
@@ -40,10 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="location">Location *</label>
                 <input type="text" id="location" name="location" placeholder="Address" required>
             </div>
-            <!-- <div class="form-group">
-                <label for="description">Description *</label>
-                <textarea id="description" name="description" placeholder="Describe your property" required></textarea>
-            </div> -->
         </fieldset>
 
         <h2>What can guests use at your place?</h2>
