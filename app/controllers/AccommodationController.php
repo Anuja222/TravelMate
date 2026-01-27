@@ -417,7 +417,7 @@ class AccommodationController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $propertyType = $_POST['property_type'] ?? '';
             if (!empty($propertyType)) {
-                $_SESSION['accommodation_type'] = ['property_type' => $propertyType];
+                $_SESSION['accommodation_features'] = ['property_type' => $propertyType];
                 header('Location: /TravelMate/public/accommodationFeatures');
                 exit;
             } else {
@@ -431,10 +431,11 @@ class AccommodationController {
     
     public function saveFeatures() {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') { //check whether  the form is submited using POST method
-            // Store all POST data in session
-            //$_SESSION , $_POST are superglobal variables (built in)
-            $_SESSION['accommodation_features'] = $_POST; //'accommodation_features' - session keyname
-            //$_POST - all form input values
+            // Merge new POST data with existing session data (preserve property_type)
+            $_SESSION['accommodation_features'] = array_merge(
+                $_SESSION['accommodation_features'] ?? [],
+                $_POST
+            );
 
             // Redirect to next page
             header('Location: /TravelMate/public/propertyDetails'); //header() - sends HTTP response
@@ -477,15 +478,19 @@ class AccommodationController {
             $userId = $_SESSION['user']['id'];
             
             // Combine all session data
-            $features = $_SESSION['accommodation_features'] ?? []; //other pages' details
-            $details = $_SESSION['accommodation_details'] ?? []; //other pages' details
-            $photos = $_SESSION['accommodation_photos'] ?? []; //other pages' details
-            $type = $_SESSION['accommodation_type'] ?? [];
-            $rules = $_POST; //curent page details
+            $features = $_SESSION['accommodation_features'] ?? []; //all property details from accommodationFeatures page
+            $details = $_SESSION['accommodation_details'] ?? []; //details from propertyDetails page
+            $photos = $_SESSION['accommodation_photos'] ?? []; //photos and description from photoUpload page
+            $rules = $_POST; //house rules from current page
+            
+            // DEBUG: Log session data to check what's being retrieved
+            error_log("DEBUG accommodation_features: " . print_r($features, true));
+            error_log("DEBUG accommodation_details: " . print_r($details, true));
+            error_log("DEBUG accommodation_photos: " . print_r($photos, true));
             
             // Get all fields
             $title = $features['title'] ?? '';
-            $property_type = $type['property_type'] ?? '';
+            $property_type = $features['property_type'] ?? '';  // Fixed: get from features, not type
             $location = $features['location'] ?? '';
             $description = $photos['propertyDescription'] ?? $features['description'] ?? '';
             $rooms = $details['rooms'] ?? 0;
@@ -498,6 +503,9 @@ class AccommodationController {
             $checkInEnd = $rules['check_in_end'] ?? '';
             $checkOutTime = $rules['check_out_time'] ?? '';
             $status = 'active';
+            
+            // DEBUG: Log extracted values
+            error_log("DEBUG title: $title, property_type: $property_type, location: $location");
             
             try {
                 $pdo->beginTransaction();
@@ -536,17 +544,31 @@ class AccommodationController {
                 // Handle image uploads from session if any
                 if (isset($_SESSION['accommodation_images'])) {
                     $images = $_SESSION['accommodation_images'];
-                    if (!empty($images['name'][0])) {
-                        $totalFiles = count($images['name']);
-                        
-                        for ($i = 0; $i < $totalFiles; $i++) {
-                            if ($images['error'][$i] === UPLOAD_ERR_OK) {
-                                $tmpName = $images['tmp_name'][$i];
-                                $originalName = $images['name'][$i];
+                    // Handle both single file and array of files
+                    if (isset($images['name'])) {
+                        if (is_array($images['name'])) {
+                            // Multiple files
+                            $totalFiles = count($images['name']);
+                            for ($i = 0; $i < $totalFiles; $i++) {
+                                if ($images['error'][$i] === UPLOAD_ERR_OK) {
+                                    $tmpName = $images['tmp_name'][$i];
+                                    $originalName = $images['name'][$i];
+                                    $filePath = $this->saveFile($tmpName, $originalName);
+                                    
+                                    if ($filePath) {
+                                        Accommodation::addImage($pdo, $accommodationId, $filePath, $i === 0);
+                                    }
+                                }
+                            }
+                        } else {
+                            // Single file
+                            if ($images['error'] === UPLOAD_ERR_OK) {
+                                $tmpName = $images['tmp_name'];
+                                $originalName = $images['name'];
                                 $filePath = $this->saveFile($tmpName, $originalName);
                                 
                                 if ($filePath) {
-                                    Accommodation::addImage($pdo, $accommodationId, $filePath, $i === 0);
+                                    Accommodation::addImage($pdo, $accommodationId, $filePath, true);
                                 }
                             }
                         }
