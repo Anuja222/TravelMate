@@ -1,3 +1,4 @@
+console.log('propertyListing.js loaded');
 document.addEventListener('DOMContentLoaded', function() {
     // Helper to compute base URL similar to accommodation.js
     function getBaseUrl() {
@@ -35,9 +36,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Photo Upload Form
     const photoForm = document.querySelector('.photo-upload-form');
+    console.log('photoForm element found:', photoForm);
     if (photoForm) {
+        console.log('Initializing photo upload form handlers');
         const MAX_IMAGES = 25;
         const photoInput = document.getElementById('photoInput');
+        console.log('photoInput element found:', photoInput);
 
         function fileToDataURL(file) {
             return new Promise((resolve, reject) => {
@@ -74,9 +78,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function displayImagePreviewsFromStored() {
             const stored = JSON.parse(localStorage.getItem('property_images') || '[]');
-            const previewContainer = document.createElement('div');
-            previewContainer.className = 'image-previews';
-
+            
+            // Get or create the persistent preview container
+            let previewContainer = document.querySelector('.image-previews');
+            if (!previewContainer) {
+                previewContainer = document.createElement('div');
+                previewContainer.className = 'image-previews';
+                const container = document.querySelector('.photo-upload-box');
+                if (container) container.after(previewContainer);
+            }
+            
+            // Clear and re-render
+            previewContainer.innerHTML = '';
             stored.forEach((item, idx) => {
                 const preview = document.createElement('div');
                 preview.className = 'image-preview';
@@ -86,11 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 `;
                 previewContainer.appendChild(preview);
             });
-
-            const existing = document.querySelector('.image-previews');
-            if (existing) existing.remove();
-            const container = document.querySelector('.photo-upload-box');
-            if (container) container.after(previewContainer);
         }
 
         // Remove image handler (delegated)
@@ -107,7 +115,62 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // show previews on load
+        console.log('About to call displayImagePreviewsFromStored()');
         displayImagePreviewsFromStored();
+        console.log('About to add submit event listener');
+        photoForm.addEventListener('submit', async function(e) {
+            console.log('SUBMIT EVENT FIRED - e.preventDefault() will be called');
+            e.preventDefault();
+            console.log('Photo form submit intercepted');
+            const stored = JSON.parse(localStorage.getItem('property_images') || '[]');
+            const description = document.getElementById('propertyDescription').value;
+            
+            console.log('Stored images count:', stored.length);
+            console.log('Description:', description);
+            
+            if (!description.trim()) {
+                alert('Please provide a property description');
+                return;
+            }
+            
+            // Create FormData with files from localStorage
+            const formData = new FormData();
+            formData.append('propertyDescription', description);
+            
+            // Convert dataURLs back to blobs and append as files
+            for (let i = 0; i < stored.length; i++) {
+                const item = stored[i];
+                try {
+                    const blob = dataURLtoBlob(item.dataUrl);
+                    formData.append('images[]', blob, item.name || `image_${i}.jpg`);
+                    console.log('Added image', i, 'to FormData:', item.name);
+                } catch (e) {
+                    console.error('Failed to convert image', i, e);
+                }
+            }
+            
+            console.log('Sending FormData to /TravelMate/public/savePhoto');
+            try {
+                const response = await fetch('/TravelMate/public/savePhoto', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                console.log('Response status:', response.status);
+                if (response.ok) {
+                    console.log('Success, redirecting to houseRules');
+                    // Redirect to house rules page
+                    window.location.href = '/TravelMate/public/houseRules';
+                } else {
+                    const text = await response.text();
+                    console.error('Error response:', text);
+                    alert('Error uploading photos. Please try again.');
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+                alert('Error uploading photos. Please try again.');
+            }
+        });
     }
     // House Rules Form - Allow normal form submission to /saveAccommodation
     // (No JavaScript hijacking - just a normal POST submission)

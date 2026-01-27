@@ -93,19 +93,27 @@ class AccommodationController {
             if (isset($_FILES['images']) && !empty($_FILES['images']['name'][0])) {
                 $images = $_FILES['images'];
                 $totalFiles = count($images['name']);
+                error_log("API create: Found $totalFiles images to process");
                 
                 for ($i = 0; $i < $totalFiles; $i++) {
+                    error_log("API create: Processing image $i, error code: " . $images['error'][$i]);
                     if ($images['error'][$i] === UPLOAD_ERR_OK) {
                         $tmpName = $images['tmp_name'][$i];
                         $originalName = $images['name'][$i];
                         $filePath = $this->saveFile($tmpName, $originalName);
                         
                         if ($filePath) {
+                            $isMain = $i === 0 ? 1 : 0;
+                            error_log("API create: Saving image $i with is_main=$isMain, path=$filePath");
                             // Set first image as main image
-                            Accommodation::addImage($pdo, $accommodationId, $filePath, $i === 0);
+                            Accommodation::addImage($pdo, $accommodationId, $filePath, $isMain);
+                        } else {
+                            error_log("API create: Failed to save image $i");
                         }
                     }
                 }
+            } else {
+                error_log("API create: No images in FILES or empty images['name'][0]");
             }
             
             $pdo->commit();
@@ -475,7 +483,6 @@ class AccommodationController {
 
             // Move uploaded images immediately so tmp files do not disappear between steps
             if (isset($_FILES['images']) && isset($_FILES['images']['name'])) {
-                error_log("DEBUG savePhoto - FILES['images']: " . print_r($_FILES['images'], true));
                 $files = $_FILES['images'];
 
                 if (is_array($files['name'])) {
@@ -496,8 +503,6 @@ class AccommodationController {
                         }
                     }
                 }
-            } else {
-                error_log("DEBUG savePhoto - No images uploaded");
             }
 
             // Persist paths for final save step
