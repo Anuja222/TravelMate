@@ -127,19 +127,27 @@ let bookingIdToCancel = null;
 
 // Show cancel confirmation modal
 function cancelBooking(bookingId) {
-    console.log('cancelBooking called with ID:', bookingId);
+    console.log('=== cancelBooking CALLED ==');
+    console.log('Received booking ID:', bookingId);
+    console.log('Type:', typeof bookingId);
+    console.log('Is null?:', bookingId === null);
+    console.log('Is undefined?:', bookingId === undefined);
+    console.log('Is empty string?:', bookingId === '');
     
-    if (!bookingId || bookingId === 'undefined' || bookingId === 'null') {
+    if (!bookingId || bookingId === 'undefined' || bookingId === 'null' || bookingId === '') {
         alert('Invalid booking ID. Please refresh the page and try again.');
+        console.error('Invalid booking ID received');
         return;
     }
     
-    bookingIdToCancel = bookingId;
+    // Store the booking ID
+    bookingIdToCancel = String(bookingId).trim();
     console.log('Stored booking ID:', bookingIdToCancel);
     
     const modal = document.getElementById('cancelConfirmModal');
     if (modal) {
         modal.classList.add('show');
+        console.log('Modal shown');
     } else {
         console.error('Cancel confirmation modal not found!');
     }
@@ -147,40 +155,46 @@ function cancelBooking(bookingId) {
 
 // Close confirmation modal
 function closeConfirmModal() {
+    console.log('=== closeConfirmModal CALLED ==');
     const modal = document.getElementById('cancelConfirmModal');
     if (modal) {
         modal.classList.remove('show');
     }
-    // Don't clear bookingIdToCancel here, keep it until after cancellation
+    // Clear booking ID when user cancels
+    bookingIdToCancel = null;
+    console.log('Booking ID cleared');
 }
 
 // Proceed with cancellation
 async function proceedWithCancel() {
-    if (!bookingIdToCancel) {
+    console.log('=== proceedWithCancel CALLED ==');
+    console.log('Current bookingIdToCancel:', bookingIdToCancel);
+    
+    if (!bookingIdToCancel || bookingIdToCancel === 'null' || bookingIdToCancel === 'undefined') {
+        console.error('No valid booking ID available');
         showErrorModal('Booking ID is missing. Please try again.');
         return;
     }
     
-    // Store booking ID in a local variable before clearing
+    // Store booking ID BEFORE closing modal or any other operations
     const bookingIdToProcess = String(bookingIdToCancel).trim();
-    
-    console.log('=== CANCEL BOOKING DEBUG ==');
-    console.log('Booking ID to cancel:', bookingIdToProcess);
-    console.log('Booking ID type:', typeof bookingIdToProcess);
+    console.log('Processing booking ID:', bookingIdToProcess);
     console.log('BASE_PATH:', BASE_PATH);
     
     // Close confirmation modal
     const confirmModal = document.getElementById('cancelConfirmModal');
     if (confirmModal) {
         confirmModal.classList.remove('show');
+        console.log('Confirmation modal closed');
     }
 
     try {
         const requestData = { bookingId: bookingIdToProcess };
-        console.log('Request data:', JSON.stringify(requestData));
-        
         const url = `${BASE_PATH}/api/booking/cancel`;
+        
         console.log('Request URL:', url);
+        console.log('Request data:', requestData);
+        console.log('Request JSON:', JSON.stringify(requestData));
         
         const response = await fetch(url, {
             method: 'POST',
@@ -192,31 +206,35 @@ async function proceedWithCancel() {
         });
 
         console.log('Response status:', response.status);
-        console.log('Response headers:', response.headers);
+        console.log('Response ok:', response.ok);
         
+        // Get response as text first
         const responseText = await response.text();
-        console.log('Response text:', responseText);
+        console.log('Raw response:', responseText);
         
+        // Try to parse as JSON
         let result;
         try {
             result = JSON.parse(responseText);
-        } catch (e) {
-            console.error('Failed to parse JSON:', e);
-            showErrorModal('Server returned invalid response. Please check the server logs.');
+            console.log('Parsed result:', result);
+        } catch (parseError) {
+            console.error('JSON parse error:', parseError);
+            console.error('Response was:', responseText);
+            showErrorModal('Server returned invalid response. Response: ' + responseText.substring(0, 100));
+            bookingIdToCancel = null;
             return;
         }
-        
-        console.log('Parsed result:', result);
 
         if (result.success) {
-            // Show success modal
+            console.log('Cancellation successful!');
             showCancelSuccessModal();
             // Reload bookings after a short delay
             setTimeout(() => {
                 loadUserBookings();
             }, 500);
         } else {
-            let errorMsg = '';
+            console.error('Cancellation failed:', result);
+            let errorMsg = 'Failed to cancel booking';
             if (result.errors) {
                 if (result.errors.general) {
                     errorMsg = result.errors.general;
@@ -225,17 +243,18 @@ async function proceedWithCancel() {
                 } else {
                     errorMsg = JSON.stringify(result.errors);
                 }
-            } else {
-                errorMsg = 'Unknown error occurred';
             }
             showErrorModal(errorMsg);
         }
     } catch (error) {
-        console.error('Error cancelling booking:', error);
-        showErrorModal('An error occurred while cancelling the booking. Please try again.');
+        console.error('Fetch error:', error);
+        console.error('Error details:', error.message, error.stack);
+        showErrorModal('Network error: ' + error.message);
+    } finally {
+        // Clear booking ID after operation
+        bookingIdToCancel = null;
+        console.log('Booking ID cleared after operation');
     }
-    
-    bookingIdToCancel = null;
 }
 
 // Show cancel success modal
@@ -271,31 +290,145 @@ function closeErrorModal() {
 }
 
 // Delete booking
-async function deleteBooking(bookingId) {
-    if (!confirm('Are you sure you want to permanently delete this booking? This action cannot be undone.')) {
+// Store booking ID temporarily for delete operation
+let bookingIdToDelete = null;
+
+// Show delete confirmation modal
+function deleteBooking(bookingId) {
+    console.log('=== deleteBooking CALLED ==');
+    console.log('Received booking ID:', bookingId);
+    
+    if (!bookingId || bookingId === 'undefined' || bookingId === 'null' || bookingId === '') {
+        alert('Invalid booking ID. Please refresh the page and try again.');
+        console.error('Invalid booking ID received');
         return;
+    }
+    
+    // Store the booking ID
+    bookingIdToDelete = String(bookingId).trim();
+    console.log('Stored booking ID for deletion:', bookingIdToDelete);
+    
+    const modal = document.getElementById('deleteConfirmModal');
+    if (modal) {
+        modal.classList.add('show');
+        console.log('Delete confirmation modal shown');
+    } else {
+        console.error('Delete confirmation modal not found!');
+    }
+}
+
+// Close delete confirmation modal
+function closeDeleteConfirmModal() {
+    console.log('=== closeDeleteConfirmModal CALLED ==');
+    const modal = document.getElementById('deleteConfirmModal');
+    if (modal) {
+        modal.classList.remove('show');
+    }
+    // Clear booking ID when user cancels
+    bookingIdToDelete = null;
+    console.log('Booking ID cleared');
+}
+
+// Proceed with deletion
+async function proceedWithDelete() {
+    console.log('=== proceedWithDelete CALLED ==');
+    console.log('Current bookingIdToDelete:', bookingIdToDelete);
+    
+    if (!bookingIdToDelete || bookingIdToDelete === 'null' || bookingIdToDelete === 'undefined') {
+        console.error('No valid booking ID available');
+        showErrorModal('Booking ID is missing. Please try again.');
+        return;
+    }
+    
+    // Store booking ID BEFORE closing modal
+    const bookingIdToProcess = String(bookingIdToDelete).trim();
+    console.log('Processing booking ID for deletion:', bookingIdToProcess);
+    
+    // Close confirmation modal
+    const confirmModal = document.getElementById('deleteConfirmModal');
+    if (confirmModal) {
+        confirmModal.classList.remove('show');
+        console.log('Delete confirmation modal closed');
     }
 
     try {
-        const response = await fetch(`${BASE_PATH}/api/booking/delete`, {
+        const requestData = { bookingId: bookingIdToProcess };
+        const url = `${BASE_PATH}/api/booking/delete`;
+        
+        console.log('Delete request URL:', url);
+        console.log('Delete request data:', requestData);
+        
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             },
-            body: JSON.stringify({ bookingId: bookingId })
+            body: JSON.stringify(requestData)
         });
 
-        const result = await response.json();
+        console.log('Delete response status:', response.status);
+        
+        // Get response as text first
+        const responseText = await response.text();
+        console.log('Delete raw response:', responseText);
+        
+        // Try to parse as JSON
+        let result;
+        try {
+            result = JSON.parse(responseText);
+            console.log('Delete parsed result:', result);
+        } catch (parseError) {
+            console.error('JSON parse error:', parseError);
+            showErrorModal('Server returned invalid response');
+            bookingIdToDelete = null;
+            return;
+        }
 
         if (result.success) {
-            alert('Booking deleted successfully!');
-            loadUserBookings(); // Reload bookings
+            console.log('Deletion successful!');
+            showDeleteSuccessModal();
+            // Reload bookings after a short delay
+            setTimeout(() => {
+                loadUserBookings();
+            }, 500);
         } else {
-            alert('Failed to delete booking: ' + (result.errors.general || 'Please try again.'));
+            console.error('Deletion failed:', result);
+            let errorMsg = 'Failed to delete booking';
+            if (result.errors) {
+                if (result.errors.general) {
+                    errorMsg = result.errors.general;
+                } else if (result.errors.auth) {
+                    errorMsg = result.errors.auth;
+                } else {
+                    errorMsg = JSON.stringify(result.errors);
+                }
+            }
+            showErrorModal(errorMsg);
         }
     } catch (error) {
-        console.error('Error deleting booking:', error);
-        alert('An error occurred while deleting the booking.');
+        console.error('Delete fetch error:', error);
+        showErrorModal('Network error: ' + error.message);
+    } finally {
+        // Clear booking ID after operation
+        bookingIdToDelete = null;
+        console.log('Booking ID cleared after delete operation');
+    }
+}
+
+// Show delete success modal
+function showDeleteSuccessModal() {
+    const modal = document.getElementById('deleteSuccessModal');
+    if (modal) {
+        modal.classList.add('show');
+    }
+}
+
+// Close delete success modal
+function closeDeleteSuccessModal() {
+    const modal = document.getElementById('deleteSuccessModal');
+    if (modal) {
+        modal.classList.remove('show');
     }
 }
 

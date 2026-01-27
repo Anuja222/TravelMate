@@ -3,7 +3,13 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('log_errors', 1);
-ini_set('error_log', __DIR__ . '/../logs/php_error.log');
+
+// Ensure logs directory exists
+$logsDir = __DIR__ . '/../logs';
+if (!is_dir($logsDir)) {
+    mkdir($logsDir, 0777, true);
+}
+ini_set('error_log', $logsDir . '/php_error.log');
 
 // Log all requests for debugging
 error_log("=== NEW REQUEST ===");
@@ -79,6 +85,14 @@ elseif ($requestUri === '/api/vehicle/list' && $_SERVER['REQUEST_METHOD'] === 'G
     exit;
 } 
 
+elseif ($requestUri === '/api/vehicle/listAll' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    error_log(">>> Routing to Vehicle List All");
+    require_once __DIR__ . '/../app/controllers/VehicleController.php';
+    $vehicleController = new App\Controllers\VehicleController();
+    $vehicleController->listAll();
+    exit;
+} 
+
 elseif ($requestUri === '/api/vehicle/get' && $_SERVER['REQUEST_METHOD'] === 'GET') {
     error_log(">>> Routing to Vehicle Get");
     require_once __DIR__ . '/../app/controllers/VehicleController.php';
@@ -122,6 +136,12 @@ elseif ($requestUri === '/api/accommodation/list' && $_SERVER['REQUEST_METHOD'] 
     $controller->listByUser();
     exit;
 } 
+elseif ($requestUri === '/api/accommodation/listAll' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    error_log(">>> Routing to Accommodation List All");
+    $controller = new AccommodationController();
+    $controller->listAll();
+    exit;
+} 
 elseif ($requestUri === '/api/accommodation/get' && $_SERVER['REQUEST_METHOD'] === 'GET') {
     error_log(">>> Routing to Accommodation Get");
     $controller = new AccommodationController();
@@ -141,6 +161,38 @@ elseif ($requestUri === '/api/accommodation/delete' && $_SERVER['REQUEST_METHOD'
     exit;
 }
 
+// Accommodation form page handlers
+elseif ($requestUri === '/selectPropertyType' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to selectPropertyType");
+    $controller = new AccommodationController();
+    $controller->selectPropertyType();
+    exit;
+}
+elseif ($requestUri === '/saveFeatures' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Accommodation saveFeatures");
+    $controller = new AccommodationController();
+    $controller->saveFeatures();
+    exit;
+}
+elseif ($requestUri === '/saveDetails' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Accommodation saveDetails");
+    $controller = new AccommodationController();
+    $controller->saveDetails();
+    exit;
+}
+elseif ($requestUri === '/savePhoto' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Accommodation savePhoto");
+    $controller = new AccommodationController();
+    $controller->savePhoto();
+    exit;
+}
+elseif ($requestUri === '/saveAccommodation' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Accommodation saveAccommodation");
+    $controller = new AccommodationController();
+    $controller->saveAccommodation();
+    exit;
+}
+
 // Accommodation page routes
 elseif (strpos($requestUri, '/accommodation/') === 0) {
     $page = substr($requestUri, strlen('/accommodation/'));
@@ -150,6 +202,14 @@ elseif (strpos($requestUri, '/accommodation/') === 0) {
         exit;
     }
 }
+elseif (preg_match('#^/deleteAccommodation/(\d+)$#', $requestUri, $matches)) {
+    $id = $matches[1];
+    $controller = new AccommodationController();
+    $_POST['id'] = $id;
+    $controller->delete();
+    exit;
+}
+
 
 // Destination API routes
 elseif ($requestUri === '/api/destination/create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -246,7 +306,72 @@ elseif ($requestUri === '/api/booking/create' && $_SERVER['REQUEST_METHOD'] === 
 } elseif ($requestUri === '/api/booking/search' && $_SERVER['REQUEST_METHOD'] === 'GET') {
     $bookingController = new BookingController();
     $bookingController->searchBookings();
-} elseif ($requestUri === '/preference/save' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+} 
+
+// Transport Booking API routes
+elseif ($requestUri === '/api/transport-booking/init-booking' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/TransportBookingController.php';
+    $transportBookingController = new App\Controllers\TransportBookingController();
+    $transportBookingController->initBooking();
+    exit;
+} elseif ($requestUri === '/api/transport-booking/save-details' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/TransportBookingController.php';
+    $transportBookingController = new App\Controllers\TransportBookingController();
+    $transportBookingController->saveDetails();
+    exit;
+} elseif ($requestUri === '/api/transport-booking/save-payment' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/TransportBookingController.php';
+    $transportBookingController = new App\Controllers\TransportBookingController();
+    $transportBookingController->savePayment();
+    exit;
+} elseif ($requestUri === '/api/transport-booking/complete' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/TransportBookingController.php';
+    $transportBookingController = new App\Controllers\TransportBookingController();
+    $transportBookingController->completeBooking();
+    exit;
+} elseif ($requestUri === '/api/transport-booking/create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/TransportBookingController.php';
+    $transportBookingController = new App\Controllers\TransportBookingController();
+    $transportBookingController->create();
+    exit;
+} elseif ($requestUri === '/api/transport-booking/all' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    require_once __DIR__ . '/../app/controllers/TransportBookingController.php';
+    $transportBookingController = new App\Controllers\TransportBookingController();
+    $transportBookingController->getAll();
+    exit;
+} elseif ($requestUri === '/api/transport-booking/get' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    require_once __DIR__ . '/../app/controllers/TransportBookingController.php';
+    $transportBookingController = new App\Controllers\TransportBookingController();
+    $transportBookingController->get();
+    exit;
+} elseif ($requestUri === '/api/transport-booking/update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/TransportBookingController.php';
+    $transportBookingController = new App\Controllers\TransportBookingController();
+    $transportBookingController->update();
+    exit;
+} elseif ($requestUri === '/api/transport-booking/cancel' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/TransportBookingController.php';
+    $transportBookingController = new App\Controllers\TransportBookingController();
+    $transportBookingController->cancel();
+    exit;
+} elseif ($requestUri === '/api/transport-booking/delete' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/TransportBookingController.php';
+    $transportBookingController = new App\Controllers\TransportBookingController();
+    $transportBookingController->delete();
+    exit;
+} elseif ($requestUri === '/api/transport-booking/upcoming' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    require_once __DIR__ . '/../app/controllers/TransportBookingController.php';
+    $transportBookingController = new App\Controllers\TransportBookingController();
+    $transportBookingController->getUpcoming();
+    exit;
+} elseif ($requestUri === '/api/transport-booking/stats' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    require_once __DIR__ . '/../app/controllers/TransportBookingController.php';
+    $transportBookingController = new App\Controllers\TransportBookingController();
+    $transportBookingController->getStats();
+    exit;
+}
+
+elseif ($requestUri === '/preference/save' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $preferenceController = new PreferenceController();
     $preferenceController->save();
 }
@@ -346,7 +471,15 @@ elseif ($page === 'home' || $requestUri === '/') {
     include '../app/views/traveller/inc_message_box.view.php';
 } elseif ($page === 'transportdetails') {
     include '../app/views/traveller/transportdetails.view.php';
-}
+} elseif ($page === 'transport-booking-details') {
+    include '../app/views/traveller/transport_booking_details.view.php';
+} elseif ($page === 'transport-booking-payment') {
+    include '../app/views/traveller/transport_booking_payment.view.php';
+} elseif ($page === 'transport-booking-finish') {
+    include '../app/views/traveller/transport_booking_finish.view.php';
+} elseif ($page === 'mytransportbookings') {
+    include '../app/views/traveller/mytransportbookings.view.php';
+} 
 
 //Transpoter pages
 elseif ($page === 'tr_dashboard') {
@@ -379,7 +512,8 @@ elseif ($page === 'tr_dashboard') {
 
 //accomodation pages
 elseif ($page === 'ac_dashboard') {
-    include '../app/views/accommodation/newerDashboard.view.php';
+    $controller = new AccommodationController();
+    $controller->accommodationActivitySummary();
 } elseif ($page === 'photoUpload') {
     include '../app/views/accommodation/photoUpload.view.php';
 } elseif ($page === 'houseRules') {

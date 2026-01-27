@@ -406,6 +406,152 @@
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-  <script src="assets/js/transportation.js"></script>
+  <script>
+    // Load vehicles dynamically
+    document.addEventListener('DOMContentLoaded', function() {
+      loadVehicles();
+    });
+
+    function getBaseUrl() {
+      const path = window.location.pathname;
+      if (path.includes('/TravelMate')) {
+        return '/TravelMate/public';
+      }
+      return '';
+    }
+
+    async function loadVehicles() {
+      try {
+        const baseUrl = getBaseUrl();
+        const response = await fetch(baseUrl + '/api/vehicle/listAll');
+        
+        if (!response.ok) {
+          console.error('Failed to fetch vehicles:', response.status);
+          return;
+        }
+
+        const result = await response.json();
+        
+        if (result.success && result.data && result.data.length > 0) {
+          displayVehicles(result.data);
+        } else {
+          console.log('No vehicles found');
+        }
+      } catch (error) {
+        console.error('Error loading vehicles:', error);
+      }
+    }
+
+    function displayVehicles(vehicles) {
+      const grid = document.getElementById('transportationGrid');
+      if (!grid) return;
+
+      // Clear existing static content
+      grid.innerHTML = '';
+
+      vehicles.forEach(vehicle => {
+        const card = createVehicleCard(vehicle);
+        grid.appendChild(card);
+      });
+    }
+
+    function createVehicleCard(vehicle) {
+      const card = document.createElement('div');
+      card.className = 'transport-card';
+      card.setAttribute('data-type', vehicle.vehicle_type || '');
+      card.setAttribute('data-route', vehicle.working_district || '');
+      
+      const imageUrl = vehicle.main_image 
+        ? getBaseUrl() + vehicle.main_image 
+        : 'assets/images/default-vehicle.png';
+      
+      const acBadge = vehicle.ac_type === 'ac' ? '❄️ AC' : '';
+      const vehicleTypeIcon = getVehicleIcon(vehicle.vehicle_type);
+      
+      card.innerHTML = `
+        <div class="card-image">
+          <img src="${imageUrl}" alt="${escapeHtml(vehicle.vehicle_model || vehicle.vehicle_type)}" onerror="this.src='assets/images/default-vehicle.png'">
+          <div class="card-overlay">
+            <button class="book-btn" onclick="bookTransport(${vehicle.id})">Book Now</button>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="card-header">
+            <h3>${escapeHtml(vehicle.vehicle_model || vehicle.vehicle_type)}</h3>
+            <div class="transport-type">
+              <span class="type-icon">${vehicleTypeIcon}</span>
+              <span class="type-text">${escapeHtml(vehicle.vehicle_type || 'Vehicle')}</span>
+            </div>
+          </div>
+          <p class="route">📍 ${escapeHtml(vehicle.working_district || 'Sri Lanka')}</p>
+          <p class="description">${vehicle.vehicle_year ? vehicle.vehicle_year + ' Model' : ''} ${vehicle.vehicle_color ? '• ' + vehicle.vehicle_color : ''}</p>
+          <div class="card-features">
+            <span class="feature">👥 ${vehicle.passenger_count || 0} Passengers</span>
+            ${acBadge ? '<span class="feature">' + acBadge + '</span>' : ''}
+            ${vehicle.vehicle_number ? '<span class="feature">🚗 ' + escapeHtml(vehicle.vehicle_number) + '</span>' : ''}
+          </div>
+          <div class="card-footer">
+            <button class="btn-primary view-btn" onclick="viewVehicleDetails(${vehicle.id})">View Details</button>
+          </div>
+        </div>
+      `;
+      
+      return card;
+    }
+
+    function getVehicleIcon(type) {
+      const icons = {
+        'car': '🚗',
+        'van': '🚐',
+        'bus': '🚌',
+        'tuk-tuk': '🛺',
+        'bike': '🏍️',
+        'suv': '🚙',
+        'luxury': '🚘',
+        'taxi': '🚕'
+      };
+      return icons[type?.toLowerCase()] || '🚗';
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text || '';
+      return div.innerHTML;
+    }
+
+    function bookTransport(vehicleId) {
+      window.location.href = 'transportdetails?id=' + vehicleId;
+    }
+
+    function viewVehicleDetails(vehicleId) {
+      window.location.href = 'transportdetails?id=' + vehicleId;
+    }
+
+    function applyFilters() {
+      const route = document.getElementById('route').value.toLowerCase();
+      const type = document.getElementById('transport-type').value.toLowerCase();
+      const priceRange = document.getElementById('price-range').value;
+      const duration = document.getElementById('duration').value;
+      
+      const cards = document.querySelectorAll('.transport-card');
+      
+      cards.forEach(card => {
+        const cardRoute = card.getAttribute('data-route').toLowerCase();
+        const cardType = card.getAttribute('data-type').toLowerCase();
+        
+        let show = true;
+        
+        if (route && !cardRoute.includes(route)) {
+          show = false;
+        }
+        
+        if (type && !cardType.includes(type)) {
+          show = false;
+        }
+        
+        card.style.display = show ? 'block' : 'none';
+      });
+    }
+  </script>
 </body>
 </html>

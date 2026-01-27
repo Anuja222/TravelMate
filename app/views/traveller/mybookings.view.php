@@ -154,6 +154,40 @@
         </div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteConfirmModal" class="delete-confirm-modal">
+        <div class="delete-confirm-content">
+            <div class="delete-icon">
+                <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="30" cy="30" r="28" stroke="#dc2626" stroke-width="3" fill="#fef2f2"/>
+                    <path d="M20 22H40M25 22V18C25 17.4477 25.4477 17 26 17H34C34.5523 17 35 17.4477 35 18V22M37 22V40C37 40.5523 36.5523 41 36 41H24C23.4477 41 23 40.5523 23 40V22" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M27 28V36M33 28V36" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h2>Delete Booking?</h2>
+            <p>Are you sure you want to permanently delete this booking? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="btn-cancel-action" onclick="closeDeleteConfirmModal()">No, Keep It</button>
+                <button class="btn-confirm-delete" onclick="proceedWithDelete()">Yes, Delete Permanently</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Success Modal -->
+    <div id="deleteSuccessModal" class="delete-success-modal">
+        <div class="delete-success-content">
+            <div class="success-icon">
+                <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="30" cy="30" r="28" stroke="#10b981" stroke-width="3" fill="#ecfdf5"/>
+                    <path d="M20 30L26 36L40 22" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <h2>Booking Deleted Successfully</h2>
+            <p>The booking has been permanently removed from your records.</p>
+            <button class="btn-close-success" onclick="closeDeleteSuccessModal()">Close</button>
+        </div>
+    </div>
+
     <script src="assets/js/mybookings.js"></script>
     
     <style>
@@ -427,6 +461,101 @@
             background: #dc2626;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        /* Delete Confirmation Modal */
+        .delete-confirm-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .delete-confirm-modal.show {
+            display: flex;
+        }
+
+        .delete-confirm-content {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s ease;
+        }
+
+        .delete-icon {
+            margin-bottom: 24px;
+            animation: scaleIn 0.5s ease 0.2s both;
+        }
+
+        .delete-confirm-content h2 {
+            color: #dc2626;
+            font-size: 28px;
+            margin: 0 0 12px 0;
+            font-weight: 700;
+        }
+
+        .delete-confirm-content p {
+            color: #6b7280;
+            font-size: 16px;
+            margin: 0 0 28px 0;
+            line-height: 1.6;
+        }
+
+        .btn-confirm-delete {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-confirm-delete:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        /* Delete Success Modal */
+        .delete-success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .delete-success-modal.show {
+            display: flex;
+        }
+
+        .delete-success-content {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            max-width: 420px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s ease;
         }
     </style>
 </body>
