@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Delete Users</title>
-  <link rel="stylesheet" href="assets/css/Admin/Users.css?v=<?php echo time(); ?>">
-  <link rel="stylesheet" href="assets/css/Admin/common.css?v=<?php echo time(); ?>">
+  <title>User Management</title>
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/Users.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
+  <?php include __DIR__ . '/../traveller/header.view.php'; ?>
 
 <div class="page-container">  
   <?php include 'sidebar.view.php'; ?>
@@ -15,23 +16,28 @@
     <div class="content">
       <div class="page-title">
         <h1>Users</h1>
+        <div class="stats-summary">
+          <span class="stat-badge">Total: <?php echo $stats['total'] ?? 0; ?></span>
+          <span class="stat-badge active">Active: <?php echo $stats['active'] ?? 0; ?></span>
+          <span class="stat-badge suspended">Suspended: <?php echo $stats['suspended'] ?? 0; ?></span>
+        </div>
       </div>
 
       <div class="filter-bar">
-        <input type="text" id="searchBox" placeholder="🔍 Search users by name, email, phone...">
+        <input type="text" id="searchBox" placeholder="🔍 Search users by name, email, phone..." value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>">
         
         <select id="userTypeFilter">
-          <option value="all">All User Types</option>
-          <option value="traveler">Travelers</option>
-          <option value="provider">Service Providers</option>
-          <option value="admin">Administrators</option>
+          <option value="all" <?php echo ($_GET['role'] ?? '') === '' ? 'selected' : ''; ?>>All User Types</option>
+          <option value="traveller" <?php echo ($_GET['role'] ?? '') === 'traveller' ? 'selected' : ''; ?>>Travelers</option>
+          <option value="provider" <?php echo ($_GET['role'] ?? '') === 'provider' ? 'selected' : ''; ?>>Service Providers</option>
+          <option value="transporter" <?php echo ($_GET['role'] ?? '') === 'transporter' ? 'selected' : ''; ?>>Transporters</option>
+          <option value="admin" <?php echo ($_GET['role'] ?? '') === 'admin' ? 'selected' : ''; ?>>Administrators</option>
         </select>
 
         <select id="statusFilter">
-          <option value="all">All Status</option>
-          <option value="active">Active</option>
-          <option value="suspended">Suspended</option>
-          <option value="inactive">Inactive</option>
+          <option value="all" <?php echo ($_GET['status'] ?? '') === '' ? 'selected' : ''; ?>>All Status</option>
+          <option value="active" <?php echo ($_GET['status'] ?? '') === 'active' ? 'selected' : ''; ?>>Active</option>
+          <option value="suspended" <?php echo ($_GET['status'] ?? '') === 'suspended' ? 'selected' : ''; ?>>Suspended</option>
         </select>
 
         <button id="applyFilter">Search</button>
@@ -52,131 +58,53 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>
-                <div class="profile-pic">
-                  <img src="assets/images/profile.jpg" alt="Lakmal">
-                </div>
-              </td>
-              <td>
-                <div class="user-name">
-                  <strong>Lakmal Perera</strong>
-                  <small>+94 77 123 4567</small>
-                </div>
-              </td>
-              <td>lakmal.perera@email.com</td>
-              <td><span class="user-type provider">Provider</span></td>
-              <td>2024-01-15</td>
-              <td><span class="status active">Active</span></td>
-              <td>3 Hotels</td>
-              <td>
-                <div class="action-buttons">
-                  <button class="btn-view" onclick="window.location.href='viewprovider';">View</button>
-                  <button class="btn-suspend" onclick="suspendUser(1, 'Lakmal Perera')">Suspend</button>
-                  <button class="btn-delete" onclick="deleteUser(1, 'Lakmal Perera')">Delete</button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div class="profile-pic">
-                  <img src="assets/images/profile.jpg" alt="Anuja">
-                </div>
-              </td>
-              <td>
-                <div class="user-name">
-                  <strong>Anuja Silva</strong>
-                  <small>+94 71 987 6543</small>
-                </div>
-              </td>
-              <td>anuja.silva@email.com</td>
-              <td><span class="user-type provider">Provider</span></td>
-              <td>2024-02-03</td>
-              <td><span class="status active">Active</span></td>
-              <td>2 Vehicles</td>
-              <td>
-                <div class="action-buttons">
-                  <button class="btn-view" onclick="window.location.href='viewprovider';">View</button>
-                  <button class="btn-suspend" onclick="suspendUser(2, 'Anuja Silva')">Suspend</button>
-                  <button class="btn-delete" onclick="deleteUser(2, 'Anuja Silva')">Delete</button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div class="profile-pic">
-                  <img src="assets/images/profile.jpg" alt="Saman">
-                </div>
-              </td>
-              <td>
-                <div class="user-name">
-                  <strong>Saman Wijeratne</strong>
-                  <small>+94 76 456 7890</small>
-                </div>
-              </td>
-              <td>saman.w@email.com</td>
-              <td><span class="user-type traveler">Traveler</span></td>
-              <td>2024-01-20</td>
-              <td><span class="status active">Active</span></td>
-              <td>0</td>
-              <td>
-                <div class="action-buttons">
-                  <button class="btn-view" onclick="window.location.href='viewtraveller';">View</button>
-                  <button class="btn-suspend" onclick="suspendUser(3, 'Saman Wijeratne')">Suspend</button>
-                  <button class="btn-delete" onclick="deleteUser(3, 'Saman Wijeratne')">Delete</button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div class="profile-pic">
-                  <img src="assets/images/profile.jpg" alt="Minoli">
-                </div>
-              </td>
-              <td>
-                <div class="user-name">
-                  <strong>Minoli Fernando</strong>
-                  <small>+94 75 321 6547</small>
-                </div>
-              </td>
-              <td>minoli.fernando@email.com</td>
-              <td><span class="user-type provider">Provider</span></td>
-              <td>2024-01-28</td>
-              <td><span class="status suspended">Suspended</span></td>
-              <td>1 Hotel</td>
-              <td>
-                <div class="action-buttons">
-                  <button class="btn-view" onclick="window.location.href='viewprovider';">View</button>
-                  <button class="btn-suspend" onclick="activateUser(4, 'Minoli Fernando')">Suspend</button>
-                  <button class="btn-delete" onclick="deleteUser(4, 'Minoli Fernando')">Delete</button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div class="profile-pic">
-                  <img src="assets/images/profile.jpg" alt="Rasika">
-                </div>
-              </td>
-              <td>
-                <div class="user-name">
-                  <strong>Rasika Jayasinghe</strong>
-                  <small>+94 77 789 1234</small>
-                </div>
-              </td>
-              <td>rasika.j@email.com</td>
-              <td><span class="user-type traveler">Traveler</span></td>
-              <td>2024-02-10</td>
-              <td><span class="status active">Active</span></td>
-              <td>0</td>
-              <td>
-                <div class="action-buttons">
-                  <button class="btn-view" onclick="window.location.href='viewtraveller';">View</button>
-                  <button class="btn-suspend" onclick="suspendUser(5, 'Rasika Jayasinghe')">Suspend</button>
-                  <button class="btn-delete" onclick="deleteUser(5, 'Rasika Jayasinghe')">Delete</button>
-                </div>
-              </td>
-            </tr>
+            <?php if (isset($users) && count($users) > 0): ?>
+              <?php foreach ($users as $user): ?>
+                <?php 
+                  $fullName = htmlspecialchars($user->first_name . ' ' . $user->last_name);
+                  $listingsCount = ($user->accommodation_count ?? 0) + ($user->vehicle_count ?? 0);
+                  $listingsText = $listingsCount > 0 ? $listingsCount . ' Listing(s)' : '0';
+                  $viewPage = ($user->role === 'traveller') ? 'viewtraveller' : 'viewprovider';
+                  $roleClass = strtolower($user->role);
+                  $statusClass = strtolower($user->status ?? 'active');
+                ?>
+                <tr data-user-id="<?php echo $user->id; ?>">
+                  <td>
+                    <div class="profile-pic">
+                      <img src="<?= ROOT ?>/assets/images/profile.jpg" alt="<?php echo htmlspecialchars($user->first_name); ?>">
+                    </div>
+                  </td>
+                  <td>
+                    <div class="user-name">
+                      <strong><?php echo $fullName; ?></strong>
+                      <small><?php echo htmlspecialchars($user->phone ?? 'N/A'); ?></small>
+                    </div>
+                  </td>
+                  <td><?php echo htmlspecialchars($user->email); ?></td>
+                  <td><span class="user-type <?php echo $roleClass; ?>"><?php echo ucfirst($user->role); ?></span></td>
+                  <td><?php echo date('Y-m-d', strtotime($user->created_at)); ?></td>
+                  <td><span class="status <?php echo $statusClass; ?>"><?php echo ucfirst($user->status ?? 'Active'); ?></span></td>
+                  <td><?php echo $listingsText; ?></td>
+                  <td>
+                    <div class="action-buttons">
+                      <button class="btn-view" onclick="window.location.href='<?php echo $viewPage; ?>?id=<?php echo $user->id; ?>';">View</button>
+                      <?php if (($user->status ?? 'active') === 'active'): ?>
+                        <button class="btn-suspend" onclick="suspendUser(<?php echo $user->id; ?>, '<?php echo addslashes($fullName); ?>')">Suspend</button>
+                      <?php else: ?>
+                        <button class="btn-activate" onclick="activateUser(<?php echo $user->id; ?>, '<?php echo addslashes($fullName); ?>')">Activate</button>
+                      <?php endif; ?>
+                      <button class="btn-delete" onclick="deleteUser(<?php echo $user->id; ?>, '<?php echo addslashes($fullName); ?>')">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <tr>
+                <td colspan="8" style="text-align: center; padding: 40px;">
+                  <p>No users found.</p>
+                </td>
+              </tr>
+            <?php endif; ?>
           </tbody>
         </table>
       </div>
@@ -340,8 +268,24 @@
 
     function activateUser(id, name) {
       if (confirm(`Activate user "${name}"?`)) {
-        alert('Activated user ID: ' + id);
-        // Implement activation functionality
+        fetch('/api/admin/user/activate', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({user_id: id})
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('User activated successfully');
+            location.reload();
+          } else {
+            alert('Error: ' + data.error);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Failed to activate user');
+        });
       }
     }
 
@@ -358,18 +302,50 @@
 
     function confirmDelete() {
       if (userToDelete) {
-        alert('Deleted user ID: ' + userToDelete);
-        // Implement actual delete functionality
-        closeModal();
+        fetch('/api/admin/user/delete', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({user_id: userToDelete})
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('User deleted successfully');
+            closeModal();
+            location.reload();
+          } else {
+            alert('Error: ' + data.error);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Failed to delete user');
+        });
       }
     }
 
     function confirmSuspend() {
       if (userToSuspend) {
         const reason = document.getElementById('suspendReason').value;
-        alert(`Suspended user ID: ${userToSuspend}\nReason: ${reason}`);
-        // Implement actual suspend functionality
-        closeSuspendModal();
+        fetch('/api/admin/user/suspend', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({user_id: userToSuspend, reason: reason})
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('User suspended successfully');
+            closeSuspendModal();
+            location.reload();
+          } else {
+            alert('Error: ' + data.error);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Failed to suspend user');
+        });
       }
     }
 

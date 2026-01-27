@@ -4,6 +4,9 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Include config for ROOT constant
+require_once __DIR__ . '/../../core/config.php';
+
 // Check if user is logged in
 $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
 $firstName = $isLoggedIn ? $_SESSION['user']['first_name'] : '';
@@ -17,13 +20,13 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Travel Mate</title>
-    <link rel="stylesheet" href="assets/css/Traveller/homet.css">
-    <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
+    <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Traveller/homet.css">
+    <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Traveller/usermain.css">
 </head>
 
 <body>
 
-    <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
+    <?php include __DIR__ . '/../traveller/header.view.php'; ?>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -41,7 +44,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                     <h2>Popular Destinations</h2>
                     <p>Discover the most loved travel spots around Sri Lanka</p>
                 </div>
-                <a href="favdestination" class="see-all-btn">See All Destinations</a>
+                <a href="<?= ROOT ?>/favdestination" class="see-all-btn">See All Destinations</a>
             </div>
 
             <div class="destinations-grid" id="popularDestinations">
@@ -293,7 +296,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
               <div class="card-image">
                 <img src="${img}" alt="${escapeHtml(d.title)}">
                 <div class="card-overlay">
-                  <a href="beachdetail?dest=${d.id}" class="explore-btn">Explore</a>
+                  <a href="destination/places?id=${d.id}" class="explore-btn">Explore</a>
                 </div>
               </div>
               <div class="card-content">

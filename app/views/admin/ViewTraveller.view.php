@@ -2,12 +2,13 @@
 <html>
 <head>
   <title>Traveler Profile - Saman Wijeratne</title>
-  <link rel="stylesheet" href="assets/css/Admin/common.css">
-  <link rel="stylesheet" href="assets/css/Admin/ViewTraveller.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/ViewTraveller.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
+  <?php include __DIR__ . '/../traveller/header.view.php'; ?>
 
   <div class="page-container">
 
@@ -17,7 +18,7 @@
         <div class="profile-banner"></div>
         <div class="profile-info">
           <div class="profile-avatar">
-            <img src="assets/images/profile.jpg" alt="Saman Wijeratne">
+            <img src="<?= ROOT ?>/assets/images/profile.jpg" alt="Saman Wijeratne">
           </div>
           <div class="profile-details">
             <div class="profile-name">

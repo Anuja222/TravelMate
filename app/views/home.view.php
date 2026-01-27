@@ -4,16 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>TravelMate - Home</title>
-  <link rel="stylesheet" href="assets/css/home.css">
-  <link rel="stylesheet" href="assets/css/main.css">
+  <?php require_once __DIR__ . '/../core/config.php'; ?>
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/home.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/main.css">
 </head>
 <body>
   <!-- Header/Navbar -->
-  <?php include __DIR__ . '../Traveller/header.view.php'; ?>
+  <?php include __DIR__ . '/traveller/header.view.php'; ?>
 
   <!-- Hero Section -->
   <section class="hero" id="home">
-    <img src="assets/images/home1.jpg" alt="Home Hero">
+    <img src="<?= ROOT ?>/assets/images/home1.jpg" alt="Home Hero">
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <h1>Explore The World,<br><span>Plan Your Adventure</span><br>Today!</h1>
