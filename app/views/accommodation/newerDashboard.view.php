@@ -144,7 +144,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                       <span><?php echo htmlspecialchars($property['max_guests']); ?> Guests</span>
                     </div>
                     <div class="property-actions">
-                      <button type="button" class="view-btn" onclick="window.location.href='/TravelMate/public/accommodationdetail/<?php echo htmlspecialchars($property['id']); ?>';">View</button>
+                      <button type="button" class="view-btn" onclick="window.location.href='/TravelMate/public/viewProperty/<?php echo htmlspecialchars($property['id']); ?>';">View</button>
                       <button type="button" class="edit-btn" onclick="window.location.href='/TravelMate/public/editAccommodationFeatures/<?php echo htmlspecialchars($property['id']); ?>';">Update</button>
                       <button type="button" class="delete-btn" onclick="deleteProperty(<?php echo htmlspecialchars($property['id']); ?>)">Delete</button>
                     </div>
