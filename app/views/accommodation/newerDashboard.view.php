@@ -4,6 +4,8 @@ if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
 
+//$propertyTitle = $_SESSION['accommodation_features']['title'] ?? '';
+
 // Check if user is logged in
 $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
 $firstName = $isLoggedIn ? $_SESSION['user']['first_name'] : '';
@@ -85,6 +87,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
           </div>
         </div>
       </div>      
+
      <section class="favourite">
         <div class="section-header">
           <h3>My Properties</h3>
