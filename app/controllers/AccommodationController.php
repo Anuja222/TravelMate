@@ -417,7 +417,7 @@ class AccommodationController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $propertyType = $_POST['property_type'] ?? '';
             if (!empty($propertyType)) {
-                $_SESSION['accommodation_features'] = ['property_type' => $propertyType];
+                $_SESSION['accommodation_type'] = ['property_type' => $propertyType];
                 header('Location: /TravelMate/public/accommodationFeatures');
                 exit;
             } else {
@@ -426,6 +426,8 @@ class AccommodationController {
             }
         }
     }
+
+
     
     public function saveFeatures() {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') { //check whether  the form is submited using POST method
@@ -478,11 +480,12 @@ class AccommodationController {
             $features = $_SESSION['accommodation_features'] ?? []; //other pages' details
             $details = $_SESSION['accommodation_details'] ?? []; //other pages' details
             $photos = $_SESSION['accommodation_photos'] ?? []; //other pages' details
+            $type = $_SESSION['accommodation_type'] ?? [];
             $rules = $_POST; //curent page details
             
             // Get all fields
             $title = $features['title'] ?? '';
-            $property_type = $features['property_type'] ?? '';
+            $property_type = $type['property_type'] ?? '';
             $location = $features['location'] ?? '';
             $description = $photos['propertyDescription'] ?? $features['description'] ?? '';
             $rooms = $details['rooms'] ?? 0;
