@@ -115,7 +115,13 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
 
             if(!empty($accommodations)){
               foreach ($accommodations as $property){
-                $imagePath = $property['main_image'] ?? 'assets/images/default-property.jpg'; //use main image if exists. otherwise use default image
+                // Use main image if exists, otherwise use default
+                if ($property['main_image']) {
+                    // Image path from DB is relative to public folder: uploads/accommodations/...
+                    $imagePath = $property['main_image'];
+                } else {
+                    $imagePath = 'assets/images/default-property.jpg';
+                }
                 $statusClass = strtolower($property['status']) === 'active' ? 'status-active' : 'status-inactive';
                 ?>
                 <div class="property-card">
