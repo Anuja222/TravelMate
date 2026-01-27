@@ -118,6 +118,29 @@ class AccommodationController {
         }
     }
 
+    public function accommodationActivitySummary(){
+        global $pdo;
+
+        if(!isset($_SESSION['user'])){
+            header('Location: /TravelMate/public/login');
+            exit;
+        }
+
+        $userId = $_SESSION['user']['id'];
+
+        //get activity summary counts
+        //listingsCount
+        $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM accommodations WHERE user_id = ?");
+        $stmt->execute([$userId]);
+        $listingsCount = $stmt->fetch(\PDO::FETCH_ASSOC)['total'];
+
+        //bookedCount
+        //bookingRecievedCount
+
+
+        include __DIR__ . '/../views/accommodation/newerDashboard.view.php'; //load view
+    }
+
     // Temporary upload endpoint used by client-side uploaders (returns JSON)
     public function uploadTemp() {
         // Accept POST file uploads and return JSON with saved paths
@@ -167,11 +190,26 @@ class AccommodationController {
         $extension = pathinfo($originalName, PATHINFO_EXTENSION);
         $newFileName = uniqid() . '_' . time() . '.' . $extension;
         $targetPath = $this->uploadDir . '/' . $newFileName;
+        $logFile = __DIR__ . '/../../logs/php_error.log';
         
-        if (move_uploaded_file($tmpPath, $targetPath)) {
-            return 'uploads/accommodations/' . $newFileName;
+        file_put_contents($logFile, "[" . date('d-M-Y H:i:s e') . "] DEBUG saveFile: tmpPath=$tmpPath, targetPath=$targetPath, uploadDir=$this->uploadDir\n", FILE_APPEND);
+        
+        // Ensure directory exists
+        if (!is_dir($this->uploadDir)) {
+            if (!mkdir($this->uploadDir, 0777, true)) {
+                file_put_contents($logFile, "[" . date('d-M-Y H:i:s e') . "] DEBUG saveFile: Failed to create directory: $this->uploadDir\n", FILE_APPEND);
+                return false;
+            }
+            file_put_contents($logFile, "[" . date('d-M-Y H:i:s e') . "] DEBUG saveFile: Created directory: $this->uploadDir\n", FILE_APPEND);
         }
         
+        if (move_uploaded_file($tmpPath, $targetPath)) {
+            $relativePath = 'uploads/accommodations/' . $newFileName;
+            file_put_contents($logFile, "[" . date('d-M-Y H:i:s e') . "] DEBUG saveFile: Successfully saved file to $relativePath\n", FILE_APPEND);
+            return $relativePath;
+        }
+        
+        file_put_contents($logFile, "[" . date('d-M-Y H:i:s e') . "] DEBUG saveFile: Failed to move file from $tmpPath to $targetPath\n", FILE_APPEND);
         return false;
     }
 
@@ -194,6 +232,25 @@ class AccommodationController {
             
         } catch (\Exception $e) {
             error_log("Error listing accommodations: " . $e->getMessage());
+            $this->sendResponse(false, ['Failed to list accommodations']);
+        }
+    }
+
+    public function listAll() {
+        global $pdo;
+        
+        try {
+            $accommodations = Accommodation::findAll($pdo);
+            
+            // Get main image for each accommodation
+            foreach ($accommodations as &$accommodation) {
+                $accommodation['main_image'] = Accommodation::getMainImage($pdo, $accommodation['id']);
+            }
+            
+            $this->sendResponse(true, [], $accommodations);
+            
+        } catch (\Exception $e) {
+            error_log("Error listing all accommodations: " . $e->getMessage());
             $this->sendResponse(false, ['Failed to list accommodations']);
         }
     }
@@ -362,6 +419,200 @@ class AccommodationController {
         } catch (\Exception $e) {
             error_log("Error deleting accommodation: " . $e->getMessage());
             $this->sendResponse(false, ['Failed to delete accommodation']);
+        }
+
+        if ($result) {
+            // Instead of JSON response, redirect to dashboard
+            header('Location: /TravelMate/public/ac_dashboard');
+            exit;
+        }
+    }
+    
+    public function selectPropertyType() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $propertyType = $_POST['property_type'] ?? '';
+            if (!empty($propertyType)) {
+                $_SESSION['accommodation_features'] = ['property_type' => $propertyType];
+                header('Location: /TravelMate/public/accommodationFeatures');
+                exit;
+            } else {
+                header('Location: /TravelMate/public/propertyListingStart');
+                exit;
+            }
+        }
+    }
+
+
+    
+    public function saveFeatures() {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') { //check whether  the form is submited using POST method
+            // Merge new POST data with existing session data (preserve property_type)
+            $_SESSION['accommodation_features'] = array_merge(
+                $_SESSION['accommodation_features'] ?? [],
+                $_POST
+            );
+
+            // Redirect to next page
+            header('Location: /TravelMate/public/propertyDetails'); //header() - sends HTTP response
+            exit;
+        }
+    }
+
+    public function saveDetails() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $_SESSION['accommodation_details'] = $_POST;
+            header('Location: /TravelMate/public/photoUpload');
+            exit;
+        }
+    }
+
+    public function savePhoto() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Store photo data in session
+            $_SESSION['accommodation_photos'] = $_POST;
+            
+            $uploadedImages = [];
+
+            // Move uploaded images immediately so tmp files do not disappear between steps
+            if (isset($_FILES['images']) && isset($_FILES['images']['name'])) {
+                error_log("DEBUG savePhoto - FILES['images']: " . print_r($_FILES['images'], true));
+                $files = $_FILES['images'];
+
+                if (is_array($files['name'])) {
+                    $totalFiles = count($files['name']);
+                    for ($i = 0; $i < $totalFiles; $i++) {
+                        if ($files['error'][$i] === UPLOAD_ERR_OK) {
+                            $path = $this->saveFile($files['tmp_name'][$i], $files['name'][$i]);
+                            if ($path) {
+                                $uploadedImages[] = $path;
+                            }
+                        }
+                    }
+                } else {
+                    if ($files['error'] === UPLOAD_ERR_OK) {
+                        $path = $this->saveFile($files['tmp_name'], $files['name']);
+                        if ($path) {
+                            $uploadedImages[] = $path;
+                        }
+                    }
+                }
+            } else {
+                error_log("DEBUG savePhoto - No images uploaded");
+            }
+
+            // Persist paths for final save step
+            $_SESSION['accommodation_uploaded_images'] = $uploadedImages;
+            
+            header('Location: /TravelMate/public/houseRules');
+            exit;
+        }
+    }
+
+    public function saveAccommodation() {
+        global $pdo;
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!isset($_SESSION['user'])) {
+                header('Location: /TravelMate/public/login');
+                exit;
+            }
+            
+            $userId = $_SESSION['user']['id'];
+            
+            // Combine all session data
+            $features = $_SESSION['accommodation_features'] ?? []; //all property details from accommodationFeatures page
+            $details = $_SESSION['accommodation_details'] ?? []; //details from propertyDetails page
+            $photos = $_SESSION['accommodation_photos'] ?? []; //photos and description from photoUpload page
+            $rules = $_POST; //house rules from current page
+            
+            // DEBUG: Log session data to check what's being retrieved
+            error_log("DEBUG accommodation_features: " . print_r($features, true));
+            error_log("DEBUG accommodation_details: " . print_r($details, true));
+            error_log("DEBUG accommodation_photos: " . print_r($photos, true));
+            
+            // Get all fields
+            $title = $features['title'] ?? '';
+            $property_type = $features['property_type'] ?? '';  // Fixed: get from features, not type
+            $location = $features['location'] ?? '';
+            $description = $photos['propertyDescription'] ?? $features['description'] ?? '';
+            $rooms = $details['rooms'] ?? 0;
+            $bathrooms = $details['bathrooms'] ?? 0;
+            $maxGuests = $details['max_guests'] ?? 0;
+            $smoking = isset($rules['smoking']) ? 1 : 0;
+            $parties = isset($rules['parties']) ? 1 : 0;
+            $pets = $rules['pets'] ?? 'no';
+            $checkInStart = $rules['check_in_start'] ?? '';
+            $checkInEnd = $rules['check_in_end'] ?? '';
+            $checkOutTime = $rules['check_out_time'] ?? '';
+            $status = 'active';
+            
+            // DEBUG: Log extracted values
+            error_log("DEBUG title: $title, property_type: $property_type, location: $location");
+            error_log("DEBUG accommodation_uploaded_images in session: " . print_r($_SESSION['accommodation_uploaded_images'] ?? 'NOT SET', true));
+            
+            try {
+                $pdo->beginTransaction();
+                
+                // Insert accommodation
+                $sql = "INSERT INTO accommodations (
+                    user_id, property_type, title, description, location,
+                    rooms, bathrooms, max_guests,
+                    smoking, parties, pets, check_in_start, check_in_end,
+                    check_out_time, status, created_at
+                ) VALUES (
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
+                )";
+                
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([
+                    $userId,
+                    $property_type,
+                    $title,
+                    $description,
+                    $location,
+                    $rooms,
+                    $bathrooms,
+                    $maxGuests,
+                    $smoking,
+                    $parties,
+                    $pets,
+                    $checkInStart,
+                    $checkInEnd,
+                    $checkOutTime,
+                    $status
+                ]);
+                
+                $accommodationId = $pdo->lastInsertId();
+                $logFile = __DIR__ . '/../../logs/php_error.log';
+                
+                // Handle already-moved image paths from session
+                if (!empty($_SESSION['accommodation_uploaded_images'])) {
+                    $imagePaths = $_SESSION['accommodation_uploaded_images'];
+                    file_put_contents($logFile, "[" . date('d-M-Y H:i:s e') . "] DEBUG saveAccommodation: Found " . count($imagePaths) . " uploaded image paths\n", FILE_APPEND);
+                    foreach ($imagePaths as $index => $path) {
+                        file_put_contents($logFile, "[" . date('d-M-Y H:i:s e') . "] DEBUG saveAccommodation: Adding image: accommodation_id=$accommodationId, path=$path, is_main=" . ($index === 0 ? '1' : '0') . "\n", FILE_APPEND);
+                        Accommodation::addImage($pdo, $accommodationId, $path, $index === 0);
+                    }
+                }
+                
+                $pdo->commit();
+                
+                // Clear session data
+                unset($_SESSION['accommodation_features']);
+                unset($_SESSION['accommodation_details']);
+                unset($_SESSION['accommodation_photos']);
+                unset($_SESSION['accommodation_images']);
+                unset($_SESSION['accommodation_uploaded_images']);
+                
+                header('Location: /TravelMate/public/success');
+                exit;
+                
+            } catch (\Exception $e) {
+                $pdo->rollBack(); //cancel database transaction
+                error_log("Error saving accommodation: " . $e->getMessage()); //write the error to error server log
+                echo "Error: " . $e->getMessage(); //display error msg on screen
+                exit;
+            }
         }
     }
 }

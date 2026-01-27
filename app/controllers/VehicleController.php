@@ -242,6 +242,30 @@ class VehicleController
         }
     }
 
+    public function listAll()
+    {
+        global $pdo;
+
+        try {
+            $vehicles = Vehicle::findAll($pdo);
+
+            // Add main image to each vehicle
+            foreach ($vehicles as &$vehicle) {
+                $mainImage = self::getVehicleMainImage($pdo, $vehicle['id']);
+                $vehicle['main_image'] = $mainImage;
+
+                // Get all documents for this vehicle
+                $docs = Vehicle::getDocuments($pdo, $vehicle['id']);
+                $vehicle['documents'] = $docs;
+            }
+
+            $this->sendResponse(true, [], $vehicles);
+        } catch (\Exception $e) {
+            error_log("Error listing all vehicles: " . $e->getMessage());
+            $this->sendResponse(false, ['error' => 'Failed to load vehicles']);
+        }
+    }
+
     public function get()
     {
         global $pdo;

@@ -5,7 +5,7 @@ $user = "root";           // XAMPP default user
 $pass = "";               // XAMPP default password (empty)
 $charset = 'utf8mb4';
 
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset"; // create database connection
+$dsn = "mysql:host=$host;port=3307;dbname=$db;charset=$charset"; // create database connection
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
