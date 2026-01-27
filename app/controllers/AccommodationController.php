@@ -93,19 +93,27 @@ class AccommodationController {
             if (isset($_FILES['images']) && !empty($_FILES['images']['name'][0])) {
                 $images = $_FILES['images'];
                 $totalFiles = count($images['name']);
+                error_log("API create: Found $totalFiles images to process");
                 
                 for ($i = 0; $i < $totalFiles; $i++) {
+                    error_log("API create: Processing image $i, error code: " . $images['error'][$i]);
                     if ($images['error'][$i] === UPLOAD_ERR_OK) {
                         $tmpName = $images['tmp_name'][$i];
                         $originalName = $images['name'][$i];
                         $filePath = $this->saveFile($tmpName, $originalName);
                         
                         if ($filePath) {
+                            $isMain = $i === 0 ? 1 : 0;
+                            error_log("API create: Saving image $i with is_main=$isMain, path=$filePath");
                             // Set first image as main image
-                            Accommodation::addImage($pdo, $accommodationId, $filePath, $i === 0);
+                            Accommodation::addImage($pdo, $accommodationId, $filePath, $isMain);
+                        } else {
+                            error_log("API create: Failed to save image $i");
                         }
                     }
                 }
+            } else {
+                error_log("API create: No images in FILES or empty images['name'][0]");
             }
             
             $pdo->commit();
@@ -190,11 +198,26 @@ class AccommodationController {
         $extension = pathinfo($originalName, PATHINFO_EXTENSION);
         $newFileName = uniqid() . '_' . time() . '.' . $extension;
         $targetPath = $this->uploadDir . '/' . $newFileName;
+        $logFile = __DIR__ . '/../../logs/php_error.log';
         
-        if (move_uploaded_file($tmpPath, $targetPath)) {
-            return 'uploads/accommodations/' . $newFileName;
+        file_put_contents($logFile, "[" . date('d-M-Y H:i:s e') . "] DEBUG saveFile: tmpPath=$tmpPath, targetPath=$targetPath, uploadDir=$this->uploadDir\n", FILE_APPEND);
+        
+        // Ensure directory exists
+        if (!is_dir($this->uploadDir)) {
+            if (!mkdir($this->uploadDir, 0777, true)) {
+                file_put_contents($logFile, "[" . date('d-M-Y H:i:s e') . "] DEBUG saveFile: Failed to create directory: $this->uploadDir\n", FILE_APPEND);
+                return false;
+            }
+            file_put_contents($logFile, "[" . date('d-M-Y H:i:s e') . "] DEBUG saveFile: Created directory: $this->uploadDir\n", FILE_APPEND);
         }
         
+        if (move_uploaded_file($tmpPath, $targetPath)) {
+            $relativePath = 'uploads/accommodations/' . $newFileName;
+            file_put_contents($logFile, "[" . date('d-M-Y H:i:s e') . "] DEBUG saveFile: Successfully saved file to $relativePath\n", FILE_APPEND);
+            return $relativePath;
+        }
+        
+        file_put_contents($logFile, "[" . date('d-M-Y H:i:s e') . "] DEBUG saveFile: Failed to move file from $tmpPath to $targetPath\n", FILE_APPEND);
         return false;
     }
 
@@ -417,7 +440,7 @@ class AccommodationController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $propertyType = $_POST['property_type'] ?? '';
             if (!empty($propertyType)) {
-                $_SESSION['accommodation_type'] = ['property_type' => $propertyType];
+                $_SESSION['accommodation_features'] = ['property_type' => $propertyType];
                 header('Location: /TravelMate/public/accommodationFeatures');
                 exit;
             } else {
@@ -431,10 +454,11 @@ class AccommodationController {
     
     public function saveFeatures() {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') { //check whether  the form is submited using POST method
-            // Store all POST data in session
-            //$_SESSION , $_POST are superglobal variables (built in)
-            $_SESSION['accommodation_features'] = $_POST; //'accommodation_features' - session keyname
-            //$_POST - all form input values
+            // Merge new POST data with existing session data (preserve property_type)
+            $_SESSION['accommodation_features'] = array_merge(
+                $_SESSION['accommodation_features'] ?? [],
+                $_POST
+            );
 
             // Redirect to next page
             header('Location: /TravelMate/public/propertyDetails'); //header() - sends HTTP response
@@ -455,10 +479,34 @@ class AccommodationController {
             // Store photo data in session
             $_SESSION['accommodation_photos'] = $_POST;
             
-            // Store uploaded images if any
-            if (isset($_FILES['images'])) {
-                $_SESSION['accommodation_images'] = $_FILES['images'];
+            $uploadedImages = [];
+
+            // Move uploaded images immediately so tmp files do not disappear between steps
+            if (isset($_FILES['images']) && isset($_FILES['images']['name'])) {
+                $files = $_FILES['images'];
+
+                if (is_array($files['name'])) {
+                    $totalFiles = count($files['name']);
+                    for ($i = 0; $i < $totalFiles; $i++) {
+                        if ($files['error'][$i] === UPLOAD_ERR_OK) {
+                            $path = $this->saveFile($files['tmp_name'][$i], $files['name'][$i]);
+                            if ($path) {
+                                $uploadedImages[] = $path;
+                            }
+                        }
+                    }
+                } else {
+                    if ($files['error'] === UPLOAD_ERR_OK) {
+                        $path = $this->saveFile($files['tmp_name'], $files['name']);
+                        if ($path) {
+                            $uploadedImages[] = $path;
+                        }
+                    }
+                }
             }
+
+            // Persist paths for final save step
+            $_SESSION['accommodation_uploaded_images'] = $uploadedImages;
             
             header('Location: /TravelMate/public/houseRules');
             exit;
@@ -477,15 +525,19 @@ class AccommodationController {
             $userId = $_SESSION['user']['id'];
             
             // Combine all session data
-            $features = $_SESSION['accommodation_features'] ?? []; //other pages' details
-            $details = $_SESSION['accommodation_details'] ?? []; //other pages' details
-            $photos = $_SESSION['accommodation_photos'] ?? []; //other pages' details
-            $type = $_SESSION['accommodation_type'] ?? [];
-            $rules = $_POST; //curent page details
+            $features = $_SESSION['accommodation_features'] ?? []; //all property details from accommodationFeatures page
+            $details = $_SESSION['accommodation_details'] ?? []; //details from propertyDetails page
+            $photos = $_SESSION['accommodation_photos'] ?? []; //photos and description from photoUpload page
+            $rules = $_POST; //house rules from current page
+            
+            // DEBUG: Log session data to check what's being retrieved
+            error_log("DEBUG accommodation_features: " . print_r($features, true));
+            error_log("DEBUG accommodation_details: " . print_r($details, true));
+            error_log("DEBUG accommodation_photos: " . print_r($photos, true));
             
             // Get all fields
             $title = $features['title'] ?? '';
-            $property_type = $type['property_type'] ?? '';
+            $property_type = $features['property_type'] ?? '';  // Fixed: get from features, not type
             $location = $features['location'] ?? '';
             $description = $photos['propertyDescription'] ?? $features['description'] ?? '';
             $rooms = $details['rooms'] ?? 0;
@@ -498,6 +550,10 @@ class AccommodationController {
             $checkInEnd = $rules['check_in_end'] ?? '';
             $checkOutTime = $rules['check_out_time'] ?? '';
             $status = 'active';
+            
+            // DEBUG: Log extracted values
+            error_log("DEBUG title: $title, property_type: $property_type, location: $location");
+            error_log("DEBUG accommodation_uploaded_images in session: " . print_r($_SESSION['accommodation_uploaded_images'] ?? 'NOT SET', true));
             
             try {
                 $pdo->beginTransaction();
@@ -532,24 +588,15 @@ class AccommodationController {
                 ]);
                 
                 $accommodationId = $pdo->lastInsertId();
+                $logFile = __DIR__ . '/../../logs/php_error.log';
                 
-                // Handle image uploads from session if any
-                if (isset($_SESSION['accommodation_images'])) {
-                    $images = $_SESSION['accommodation_images'];
-                    if (!empty($images['name'][0])) {
-                        $totalFiles = count($images['name']);
-                        
-                        for ($i = 0; $i < $totalFiles; $i++) {
-                            if ($images['error'][$i] === UPLOAD_ERR_OK) {
-                                $tmpName = $images['tmp_name'][$i];
-                                $originalName = $images['name'][$i];
-                                $filePath = $this->saveFile($tmpName, $originalName);
-                                
-                                if ($filePath) {
-                                    Accommodation::addImage($pdo, $accommodationId, $filePath, $i === 0);
-                                }
-                            }
-                        }
+                // Handle already-moved image paths from session
+                if (!empty($_SESSION['accommodation_uploaded_images'])) {
+                    $imagePaths = $_SESSION['accommodation_uploaded_images'];
+                    file_put_contents($logFile, "[" . date('d-M-Y H:i:s e') . "] DEBUG saveAccommodation: Found " . count($imagePaths) . " uploaded image paths\n", FILE_APPEND);
+                    foreach ($imagePaths as $index => $path) {
+                        file_put_contents($logFile, "[" . date('d-M-Y H:i:s e') . "] DEBUG saveAccommodation: Adding image: accommodation_id=$accommodationId, path=$path, is_main=" . ($index === 0 ? '1' : '0') . "\n", FILE_APPEND);
+                        Accommodation::addImage($pdo, $accommodationId, $path, $index === 0);
                     }
                 }
                 
@@ -560,6 +607,7 @@ class AccommodationController {
                 unset($_SESSION['accommodation_details']);
                 unset($_SESSION['accommodation_photos']);
                 unset($_SESSION['accommodation_images']);
+                unset($_SESSION['accommodation_uploaded_images']);
                 
                 header('Location: /TravelMate/public/success');
                 exit;

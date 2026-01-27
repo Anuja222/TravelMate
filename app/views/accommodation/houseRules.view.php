@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="/TravelMate/public/assets/css/Accommodation/houseRules.css">
     <link rel="stylesheet" href="/TravelMate/public/assets/css/Traveller/usermain.css">
     <link rel="stylesheet" href="/TravelMate/public/assets/css/main.css">
-    <script src="/TravelMate/public/assets/js/propertyListing.js" defer></script>
 </head>
 <body>
     <!-- Header -->
