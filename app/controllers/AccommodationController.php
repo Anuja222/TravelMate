@@ -579,7 +579,7 @@ class AccommodationController {
                     smoking, parties, pets, check_in_start, check_in_end,
                     check_out_time, status, created_at
                 ) VALUES (
-                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
                 )";
                 
                 $stmt = $pdo->prepare($sql);

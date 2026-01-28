@@ -556,8 +556,8 @@ elseif ($page === 'ac_dashboard') {
     include '../app/views/accommodation/detailsProperty.view.php';
 } elseif ($page === 'updateProperty') {
     include '../app/views/accommodation/updateProperty.view.php';
-}elseif ($page === 'price'){
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+}elseif ($page === 'price'){ //if requested page == 'price'
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') { // check the request method (POST/GET)
         require_once __DIR__ . '/../app/controllers/AccommodationController.php';
         $controller = new AccommodationController();
         $controller->savePrice();
