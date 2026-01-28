@@ -565,6 +565,29 @@ class AccommodationController {
             $checkOutTime = $rules['check_out_time'] ?? '';
             $status = 'active';
             
+            // Extract feature flags from session data
+            $featureAirConditioning = isset($features['feature_air_conditioning']) ? 1 : 0;
+            $featureHeating = isset($features['feature_heating']) ? 1 : 0;
+            $featureWifi = isset($features['feature_wifi']) ? 1 : 0;
+            $featureEvCharging = isset($features['feature_ev_charging']) ? 1 : 0;
+            $featurePool = isset($features['feature_pool']) ? 1 : 0;
+            $featureKitchen = isset($features['feature_kitchen']) ? 1 : 0;
+            $featureKitchenette = isset($features['feature_kitchenette']) ? 1 : 0;
+            $featureWashingMachine = isset($features['feature_washing_machine']) ? 1 : 0;
+            $featureTv = isset($features['feature_tv']) ? 1 : 0;
+            $featureEntertainmentPool = isset($features['feature_entertainment_pool']) ? 1 : 0;
+            $featureHotTub = isset($features['feature_hot_tub']) ? 1 : 0;
+            $featureMinibar = isset($features['feature_minibar']) ? 1 : 0;
+            $featureSauna = isset($features['feature_sauna']) ? 1 : 0;
+            $featureBalcony = isset($features['feature_balcony']) ? 1 : 0;
+            $featureGardenView = isset($features['feature_garden_view']) ? 1 : 0;
+            $featureTerrace = isset($features['feature_terrace']) ? 1 : 0;
+            $featureView = isset($features['feature_view']) ? 1 : 0;
+            $featureCctv = isset($features['feature_cctv']) ? 1 : 0;
+            $featureSecurityGuards = isset($features['feature_security_guards']) ? 1 : 0;
+            $featureFirstAidKit = isset($features['feature_first_aid_kit']) ? 1 : 0;
+            $featureLivingRoom = isset($features['feature_living_room']) ? 1 : 0;
+            
             // DEBUG: Log extracted values
             error_log("DEBUG title: $title, property_type: $property_type, location: $location");
             error_log("DEBUG accommodation_uploaded_images in session: " . print_r($_SESSION['accommodation_uploaded_images'] ?? 'NOT SET', true));
@@ -577,9 +600,15 @@ class AccommodationController {
                     user_id, property_type, title, description, location, 
                     rooms, bathrooms, max_guests, price_per_night, price_per_guest,
                     smoking, parties, pets, check_in_start, check_in_end,
-                    check_out_time, status, created_at
+                    check_out_time, status, 
+                    feature_air_conditioning, feature_heating, feature_wifi, feature_ev_charging, feature_pool,
+                    feature_kitchen, feature_kitchenette, feature_washing_machine, feature_tv, feature_entertainment_pool,
+                    feature_hot_tub, feature_minibar, feature_sauna, feature_balcony, feature_garden_view,
+                    feature_terrace, feature_view, feature_cctv, feature_security_guards, feature_first_aid_kit, feature_living_room,
+                    created_at
                 ) VALUES (
-                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
                 )";
                 
                 $stmt = $pdo->prepare($sql);
@@ -600,7 +629,28 @@ class AccommodationController {
                     $checkInStart,
                     $checkInEnd,
                     $checkOutTime,
-                    $status
+                    $status,
+                    $featureAirConditioning,
+                    $featureHeating,
+                    $featureWifi,
+                    $featureEvCharging,
+                    $featurePool,
+                    $featureKitchen,
+                    $featureKitchenette,
+                    $featureWashingMachine,
+                    $featureTv,
+                    $featureEntertainmentPool,
+                    $featureHotTub,
+                    $featureMinibar,
+                    $featureSauna,
+                    $featureBalcony,
+                    $featureGardenView,
+                    $featureTerrace,
+                    $featureView,
+                    $featureCctv,
+                    $featureSecurityGuards,
+                    $featureFirstAidKit,
+                    $featureLivingRoom
                 ]);
                 
                 $accommodationId = $pdo->lastInsertId();
