@@ -93,19 +93,27 @@ class AccommodationController {
             if (isset($_FILES['images']) && !empty($_FILES['images']['name'][0])) {
                 $images = $_FILES['images'];
                 $totalFiles = count($images['name']);
+                error_log("API create: Found $totalFiles images to process");
                 
                 for ($i = 0; $i < $totalFiles; $i++) {
+                    error_log("API create: Processing image $i, error code: " . $images['error'][$i]);
                     if ($images['error'][$i] === UPLOAD_ERR_OK) {
                         $tmpName = $images['tmp_name'][$i];
                         $originalName = $images['name'][$i];
                         $filePath = $this->saveFile($tmpName, $originalName);
                         
                         if ($filePath) {
+                            $isMain = $i === 0 ? 1 : 0;
+                            error_log("API create: Saving image $i with is_main=$isMain, path=$filePath");
                             // Set first image as main image
-                            Accommodation::addImage($pdo, $accommodationId, $filePath, $i === 0);
+                            Accommodation::addImage($pdo, $accommodationId, $filePath, $isMain);
+                        } else {
+                            error_log("API create: Failed to save image $i");
                         }
                     }
                 }
+            } else {
+                error_log("API create: No images in FILES or empty images['name'][0]");
             }
             
             $pdo->commit();
@@ -444,7 +452,7 @@ class AccommodationController {
 
 
     
-    public function saveFeatures() {
+    public function saveFeatures() { 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') { //check whether  the form is submited using POST method
             // Merge new POST data with existing session data (preserve property_type)
             $_SESSION['accommodation_features'] = array_merge(
@@ -475,7 +483,6 @@ class AccommodationController {
 
             // Move uploaded images immediately so tmp files do not disappear between steps
             if (isset($_FILES['images']) && isset($_FILES['images']['name'])) {
-                error_log("DEBUG savePhoto - FILES['images']: " . print_r($_FILES['images'], true));
                 $files = $_FILES['images'];
 
                 if (is_array($files['name'])) {
@@ -496,13 +503,22 @@ class AccommodationController {
                         }
                     }
                 }
-            } else {
-                error_log("DEBUG savePhoto - No images uploaded");
             }
 
             // Persist paths for final save step
             $_SESSION['accommodation_uploaded_images'] = $uploadedImages;
             
+            header('Location: /TravelMate/public/price');
+            exit;
+        }
+    }
+
+    public function savePrice(){
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+            $_SESSION['accommodation_price'] = [
+                'price_night' => $_POST['price_night'] ?? '',
+                'price_guest' => $_POST['price_guest'] ?? ''
+            ];
             header('Location: /TravelMate/public/houseRules');
             exit;
         }
@@ -523,6 +539,7 @@ class AccommodationController {
             $features = $_SESSION['accommodation_features'] ?? []; //all property details from accommodationFeatures page
             $details = $_SESSION['accommodation_details'] ?? []; //details from propertyDetails page
             $photos = $_SESSION['accommodation_photos'] ?? []; //photos and description from photoUpload page
+            $prices = $_SESSION['accommodation_price'] ?? []; //price from price.view.php page
             $rules = $_POST; //house rules from current page
             
             // DEBUG: Log session data to check what's being retrieved
@@ -534,6 +551,8 @@ class AccommodationController {
             $title = $features['title'] ?? '';
             $property_type = $features['property_type'] ?? '';  // Fixed: get from features, not type
             $location = $features['location'] ?? '';
+            $price_night = $prices['price_night'] ?? '';
+            $price_guest = $prices['price_guest'] ?? '';
             $description = $photos['propertyDescription'] ?? $features['description'] ?? '';
             $rooms = $details['rooms'] ?? 0;
             $bathrooms = $details['bathrooms'] ?? 0;
@@ -555,12 +574,12 @@ class AccommodationController {
                 
                 // Insert accommodation
                 $sql = "INSERT INTO accommodations (
-                    user_id, property_type, title, description, location,
-                    rooms, bathrooms, max_guests,
+                    user_id, property_type, title, description, location, 
+                    rooms, bathrooms, max_guests, price_per_night, price_per_guest,
                     smoking, parties, pets, check_in_start, check_in_end,
                     check_out_time, status, created_at
                 ) VALUES (
-                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
                 )";
                 
                 $stmt = $pdo->prepare($sql);
@@ -573,6 +592,8 @@ class AccommodationController {
                     $rooms,
                     $bathrooms,
                     $maxGuests,
+                    $price_night,
+                    $price_guest,
                     $smoking,
                     $parties,
                     $pets,

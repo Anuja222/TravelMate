@@ -209,6 +209,14 @@ elseif (preg_match('#^/deleteAccommodation/(\d+)$#', $requestUri, $matches)) {
     $controller->delete();
     exit;
 }
+elseif (preg_match('#^/viewProperty/(\d+)$#', $requestUri, $matches)) {
+    $accommodationId = $matches[1];
+    $viewFile = __DIR__ . '/../app/views/accommodation/viewProperty.view.php';
+    if (file_exists($viewFile)) {
+        require_once $viewFile;
+        exit;
+    }
+}
 
 
 // Destination API routes
@@ -548,6 +556,14 @@ elseif ($page === 'ac_dashboard') {
     include '../app/views/accommodation/detailsProperty.view.php';
 } elseif ($page === 'updateProperty') {
     include '../app/views/accommodation/updateProperty.view.php';
+}elseif ($page === 'price'){ //if requested page == 'price'
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') { // check the request method (POST/GET)
+        require_once __DIR__ . '/../app/controllers/AccommodationController.php';
+        $controller = new AccommodationController();
+        $controller->savePrice();
+    } else {
+        include '../app/views/accommodation/price.view.php';
+    }
 }
 
 //admin pages

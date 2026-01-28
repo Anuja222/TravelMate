@@ -115,7 +115,13 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
 
             if(!empty($accommodations)){
               foreach ($accommodations as $property){
-                $imagePath = $property['main_image'] ?? 'assets/images/default-property.jpg'; //use main image if exists. otherwise use default image
+                // Use main image if exists, otherwise use default
+                if ($property['main_image']) {
+                    // Image path from DB is relative to public folder: uploads/accommodations/...
+                    $imagePath = $property['main_image'];
+                } else {
+                    $imagePath = 'assets/images/default-property.jpg';
+                }
                 $statusClass = strtolower($property['status']) === 'active' ? 'status-active' : 'status-inactive';
                 ?>
                 <div class="property-card">
@@ -138,7 +144,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                       <span><?php echo htmlspecialchars($property['max_guests']); ?> Guests</span>
                     </div>
                     <div class="property-actions">
-                      <button type="button" class="view-btn" onclick="window.location.href='/TravelMate/public/accommodationdetail/<?php echo htmlspecialchars($property['id']); ?>';">View</button>
+                      <button type="button" class="view-btn" onclick="window.location.href='/TravelMate/public/viewProperty/<?php echo htmlspecialchars($property['id']); ?>';">View</button>
                       <button type="button" class="edit-btn" onclick="window.location.href='/TravelMate/public/editAccommodationFeatures/<?php echo htmlspecialchars($property['id']); ?>';">Update</button>
                       <button type="button" class="delete-btn" onclick="deleteProperty(<?php echo htmlspecialchars($property['id']); ?>)">Delete</button>
                     </div>
