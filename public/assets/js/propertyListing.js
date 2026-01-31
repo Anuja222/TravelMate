@@ -40,7 +40,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (photoForm) {
         console.log('Initializing photo upload form handlers');
         const MAX_IMAGES = 25;
+        const MIN_IMAGES = 5;
         const photoInput = document.getElementById('photoInput');
+        const photoCountSpan = document.getElementById('photoCount');
         console.log('photoInput element found:', photoInput);
 
         const getPreviewContainer = () => {
@@ -68,6 +70,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         async function handleFiles(files) {
             const stored = JSON.parse(localStorage.getItem('property_images') || '[]');
+            const remainingSlots = MAX_IMAGES - stored.length;
+            
+            if (remainingSlots <= 0) {
+                alert(`Maximum ${MAX_IMAGES} photos allowed. Please remove some photos before adding more.`);
+                return;
+            }
+            
             for (let i = 0; i < files.length && stored.length < MAX_IMAGES; i++) {
                 const f = files[i];
                 try {
@@ -79,6 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             try { localStorage.setItem('property_images', JSON.stringify(stored)); } catch(e){ console.error(e); }
             displayImagePreviewsFromStored();
+            updatePhotoCount(stored.length);
         }
 
         photoInput.addEventListener('change', function(e) {
@@ -89,6 +99,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // Photo form will submit normally to /savePhoto - no hijacking needed
+
+        function updatePhotoCount(count) {
+            if (photoCountSpan) {
+                photoCountSpan.textContent = count;
+                photoCountSpan.style.color = count >= MIN_IMAGES ? 'green' : 'red';
+                photoCountSpan.style.fontWeight = 'bold';
+            }
+        }
 
         function displayImagePreviewsFromStored() {
             const stored = JSON.parse(localStorage.getItem('property_images') || '[]');
@@ -110,9 +128,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 preview.innerHTML = `\
                     <img src="${item.dataUrl}" alt="Preview ${idx+1}">\
                     <button type="button" class="remove-image" data-idx="${idx}">&times;</button>\
+                    <span class="image-number">${idx + 1}</span>\
                 `;
                 previewContainer.appendChild(preview);
             });
+            
+            updatePhotoCount(stored.length);
         }
 
         // Remove image handler (delegated)
@@ -125,6 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 stored.splice(idx, 1);
                 try { localStorage.setItem('property_images', JSON.stringify(stored)); } catch(e){console.error(e);} 
                 displayImagePreviewsFromStored();
+                updatePhotoCount(stored.length);
             }
         });
 
@@ -141,6 +163,12 @@ document.addEventListener('DOMContentLoaded', function() {
             
             console.log('Stored images count:', stored.length);
             console.log('Description:', description);
+            
+            // Validate minimum photos
+            if (stored.length < MIN_IMAGES) {
+                alert(`Please upload at least ${MIN_IMAGES} photos. You currently have ${stored.length} photo(s).`);
+                return;
+            }
             
             if (!description.trim()) {
                 alert('Please provide a property description');
