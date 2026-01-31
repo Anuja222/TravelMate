@@ -21,11 +21,12 @@
     <h1>What does your place look like?</h1>
     <form class="photo-upload-form" action="/TravelMate/public/savePhoto" method="POST" enctype="multipart/form-data">
         <label>Upload photos of your property</label>
+        <p style="color: #666; font-size: 14px; margin: 5px 0 15px 0;">* Minimum 5 photos required (Maximum 25)</p>
         <div class="photo-upload-box">
             <input type="file" id="photoInput" name="images[]" multiple accept="image/*">
             <label for="photoInput" class="photo-upload-label">
                 <span class="photo-upload-icon"></span>
-                Upload photos
+                Upload photos (<span id="photoCount">0</span>/25)
             </label>
         </div>
         <div id="imagePreviews" class="image-previews" aria-live="polite"></div>
