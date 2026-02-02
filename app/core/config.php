@@ -1,7 +1,7 @@
 <?php
 
 if($_SERVER['SERVER_NAME'] == 'localhost'){
-    define('DBNAME','my_db');
+    define('DBNAME','travelmate');
     define('DBHOST','localhost');
     define('DBUSER','root');
     define('DBPASS','');
@@ -9,7 +9,7 @@ if($_SERVER['SERVER_NAME'] == 'localhost'){
     define('ROOT','http://localhost/TravelMate/public');
 }
 else{
-    define('DBNAME', 'my_db');
+    define('DBNAME', 'travelmate');
     define('DBHOST', 'localhost');
     define('DBUSER', 'root');
     define('DBPASS', '');
