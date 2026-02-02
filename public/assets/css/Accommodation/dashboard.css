@@ -183,7 +183,7 @@ main {
   display: inline-block;
 }
 
-.favourite h3::after {
+/* .favourite h3::after {
   content: '';
   position: absolute;
   bottom: -10px;
@@ -192,7 +192,7 @@ main {
   height: 3px;
   background: #1abc5b;
   border-radius: 2px;
-}
+} */
 
 .cover {
   position: relative;
