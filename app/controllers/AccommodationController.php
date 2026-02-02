@@ -469,7 +469,55 @@ class AccommodationController {
     public function saveDetails() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['accommodation_details'] = $_POST;
+
+            $_SESSION['property_details']['max_guests'] = (int)($_POST['max_guests'] ?? 2);
+            $_SESSION['property_details']['bathrooms'] = (int)($_POST['bathrooms'] ?? 1);
+            $_SESSION['property_details']['children'] = $_POST['children'] ?? null;
+            
+            // Bedroom data is already in session, but you can update if needed
+            if (isset($_POST['bedrooms'])) {
+                foreach ($_POST['bedrooms'] as $index => $bedroom) {
+                    $_SESSION['property_details']['bedrooms'][$index] = $bedroom;
+                }
+            }
             header('Location: /TravelMate/public/photoUpload');
+            exit;
+        }
+    }
+
+    public function saveBedRoom() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            if (!isset($_SESSION['property_details'])) {
+                $_SESSION['property_details'] = [
+                    'bedrooms' => [null],
+                    'max_guests' => 2,
+                    'bathrooms' => 1,
+                    'children' => null
+                ];
+            }
+
+            $bedIndex = (int)($_POST['bed_index'] ?? 1);
+            if ($bedIndex < 1) {
+                $bedIndex = 1;
+            }
+            $type = trim($_POST['bed_type'] ?? '');
+            $count = (int)($_POST['bed_count'] ?? 0);
+
+            // Ensure array size
+            while (count($_SESSION['property_details']['bedrooms']) < $bedIndex) {
+                $_SESSION['property_details']['bedrooms'][] = null;
+            }
+
+            $_SESSION['property_details']['bedrooms'][$bedIndex - 1] = [
+                'type' => $type,
+                'count' => $count
+            ];
+
+            header('Location: /TravelMate/public/propertyDetails');
             exit;
         }
     }
@@ -562,7 +610,16 @@ class AccommodationController {
             $pets = $rules['pets'] ?? 'no';
             $checkInStart = $rules['check_in_start'] ?? '';
             $checkInEnd = $rules['check_in_end'] ?? '';
-            $checkOutTime = $rules['check_out_time'] ?? '';
+            $checkOutStart = $rules['check_out_start'] ?? '';
+            $checkOutEnd = $rules['check_out_end'] ?? '';
+            $checkOutTime = '';
+            if (!empty($checkOutStart) && !empty($checkOutEnd)) {
+                $checkOutTime = $checkOutStart . '-' . $checkOutEnd;
+            } elseif (!empty($checkOutStart)) {
+                $checkOutTime = $checkOutStart;
+            } elseif (!empty($checkOutEnd)) {
+                $checkOutTime = $checkOutEnd;
+            }
             $status = 'active';
             
             // Extract feature flags from session data
@@ -685,5 +742,76 @@ class AccommodationController {
                 exit;
             }
         }
+    }
+
+    public function index()
+    {
+        // Handle POST actions
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->handleAction();
+            return;
+        }
+        
+        // Display the view
+        $this->view('accommodation/propertyDetails');
+    }
+    
+   private function handleAction()
+    {
+        $action = $_POST['action'] ?? '';
+        $removeIndex = null;
+        if (strpos($action, 'remove_bedroom:') === 0) {
+            $parts = explode(':', $action, 2);
+            if (isset($parts[1]) && is_numeric($parts[1])) {
+                $removeIndex = (int)$parts[1];
+            }
+            $action = 'remove_bedroom';
+        }
+        
+        if (!isset($_SESSION['property_details'])) {
+            $_SESSION['property_details'] = [
+                'bedrooms' => [null],
+                'max_guests' => 2,
+                'bathrooms' => 1,
+                'children' => null
+            ];
+        }
+        
+        switch ($action) {
+            case 'add_bedroom':
+                $_SESSION['property_details']['bedrooms'][] = null;
+                break;
+                
+            case 'remove_bedroom':
+                $index = $removeIndex ?? (int)($_POST['bedroom_index'] ?? -1);
+                if ($index >= 0 && isset($_SESSION['property_details']['bedrooms'][$index])) {
+                    array_splice($_SESSION['property_details']['bedrooms'], $index, 1);
+                    // Ensure at least one bedroom remains
+                    if (empty($_SESSION['property_details']['bedrooms'])) {
+                        $_SESSION['property_details']['bedrooms'] = [null];
+                    }
+                }
+                break;
+                
+            case 'increment_guests':
+                $_SESSION['property_details']['max_guests'] = min(100, $_SESSION['property_details']['max_guests'] + 1);
+                break;
+                
+            case 'decrement_guests':
+                $_SESSION['property_details']['max_guests'] = max(1, $_SESSION['property_details']['max_guests'] - 1);
+                break;
+                
+            case 'increment_bathrooms':
+                $_SESSION['property_details']['bathrooms'] = min(100, $_SESSION['property_details']['bathrooms'] + 1);
+                break;
+                
+            case 'decrement_bathrooms':
+                $_SESSION['property_details']['bathrooms'] = max(1, $_SESSION['property_details']['bathrooms'] - 1);
+                break;
+        }
+        
+        // Redirect back to avoid form resubmission
+        header('Location: ' . $_SERVER['REQUEST_URI']);
+        exit;
     }
 }
