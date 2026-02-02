@@ -257,7 +257,7 @@ header {
   text-align: center;
   color: white;
   max-width: 800px;
-  padding: 0 2em;
+  padding: 4em 2em;
   animation: fadeInUp 1s ease-out;
   /* align-items: center; */
 }
