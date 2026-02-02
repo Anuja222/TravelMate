@@ -54,7 +54,6 @@
     </form>
     <!-- Footer -->
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
-    <script></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         const addBtn = document.querySelector('.add-bedroom-btn');
