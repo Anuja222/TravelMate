@@ -545,9 +545,21 @@ elseif ($page === 'ac_dashboard') {
 } elseif ($page === 'accommodationCalendar') {
     include '../app/views/accommodation/accommodationCalendar.view.php';
 } elseif ($page === 'propertyDetails') {
-    include '../app/views/accommodation/propertyDetails.view.php';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        require_once __DIR__ . '/../app/controllers/AccommodationController.php';
+        $controller = new AccommodationController();
+        $controller->index();
+    } else {
+        include '../app/views/accommodation/propertyDetails.view.php';
+    }
 } elseif ($page === 'bedRoom') {
-    include '../app/views/accommodation/bedRoom.view.php';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        require_once __DIR__ . '/../app/controllers/AccommodationController.php';
+        $controller = new AccommodationController();
+        $controller->saveBedRoom();
+    } else {
+        include '../app/views/accommodation/bedRoom.view.php';
+    }
 } elseif ($page === 'editBedrooms') {
     include '../app/views/accommodation/editBedrooms.view.php';
 } elseif ($page === 'viewProperty') {
