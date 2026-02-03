@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Bookings - TravelMate</title>
+    <title>My Transport Bookings - TravelMate</title>
     <link rel="stylesheet" href="assets/css/Traveller/mybookings.css">
     <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
 </head>
@@ -13,8 +13,8 @@
     <!-- Main Content -->
     <div class="main-content">
         <div class="page-header">
-            <h1>My Bookings</h1>
-            <p>Manage and view all your travel reservations</p>
+            <h1>My Transport Bookings</h1>
+            <p>Manage and view all your transport reservations</p>
         </div>
 
         <!-- Filter Tabs -->
@@ -26,7 +26,7 @@
 
         <!-- Search Section -->
         <div class="controls-section" style="margin-bottom: 2em; display: none;">
-            <input type="text" class="search-box" placeholder="Search bookings by room name or booking ID..." id="bookingSearch">
+            <input type="text" class="search-box" placeholder="Search bookings by vehicle or booking ID..." id="bookingSearch">
             <select class="sort-dropdown" id="sortBookings">
                 <option value="date_desc">Newest First</option>
                 <option value="date_asc">Oldest First</option>
@@ -42,27 +42,14 @@
         </div>
 
         <div class="bookings-container">
-            <!-- Hotels Section -->
-            <div class="booking-section" data-category="hotels">
+            <!-- Transport Section -->
+            <div class="booking-section" data-category="transport">
                 <div class="section-header">
-                    <div class="section-icon">🏨</div>
-                    <h2 class="section-title">Hotel Bookings</h2>
+                    <div class="section-icon">🚗</div>
+                    <h2 class="section-title">Transport Bookings</h2>
                 </div>
                 
                 <!-- Bookings will be dynamically loaded here -->
-            </div>
-
-            <!-- Transport Section (Future Implementation) -->
-            <div class="booking-section" data-category="transport" style="display: none;">
-                <div class="section-header">
-                    <div class="section-icon">✈️</div>
-                    <h2 class="section-title">Transport Bookings</h2>
-                </div>
-                <div class="empty-state">
-                    <div class="empty-state-icon">🚗</div>
-                    <h3>No Transport Bookings</h3>
-                    <p>You haven't booked any transportation yet.</p>
-                </div>
             </div>
         </div>
 
@@ -97,10 +84,10 @@
 
     <!-- Booking Details Modal -->
     <div id="bookingDetailsModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6);">
-        <div class="modal-content" style="background-color: #fefefe; margin: 5% auto; padding: 2em; border-radius: 16px; width: 80%; max-width: 800px; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
-            <span class="close" style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
-            <h2 style="margin-bottom: 1em; color: #222;">Booking Details</h2>
-            <div id="modalContent"></div>
+        <div class="modal-content" style="background-color: #fefefe; margin: 5% auto; padding: 2.5em; border-radius: 20px; width: 90%; max-width: 650px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+            <span class="close" style="color: #aaa; float: right; font-size: 32px; font-weight: bold; cursor: pointer; line-height: 20px; transition: all 0.3s ease;">&times;</span>
+            <h2 style="margin-bottom: 1.5em; color: #1abc5b; font-size: 28px; font-weight: 700;">🚗 Transport Booking Details</h2>
+            <div id="modalContent" style="color: #333;"></div>
         </div>
     </div>
 
@@ -115,7 +102,7 @@
                 </svg>
             </div>
             <h2>Cancel Booking?</h2>
-            <p>Are you sure you want to cancel this booking? This action cannot be undone.</p>
+            <p>Are you sure you want to cancel this transport booking? This action cannot be undone.</p>
             <div class="modal-actions">
                 <button class="btn-cancel-action" onclick="closeConfirmModal()">No, Keep It</button>
                 <button class="btn-confirm-cancel" onclick="proceedWithCancel()">Yes, Cancel Booking</button>
@@ -133,7 +120,7 @@
                 </svg>
             </div>
             <h2>Booking Cancelled Successfully</h2>
-            <p>Your booking has been cancelled and you will receive a confirmation email shortly.</p>
+            <p>Your transport booking has been cancelled and you will receive a confirmation email shortly.</p>
             <button class="btn-close-success" onclick="closeCancelSuccessModal()">Close</button>
         </div>
     </div>
@@ -160,12 +147,12 @@
             <div class="delete-icon">
                 <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="30" cy="30" r="28" stroke="#dc2626" stroke-width="3" fill="#fef2f2"/>
-                    <path d="M20 22H40M25 22V18C25 17.4477 25.4477 17 26 17H34C34.5523 17 35 17.4477 35 18V22M37 22V40C37 40.5523 36.5523 41 36 41H24C23.4477 41 23 40.5523 23 40V22" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M20 22H40M25 22V18C25 17.4477 25.4477 17 26 17H34C34.5523 17 35 18V22M37 22V40C37 40.5523 36.5523 41 36 41H24C23.4477 41 23 40.5523 23 40V22" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M27 28V36M33 28V36" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
                 </svg>
             </div>
             <h2>Delete Booking?</h2>
-            <p>Are you sure you want to permanently delete this booking? This action cannot be undone.</p>
+            <p>Are you sure you want to permanently delete this transport booking? This action cannot be undone.</p>
             <div class="modal-actions">
                 <button class="btn-cancel-action" onclick="closeDeleteConfirmModal()">No, Keep It</button>
                 <button class="btn-confirm-delete" onclick="proceedWithDelete()">Yes, Delete Permanently</button>
@@ -183,12 +170,12 @@
                 </svg>
             </div>
             <h2>Booking Deleted Successfully</h2>
-            <p>The booking has been permanently removed from your records.</p>
+            <p>The transport booking has been permanently removed from your records.</p>
             <button class="btn-close-success" onclick="closeDeleteSuccessModal()">Close</button>
         </div>
     </div>
 
-    <script src="assets/js/mybookings.js"></script>
+    <script src="assets/js/mytransportbookings.js"></script>
     
     <style>
         @keyframes spin {
@@ -299,8 +286,8 @@
         .btn-cancel-action {
             background: #f3f4f6;
             color: #374151;
-            border: 2px solid #e5e7eb;
-            padding: 12px 28px;
+            border: none;
+            padding: 12px 24px;
             border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
@@ -310,14 +297,13 @@
 
         .btn-cancel-action:hover {
             background: #e5e7eb;
-            border-color: #d1d5db;
         }
 
         .btn-confirm-cancel {
             background: #ef4444;
             color: white;
             border: none;
-            padding: 12px 28px;
+            padding: 12px 24px;
             border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
@@ -331,8 +317,26 @@
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
 
-        /* Cancel Success Modal */
-        .cancel-success-modal {
+        .btn-confirm-delete {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-confirm-delete:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        /* Success Modal */
+        .cancel-success-modal, .delete-success-modal {
             display: none;
             position: fixed;
             top: 0;
@@ -346,16 +350,16 @@
             justify-content: center;
         }
 
-        .cancel-success-modal.show {
+        .cancel-success-modal.show, .delete-success-modal.show {
             display: flex;
         }
 
-        .cancel-success-content {
+        .cancel-success-content, .delete-success-content {
             background: white;
             border-radius: 16px;
             padding: 40px;
             text-align: center;
-            max-width: 420px;
+            max-width: 450px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             animation: slideUp 0.4s ease;
         }
@@ -365,14 +369,14 @@
             animation: scaleIn 0.5s ease 0.2s both;
         }
 
-        .cancel-success-content h2 {
+        .cancel-success-content h2, .delete-success-content h2 {
             color: #10b981;
             font-size: 28px;
             margin: 0 0 12px 0;
             font-weight: 700;
         }
 
-        .cancel-success-content p {
+        .cancel-success-content p, .delete-success-content p {
             color: #6b7280;
             font-size: 16px;
             margin: 0 0 28px 0;
@@ -383,7 +387,7 @@
             background: #10b981;
             color: white;
             border: none;
-            padding: 12px 36px;
+            padding: 12px 32px;
             border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
@@ -421,7 +425,7 @@
             border-radius: 16px;
             padding: 40px;
             text-align: center;
-            max-width: 420px;
+            max-width: 450px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             animation: slideUp 0.4s ease;
         }
@@ -449,7 +453,7 @@
             background: #ef4444;
             color: white;
             border: none;
-            padding: 12px 36px;
+            padding: 12px 32px;
             border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
@@ -463,7 +467,7 @@
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
 
-        /* Delete Confirmation Modal */
+        /* Delete Modal */
         .delete-confirm-modal {
             display: none;
             position: fixed;
@@ -511,26 +515,64 @@
             line-height: 1.6;
         }
 
-        .btn-confirm-delete {
-            background: #dc2626;
-            color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 8px;
-            font-size: 16px;
+        /* Enhanced Booking Details Modal */
+        .modal .close:hover,
+        .modal .close:focus {
+            color: #1abc5b;
+            transform: rotate(90deg);
+        }
+
+        #modalContent > div {
+            margin-bottom: 1.2em;
+            padding: 0.8em 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        #modalContent > div:last-child {
+            border-bottom: none;
+        }
+
+        #modalContent strong {
+            color: #555;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            display: inline-block;
+            min-width: 160px;
+            font-size: 15px;
         }
 
-        .btn-confirm-delete:hover {
-            background: #b91c1c;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        #modalContent .status-badge {
+            display: inline-block;
+            padding: 0.4em 1.2em;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 0.5em;
         }
 
-        /* Delete Success Modal */
-        .delete-success-modal {
+        #modalContent div[style*="border-top"] {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.5em !important;
+            border-radius: 12px;
+            margin-top: 1.5em !important;
+            border: 2px solid #e0e0e0 !important;
+        }
+
+        #modalContent div[style*="border-top"] > div {
+            font-size: 16px;
+            padding: 0.5em 0;
+        }
+
+        #modalContent div[style*="border-top"] > div:last-child {
+            border-top: 2px solid #1abc5b;
+            padding-top: 1em;
+            margin-top: 1em;
+            font-size: 18px;
+        }
+
+        /* Booking Details Modal Styles */
+        .booking-details-modal {
             display: none;
             position: fixed;
             top: 0;
@@ -542,20 +584,140 @@
             animation: fadeIn 0.3s ease;
             align-items: center;
             justify-content: center;
+            overflow-y: auto;
         }
 
-        .delete-success-modal.show {
+        .booking-details-modal.show {
             display: flex;
         }
 
-        .delete-success-content {
+        .booking-details-content {
             background: white;
-            border-radius: 16px;
-            padding: 40px;
-            text-align: center;
-            max-width: 420px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             animation: slideUp 0.4s ease;
+            margin: 2em auto;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #1abc5b 0%, #169d4a 100%);
+            padding: 2em;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .header-icon {
+            margin-bottom: 1em;
+            animation: scaleIn 0.5s ease 0.2s both;
+        }
+
+        .modal-header h2 {
+            color: white;
+            font-size: 26px;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .close-details {
+            position: absolute;
+            top: 1em;
+            right: 1em;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .close-details:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 2em;
+        }
+
+        .modal-body > div {
+            margin-bottom: 1.5em;
+        }
+
+        .modal-body h3 {
+            color: #1abc5b;
+            margin-bottom: 1em;
+            font-size: 20px;
+            font-weight: 700;
+            padding-bottom: 0.5em;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .modal-body .status-badge {
+            display: inline-block;
+            padding: 0.5em 1.5em;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-body strong {
+            color: #374151;
+            font-weight: 600;
+            display: inline-block;
+            min-width: 180px;
+        }
+
+        .modal-body > div:not(:last-child) {
+            padding-bottom: 0.8em;
+        }
+
+        .modal-body div[style*="border-top"] {
+            background: #f8f9fa;
+            padding: 1.5em !important;
+            border-radius: 12px;
+            margin-top: 2em !important;
+        }
+
+        .modal-body div[style*="border-top"] > div {
+            font-size: 16px;
+        }
+
+        .modal-body div[style*="border-top"] > div:last-child {
+            border-top: 2px solid #e0e0e0;
+            padding-top: 1em;
+            margin-top: 1em;
+        }
+
+        /* Scrollbar styling for modal */
+        .booking-details-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .booking-details-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .booking-details-content::-webkit-scrollbar-thumb {
+            background: #1abc5b;
+            border-radius: 10px;
+        }
+
+        .booking-details-content::-webkit-scrollbar-thumb:hover {
+            background: #169d4a;
         }
     </style>
 </body>

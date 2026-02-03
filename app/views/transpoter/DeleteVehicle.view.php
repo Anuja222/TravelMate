@@ -47,6 +47,246 @@
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteConfirmModal" class="delete-modal">
+    <div class="delete-modal-content">
+      <div class="warning-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
+      <h2>Confirm Vehicle Deletion</h2>
+      <p>Are you absolutely sure you want to delete this vehicle? This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button onclick="closeDeleteConfirmModal()" class="btn-cancel">Cancel</button>
+        <button onclick="proceedWithDelete()" class="btn-delete">Yes, Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Success Modal -->
+  <div id="deleteSuccessModal" class="delete-success-modal">
+    <div class="delete-success-content">
+      <div class="success-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+      </div>
+      <h2>Vehicle Deleted Successfully!</h2>
+      <p>The vehicle has been permanently removed from your account.</p>
+      <button onclick="goToDashboard()" class="btn-go-dashboard">Go to Dashboard</button>
+    </div>
+  </div>
+
+  <style>
+    /* Delete Confirmation Modal */
+    .delete-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 10000;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .delete-modal-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      text-align: center;
+      max-width: 450px;
+      width: 90%;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      animation: slideUp 0.4s ease-out;
+    }
+
+    .delete-modal .warning-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: scaleIn 0.5s ease-out 0.2s both;
+    }
+
+    .delete-modal .warning-icon svg {
+      width: 45px;
+      height: 45px;
+      color: white;
+    }
+
+    .delete-modal-content h2 {
+      font-size: 24px;
+      color: #1f2937;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .delete-modal-content p {
+      font-size: 15px;
+      color: #6b7280;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .btn-cancel {
+      background: #f3f4f6;
+      color: #374151;
+      border: none;
+      padding: 12px 28px;
+      font-size: 16px;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-cancel:hover {
+      background: #e5e7eb;
+      transform: translateY(-2px);
+    }
+
+    .btn-delete {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      font-size: 16px;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-delete:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+    }
+
+    /* Delete Success Modal */
+    .delete-success-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 10000;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .delete-success-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      text-align: center;
+      max-width: 450px;
+      width: 90%;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      animation: slideUp 0.4s ease-out;
+    }
+
+    .delete-success-modal .success-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: scaleIn 0.5s ease-out 0.2s both;
+    }
+
+    .delete-success-modal .success-icon svg {
+      width: 45px;
+      height: 45px;
+      color: white;
+    }
+
+    .delete-success-content h2 {
+      font-size: 24px;
+      color: #1f2937;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .delete-success-content p {
+      font-size: 15px;
+      color: #6b7280;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    .btn-go-dashboard {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      padding: 12px 32px;
+      font-size: 16px;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-go-dashboard:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -40%);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+  </style>
+
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const vehicleId = urlParams.get('id');
@@ -93,11 +333,16 @@
       `;
     }
 
-    document.getElementById('confirmDelete').addEventListener('click', async function () {
-      if (!confirm('Are you absolutely sure you want to delete this vehicle?')) return;
+    document.getElementById('confirmDelete').addEventListener('click', function () {
+      showDeleteConfirmModal();
+    });
 
-      this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> DELETING...';
-      this.disabled = true;
+    async function proceedWithDelete() {
+      closeDeleteConfirmModal();
+      
+      const deleteBtn = document.getElementById('confirmDelete');
+      deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> DELETING...';
+      deleteBtn.disabled = true;
 
       try {
         const formData = new FormData();
@@ -112,26 +357,51 @@
         const result = await response.json();
 
         if (result.success) {
-          alert('Vehicle deleted successfully');
-          window.location.href = 'tr_dashboard';
+          showDeleteSuccessModal();
         } else {
           alert('Failed to delete vehicle');
-          this.innerHTML = 'YES, DELETE';
-          this.disabled = false;
+          deleteBtn.innerHTML = 'YES, DELETE';
+          deleteBtn.disabled = false;
         }
       } catch (error) {
         console.error('Error:', error);
         alert('Network error');
-        this.innerHTML = 'YES, DELETE';
-        this.disabled = false;
+        deleteBtn.innerHTML = 'YES, DELETE';
+        deleteBtn.disabled = false;
       }
-    });
+    }
 
     document.getElementById('cancelDelete').addEventListener('click', function () {
       window.location.href = 'tr_dashboard';
     });
 
     loadVehicleDetails();
+    
+    // Modal functions
+    function showDeleteConfirmModal() {
+      const modal = document.getElementById('deleteConfirmModal');
+      if (modal) {
+        modal.style.display = 'block';
+      }
+    }
+    
+    function closeDeleteConfirmModal() {
+      const modal = document.getElementById('deleteConfirmModal');
+      if (modal) {
+        modal.style.display = 'none';
+      }
+    }
+    
+    function showDeleteSuccessModal() {
+      const modal = document.getElementById('deleteSuccessModal');
+      if (modal) {
+        modal.style.display = 'block';
+      }
+    }
+    
+    function goToDashboard() {
+      window.location.href = 'tr_dashboard';
+    }
   </script>
 </body>
 
