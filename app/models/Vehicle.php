@@ -101,6 +101,14 @@ class Vehicle
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    public static function findAll($conn)
+    {
+        $sql = "SELECT * FROM vehicles WHERE status = 'active' ORDER BY created_at DESC";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     public static function findById($conn, $id, $userId = null)
     {
         if ($userId) {
