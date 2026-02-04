@@ -4,6 +4,8 @@ if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
 
+//$propertyTitle = $_SESSION['accommodation_features']['title'] ?? '';
+
 // Check if user is logged in
 $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
 $firstName = $isLoggedIn ? $_SESSION['user']['first_name'] : '';
@@ -61,13 +63,31 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
       </div>
       <!-- Profile -->
       <div class="profile-section">
-  <img src="/TravelMate/public/assets/images/profile.jpg" alt="User" class="profile-pic">
+  <!-- <img src="/TravelMate/public/assets/images/profile.jpg" alt="User" class="profile-pic"> -->
         <div>
-          <h2><?php echo htmlspecialchars($firstName); ?> <?php echo htmlspecialchars($lastName); ?></h2>
+          <h2>Hello <?php echo htmlspecialchars($firstName); ?> <?php echo htmlspecialchars($lastName); ?></h2>
           <span class="profile-email"><?php echo htmlspecialchars($_SESSION['user']['email']); ?></span>
         </div>
       </div>
       <!-- Favourites -->
+      <div class="activity-summary">
+        <h3>Activity Summary</h3>
+        <div class="summary-stats">
+          <div class="stat">
+            <span class="stat-num"><?php echo htmlspecialchars($listingsCount ?? 0); ?></span>
+            <span class="stat-label">Listings</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num"><?php echo htmlspecialchars($bookedCount ?? 0); ?></span>
+            <span class="stat-label">Booked</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num"><?php echo htmlspecialchars($bookingRecievedCount ?? 0); ?></span>
+            <span class="stat-label">Bookings Received</span>
+          </div>
+        </div>
+      </div>      
+
      <section class="favourite">
         <div class="section-header">
           <h3>My Properties</h3>
@@ -77,15 +97,71 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
         </div>
 
         <div class="property-cards-grid">
-          <!-- Property cards will be loaded here dynamically -->
-          <div class="loading-message" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">
-            <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i>
-            <p>Loading your properties...</p>
-          </div>
+          <?php
+          global $pdo;
+          if(isset($_SESSION['user'])){
+            $userId = $_SESSION['user']['id'];
+
+            //fetch all accommodations for this user
+            $stmt = $pdo->prepare("
+            SELECT a.id, a.title, a.property_type, a.location, a.rooms, a.bathrooms, a.max_guests, a.status, (SELECT image_path FROM accommodation_images WHERE accommodation_id = a.id AND is_main = 1 LIMIT 1) as main_image 
+            FROM accommodations a
+            WHERE a.user_id = ?
+            ORDER BY a.created_at DESC
+            ");
+
+            $stmt->execute([$userId]);
+            $accommodations = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            if(!empty($accommodations)){
+              foreach ($accommodations as $property){
+                // Use main image if exists, otherwise use default
+                if ($property['main_image']) {
+                    // Image path from DB is relative to public folder: uploads/accommodations/...
+                    $imagePath = $property['main_image'];
+                } else {
+                    $imagePath = 'assets/images/default-property.jpg';
+                }
+                $statusClass = strtolower($property['status']) === 'active' ? 'status-active' : 'status-inactive';
+                ?>
+                <div class="property-card">
+                  <div class="property-card-header">
+                    <div class="property-status <?php echo htmlspecialchars($statusClass); ?>">
+                      <?php echo htmlspecialchars(strtoupper($property['status'])); ?>
+                    </div>
+                    <img src="/TravelMate/public/<?php echo htmlspecialchars($imagePath); ?>"
+                    alt="<?php echo htmlspecialchars($property['title']); ?>"
+                    class="property-image"
+                    onerror="this.src='/TravelMate/public/assets/images/default-property.jpg'">
+                  </div>
+                  <div class="property-card-content">
+                    <h3><?php echo htmlspecialchars($property['title']); ?></h3>
+                    <p class="property-type"><?php echo htmlspecialchars(ucfirst($property['property_type'])); ?></p>
+                    <p class="property-location"><?php echo htmlspecialchars($property['location']); ?></p>
+                    <div class="property-details">
+                      <span><?php echo htmlspecialchars($property['rooms']); ?> Rooms</span>
+                      <span><?php echo htmlspecialchars($property['bathrooms']); ?> Bathrooms</span>
+                      <span><?php echo htmlspecialchars($property['max_guests']); ?> Guests</span>
+                    </div>
+                    <div class="property-actions">
+                      <button type="button" class="view-btn" onclick="window.location.href='/TravelMate/public/viewProperty/<?php echo htmlspecialchars($property['id']); ?>';">View</button>
+                      <button type="button" class="edit-btn" onclick="window.location.href='/TravelMate/public/editAccommodationFeatures/<?php echo htmlspecialchars($property['id']); ?>';">Update</button>
+                      <button type="button" class="delete-btn" onclick="deleteProperty(<?php echo htmlspecialchars($property['id']); ?>)">Delete</button>
+                    </div>
+                  </div>
+                </div>
+                <?php
+              }
+            } else {
+              echo '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;"><p>No properties listed yet.</p></div>';
+            }
+          }
+          ?>
+           
         </div>
       </section>
       <!-- Activity Summary -->
-      <div class="activity-summary">
+      <!-- <div class="activity-summary">
         <h3>Activity Summary</h3>
         <div class="summary-stats">
           <div class="stat">
@@ -101,7 +177,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
             <span class="stat-label">Bookings Received</span>
           </div>
         </div>
-      </div>
+      </div> -->
     </section>
   </main>
   <!-- Footer -->
