@@ -8,21 +8,28 @@
     <link rel="stylesheet" href="/TravelMate/public/assets/css/Accommodation/photoUpload.css">
     <link rel="stylesheet" href="/TravelMate/public/assets/css/Traveller/usermain.css">
     <link rel="stylesheet" href="/TravelMate/public/assets/css/main.css">
-    <script src="/TravelMate/public/assets/js/propertyListing.js" defer></script>
+    <script>
+        // Inline script to prevent caching issues - load propertyListing.js with timestamp
+        const script = document.createElement('script');
+        script.src = '/TravelMate/public/assets/js/propertyListing.js?t=' + new Date().getTime();
+        document.head.appendChild(script);
+    </script>
 </head>
 <body>
     <!-- Header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
     <h1>What does your place look like?</h1>
-    <form class="photo-upload-form" action="houseRules" method="get">
+    <form class="photo-upload-form" action="/TravelMate/public/savePhoto" method="POST" enctype="multipart/form-data">
         <label>Upload photos of your property</label>
+        <p style="color: #666; font-size: 14px; margin: 5px 0 15px 0;">* Minimum 5 photos required (Maximum 25)</p>
         <div class="photo-upload-box">
-            <input type="file" id="photoInput" multiple accept="image/*">
+            <input type="file" id="photoInput" name="images[]" multiple accept="image/*">
             <label for="photoInput" class="photo-upload-label">
                 <span class="photo-upload-icon"></span>
-                Uploads photos
+                Upload photos (<span id="photoCount">0</span>/25)
             </label>
         </div>
+        <div id="imagePreviews" class="image-previews" aria-live="polite"></div>
         <div class="property-description-section">
             <label for="propertyDescription">Write a description about your property</label>
             <textarea id="propertyDescription" name="propertyDescription" rows="5" maxlength="1000" placeholder="Describe your property, its features, and what makes it special..." required style="width:100%;resize:vertical;margin-top:10px;"></textarea>
@@ -31,6 +38,5 @@
     </form>
     <!-- Footer -->
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
-    <script></script>
 </body>
 </html>

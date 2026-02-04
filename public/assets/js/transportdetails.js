@@ -380,8 +380,8 @@ function calculatePrice() {
     const returnDate = document.getElementById('returnDate').value;
     const pickupTime = document.getElementById('pickupTime').value;
     const returnTime = document.getElementById('returnTime').value;
-    const pickupLocation = document.getElementById('pickupLocation').value;
-    const dropoffLocation = document.getElementById('dropoffLocation').value;
+    const pickupLocation = document.getElementById('pickupLocationInput').value;
+    const dropoffLocation = document.getElementById('dropoffLocationInput').value;
 
     // Validation
     if (!serviceType || serviceType === '0') {
@@ -441,49 +441,87 @@ function calculatePrice() {
     document.querySelector('.confirm-booking-btn').style.display = 'block';
 }
 
-// Confirm booking
-function confirmBooking() {
+// Confirm booking - Redirect to booking process
+async function confirmBooking() {
     const serviceType = document.getElementById('serviceType').value;
     const pickupDate = document.getElementById('pickupDate').value;
     const returnDate = document.getElementById('returnDate').value;
     const pickupTime = document.getElementById('pickupTime').value;
     const returnTime = document.getElementById('returnTime').value;
-    const pickupLocation = document.getElementById('pickupLocation').value;
-    const dropoffLocation = document.getElementById('dropoffLocation').value;
+    const pickupLocation = document.getElementById('pickupLocationInput').value;
+    const dropoffLocation = document.getElementById('dropoffLocationInput').value;
     const passengers = document.getElementById('passengers').value;
     const luggage = document.getElementById('luggage').value;
     const specialRequirements = document.getElementById('specialRequirements').value;
-    const totalPrice = document.getElementById('totalPrice').textContent;
+    
+    // Get prices from UI
+    const basePriceText = document.getElementById('basePrice').textContent.replace(/Rs\.| /g, '').replace(/,/g, '');
+    const serviceChargeText = document.getElementById('serviceCharge').textContent.replace(/Rs\.| /g, '').replace(/,/g, '');
+    const totalPriceText = document.getElementById('totalPrice').textContent.replace(/Rs\.| /g, '').replace(/,/g, '');
+
+    // Get vehicle ID from URL or data
+    const urlParams = new URLSearchParams(window.location.search);
+    const vehicleId = urlParams.get('id') || transportData.id;
 
     // Create booking object
-    const booking = {
-        transportId: transportData.id,
-        transportName: transportData.name,
-        serviceType: serviceType,
-        pickupDate: pickupDate,
-        pickupTime: pickupTime,
-        returnDate: returnDate,
-        returnTime: returnTime,
-        pickupLocation: pickupLocation,
-        dropoffLocation: dropoffLocation,
-        passengers: passengers,
-        luggage: luggage,
-        specialRequirements: specialRequirements,
-        totalPrice: totalPrice
+    const bookingData = {
+        vehicle_id: vehicleId,
+        service_type: serviceType,
+        pickup_date: pickupDate,
+        pickup_time: pickupTime,
+        return_date: returnDate,
+        return_time: returnTime,
+        pickup_location: pickupLocation,
+        dropoff_location: dropoffLocation,
+        passengers: parseInt(passengers),
+        luggage: parseInt(luggage),
+        special_requirements: specialRequirements,
+        base_price: parseFloat(basePriceText),
+        service_charge: parseFloat(serviceChargeText),
+        total_price: parseFloat(totalPriceText)
     };
 
-    console.log('Booking confirmed:', booking);
+    console.log('Booking data:', bookingData);
 
-    // Here you would typically send this data to your backend
-    // For now, we'll just show a confirmation message
-    alert('Booking confirmed! You will receive a confirmation email shortly.\n\nBooking Details:\n' +
-          `Service: ${serviceType}\n` +
-          `Pickup: ${pickupDate} at ${pickupTime}\n` +
-          `Return: ${returnDate} at ${returnTime}\n` +
-          `Total: ${totalPrice}`);
+    try {
+        // Disable button
+        const confirmBtn = document.querySelector('.confirm-booking-btn');
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
-    // Redirect to bookings page or confirmation page
-    // window.location.href = 'bookings.php';
+        // Save booking data to session and redirect to booking details page
+        const response = await fetch('/TravelMate/public/api/transport-booking/init-booking', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(bookingData),
+            credentials: 'same-origin'
+        });
+
+        const result = await response.json();
+        console.log('Init booking result:', result);
+
+        if (result.success) {
+            // Redirect to booking details page
+            window.location.href = '/TravelMate/public/transport-booking-details';
+        } else {
+            const errorMsg = result.errors?.general || 
+                           result.errors?.auth || 
+                           result.errors?.availability ||
+                           result.errors?.date ||
+                           'Failed to initialize booking';
+            alert('Error: ' + errorMsg);
+            confirmBtn.disabled = false;
+            confirmBtn.innerHTML = 'Confirm Booking';
+        }
+    } catch (error) {
+        console.error('Booking error:', error);
+        alert('An error occurred while processing your booking. Please try again.');
+        const confirmBtn = document.querySelector('.confirm-booking-btn');
+        confirmBtn.disabled = false;
+        confirmBtn.innerHTML = 'Confirm Booking';
+    }
 }
 
 // Show map (placeholder function)
