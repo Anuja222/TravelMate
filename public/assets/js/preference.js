@@ -41,8 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.success) {
                 localStorage.removeItem('userId');
-                alert('Preferences saved successfully!');
-                window.location.href = 'login';
+                showPreferenceSuccessModal();
             } else {
                 const errorMessage = data.errors?.error || 'Failed to save preferences';
                 alert(errorMessage);
@@ -54,3 +53,25 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+function showPreferenceSuccessModal() {
+    const modal = document.getElementById('preferenceSuccessModal');
+    modal.classList.add('show');
+    
+    let countdown = 3;
+    const countdownElement = document.getElementById('countdown');
+    
+    const timer = setInterval(() => {
+        countdown--;
+        countdownElement.textContent = countdown;
+        
+        if (countdown <= 0) {
+            clearInterval(timer);
+            redirectToLogin();
+        }
+    }, 1000);
+}
+
+function redirectToLogin() {
+    window.location.href = 'login';
+}
