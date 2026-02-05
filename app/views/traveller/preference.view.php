@@ -15,7 +15,7 @@
         <section class="greeting-section">
             <div class="container">
                 <div class="greeting-content">
-                    <h1>Hi,.. <span class="username">Chamuditha</span></h1>
+                    <h1>Hi,.. <span class="username">Traveller</span></h1>
                     <p>Choose the categories that best describe your interests:</p>
                     <!-- <div class="user-avatar">
                         <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=faces" alt="User Avatar">
