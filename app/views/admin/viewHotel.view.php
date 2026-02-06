@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hotel Details - Sunrise Resort</title>
   <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css?v=<?= time() ?>">
   <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/viewHotel.css?v=<?= time() ?>">
@@ -13,6 +15,7 @@
   <div class="page-container">
 
     <div class="content">
+      <?php include __DIR__ . '/flash_messages.php'; ?>
       <div class="detail-container">
         <div class="detail-header">
           <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Sunrise Resort">

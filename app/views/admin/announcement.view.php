@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Announcements - Admin Panel</title>
   <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css?v=<?= time() ?>">
   <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/announcement.css?v=<?= time() ?>">
@@ -15,6 +17,7 @@
     <?php include 'sidebar.view.php'; ?>
 
     <div class="content">
+      <?php include __DIR__ . '/flash_messages.php'; ?>
       <!-- Page Header -->
       <div class="page-header">
         <h1>Announcements</h1>

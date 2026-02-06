@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../core/config.php';
 require_once __DIR__ . '/../core/Database.php';
+require_once __DIR__ . '/../helpers/SessionHelper.php';
 
 class AdminAccommodationController {
     use Database;
@@ -9,20 +10,20 @@ class AdminAccommodationController {
     private $adminId;
 
     public function __construct() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-        $this->adminId = $_SESSION['user_id'] ?? 1;
+        SessionHelper::start();
+        $this->adminId = SessionHelper::getUserId();
     }
 
     /**
      * Display all accommodations in a grid
      */
     public function index() {
+        SessionHelper::requireAdmin();
+
         // Get filter parameters
-        $type = $_GET['type'] ?? '';
-        $city = $_GET['city'] ?? '';
-        $search = $_GET['search'] ?? '';
+        $type = substr(trim($_GET['type'] ?? ''), 0, 50);
+        $city = substr(trim($_GET['city'] ?? ''), 0, 100);
+        $search = substr(trim($_GET['search'] ?? ''), 0, 200);
         $sort = $_GET['sort'] ?? 'newest';
         $page = max(1, intval($_GET['page'] ?? 1));
         $perPage = 12;
@@ -125,10 +126,12 @@ class AdminAccommodationController {
      * View single accommodation details
      */
     public function view() {
-        $id = intval($_GET['id'] ?? 0);
+        SessionHelper::requireAdmin();
+
+        $id = (int)($_GET['id'] ?? 0);
 
         if (!$id) {
-            $_SESSION['error'] = 'Invalid accommodation ID';
+            SessionHelper::flash('error', 'Invalid accommodation ID');
             header('Location: ' . ROOT . '/admin/accommodations');
             exit;
         }
@@ -149,7 +152,7 @@ class AdminAccommodationController {
         $accommodation = $this->getRow($query, ['id' => $id]);
 
         if (!$accommodation) {
-            $_SESSION['error'] = 'Accommodation not found';
+            SessionHelper::flash('error', 'Accommodation not found');
             header('Location: ' . ROOT . '/admin/accommodations');
             exit;
         }
@@ -185,6 +188,8 @@ class AdminAccommodationController {
      */
     public function delete() {
         header('Content-Type: application/json');
+
+        if (!SessionHelper::requireAdminApi()) return;
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             echo json_encode(['success' => false, 'message' => 'Invalid request method']);
@@ -234,6 +239,9 @@ class AdminAccommodationController {
      */
     public function getStats() {
         header('Content-Type: application/json');
+
+        if (!SessionHelper::requireAdminApi()) return;
+
         $stats = $this->getStatistics();
         echo json_encode(['success' => true, 'stats' => $stats]);
     }

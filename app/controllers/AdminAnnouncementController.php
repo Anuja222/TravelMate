@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../core/config.php';
 require_once __DIR__ . '/../core/Database.php';
+require_once __DIR__ . '/../helpers/SessionHelper.php';
 
 /**
  * AdminAnnouncementController - Controller for admin announcement management
@@ -15,6 +16,8 @@ class AdminAnnouncementController
      */
     public function index()
     {
+        SessionHelper::requireAdmin();
+
         // Get announcements data
         $announcements = $this->getAllAnnouncements();
         $stats = $this->getAnnouncementStats();
@@ -61,6 +64,8 @@ class AdminAnnouncementController
     {
         header('Content-Type: application/json');
 
+        if (!SessionHelper::requireAdminApi()) return;
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             echo json_encode(['success' => false, 'error' => 'Invalid request method']);
             return;
@@ -68,10 +73,15 @@ class AdminAnnouncementController
 
         $input = json_decode(file_get_contents('php://input'), true);
         
-        $title = $input['title'] ?? '';
-        $content = $input['content'] ?? '';
+        $title = substr(trim($input['title'] ?? ''), 0, 200);
+        $content = substr(trim($input['content'] ?? ''), 0, 5000);
         $audience = $input['audience'] ?? 'all';
         $expiresAt = $input['expires_at'] ?? null;
+
+        // Validate audience
+        if (!in_array($audience, ['all', 'traveller', 'accommodation', 'transport'])) {
+            $audience = 'all';
+        }
 
         if (empty($title) || empty($content)) {
             echo json_encode(['success' => false, 'error' => 'Title and content are required']);
@@ -95,6 +105,8 @@ class AdminAnnouncementController
     {
         header('Content-Type: application/json');
 
+        if (!SessionHelper::requireAdminApi()) return;
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             echo json_encode(['success' => false, 'error' => 'Invalid request method']);
             return;
@@ -102,11 +114,16 @@ class AdminAnnouncementController
 
         $input = json_decode(file_get_contents('php://input'), true);
         
-        $id = $input['id'] ?? 0;
-        $title = $input['title'] ?? '';
-        $content = $input['content'] ?? '';
+        $id = (int)($input['id'] ?? 0);
+        $title = substr(trim($input['title'] ?? ''), 0, 200);
+        $content = substr(trim($input['content'] ?? ''), 0, 5000);
         $audience = $input['audience'] ?? 'all';
         $status = $input['status'] ?? 'active';
+
+        // Validate status
+        if (!in_array($status, ['active', 'inactive', 'expired'])) {
+            $status = 'active';
+        }
 
         if (!$id || empty($title) || empty($content)) {
             echo json_encode(['success' => false, 'error' => 'ID, title and content are required']);
@@ -130,13 +147,15 @@ class AdminAnnouncementController
     {
         header('Content-Type: application/json');
 
+        if (!SessionHelper::requireAdminApi()) return;
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             echo json_encode(['success' => false, 'error' => 'Invalid request method']);
             return;
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
-        $id = $input['id'] ?? 0;
+        $id = (int)($input['id'] ?? 0);
 
         if (!$id) {
             echo json_encode(['success' => false, 'error' => 'Announcement ID is required']);
@@ -160,7 +179,9 @@ class AdminAnnouncementController
     {
         header('Content-Type: application/json');
 
-        $id = $_GET['id'] ?? 0;
+        if (!SessionHelper::requireAdminApi()) return;
+
+        $id = (int)($_GET['id'] ?? 0);
 
         if (!$id) {
             echo json_encode(['success' => false, 'error' => 'Announcement ID is required']);
@@ -186,13 +207,15 @@ class AdminAnnouncementController
     {
         header('Content-Type: application/json');
 
+        if (!SessionHelper::requireAdminApi()) return;
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             echo json_encode(['success' => false, 'error' => 'Invalid request method']);
             return;
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
-        $id = $input['id'] ?? 0;
+        $id = (int)($input['id'] ?? 0);
 
         if (!$id) {
             echo json_encode(['success' => false, 'error' => 'Announcement ID is required']);

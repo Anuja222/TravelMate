@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../core/config.php';
 require_once __DIR__ . '/../core/Database.php';
+require_once __DIR__ . '/../helpers/SessionHelper.php';
 
 /**
  * AdminNotificationController - Controller for admin notification management
@@ -15,6 +16,8 @@ class AdminNotificationController
      */
     public function index()
     {
+        SessionHelper::requireAdmin();
+
         // Get filter parameters
         $type = $_GET['type'] ?? '';
         $status = $_GET['status'] ?? '';
@@ -87,13 +90,15 @@ class AdminNotificationController
     {
         header('Content-Type: application/json');
 
+        if (!SessionHelper::requireAdminApi()) return;
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             echo json_encode(['success' => false, 'error' => 'Invalid request method']);
             return;
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
-        $id = $input['id'] ?? 0;
+        $id = (int)($input['id'] ?? 0);
 
         if (!$id) {
             echo json_encode(['success' => false, 'error' => 'Notification ID is required']);
@@ -117,6 +122,8 @@ class AdminNotificationController
     {
         header('Content-Type: application/json');
 
+        if (!SessionHelper::requireAdminApi()) return;
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             echo json_encode(['success' => false, 'error' => 'Invalid request method']);
             return;
@@ -139,13 +146,15 @@ class AdminNotificationController
     {
         header('Content-Type: application/json');
 
+        if (!SessionHelper::requireAdminApi()) return;
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             echo json_encode(['success' => false, 'error' => 'Invalid request method']);
             return;
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
-        $id = $input['id'] ?? 0;
+        $id = (int)($input['id'] ?? 0);
 
         if (!$id) {
             echo json_encode(['success' => false, 'error' => 'Notification ID is required']);
@@ -168,6 +177,8 @@ class AdminNotificationController
     public function clearAll()
     {
         header('Content-Type: application/json');
+
+        if (!SessionHelper::requireAdminApi()) return;
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             echo json_encode(['success' => false, 'error' => 'Invalid request method']);

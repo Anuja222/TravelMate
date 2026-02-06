@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../core/config.php';
 require_once __DIR__ . '/../core/Database.php';
 require_once __DIR__ . '/../models/Blog.php';
+require_once __DIR__ . '/../helpers/SessionHelper.php';
 
 class AdminDashboardController {
     
@@ -16,14 +17,7 @@ class AdminDashboardController {
      * Display admin dashboard
      */
     public function index() {
-        // For now, allow access without login check for development
-        // TODO: Uncomment this after admin login is working
-        /*
-        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-            header('Location: login');
-            exit;
-        }
-        */
+        SessionHelper::requireAdmin();
 
         // Get dashboard statistics
         $stats = $this->getDashboardStats();

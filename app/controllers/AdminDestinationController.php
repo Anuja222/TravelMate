@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../core/config.php';
 require_once __DIR__ . '/../models/Destination.php';
+require_once __DIR__ . '/../helpers/SessionHelper.php';
 
 class AdminDestinationController {
     
@@ -9,17 +10,16 @@ class AdminDestinationController {
     private $adminId;
 
     public function __construct() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        SessionHelper::start();
         $this->destinationModel = new Destination();
-        $this->adminId = $_SESSION['user_id'] ?? 1;
+        $this->adminId = SessionHelper::getUserId();
     }
 
     /**
      * Display main destinations page with all category cards
      */
     public function index() {
+        SessionHelper::requireAdmin();
         // Get pagination and search parameters
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
         $search = isset($_GET['search']) ? trim($_GET['search']) : '';
@@ -47,10 +47,12 @@ class AdminDestinationController {
      * View places for a specific category
      */
     public function viewCategory() {
-        $categoryId = $_GET['id'] ?? null;
+        SessionHelper::requireAdmin();
+
+        $categoryId = (int)($_GET['id'] ?? 0);
         
         if (!$categoryId) {
-            $_SESSION['error'] = 'Category ID required';
+            SessionHelper::flash('error', 'Category ID required');
             header('Location: ' . ROOT . '/admin/destinations');
             exit;
         }
@@ -59,7 +61,7 @@ class AdminDestinationController {
         $category = $this->destinationModel->getCategoryById($categoryId);
         
         if (!$category) {
-            $_SESSION['error'] = 'Category not found';
+            SessionHelper::flash('error', 'Category not found');
             header('Location: ' . ROOT . '/admin/destinations');
             exit;
         }
@@ -97,6 +99,8 @@ class AdminDestinationController {
      */
     public function addCategory() {
         header('Content-Type: application/json');
+
+        if (!SessionHelper::requireAdminApi()) return;
 
         // Handle FormData
         if (!empty($_POST)) {
@@ -160,13 +164,15 @@ class AdminDestinationController {
     public function updateCategory() {
         header('Content-Type: application/json');
 
+        if (!SessionHelper::requireAdminApi()) return;
+
         if (!empty($_POST)) {
             $data = $_POST;
         } else {
             $data = json_decode(file_get_contents('php://input'), true);
         }
 
-        $categoryId = $data['id'] ?? null;
+        $categoryId = (int)($data['id'] ?? 0);
 
         if (!$categoryId || empty($data['name'])) {
             echo json_encode(['success' => false, 'message' => 'Category ID and name are required']);
@@ -224,8 +230,10 @@ class AdminDestinationController {
     public function deleteCategory() {
         header('Content-Type: application/json');
 
+        if (!SessionHelper::requireAdminApi()) return;
+
         $data = json_decode(file_get_contents('php://input'), true);
-        $categoryId = $data['id'] ?? null;
+        $categoryId = (int)($data['id'] ?? 0);
 
         if (!$categoryId) {
             echo json_encode(['success' => false, 'message' => 'Category ID required']);
@@ -263,7 +271,9 @@ class AdminDestinationController {
     public function getCategory() {
         header('Content-Type: application/json');
 
-        $categoryId = $_GET['id'] ?? null;
+        if (!SessionHelper::requireAdminApi()) return;
+
+        $categoryId = (int)($_GET['id'] ?? 0);
 
         if (!$categoryId) {
             echo json_encode(['success' => false, 'message' => 'Category ID required']);
@@ -285,6 +295,8 @@ class AdminDestinationController {
     public function addPlace() {
         header('Content-Type: application/json');
 
+        if (!SessionHelper::requireAdminApi()) return;
+
         // Handle FormData
         if (!empty($_POST)) {
             $data = $_POST;
@@ -292,7 +304,7 @@ class AdminDestinationController {
             $data = json_decode(file_get_contents('php://input'), true);
         }
 
-        $destinationId = $data['destination_id'] ?? null;
+        $destinationId = (int)($data['destination_id'] ?? 0);
         $name = trim($data['name'] ?? '');
 
         if (!$destinationId || empty($name)) {
@@ -349,13 +361,15 @@ class AdminDestinationController {
     public function updatePlace() {
         header('Content-Type: application/json');
 
+        if (!SessionHelper::requireAdminApi()) return;
+
         if (!empty($_POST)) {
             $data = $_POST;
         } else {
             $data = json_decode(file_get_contents('php://input'), true);
         }
 
-        $placeId = $data['id'] ?? null;
+        $placeId = (int)($data['id'] ?? 0);
         $name = trim($data['name'] ?? '');
 
         if (!$placeId || empty($name)) {
@@ -419,8 +433,10 @@ class AdminDestinationController {
     public function deletePlace() {
         header('Content-Type: application/json');
 
+        if (!SessionHelper::requireAdminApi()) return;
+
         $data = json_decode(file_get_contents('php://input'), true);
-        $placeId = $data['id'] ?? null;
+        $placeId = (int)($data['id'] ?? 0);
 
         if (!$placeId) {
             echo json_encode(['success' => false, 'message' => 'Place ID required']);
@@ -449,7 +465,9 @@ class AdminDestinationController {
     public function getPlace() {
         header('Content-Type: application/json');
 
-        $placeId = $_GET['id'] ?? null;
+        if (!SessionHelper::requireAdminApi()) return;
+
+        $placeId = (int)($_GET['id'] ?? 0);
 
         if (!$placeId) {
             echo json_encode(['success' => false, 'message' => 'Place ID required']);
