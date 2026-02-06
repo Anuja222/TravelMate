@@ -21,15 +21,21 @@ class AdminUserController
      */
     public function index()
     {
-        // Check if admin is logged in (temporarily disabled for development)
-        // $this->checkAdminAuth();
+        $this->checkAdminAuth();
 
         // Get filter parameters
-        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        
+        // Validate filter values
+        $allowedRoles = ['', 'traveller', 'accommodation', 'transport'];
+        $allowedStatuses = ['', 'active', 'suspended'];
+        $role = in_array($_GET['role'] ?? '', $allowedRoles) ? ($_GET['role'] ?? '') : '';
+        $status = in_array($_GET['status'] ?? '', $allowedStatuses) ? ($_GET['status'] ?? '') : '';
+        
         $filters = [
-            'role' => $_GET['role'] ?? '',
-            'status' => $_GET['status'] ?? '',
-            'search' => $_GET['search'] ?? ''
+            'role' => $role,
+            'status' => $status,
+            'search' => substr(trim($_GET['search'] ?? ''), 0, 100)
         ];
 
         // Get users data
@@ -40,6 +46,9 @@ class AdminUserController
         // Calculate pagination
         $totalPages = ceil($totalUsers / 10);
 
+        // Generate CSRF token for forms
+        $csrfToken = $this->getCsrfToken();
+
         // Pass data to view
         require_once __DIR__ . '/../views/admin/Users.view.php';
     }
@@ -49,6 +58,7 @@ class AdminUserController
      */
     public function viewTraveller()
     {
+        $this->checkAdminAuth();
         $userId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
         
         if (!$userId) {
@@ -62,6 +72,12 @@ class AdminUserController
             header('Location: Users');
             exit;
         }
+
+        // Get suspension history for this user
+        $suspensionHistory = $this->userModel->getSuspensionHistory($userId);
+
+        // Generate CSRF token
+        $csrfToken = $this->getCsrfToken();
 
         require_once __DIR__ . '/../views/admin/viewtraveller.view.php';
     }
@@ -71,6 +87,7 @@ class AdminUserController
      */
     public function viewProvider()
     {
+        $this->checkAdminAuth();
         $userId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
         
         if (!$userId) {
@@ -84,6 +101,12 @@ class AdminUserController
             header('Location: Users');
             exit;
         }
+
+        // Get suspension history for this user
+        $suspensionHistory = $this->userModel->getSuspensionHistory($userId);
+
+        // Generate CSRF token
+        $csrfToken = $this->getCsrfToken();
 
         require_once __DIR__ . '/../views/admin/viewprovider.view.php';
     }
@@ -95,20 +118,37 @@ class AdminUserController
     {
         header('Content-Type: application/json');
 
+        if (!$this->checkAdminAuthApi()) return;
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             echo json_encode(['success' => false, 'error' => 'Invalid request method']);
             return;
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
-        $userId = $input['user_id'] ?? 0;
+        
+        // Validate CSRF token
+        if (!$this->validateCsrfToken($input['csrf_token'] ?? '')) {
+            echo json_encode(['success' => false, 'error' => 'Invalid security token. Please refresh the page.']);
+            return;
+        }
+
+        $userId = (int)($input['user_id'] ?? 0);
+        $reason = trim($input['reason'] ?? '');
 
         if (!$userId) {
             echo json_encode(['success' => false, 'error' => 'User ID is required']);
             return;
         }
 
-        $result = $this->userModel->suspendUser($userId);
+        // Prevent suspending admin accounts
+        $user = $this->userModel->getUserById($userId);
+        if ($user && $user->role === 'admin') {
+            echo json_encode(['success' => false, 'error' => 'Cannot suspend administrator accounts']);
+            return;
+        }
+
+        $result = $this->userModel->suspendUser($userId, $reason);
         
         if ($result) {
             echo json_encode(['success' => true, 'message' => 'User suspended successfully']);
@@ -124,13 +164,22 @@ class AdminUserController
     {
         header('Content-Type: application/json');
 
+        if (!$this->checkAdminAuthApi()) return;
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             echo json_encode(['success' => false, 'error' => 'Invalid request method']);
             return;
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
-        $userId = $input['user_id'] ?? 0;
+
+        // Validate CSRF token
+        if (!$this->validateCsrfToken($input['csrf_token'] ?? '')) {
+            echo json_encode(['success' => false, 'error' => 'Invalid security token. Please refresh the page.']);
+            return;
+        }
+
+        $userId = (int)($input['user_id'] ?? 0);
 
         if (!$userId) {
             echo json_encode(['success' => false, 'error' => 'User ID is required']);
@@ -153,16 +202,44 @@ class AdminUserController
     {
         header('Content-Type: application/json');
 
+        if (!$this->checkAdminAuthApi()) return;
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             echo json_encode(['success' => false, 'error' => 'Invalid request method']);
             return;
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
-        $userId = $input['user_id'] ?? 0;
+
+        // Validate CSRF token
+        if (!$this->validateCsrfToken($input['csrf_token'] ?? '')) {
+            echo json_encode(['success' => false, 'error' => 'Invalid security token. Please refresh the page.']);
+            return;
+        }
+
+        $userId = (int)($input['user_id'] ?? 0);
 
         if (!$userId) {
             echo json_encode(['success' => false, 'error' => 'User ID is required']);
+            return;
+        }
+
+        // Prevent admin from deleting themselves
+        if (isset($_SESSION['user']['id']) && $_SESSION['user']['id'] == $userId) {
+            echo json_encode(['success' => false, 'error' => 'You cannot delete your own account']);
+            return;
+        }
+
+        // Get user info before deletion
+        $user = $this->userModel->getUserById($userId);
+        if (!$user) {
+            echo json_encode(['success' => false, 'error' => 'User not found']);
+            return;
+        }
+
+        // Prevent deleting admin accounts
+        if ($user->role === 'admin') {
+            echo json_encode(['success' => false, 'error' => 'Cannot delete administrator accounts']);
             return;
         }
 
@@ -171,7 +248,7 @@ class AdminUserController
         if ($result) {
             echo json_encode(['success' => true, 'message' => 'User deleted successfully']);
         } else {
-            echo json_encode(['success' => false, 'error' => 'Failed to delete user']);
+            echo json_encode(['success' => false, 'error' => 'Failed to delete user. Please check server logs.']);
         }
     }
 
@@ -209,9 +286,40 @@ class AdminUserController
      */
     private function checkAdminAuth()
     {
-        if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+        if (!isset($_SESSION['user']) || !isset($_SESSION['user']['role']) || $_SESSION['user']['role'] !== 'admin') {
             header('Location: login');
             exit;
         }
+    }
+
+    /**
+     * Check admin auth for API endpoints (returns JSON instead of redirect)
+     */
+    private function checkAdminAuthApi()
+    {
+        if (!isset($_SESSION['user']) || !isset($_SESSION['user']['role']) || $_SESSION['user']['role'] !== 'admin') {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized access']);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Generate or get CSRF token
+     */
+    private function getCsrfToken()
+    {
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        return $_SESSION['csrf_token'];
+    }
+
+    /**
+     * Validate CSRF token from request
+     */
+    private function validateCsrfToken($token)
+    {
+        return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
     }
 }

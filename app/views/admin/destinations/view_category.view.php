@@ -37,13 +37,39 @@ $categoryImage = $category->image ?? '/assets/images/default-destination.jpg';
                 <h1><?= htmlspecialchars($categoryName) ?></h1>
                 <p><?= htmlspecialchars($categoryDesc) ?></p>
                 <div class="category-meta">
-                    <span><i class="fas fa-map-marker-alt"></i> <?= count($places) ?> Places</span>
+                    <span><i class="fas fa-map-marker-alt"></i> <?= $data['pagination']['total'] ?? count($places) ?> Places</span>
                     <span><i class="fas fa-calendar"></i> Created: <?= date('M d, Y', strtotime($category->created_at)) ?></span>
                 </div>
             </div>
             <button class="btn-primary btn-add-place" onclick="showAddPlaceModal()">
                 <i class="fas fa-plus"></i> Add New Place
             </button>
+        </div>
+        
+        <!-- Search Bar for Places -->
+        <div class="search-filter-bar">
+            <form method="GET" action="<?= ROOT ?>/admin/destinations/category" class="search-form">
+                <input type="hidden" name="id" value="<?= $category->id ?>">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" name="search" id="searchInput" 
+                           placeholder="Search places by name or description..." 
+                           value="<?= htmlspecialchars($data['search'] ?? '') ?>">
+                    <?php if (!empty($data['search'])): ?>
+                        <a href="<?= ROOT ?>/admin/destinations/category?id=<?= $category->id ?>" class="clear-search" title="Clear search">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    <?php endif; ?>
+                </div>
+                <button type="submit" class="btn-search">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </form>
+            <?php if (!empty($data['search'])): ?>
+                <div class="search-results-info">
+                    Found <strong><?= $data['pagination']['total'] ?? 0 ?></strong> result(s) for "<strong><?= htmlspecialchars($data['search']) ?></strong>"
+                </div>
+            <?php endif; ?>
         </div>
 
         <!-- Places Grid -->
@@ -94,14 +120,85 @@ $categoryImage = $category->image ?? '/assets/images/default-destination.jpg';
             <?php else: ?>
                 <div class="empty-state full-width">
                     <i class="fas fa-map-marker-alt"></i>
-                    <h3>No Places Yet</h3>
-                    <p>Start adding places to "<?= htmlspecialchars($categoryName) ?>"</p>
-                    <button class="btn-primary" onclick="showAddPlaceModal()">
-                        <i class="fas fa-plus"></i> Add First Place
-                    </button>
+                    <?php if (!empty($data['search'])): ?>
+                        <h3>No Results Found</h3>
+                        <p>No places match your search for "<?= htmlspecialchars($data['search']) ?>"</p>
+                        <a href="<?= ROOT ?>/admin/destinations/category?id=<?= $category->id ?>" class="btn-primary">
+                            <i class="fas fa-times"></i> Clear Search
+                        </a>
+                    <?php else: ?>
+                        <h3>No Places Yet</h3>
+                        <p>Start adding places to "<?= htmlspecialchars($categoryName) ?>"</p>
+                        <button class="btn-primary" onclick="showAddPlaceModal()">
+                            <i class="fas fa-plus"></i> Add First Place
+                        </button>
+                    <?php endif; ?>
                 </div>
             <?php endif; ?>
         </div>
+        
+        <!-- Pagination for Places -->
+        <?php if (isset($data['pagination']) && $data['pagination']['pages'] > 1): ?>
+            <div class="pagination-wrapper">
+                <div class="pagination">
+                    <?php 
+                    $pagination = $data['pagination'];
+                    $currentPage = $pagination['current_page'];
+                    $totalPages = $pagination['pages'];
+                    $baseUrl = ROOT . '/admin/destinations/category?id=' . $category->id;
+                    $searchParam = !empty($data['search']) ? '&search=' . urlencode($data['search']) : '';
+                    ?>
+                    
+                    <!-- Previous Button -->
+                    <?php if ($currentPage > 1): ?>
+                        <a href="<?= $baseUrl ?>&page=<?= $currentPage - 1 ?><?= $searchParam ?>" class="page-link">
+                            <i class="fas fa-chevron-left"></i> Prev
+                        </a>
+                    <?php else: ?>
+                        <span class="page-link disabled"><i class="fas fa-chevron-left"></i> Prev</span>
+                    <?php endif; ?>
+                    
+                    <!-- Page Numbers -->
+                    <?php
+                    $startPage = max(1, $currentPage - 2);
+                    $endPage = min($totalPages, $currentPage + 2);
+                    
+                    if ($startPage > 1): ?>
+                        <a href="<?= $baseUrl ?>&page=1<?= $searchParam ?>" class="page-link">1</a>
+                        <?php if ($startPage > 2): ?>
+                            <span class="page-ellipsis">...</span>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                    
+                    <?php for ($i = $startPage; $i <= $endPage; $i++): ?>
+                        <?php if ($i == $currentPage): ?>
+                            <span class="page-link active"><?= $i ?></span>
+                        <?php else: ?>
+                            <a href="<?= $baseUrl ?>&page=<?= $i ?><?= $searchParam ?>" class="page-link"><?= $i ?></a>
+                        <?php endif; ?>
+                    <?php endfor; ?>
+                    
+                    <?php if ($endPage < $totalPages): ?>
+                        <?php if ($endPage < $totalPages - 1): ?>
+                            <span class="page-ellipsis">...</span>
+                        <?php endif; ?>
+                        <a href="<?= $baseUrl ?>&page=<?= $totalPages ?><?= $searchParam ?>" class="page-link"><?= $totalPages ?></a>
+                    <?php endif; ?>
+                    
+                    <!-- Next Button -->
+                    <?php if ($currentPage < $totalPages): ?>
+                        <a href="<?= $baseUrl ?>&page=<?= $currentPage + 1 ?><?= $searchParam ?>" class="page-link">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </a>
+                    <?php else: ?>
+                        <span class="page-link disabled">Next <i class="fas fa-chevron-right"></i></span>
+                    <?php endif; ?>
+                </div>
+                <div class="pagination-info">
+                    Showing page <?= $currentPage ?> of <?= $totalPages ?> (<?= $pagination['total'] ?> total places)
+                </div>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 

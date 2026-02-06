@@ -124,10 +124,6 @@
           <div class="action-icon" style="font-size: 2.5rem; margin-bottom: 10px;">📝</div>
           <div class="action-label" style="color: #333; font-weight: 500;">Content Moderation</div>
         </div>
-        <div class="action-btn" onclick="window.location.href='ViewListing'" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; cursor: pointer; transition: all 0.3s ease;">
-          <div class="action-icon" style="font-size: 2.5rem; margin-bottom: 10px;">🏨</div>
-          <div class="action-label" style="color: #333; font-weight: 500;">View Listings</div>
-        </div>
         <div class="action-btn" onclick="generateReport()" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; cursor: pointer; transition: all 0.3s ease;">
           <div class="action-icon" style="font-size: 2.5rem; margin-bottom: 10px;">📊</div>
           <div class="action-label" style="color: #333; font-weight: 500;">Generate Report</div>

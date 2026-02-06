@@ -967,10 +967,6 @@ elseif ($page === 'ad_dashboard') {
     require_once '../app/controllers/AdminBlogController.php';
     $adminBlogController = new AdminBlogController();
     $adminBlogController->moderationQueue();
-}elseif ($page === 'ViewListing') {
-    require_once '../app/controllers/AdminListingController.php';
-    $adminListingController = new AdminListingController();
-    $adminListingController->index();
 }elseif ($page === 'viewHotel') {
     include '../app/views/admin/viewHotel.view.php';
 }elseif ($page === 'viewVehicle') {
