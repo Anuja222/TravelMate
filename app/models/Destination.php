@@ -136,9 +136,55 @@ class Destination {
     // =============================================
 
     /**
-     * Get all destination categories with place counts
+     * Get all destination categories with place counts (with pagination support)
+     * @param int $page - Current page number (1-based)
+     * @param int $perPage - Items per page
+     * @param string $search - Search term for filtering
+     * @return array - ['data' => array, 'total' => int, 'pages' => int, 'current_page' => int]
      */
-    public function getAllCategories() {
+    public function getAllCategories($page = null, $perPage = 12, $search = '') {
+        $searchCondition = '';
+        $params = [];
+        
+        if (!empty($search)) {
+            $searchCondition = "AND (d.name LIKE :search OR d.title LIKE :search OR d.description LIKE :search)";
+            $params['search'] = '%' . $search . '%';
+        }
+        
+        // If no pagination, return all results (backwards compatible)
+        if ($page === null) {
+            $query = "SELECT 
+                        d.id,
+                        d.name,
+                        d.title,
+                        d.description,
+                        d.image,
+                        d.category,
+                        d.status,
+                        d.created_at,
+                        COUNT(dp.id) as place_count,
+                        SUM(CASE WHEN dp.status = 'active' THEN 1 ELSE 0 END) as active_count,
+                        COALESCE(SUM(dp.views), 0) as total_views
+                      FROM {$this->table} d
+                      LEFT JOIN destination_places dp ON d.id = dp.destination_id
+                      WHERE d.deleted_at IS NULL {$searchCondition}
+                      GROUP BY d.id
+                      ORDER BY d.created_at DESC";
+            
+            $result = $this->query($query, $params);
+            return $result ?: [];
+        }
+        
+        // Get total count for pagination
+        $countQuery = "SELECT COUNT(DISTINCT d.id) as total 
+                       FROM {$this->table} d 
+                       WHERE d.deleted_at IS NULL {$searchCondition}";
+        $countResult = $this->getRow($countQuery, $params);
+        $total = $countResult ? (int)$countResult->total : 0;
+        $totalPages = ceil($total / $perPage);
+        $page = max(1, min($page, $totalPages ?: 1));
+        $offset = ($page - 1) * $perPage;
+        
         $query = "SELECT 
                     d.id,
                     d.name,
@@ -153,12 +199,105 @@ class Destination {
                     COALESCE(SUM(dp.views), 0) as total_views
                   FROM {$this->table} d
                   LEFT JOIN destination_places dp ON d.id = dp.destination_id
-                  WHERE d.deleted_at IS NULL
+                  WHERE d.deleted_at IS NULL {$searchCondition}
                   GROUP BY d.id
-                  ORDER BY d.created_at DESC";
+                  ORDER BY d.created_at DESC
+                  LIMIT {$perPage} OFFSET {$offset}";
         
-        $result = $this->query($query);
-        return $result ?: [];
+        $result = $this->query($query, $params);
+        
+        return [
+            'data' => $result ?: [],
+            'total' => $total,
+            'pages' => $totalPages,
+            'current_page' => $page,
+            'per_page' => $perPage
+        ];
+    }
+    
+    /**
+     * Check if category name already exists
+     * @param string $name - Category name to check
+     * @param int|null $excludeId - ID to exclude (for updates)
+     * @return bool
+     */
+    public function checkCategoryNameExists($name, $excludeId = null) {
+        $params = ['name' => strtolower(trim($name))];
+        
+        if ($excludeId) {
+            $query = "SELECT id FROM {$this->table} WHERE LOWER(name) = :name AND id != :exclude_id AND deleted_at IS NULL LIMIT 1";
+            $params['exclude_id'] = $excludeId;
+        } else {
+            $query = "SELECT id FROM {$this->table} WHERE LOWER(name) = :name AND deleted_at IS NULL LIMIT 1";
+        }
+        
+        $result = $this->getRow($query, $params);
+        return $result !== false && $result !== null;
+    }
+    
+    /**
+     * Check if place name already exists in a category
+     * @param string $name - Place name to check
+     * @param int $categoryId - Category ID
+     * @param int|null $excludeId - ID to exclude (for updates)
+     * @return bool
+     */
+    public function checkPlaceNameExists($name, $categoryId, $excludeId = null) {
+        $params = [
+            'name' => strtolower(trim($name)),
+            'destination_id' => $categoryId
+        ];
+        
+        if ($excludeId) {
+            $query = "SELECT id FROM destination_places WHERE LOWER(name) = :name AND destination_id = :destination_id AND id != :exclude_id LIMIT 1";
+            $params['exclude_id'] = $excludeId;
+        } else {
+            $query = "SELECT id FROM destination_places WHERE LOWER(name) = :name AND destination_id = :destination_id LIMIT 1";
+        }
+        
+        $result = $this->getRow($query, $params);
+        return $result !== false && $result !== null;
+    }
+    
+    /**
+     * Get places by category with pagination and search
+     * @param int $categoryId - Category ID
+     * @param int $page - Current page number (1-based)
+     * @param int $perPage - Items per page
+     * @param string $search - Search term for filtering
+     * @return array
+     */
+    public function getPlacesByCategoryPaginated($categoryId, $page = 1, $perPage = 12, $search = '') {
+        $searchCondition = '';
+        $params = ['destination_id' => $categoryId];
+        
+        if (!empty($search)) {
+            $searchCondition = "AND (name LIKE :search OR title LIKE :search OR description LIKE :search)";
+            $params['search'] = '%' . $search . '%';
+        }
+        
+        // Get total count
+        $countQuery = "SELECT COUNT(*) as total FROM destination_places WHERE destination_id = :destination_id {$searchCondition}";
+        $countResult = $this->getRow($countQuery, $params);
+        $total = $countResult ? (int)$countResult->total : 0;
+        $totalPages = ceil($total / $perPage);
+        $page = max(1, min($page, $totalPages ?: 1));
+        $offset = ($page - 1) * $perPage;
+        
+        $query = "SELECT * FROM destination_places 
+                  WHERE destination_id = :destination_id {$searchCondition}
+                  ORDER BY created_at DESC 
+                  LIMIT {$perPage} OFFSET {$offset}";
+        
+        $result = $this->query($query, $params);
+        
+        return [
+            'data' => $result ?: [],
+            'total' => $total,
+            'pages' => $totalPages,
+            'current_page' => $page,
+            'per_page' => $perPage
+        ];
     }
 
     /**
@@ -358,6 +497,13 @@ class Destination {
         $conn = $this->connect();
         $stmt = $conn->prepare($query);
         return $stmt->execute($params);
+    }
+
+    /**
+     * Delete place (instance method) - wrapper for controller compatibility
+     */
+    public function deletePlace($placeId) {
+        return $this->deletePlaceFromCategory($placeId);
     }
 
     /**

@@ -12,18 +12,13 @@ $currentPage = explode('?', $currentPage)[0]; // Remove query strings
             </a>
         </li>
         <li>
-            <a href="<?= ROOT ?>/Users" class="<?= $currentPage == 'Users' ? 'active' : '' ?>">
+            <a href="<?= ROOT ?>/Users" class="<?= ($currentPage == 'Users' || $currentPage == 'viewtraveller' || $currentPage == 'viewprovider') ? 'active' : '' ?>">
                 <i class="fas fa-users"></i> Users
             </a>
         </li>
         <li>
             <a href="<?= ROOT ?>/content" class="<?= $currentPage == 'content' ? 'active' : '' ?>">
                 <i class="fas fa-blog"></i> Blogs
-            </a>
-        </li>
-        <li>
-            <a href="<?= ROOT ?>/ViewListing" class="<?= $currentPage == 'ViewListing' ? 'active' : '' ?>">
-                <i class="fas fa-list-alt"></i> Listings
             </a>
         </li>
         <li>

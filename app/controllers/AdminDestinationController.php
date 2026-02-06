@@ -20,11 +20,23 @@ class AdminDestinationController {
      * Display main destinations page with all category cards
      */
     public function index() {
-        // Get all destination categories with statistics
-        $categories = $this->destinationModel->getAllCategories();
+        // Get pagination and search parameters
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+        $perPage = 8; // 2 rows x 4 columns
+        
+        // Get categories with pagination and search
+        $result = $this->destinationModel->getAllCategories($page, $perPage, $search);
         
         $data = [
-            'categories' => $categories,
+            'categories' => $result['data'],
+            'pagination' => [
+                'total' => $result['total'],
+                'pages' => $result['pages'],
+                'current_page' => $result['current_page'],
+                'per_page' => $result['per_page']
+            ],
+            'search' => $search,
             'pageTitle' => 'Destination Categories'
         ];
         
@@ -52,15 +64,27 @@ class AdminDestinationController {
             exit;
         }
 
-        // Get all places in this category
-        $places = $this->destinationModel->getPlacesByCategory($categoryId);
+        // Get pagination and search parameters
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+        $perPage = 12;
+        
+        // Get places with pagination and search
+        $result = $this->destinationModel->getPlacesByCategoryPaginated($categoryId, $page, $perPage, $search);
         
         // Get all categories for dropdown (for moving places)
         $allCategories = $this->destinationModel->getCategoriesForDropdown();
 
         $data = [
             'category' => $category,
-            'places' => $places,
+            'places' => $result['data'],
+            'pagination' => [
+                'total' => $result['total'],
+                'pages' => $result['pages'],
+                'current_page' => $result['current_page'],
+                'per_page' => $result['per_page']
+            ],
+            'search' => $search,
             'allCategories' => $allCategories,
             'pageTitle' => $category->name . ' - Places'
         ];
@@ -85,20 +109,34 @@ class AdminDestinationController {
             echo json_encode(['success' => false, 'message' => 'Category name is required']);
             exit;
         }
+        
+        // Sanitize and validate name
+        $name = trim($data['name']);
+        if (strlen($name) < 2 || strlen($name) > 100) {
+            echo json_encode(['success' => false, 'message' => 'Category name must be between 2 and 100 characters']);
+            exit;
+        }
+        
+        // Check for duplicate category name
+        if ($this->categoryNameExists($name)) {
+            echo json_encode(['success' => false, 'message' => 'A category with this name already exists']);
+            exit;
+        }
 
-        // Handle image upload
+        // Handle image upload with validation
         $imagePath = null;
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $imagePath = $this->uploadImage($_FILES['image'], 'categories');
-            if (!$imagePath) {
-                echo json_encode(['success' => false, 'message' => 'Failed to upload image']);
+            $uploadResult = $this->uploadImage($_FILES['image'], 'categories');
+            if (!$uploadResult['success']) {
+                echo json_encode(['success' => false, 'message' => $uploadResult['error']]);
                 exit;
             }
+            $imagePath = $uploadResult['path'];
         }
 
         $categoryData = [
-            'name' => $data['name'],
-            'description' => $data['description'] ?? '',
+            'name' => $name,
+            'description' => trim($data['description'] ?? ''),
             'image' => $imagePath,
             'created_by' => $this->adminId
         ];
@@ -134,16 +172,40 @@ class AdminDestinationController {
             echo json_encode(['success' => false, 'message' => 'Category ID and name are required']);
             exit;
         }
+        
+        // Sanitize and validate name
+        $name = trim($data['name']);
+        if (strlen($name) < 2 || strlen($name) > 100) {
+            echo json_encode(['success' => false, 'message' => 'Category name must be between 2 and 100 characters']);
+            exit;
+        }
+        
+        // Check for duplicate category name (excluding current category)
+        if ($this->categoryNameExists($name, $categoryId)) {
+            echo json_encode(['success' => false, 'message' => 'A category with this name already exists']);
+            exit;
+        }
 
-        // Handle image upload
+        // Handle image upload with validation
         $imagePath = null;
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $imagePath = $this->uploadImage($_FILES['image'], 'categories');
+            $uploadResult = $this->uploadImage($_FILES['image'], 'categories');
+            if (!$uploadResult['success']) {
+                echo json_encode(['success' => false, 'message' => $uploadResult['error']]);
+                exit;
+            }
+            $imagePath = $uploadResult['path'];
+            
+            // Delete old image if new one is uploaded
+            $oldCategory = $this->destinationModel->getCategoryById($categoryId);
+            if ($oldCategory && !empty($oldCategory->image)) {
+                $this->deleteImageFile($oldCategory->image);
+            }
         }
 
         $categoryData = [
-            'name' => $data['name'],
-            'description' => $data['description'] ?? '',
+            'name' => $name,
+            'description' => trim($data['description'] ?? ''),
             'image' => $imagePath
         ];
 
@@ -178,10 +240,17 @@ class AdminDestinationController {
             ]);
             exit;
         }
+        
+        // Get category details to delete image
+        $category = $this->destinationModel->getCategoryById($categoryId);
 
         $result = $this->destinationModel->deleteCategory($categoryId, $this->adminId);
 
         if ($result) {
+            // Delete the image file from server
+            if ($category && !empty($category->image)) {
+                $this->deleteImageFile($category->image);
+            }
             echo json_encode(['success' => true, 'message' => 'Category deleted successfully']);
         } else {
             echo json_encode(['success' => false, 'message' => 'Failed to delete category']);
@@ -224,27 +293,40 @@ class AdminDestinationController {
         }
 
         $destinationId = $data['destination_id'] ?? null;
-        $name = $data['name'] ?? '';
+        $name = trim($data['name'] ?? '');
 
         if (!$destinationId || empty($name)) {
             echo json_encode(['success' => false, 'message' => 'Category ID and place name are required']);
             exit;
         }
+        
+        // Validate name length
+        if (strlen($name) < 2 || strlen($name) > 120) {
+            echo json_encode(['success' => false, 'message' => 'Place name must be between 2 and 120 characters']);
+            exit;
+        }
+        
+        // Check for duplicate place name in this category
+        if ($this->placeNameExists($name, $destinationId)) {
+            echo json_encode(['success' => false, 'message' => 'A place with this name already exists in this category']);
+            exit;
+        }
 
-        // Handle image upload
+        // Handle image upload with validation
         $imagePath = null;
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $imagePath = $this->uploadImage($_FILES['image'], 'destinations');
-            if (!$imagePath) {
-                echo json_encode(['success' => false, 'message' => 'Failed to upload image']);
+            $uploadResult = $this->uploadImage($_FILES['image'], 'destinations');
+            if (!$uploadResult['success']) {
+                echo json_encode(['success' => false, 'message' => $uploadResult['error']]);
                 exit;
             }
+            $imagePath = $uploadResult['path'];
         }
 
         $placeData = [
             'destination_id' => $destinationId,
             'name' => $name,
-            'description' => $data['description'] ?? '',
+            'description' => trim($data['description'] ?? ''),
             'image' => $imagePath
         ];
 
@@ -274,26 +356,55 @@ class AdminDestinationController {
         }
 
         $placeId = $data['id'] ?? null;
-        $name = $data['name'] ?? '';
+        $name = trim($data['name'] ?? '');
 
         if (!$placeId || empty($name)) {
             echo json_encode(['success' => false, 'message' => 'Place ID and name are required']);
             exit;
         }
+        
+        // Validate name length
+        if (strlen($name) < 2 || strlen($name) > 120) {
+            echo json_encode(['success' => false, 'message' => 'Place name must be between 2 and 120 characters']);
+            exit;
+        }
+        
+        // Get current place to check category and for image deletion
+        $currentPlace = $this->destinationModel->getPlaceById($placeId);
+        if (!$currentPlace) {
+            echo json_encode(['success' => false, 'message' => 'Place not found']);
+            exit;
+        }
+        
+        // Check for duplicate place name in this category (excluding current place)
+        if ($this->placeNameExists($name, $currentPlace->destination_id, $placeId)) {
+            echo json_encode(['success' => false, 'message' => 'A place with this name already exists in this category']);
+            exit;
+        }
 
-        // Handle image upload
+        // Handle image upload with validation
         $imagePath = null;
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $imagePath = $this->uploadImage($_FILES['image'], 'destinations');
+            $uploadResult = $this->uploadImage($_FILES['image'], 'destinations');
+            if (!$uploadResult['success']) {
+                echo json_encode(['success' => false, 'message' => $uploadResult['error']]);
+                exit;
+            }
+            $imagePath = $uploadResult['path'];
+            
+            // Delete old image if new one is uploaded
+            if (!empty($currentPlace->image)) {
+                $this->deleteImageFile($currentPlace->image);
+            }
         }
 
         $placeData = [
             'name' => $name,
-            'description' => $data['description'] ?? '',
+            'description' => trim($data['description'] ?? ''),
             'image' => $imagePath
         ];
 
-        $result = $this->destinationModel->updatePlace($placeId, $placeData);
+        $result = $this->destinationModel->updatePlaceById($placeId, $placeData);
 
         if ($result) {
             echo json_encode(['success' => true, 'message' => 'Place updated successfully']);
@@ -315,10 +426,17 @@ class AdminDestinationController {
             echo json_encode(['success' => false, 'message' => 'Place ID required']);
             exit;
         }
+        
+        // Get place details to delete image
+        $place = $this->destinationModel->getPlaceById($placeId);
 
         $result = $this->destinationModel->deletePlace($placeId);
 
         if ($result) {
+            // Delete the image file from server
+            if ($place && !empty($place->image)) {
+                $this->deleteImageFile($place->image);
+            }
             echo json_encode(['success' => true, 'message' => 'Place deleted successfully']);
         } else {
             echo json_encode(['success' => false, 'message' => 'Failed to delete place']);
@@ -348,9 +466,14 @@ class AdminDestinationController {
     }
 
     /**
-     * Upload image helper
+     * Upload image helper with validation
+     * @param array $file - The uploaded file from $_FILES
+     * @param string $directory - The subdirectory to store in
+     * @return array - ['success' => bool, 'path' => string|null, 'error' => string|null]
      */
     private function uploadImage($file, $directory) {
+        $result = ['success' => false, 'path' => null, 'error' => null];
+        
         $uploadDir = __DIR__ . '/../../public/uploads/' . $directory . '/';
         
         // Create directory if not exists
@@ -358,27 +481,97 @@ class AdminDestinationController {
             mkdir($uploadDir, 0777, true);
         }
 
-        // Validate file type
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-        if (!in_array($file['type'], $allowedTypes)) {
-            return null;
+        // Validate file type using both MIME type and extension
+        $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+        
+        $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+        
+        if (!in_array($mimeType, $allowedMimeTypes)) {
+            $result['error'] = 'Invalid file type. Only JPG, PNG, WebP, and GIF images are allowed.';
+            return $result;
+        }
+        
+        if (!in_array($extension, $allowedExtensions)) {
+            $result['error'] = 'Invalid file extension. Allowed: jpg, jpeg, png, webp, gif';
+            return $result;
         }
 
         // Validate file size (max 5MB)
-        if ($file['size'] > 5 * 1024 * 1024) {
-            return null;
+        $maxSize = 5 * 1024 * 1024; // 5MB
+        if ($file['size'] > $maxSize) {
+            $result['error'] = 'File size too large. Maximum size is 5MB. Your file is ' . round($file['size'] / 1024 / 1024, 2) . 'MB';
+            return $result;
+        }
+        
+        // Validate minimum file size (must be at least 1KB to be a real image)
+        if ($file['size'] < 1024) {
+            $result['error'] = 'File is too small. It may be corrupted.';
+            return $result;
+        }
+
+        // Verify it's a real image
+        $imageInfo = getimagesize($file['tmp_name']);
+        if ($imageInfo === false) {
+            $result['error'] = 'The file is not a valid image.';
+            return $result;
         }
 
         // Generate unique filename
-        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $fileName = time() . '_' . uniqid() . '.' . $extension;
+        $fileName = 'dest_' . uniqid() . '.' . $extension;
         $uploadPath = $uploadDir . $fileName;
 
         // Move file
         if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
-            return '/uploads/' . $directory . '/' . $fileName;
+            $result['success'] = true;
+            $result['path'] = '/uploads/' . $directory . '/' . $fileName;
+            return $result;
         }
 
-        return null;
+        $result['error'] = 'Failed to save the uploaded file.';
+        return $result;
+    }
+    
+    /**
+     * Delete image from server
+     * @param string $imagePath - The relative path to the image
+     * @return bool
+     */
+    private function deleteImageFile($imagePath) {
+        if (empty($imagePath)) {
+            return true;
+        }
+        
+        $fullPath = __DIR__ . '/../../public' . $imagePath;
+        
+        if (file_exists($fullPath) && is_file($fullPath)) {
+            return unlink($fullPath);
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Check if category name already exists
+     * @param string $name - Category name to check
+     * @param int|null $excludeId - ID to exclude (for updates)
+     * @return bool
+     */
+    private function categoryNameExists($name, $excludeId = null) {
+        return $this->destinationModel->checkCategoryNameExists($name, $excludeId);
+    }
+    
+    /**
+     * Check if place name already exists in a category
+     * @param string $name - Place name to check
+     * @param int $categoryId - Category ID
+     * @param int|null $excludeId - ID to exclude (for updates)
+     * @return bool
+     */
+    private function placeNameExists($name, $categoryId, $excludeId = null) {
+        return $this->destinationModel->checkPlaceNameExists($name, $categoryId, $excludeId);
     }
 }
