@@ -24,6 +24,7 @@ $categoryImage = $category->image ?? '/assets/images/default-destination.jpg';
     <?php include __DIR__ . '/../sidebar.view.php'; ?>
     
     <div class="content">
+        <?php include __DIR__ . '/../flash_messages.php'; ?>
         <!-- Breadcrumb -->
         <div class="breadcrumb">
             <a href="<?= ROOT ?>/admin/destinations">

@@ -26,6 +26,7 @@ $pagination = $data['pagination'];
     <?php include __DIR__ . '/../sidebar.view.php'; ?>
     
     <div class="content">
+        <?php include __DIR__ . '/../flash_messages.php'; ?>
         <!-- Page Header -->
         <div class="page-header">
             <div class="header-left">

@@ -15,6 +15,7 @@
     <?php include 'sidebar.view.php'; ?>
 
     <div class="content">
+        <?php include __DIR__ . '/flash_messages.php'; ?>
         <div class="page-title">
             <h1>Notifications</h1>
         </div>

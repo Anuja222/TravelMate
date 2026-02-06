@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../models/Blog.php';
 require_once __DIR__ . '/../models/BlogNotification.php';
+require_once __DIR__ . '/../helpers/SessionHelper.php';
 
 /**
  * AdminBlogController - Handles all admin blog management operations
@@ -20,6 +21,8 @@ class AdminBlogController {
      * Display blog moderation queue (pending blogs)
      */
     public function moderationQueue() {
+        SessionHelper::requireAdmin();
+
         // Get pending blogs
         $blogs = $this->blogModel->getPendingBlogs();
         
@@ -34,12 +37,14 @@ class AdminBlogController {
      * Display all blogs with filters
      */
     public function allBlogs() {
-        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        SessionHelper::requireAdmin();
+
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
         $perPage = 10;
         
         $filters = [
             'status' => $_GET['status'] ?? '',
-            'search' => $_GET['search'] ?? ''
+            'search' => substr(trim($_GET['search'] ?? ''), 0, 100)
         ];
 
         $blogs = $this->blogModel->getAllBlogsFiltered($page, $perPage, $filters);
@@ -63,7 +68,9 @@ class AdminBlogController {
      * View blog detail for moderation
      */
     public function viewBlogDetail() {
-        $blogId = $_GET['id'] ?? null;
+        SessionHelper::requireAdmin();
+
+        $blogId = (int)($_GET['id'] ?? 0);
         
         if (!$blogId) {
             header('Location: /TravelMate/public/content');
@@ -73,7 +80,7 @@ class AdminBlogController {
         $blog = $this->blogModel->getBlogById($blogId);
         
         if (!$blog) {
-            $_SESSION['error'] = 'Blog not found';
+            SessionHelper::flash('error', 'Blog not found');
             header('Location: /TravelMate/public/content');
             exit;
         }
@@ -87,8 +94,10 @@ class AdminBlogController {
     public function approve() {
         header('Content-Type: application/json');
 
+        if (!SessionHelper::requireAdminApi()) return;
+
         $data = json_decode(file_get_contents('php://input'), true);
-        $blogId = $data['blog_id'] ?? null;
+        $blogId = (int)($data['blog_id'] ?? 0);
 
         if (!$blogId) {
             echo json_encode(['success' => false, 'message' => 'Blog ID is required']);
@@ -103,8 +112,7 @@ class AdminBlogController {
             exit;
         }
 
-        // Admin ID - use session or default to 1 for development
-        $adminId = $_SESSION['user_id'] ?? 1;
+        $adminId = SessionHelper::getUserId();
 
         $result = $this->blogModel->approveBlog($blogId, $adminId);
 
@@ -130,9 +138,11 @@ class AdminBlogController {
     public function reject() {
         header('Content-Type: application/json');
 
+        if (!SessionHelper::requireAdminApi()) return;
+
         $data = json_decode(file_get_contents('php://input'), true);
-        $blogId = $data['blog_id'] ?? null;
-        $feedback = $data['feedback'] ?? '';
+        $blogId = (int)($data['blog_id'] ?? 0);
+        $feedback = substr(trim($data['feedback'] ?? ''), 0, 500);
 
         if (!$blogId) {
             echo json_encode(['success' => false, 'message' => 'Blog ID is required']);
@@ -176,8 +186,10 @@ class AdminBlogController {
     public function deleteBlog() {
         header('Content-Type: application/json');
 
+        if (!SessionHelper::requireAdminApi()) return;
+
         $data = json_decode(file_get_contents('php://input'), true);
-        $blogId = $data['blog_id'] ?? null;
+        $blogId = (int)($data['blog_id'] ?? 0);
 
         if (!$blogId) {
             echo json_encode(['success' => false, 'message' => 'Blog ID is required']);
@@ -200,8 +212,10 @@ class AdminBlogController {
     public function toggleFeatured() {
         header('Content-Type: application/json');
 
+        if (!SessionHelper::requireAdminApi()) return;
+
         $data = json_decode(file_get_contents('php://input'), true);
-        $blogId = $data['blog_id'] ?? null;
+        $blogId = (int)($data['blog_id'] ?? 0);
 
         if (!$blogId) {
             echo json_encode(['success' => false, 'message' => 'Blog ID is required']);
@@ -224,15 +238,19 @@ class AdminBlogController {
     public function bulkApprove() {
         header('Content-Type: application/json');
 
+        if (!SessionHelper::requireAdminApi()) return;
+
         $data = json_decode(file_get_contents('php://input'), true);
         $blogIds = $data['blog_ids'] ?? [];
 
-        if (empty($blogIds)) {
+        if (empty($blogIds) || !is_array($blogIds)) {
             echo json_encode(['success' => false, 'message' => 'No blogs selected']);
             exit;
         }
 
-        $adminId = $_SESSION['user_id'] ?? 1;
+        // Sanitize blog IDs
+        $blogIds = array_map('intval', array_slice($blogIds, 0, 50));
+        $adminId = SessionHelper::getUserId();
         $result = $this->blogModel->bulkApprove($blogIds, $adminId);
 
         if ($result) {
@@ -262,11 +280,13 @@ class AdminBlogController {
     public function bulkReject() {
         header('Content-Type: application/json');
 
+        if (!SessionHelper::requireAdminApi()) return;
+
         $data = json_decode(file_get_contents('php://input'), true);
         $blogIds = $data['blog_ids'] ?? [];
-        $feedback = $data['feedback'] ?? '';
+        $feedback = substr(trim($data['feedback'] ?? ''), 0, 500);
 
-        if (empty($blogIds)) {
+        if (empty($blogIds) || !is_array($blogIds)) {
             echo json_encode(['success' => false, 'message' => 'No blogs selected']);
             exit;
         }

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog Details - Admin</title>
     <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/blog_detail.css?v=<?php echo time(); ?>">
@@ -14,6 +16,7 @@
     <?php include 'sidebar.view.php'; ?>
 
     <div class="content">
+        <?php include __DIR__ . '/flash_messages.php'; ?>
         <a href="<?= ROOT ?>/content" class="back-btn">
             <i class="fas fa-arrow-left"></i> Back to Blog Management
         </a>

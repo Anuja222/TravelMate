@@ -35,6 +35,7 @@ $mainImageUrl = $mainImage ? ROOT . '/' . $mainImage : ROOT . '/assets/images/de
     <?php include __DIR__ . '/../sidebar.view.php'; ?>
     
     <div class="content">
+        <?php include __DIR__ . '/../flash_messages.php'; ?>
         <!-- Breadcrumb -->
         <div class="breadcrumb">
             <a href="<?= ROOT ?>/admin/accommodations"><i class="fas fa-hotel"></i> Accommodations</a>
