@@ -17,6 +17,15 @@ class Preference {
             // Start transaction
             $conn->beginTransaction();
 
+            // Delete existing preferences for this user
+            $sql = "DELETE FROM user_environments WHERE user_id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([$this->userId]);
+
+            $sql = "DELETE FROM user_activities WHERE user_id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([$this->userId]);
+
             // Insert environments
             foreach ($this->environments as $environment) {
                 $sql = "INSERT INTO user_environments (user_id, environment_name) VALUES (?, ?)";
@@ -36,6 +45,10 @@ class Preference {
             return true;
         } catch (\Exception $e) {
             $conn->rollBack();
+            error_log('Preference save error: ' . $e->getMessage());
+            error_log('User ID: ' . $this->userId);
+            error_log('Environments: ' . print_r($this->environments, true));
+            error_log('Activities: ' . print_r($this->activities, true));
             return false;
         }
     }
