@@ -444,8 +444,10 @@ elseif ($requestUri === '/api/transport-booking/init-booking' && $_SERVER['REQUE
 }
 
 elseif ($requestUri === '/preference/save' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Preference Save");
     $preferenceController = new PreferenceController();
     $preferenceController->save();
+    exit; // Important: Stop execution after handling the API request
 }
 
 // // Vehicles API
