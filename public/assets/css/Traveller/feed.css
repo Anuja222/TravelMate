@@ -102,10 +102,13 @@ body {
     padding: 0.5em;
     border-radius: 8px;
     transition: background 0.2s;
+    text-decoration: none;
+    color: inherit;
 }
 
 .trending-item:hover {
     background: #f0f2f5;
+    text-decoration: none;
 }
 
 .trending-img {
@@ -918,4 +921,35 @@ body {
     border-radius: 16px;
     font-size: 0.85em;
     font-weight: 500;
+}
+
+/* Profile Link Hover Effects */
+.user-avatar {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+a:hover .user-avatar {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.user-info h4 {
+    transition: color 0.2s ease;
+}
+
+.user-info a:hover h4 {
+    color: #1abc5b;
+}
+
+.suggestion-avatar {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+a:hover .suggestion-avatar {
+    transform: scale(1.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.suggestion-info a:hover h5 {
+    color: #1abc5b;
 }
