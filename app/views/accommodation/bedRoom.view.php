@@ -21,78 +21,39 @@
     }
     ?>
     <h1>Bed Room <?php echo $bedNumber; ?></h1>
-    <form class="bedroom-form">
+    <?php
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    $existingType = '';
+    $existingCount = 1;
+    if (!empty($_SESSION['property_details']['bedrooms'][$bedNumber - 1])) {
+        $existingType = $_SESSION['property_details']['bedrooms'][$bedNumber - 1]['type'] ?? '';
+        $existingCount = (int)($_SESSION['property_details']['bedrooms'][$bedNumber - 1]['count'] ?? 1);
+        if ($existingCount < 1) $existingCount = 1;
+    }
+    ?>
+    <form class="bedroom-form" method="POST" action="/TravelMate/public/bedRoom">
         <label>Which beds are available in this room?</label>
         <div class="bed-type-row">
             <div class="bed">
-                <select>
-                    <option>King bed</option>
-                    <option>Queen bed</option>
-                    <option>Double bed</option>
-                    <option>Twin bed</option>
-                    <option>Full bed</option>
-                    <option>Single bed</option>
+                <select name="bed_type">
+                    <option <?= $existingType === 'King bed' ? 'selected' : '' ?>>King bed</option>
+                    <option <?= $existingType === 'Queen bed' ? 'selected' : '' ?>>Queen bed</option>
+                    <option <?= $existingType === 'Double bed' ? 'selected' : '' ?>>Double bed</option>
+                    <option <?= $existingType === 'Twin bed' ? 'selected' : '' ?>>Twin bed</option>
+                    <option <?= $existingType === 'Full bed' ? 'selected' : '' ?>>Full bed</option>
+                    <option <?= $existingType === 'Single bed' ? 'selected' : '' ?>>Single bed</option>
                 </select>
             </div>
             <div class="counter">
-                <button type="button" class="decrement">-</button>
-                <span class="count">2</span>
-                <button type="button" class="increment">+</button>
+                <input type="number" name="bed_count" min="1" max="10" value="<?= $existingCount ?>">
             </div>
         </div>
-        <button type="button" class="save-btn">Continue</button>
+        <input type="hidden" name="bed_index" value="<?= (int) $bedNumber ?>">
+        <button type="submit" class="save-btn">Continue</button>
     </form>
     <!-- Footer -->
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
-    <script src="/TravelMate/public/assets/js/Accommodation/bedRoom.js"></script>
-    <script>
-    // Redirect back to propertyDetails with selected bed info
-    (function(){
-        const bedNumber = <?php echo (int) $bedNumber; ?>;
-        document.querySelector('.save-btn').addEventListener('click', function(e){
-            e.preventDefault();
-            const select = document.querySelector('select');
-            const type = select ? select.value : '';
-            const countSpan = document.querySelector('.count');
-            const count = countSpan ? parseInt(countSpan.textContent) : 0;
-            const params = new URLSearchParams();
-            params.set('bed', bedNumber);
-            params.set('type', type);
-            params.set('count', count);
-            // Try multiple redirect fallbacks to work across different setups.
-            const relPath = 'public/index.php?url=Accommodation/propertyDetails&' + params.toString();
-            const absPath = '/TravelMate/public/index.php?url=Accommodation/propertyDetails&' + params.toString();
-            console.log('Attempting redirect (relative):', relPath);
-            // First try relative path (works when site is served from /TravelMate/)
-            try {
-                window.location.href = encodeURI(relPath);
-                // Give browser a tick to start navigation; if it doesn't navigate (rare), fallback below
-                setTimeout(function(){
-                    // If still on page after 500ms, try absolute path and show manual link
-                    if (location.href.indexOf('editBedrooms') === -1) {
-                        console.log('Relative redirect may have failed; trying absolute path', absPath);
-                        window.location.href = encodeURI(absPath);
-                        // Insert visible manual link as last resort
-                        insertManualFallback(absPath);
-                    }
-                }, 500);
-            } catch (e) {
-                console.warn('Relative redirect failed, trying absolute', e);
-                window.location.href = encodeURI(absPath);
-                insertManualFallback(absPath);
-            }
-
-            function insertManualFallback(href) {
-                const note = document.createElement('div');
-                note.style.marginTop = '1rem';
-                note.style.padding = '0.75rem';
-                note.style.background = '#fff3cd';
-                note.style.border = '1px solid #ffeeba';
-                note.innerHTML = 'If you are not redirected automatically, <a href="' + href + '">click here to continue</a>.';
-                document.body.appendChild(note);
-            }
-        });
-    })();
-    </script>
 </body>
 </html>

@@ -3,7 +3,13 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('log_errors', 1);
-ini_set('error_log', __DIR__ . '/../logs/php_error.log');
+
+// Ensure logs directory exists
+$logsDir = __DIR__ . '/../logs';
+if (!is_dir($logsDir)) {
+    mkdir($logsDir, 0777, true);
+}
+ini_set('error_log', $logsDir . '/php_error.log');
 
 // Log all requests for debugging
 error_log("=== NEW REQUEST ===");
@@ -155,6 +161,38 @@ elseif ($requestUri === '/api/accommodation/delete' && $_SERVER['REQUEST_METHOD'
     exit;
 }
 
+// Accommodation form page handlers
+elseif ($requestUri === '/selectPropertyType' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to selectPropertyType");
+    $controller = new AccommodationController();
+    $controller->selectPropertyType();
+    exit;
+}
+elseif ($requestUri === '/saveFeatures' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Accommodation saveFeatures");
+    $controller = new AccommodationController();
+    $controller->saveFeatures();
+    exit;
+}
+elseif ($requestUri === '/saveDetails' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Accommodation saveDetails");
+    $controller = new AccommodationController();
+    $controller->saveDetails();
+    exit;
+}
+elseif ($requestUri === '/savePhoto' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Accommodation savePhoto");
+    $controller = new AccommodationController();
+    $controller->savePhoto();
+    exit;
+}
+elseif ($requestUri === '/saveAccommodation' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Accommodation saveAccommodation");
+    $controller = new AccommodationController();
+    $controller->saveAccommodation();
+    exit;
+}
+
 // Accommodation page routes
 elseif (strpos($requestUri, '/accommodation/') === 0) {
     $page = substr($requestUri, strlen('/accommodation/'));
@@ -164,6 +202,22 @@ elseif (strpos($requestUri, '/accommodation/') === 0) {
         exit;
     }
 }
+elseif (preg_match('#^/deleteAccommodation/(\d+)$#', $requestUri, $matches)) {
+    $id = $matches[1];
+    $controller = new AccommodationController();
+    $_POST['id'] = $id;
+    $controller->delete();
+    exit;
+}
+elseif (preg_match('#^/viewProperty/(\d+)$#', $requestUri, $matches)) {
+    $accommodationId = $matches[1];
+    $viewFile = __DIR__ . '/../app/views/accommodation/viewProperty.view.php';
+    if (file_exists($viewFile)) {
+        require_once $viewFile;
+        exit;
+    }
+}
+
 
 // Destination API routes
 elseif ($requestUri === '/api/destination/create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -207,8 +261,126 @@ elseif ($requestUri === '/api/destination/create' && $_SERVER['REQUEST_METHOD'] 
     exit;
 }
 
+// Blog/Post API routes
+if ($requestUri === '/api/blog/create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/Blog.php';
+    $blogController = new Blog();
+    $blogController->create();
+    exit;
+} elseif ($requestUri === '/blog/store' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Blog Store");
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Model.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/models/Post.php';
+    require_once '../app/controllers/Blog.php';
+    $blogController = new Blog();
+    $blogController->store();
+    exit;
+} elseif ($requestUri === '/api/feed/posts' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/Feed.php';
+    $feedController = new Feed();
+    $feedController->index();
+    exit;
+}
+
+// Profile settings update route
+elseif ($requestUri === '/profile_setting/update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/Profilesetting.php';
+    $profileController = new Profilesetting();
+    $profileController->update();
+    exit;
+}
+
+// Blog post delete route
+elseif ($requestUri === '/blog/delete' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once '../app/core/config.php';
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Model.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/models/Post.php';
+    require_once '../app/controllers/Blog.php';
+    $blogController = new Blog();
+    $blogController->delete();
+    exit;
+}
+
+// Post CRUD API routes
+elseif ($requestUri === '/post/store' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Post Store");
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Model.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/models/Post.php';
+    require_once '../app/controllers/PostController.php';
+    $postController = new PostController();
+    $postController->store();
+    exit;
+}
+elseif (preg_match('/^\/post\/edit\/(\d+)$/', $requestUri, $matches) && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    error_log(">>> Routing to Post Edit");
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Model.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/models/Post.php';
+    require_once '../app/controllers/PostController.php';
+    $postController = new PostController();
+    $postController->edit($matches[1]);
+    exit;
+}
+elseif (preg_match('/^\/post\/update\/(\d+)$/', $requestUri, $matches) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Post Update");
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Model.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/models/Post.php';
+    require_once '../app/controllers/PostController.php';
+    $postController = new PostController();
+    $postController->update($matches[1]);
+    exit;
+}
+elseif (preg_match('/^\/post\/delete\/(\d+)$/', $requestUri, $matches) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Post Delete");
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Model.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/models/Post.php';
+    require_once '../app/controllers/PostController.php';
+    $postController = new PostController();
+    $postController->delete($matches[1]);
+    exit;
+}
+elseif (preg_match('/^\/post\/like\/(\d+)$/', $requestUri, $matches) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Post Like");
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Model.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/models/Post.php';
+    require_once '../app/controllers/PostController.php';
+    $postController = new PostController();
+    $postController->toggleLike($matches[1]);
+    exit;
+}
+elseif (preg_match('/^\/post\/comment\/(\d+)$/', $requestUri, $matches) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Post Comment");
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Model.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/models/Post.php';
+    require_once '../app/controllers/PostController.php';
+    $postController = new PostController();
+    $postController->addComment($matches[1]);
+    exit;
+}
+
 // Auth routes
-if ($requestUri === '/login') {
+elseif ($requestUri === '/login') {
     $authController = new AuthController();
     $authController->showLogin();
 } elseif ($requestUri === '/signup') {
@@ -326,8 +498,10 @@ elseif ($requestUri === '/api/transport-booking/init-booking' && $_SERVER['REQUE
 }
 
 elseif ($requestUri === '/preference/save' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Preference Save");
     $preferenceController = new PreferenceController();
     $preferenceController->save();
+    exit; // Important: Stop execution after handling the API request
 }
 
 // // Vehicles API
@@ -380,13 +554,24 @@ elseif ($page === 'home' || $requestUri === '/') {
 } elseif ($page === 'mybooking_details') {
     include '../app/views/traveller/mybooking_details.view.php';
 } elseif ($page === 'feed') {
-    include '../app/views/traveller/feed.view.php';
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Feed.php';
+    $feedController = new Feed();
+    $feedController->index();
+} elseif ($page === 'destinationview') {
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Destinationview.php';
+    $destinationviewController = new Destinationview();
+    $destinationviewController->index();
 } elseif ($page === 'header') {
     include '../app/views/traveller/header.view.php';
 } elseif ($page === 'footer') {
     include '../app/views/traveller/footer.view.php';
 } elseif ($page === 'dashboard') {
-    include '../app/views/traveller/dashboard.view.php';
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Dashboard.php';
+    $dashboardController = new Dashboard();
+    $dashboardController->index();
 } elseif ($page === 'profile_setting') {
     include '../app/views/traveller/profilesetting.view.php';
 } elseif ($page === 'detailsProperty') {
@@ -395,6 +580,13 @@ elseif ($page === 'home' || $requestUri === '/') {
     include '../app/views/accommodation/updateProperty.view.php';
 } elseif ($page === 'preference') {
     include '../app/views/traveller/preference.view.php';
+} elseif ($page === 'profile') {
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Profile.php';
+    $profileController = new Profile();
+    // Check if there's a username parameter in the URL
+    $username = $_GET['username'] ?? null;
+    $profileController->index($username);
 } elseif ($page === 'ride_booking_details') {
     include '../app/views/traveller/ride_booking_details.view.php';
 } elseif ($page === 'ride_booking_finish') {
@@ -406,11 +598,19 @@ elseif ($page === 'home' || $requestUri === '/') {
 } elseif ($page === 'beachdetail') {
     include '../app/views/traveller/beachdetail.view.php';
 } elseif ($page === 'blog') {
+    // require_once '../app/core/Database.php';
+    // require_once '../app/core/Controller.php';
+    // require_once '../app/controllers/Blog.php';
+    // $blogController = new Blog();
+    // $blogController->index();
     include '../app/views/traveller/blog.view.php';
 } elseif ($page === 'favactivity') {
     include '../app/views/traveller/favactivity.view.php';
 } elseif ($page === 'favdestination') {
-    include '../app/views/traveller/favdestination.view.php';
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Favdestination.php';
+    $favdestinationController = new Favdestination();
+    $favdestinationController->index();
 } elseif ($page === 'surfing') {
     include '../app/views/traveller/surfing.view.php';
 } elseif ($page === 'transport') {
@@ -466,7 +666,8 @@ elseif ($page === 'tr_dashboard') {
 
 //accomodation pages
 elseif ($page === 'ac_dashboard') {
-    include '../app/views/accommodation/newerDashboard.view.php';
+    $controller = new AccommodationController();
+    $controller->accommodationActivitySummary();
 } elseif ($page === 'photoUpload') {
     include '../app/views/accommodation/photoUpload.view.php';
 } elseif ($page === 'houseRules') {
@@ -490,9 +691,21 @@ elseif ($page === 'ac_dashboard') {
 } elseif ($page === 'accommodationCalendar') {
     include '../app/views/accommodation/accommodationCalendar.view.php';
 } elseif ($page === 'propertyDetails') {
-    include '../app/views/accommodation/propertyDetails.view.php';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        require_once __DIR__ . '/../app/controllers/AccommodationController.php';
+        $controller = new AccommodationController();
+        $controller->index();
+    } else {
+        include '../app/views/accommodation/propertyDetails.view.php';
+    }
 } elseif ($page === 'bedRoom') {
-    include '../app/views/accommodation/bedRoom.view.php';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        require_once __DIR__ . '/../app/controllers/AccommodationController.php';
+        $controller = new AccommodationController();
+        $controller->saveBedRoom();
+    } else {
+        include '../app/views/accommodation/bedRoom.view.php';
+    }
 } elseif ($page === 'editBedrooms') {
     include '../app/views/accommodation/editBedrooms.view.php';
 } elseif ($page === 'viewProperty') {
@@ -501,6 +714,14 @@ elseif ($page === 'ac_dashboard') {
     include '../app/views/accommodation/detailsProperty.view.php';
 } elseif ($page === 'updateProperty') {
     include '../app/views/accommodation/updateProperty.view.php';
+}elseif ($page === 'price'){ //if requested page == 'price'
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') { // check the request method (POST/GET)
+        require_once __DIR__ . '/../app/controllers/AccommodationController.php';
+        $controller = new AccommodationController();
+        $controller->savePrice();
+    } else {
+        include '../app/views/accommodation/price.view.php';
+    }
 }
 
 //admin pages

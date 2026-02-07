@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>TravelMate - Sign Up</title>
-  <link rel="stylesheet" href="assets/css/Traveller/loginsignup.css">
+  <link rel="stylesheet" href="assets/css/Traveller/loginSignup.css">
 </head>
 <body>
   <!-- Auth Section -->
@@ -186,7 +186,30 @@
     </div>
   </section>
 
+  <!-- Success Modal -->
+  <div id="successModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-icon success">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+      </div>
+      <h2>Registration Successful!</h2>
+      <p>Your account has been created successfully. Welcome to TravelMate!</p>
+      <p class="modal-subtext">You will be redirected in <span id="countdown">3</span> seconds...</p>
+      <button class="btn-modal" onclick="redirectToNext('traveller')">Continue Now</button>
+    </div>
+  </div>
+
   <script>
+    console.log('Inline script loaded');
+    console.log('Testing if elements exist:', {
+      form: !!document.getElementById('signupForm'),
+      modal: !!document.getElementById('successModal'),
+      password: !!document.getElementById('password')
+    });
+    
     // Password toggle functionality
     function togglePassword(fieldId) {
       const field = document.getElementById(fieldId);
@@ -268,8 +291,165 @@
     const maxDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
     document.getElementById('dateOfBirth').max = maxDate.toISOString().split('T')[0];
 
+    // Form submission handler
+    const signupForm = document.getElementById('signupForm');
+    if (signupForm) {
+      console.log('Form found, attaching submit handler');
+      
+      signupForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        console.log('Form submitted!');
+        
+        // Get form values
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const agreeTerms = document.getElementById('agreeTerms').checked;
+        
+        // Validate passwords match
+        if (password !== confirmPassword) {
+          alert('Passwords do not match!');
+          return;
+        }
+        
+        // Validate terms agreement
+        if (!agreeTerms) {
+          alert('Please agree to the Terms of Service and Privacy Policy');
+          return;
+        }
+        
+        console.log('Validation passed');
+        
+        // Get user role from localStorage or default to traveller
+        let userRole = localStorage.getItem('selectedUserRole') || 'traveller';
+        console.log('User role:', userRole);
+        
+        // Create FormData
+        const formData = new FormData(signupForm);
+        formData.append('role', userRole);
+        
+        // Log form data
+        console.log('Sending registration request...');
+        for (let pair of formData.entries()) {
+          if (pair[0] !== 'password' && pair[0] !== 'confirmPassword') {
+            console.log(pair[0] + ': ' + pair[1]);
+          }
+        }
+        
+        // Send request
+        fetch('auth.php?action=register', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          console.log('Response status:', response.status);
+          if (!response.ok) {
+            throw new Error('HTTP error ' + response.status);
+          }
+          return response.text();
+        })
+        .then(text => {
+          console.log('Raw response:', text);
+          try {
+            const data = JSON.parse(text);
+            console.log('Parsed data:', data);
+            
+            if (data.success) {
+              console.log('Registration successful!');
+              
+              // Store user ID
+              if (data.user && data.user.userId) {
+                localStorage.setItem('userId', data.user.userId);
+                console.log('User ID stored:', data.user.userId);
+              }
+              
+              // Show modal and redirect
+              showSuccessModal(userRole);
+              
+              // Remove role from storage
+              localStorage.removeItem('selectedUserRole');
+            } else {
+              console.error('Registration failed:', data.errors);
+              let errorMsg = 'Registration failed:\n';
+              if (data.errors) {
+                for (const key in data.errors) {
+                  errorMsg += data.errors[key] + '\n';
+                }
+              }
+              alert(errorMsg);
+            }
+          } catch (err) {
+            console.error('JSON parse error:', err);
+            console.error('Response was:', text);
+            alert('Invalid response from server. Check console for details.');
+          }
+        })
+        .catch(error => {
+          console.error('Fetch error:', error);
+          alert('Error: ' + error.message + '\nCheck console for details.');
+        });
+      });
+    } else {
+      console.error('Form not found!');
+    }
+    
+    // Modal functions
+    window.showSuccessModal = function(userRole) {
+      console.log('showSuccessModal called');
+      const modal = document.getElementById('successModal');
+      
+      if (!modal) {
+        console.error('Modal not found, redirecting directly...');
+        redirectToNext(userRole);
+        return;
+      }
+      
+      console.log('Showing modal');
+      modal.classList.add('show');
+      modal.style.display = 'flex';
+      
+      let countdown = 3;
+      const countdownElement = document.getElementById('countdown');
+      
+      if (countdownElement) {
+        const timer = setInterval(() => {
+          countdown--;
+          countdownElement.textContent = countdown;
+          console.log('Countdown:', countdown);
+          
+          if (countdown <= 0) {
+            clearInterval(timer);
+            console.log('Countdown finished, redirecting...');
+            redirectToNext(userRole);
+          }
+        }, 1000);
+      } else {
+        console.error('Countdown element not found');
+        setTimeout(() => redirectToNext(userRole), 3000);
+      }
+    };
+    
+    window.redirectToNext = function(userRole) {
+      console.log('redirectToNext called with role:', userRole);
+      
+      if (!userRole) {
+        userRole = localStorage.getItem('selectedUserRole') || 'traveller';
+      }
+      
+      let redirectUrl = 'preference'; // Default to preference for traveller
+      
+      if (userRole === 'transport') {
+        redirectUrl = 'login';
+      } else if (userRole === 'admin') {
+        redirectUrl = 'login';
+      } else if (userRole === 'accommodation') {
+        redirectUrl = 'login';
+      }
+      
+      console.log('Redirecting to:', redirectUrl);
+      window.location.href = redirectUrl;
+    };
     
   </script>
-  <script src="../public/assets/js/signupmodel.js"></script>
+  <script src="assets/js/signupmodel.js"></script>
 </body>
 </html>

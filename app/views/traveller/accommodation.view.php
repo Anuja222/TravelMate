@@ -402,6 +402,16 @@
       // Clear existing static content
       grid.innerHTML = '';
 
+      // Set grid layout to maintain card sizing even with one item
+      grid.style.display = 'grid';
+      grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(320px, 1fr))';
+      grid.style.gap = '2rem';
+
+      if (accommodations.length === 0) {
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No accommodations available</p>';
+        return;
+      }
+
       accommodations.forEach(accommodation => {
         const card = createAccommodationCard(accommodation);
         grid.appendChild(card);
@@ -411,6 +421,8 @@
     function createAccommodationCard(accommodation) {
       const card = document.createElement('div');
       card.className = 'accommodation-card';
+      card.style.width = '100%';
+      card.style.maxWidth = '100%';
       card.setAttribute('data-type', accommodation.property_type || '');
       card.setAttribute('data-location', accommodation.location || '');
       

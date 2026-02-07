@@ -52,4 +52,45 @@ class User
         $stmt->execute([$email]);
         return $stmt->fetch();
     }
+
+    public static function updateUser($userId, $data)
+    {
+        try {
+            // Load database connection
+            require_once '../config/database.php';
+            
+            // Create PDO connection directly
+            $dsn = "mysql:host=" . DBHOST . ";dbname=" . DBNAME . ";charset=utf8mb4";
+            $conn = new \PDO($dsn, DBUSER, DBPASS);
+            $conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            
+            // Build update query dynamically based on provided data
+            $updates = [];
+            $params = [];
+            
+            $allowedFields = ['first_name', 'last_name', 'email', 'phone', 'date_of_birth', 'gender', 'bio', 'country', 'city', 'timezone', 'travel_style', 'budget', 'interests'];
+            
+            foreach ($data as $key => $value) {
+                if (in_array($key, $allowedFields)) {
+                    $updates[] = "$key = ?";
+                    $params[] = $value;
+                }
+            }
+            
+            if (empty($updates)) {
+                return false;
+            }
+            
+            $params[] = $userId; // Add user ID at the end for WHERE clause
+            
+            $sql = "UPDATE users SET " . implode(', ', $updates) . " WHERE id = ?";
+            $stmt = $conn->prepare($sql);
+            $result = $stmt->execute($params);
+            
+            return $result;
+        } catch (\PDOException $e) {
+            error_log("User update error: " . $e->getMessage());
+            return false;
+        }
+    }
 }
