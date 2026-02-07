@@ -90,9 +90,13 @@
           <?php foreach ($posts as $post): ?>
             <article class="post-card" data-category="<?php echo htmlspecialchars($post->category ?? ''); ?>">
               <div class="post-header">
-                <img src="assets/images/profile.jpg" alt="<?php echo htmlspecialchars(($post->first_name ?? '') . ' ' . ($post->last_name ?? '')); ?>" class="user-avatar">
+                <a href="profile?username=<?php echo urlencode($post->email ?? ''); ?>" style="text-decoration: none;">
+                  <img src="assets/images/profile.jpg" alt="<?php echo htmlspecialchars(($post->first_name ?? '') . ' ' . ($post->last_name ?? '')); ?>" class="user-avatar">
+                </a>
                 <div class="user-info">
-                  <h4><?php echo htmlspecialchars(($post->first_name ?? 'Anonymous') . ' ' . ($post->last_name ?? '')); ?></h4>
+                  <a href="profile?username=<?php echo urlencode($post->email ?? ''); ?>" style="text-decoration: none; color: inherit;">
+                    <h4><?php echo htmlspecialchars(($post->first_name ?? 'Anonymous') . ' ' . ($post->last_name ?? '')); ?></h4>
+                  </a>
                   <p class="post-meta">
                     <span class="time"><?php echo isset($post->created_at) ? date('M d, Y', strtotime($post->created_at)) : ''; ?></span>
                     <span class="separator">•</span>
@@ -162,57 +166,77 @@
       <div class="sidebar-section">
         <h3>Trending Destinations</h3>
         <div class="trending-list">
-          <div class="trending-item">
-            <img src="assets/images/contact.jpg" alt="Destination" class="trending-img">
-            <div class="trending-info">
-              <h5>Sigiriya</h5>
-              <p>1.2K posts</p>
+          <?php if (isset($destinations) && is_array($destinations) && count($destinations) > 0): ?>
+            <?php foreach ($destinations as $destination): ?>
+              <?php 
+                // Determine link based on destination title
+                $link = 'beach'; // default
+                $titleLower = strtolower($destination->title);
+                if (strpos($titleLower, 'beach') !== false) {
+                  $link = 'beach';
+                } elseif (strpos($titleLower, 'hill') !== false || strpos($titleLower, 'mountain') !== false) {
+                  $link = 'surfing';
+                } elseif (strpos($titleLower, 'country') !== false) {
+                  $link = 'surfing';
+                } else {
+                  $link = 'beach';
+                }
+                $postCount = isset($destinationPostCounts[$destination->id]) ? $destinationPostCounts[$destination->id] : 0;
+              ?>
+              <a href="<?php echo htmlspecialchars($link); ?>" class="trending-item">
+                <?php 
+                  $imagePath = $destination->image ?? 'assets/images/contact.jpg';
+                  // Remove leading slash if present to make path relative
+                  if (substr($imagePath, 0, 1) === '/') {
+                    $imagePath = substr($imagePath, 1);
+                  }
+                ?>
+                <img src="<?php echo htmlspecialchars($imagePath); ?>" alt="<?php echo htmlspecialchars($destination->title); ?>" class="trending-img">
+                <div class="trending-info">
+                  <h5><?php echo htmlspecialchars($destination->title); ?></h5>
+                  <p><?php echo $postCount; ?> post<?php echo $postCount != 1 ? 's' : ''; ?></p>
+                </div>
+              </a>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <div class="trending-item">
+              <img src="assets/images/contact.jpg" alt="Destination" class="trending-img">
+              <div class="trending-info">
+                <h5>Explore Sri Lanka</h5>
+                <p>Start your journey</p>
+              </div>
             </div>
-          </div>
-          <div class="trending-item">
-            <img src="assets/images/contact.jpg" alt="Destination" class="trending-img">
-            <div class="trending-info">
-              <h5>Mirissa Beach</h5>
-              <p>890 posts</p>
-            </div>
-          </div>
-          <div class="trending-item">
-            <img src="assets/images/contact.jpg" alt="Destination" class="trending-img">
-            <div class="trending-info">
-              <h5>Kandy Temple</h5>
-              <p>756 posts</p>
-            </div>
-          </div>
+          <?php endif; ?>
         </div>
       </div>
 
       <div class="sidebar-section">
         <h3>Suggested Travelers</h3>
         <div class="suggestions-list">
-          <div class="suggestion-item">
-            <img src="assets/images/profile.jpg" alt="User" class="suggestion-avatar">
-            <div class="suggestion-info">
-              <h5>John Traveler</h5>
-              <p>125 followers</p>
+          <?php if (isset($suggestedTravelers) && is_array($suggestedTravelers) && count($suggestedTravelers) > 0): ?>
+            <?php foreach ($suggestedTravelers as $traveler): ?>
+              <div class="suggestion-item">
+                <a href="profile?username=<?php echo urlencode($traveler->email); ?>" style="text-decoration: none;">
+                  <img src="assets/images/profile.jpg" alt="<?php echo htmlspecialchars($traveler->first_name . ' ' . $traveler->last_name); ?>" class="suggestion-avatar">
+                </a>
+                <div class="suggestion-info">
+                  <a href="profile?username=<?php echo urlencode($traveler->email); ?>" style="text-decoration: none; color: inherit;">
+                    <h5><?php echo htmlspecialchars($traveler->first_name . ' ' . $traveler->last_name); ?></h5>
+                  </a>
+                  <p><?php echo isset($travelerFollowerCounts[$traveler->id]) ? $travelerFollowerCounts[$traveler->id] : 0; ?> followers</p>
+                </div>
+                <button class="follow-btn">Follow</button>
+              </div>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <div class="suggestion-item">
+              <img src="assets/images/profile.jpg" alt="User" class="suggestion-avatar">
+              <div class="suggestion-info">
+                <h5>No travelers yet</h5>
+                <p>Be the first!</p>
+              </div>
             </div>
-            <button class="follow-btn">Follow</button>
-          </div>
-          <div class="suggestion-item">
-            <img src="assets/images/profile.jpg" alt="User" class="suggestion-avatar">
-            <div class="suggestion-info">
-              <h5>Jane Explorer</h5>
-              <p>89 followers</p>
-            </div>
-            <button class="follow-btn">Follow</button>
-          </div>
-          <div class="suggestion-item">
-            <img src="assets/images/profile.jpg" alt="User" class="suggestion-avatar">
-            <div class="suggestion-info">
-              <h5>Alex Adventure</h5>
-              <p>234 followers</p>
-            </div>
-            <button class="follow-btn">Follow</button>
-          </div>
+          <?php endif; ?>
         </div>
       </div>
 
