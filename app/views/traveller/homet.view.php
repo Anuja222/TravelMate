@@ -285,11 +285,18 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                 .then(resp => {
                     if (!resp.success) { container.innerHTML = '<p>Failed to load destinations</p>'; return; }
                     const rows = resp.data || [];
+                    if (rows.length === 0) {
+                        container.innerHTML = '<p>No destinations available</p>';
+                        return;
+                    }
+                    container.style.display = 'grid';
+                    container.style.gridTemplateColumns = 'repeat(auto-fill, minmax(280px, 1fr))';
+                    container.style.gap = '2rem';
                     container.innerHTML = rows.slice(0, 4).map(d => {
                         const baseUrl = window.location.origin + '/TravelMate/public';
                         const img = d.image ? baseUrl + d.image : 'assets/images/default-dest.png';
                         return `
-            <div class="card">
+            <div class="card" style="width: 100%; max-width: 100%;">
               <div class="card-image">
                 <img src="${img}" alt="${escapeHtml(d.title)}">
                 <div class="card-overlay">
