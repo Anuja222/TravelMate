@@ -504,6 +504,11 @@ elseif ($page === 'home' || $requestUri === '/') {
     require_once '../app/controllers/Feed.php';
     $feedController = new Feed();
     $feedController->index();
+} elseif ($page === 'destinationview') {
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Destinationview.php';
+    $destinationviewController = new Destinationview();
+    $destinationviewController->index();
 } elseif ($page === 'header') {
     include '../app/views/traveller/header.view.php';
 } elseif ($page === 'footer') {
