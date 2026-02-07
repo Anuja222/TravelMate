@@ -169,21 +169,9 @@
           <?php if (isset($destinations) && is_array($destinations) && count($destinations) > 0): ?>
             <?php foreach ($destinations as $destination): ?>
               <?php 
-                // Determine link based on destination title
-                $link = 'beach'; // default
-                $titleLower = strtolower($destination->title);
-                if (strpos($titleLower, 'beach') !== false) {
-                  $link = 'beach';
-                } elseif (strpos($titleLower, 'hill') !== false || strpos($titleLower, 'mountain') !== false) {
-                  $link = 'surfing';
-                } elseif (strpos($titleLower, 'country') !== false) {
-                  $link = 'surfing';
-                } else {
-                  $link = 'beach';
-                }
                 $postCount = isset($destinationPostCounts[$destination->id]) ? $destinationPostCounts[$destination->id] : 0;
               ?>
-              <a href="<?php echo htmlspecialchars($link); ?>" class="trending-item">
+              <a href="destinationview?id=<?php echo $destination->id; ?>" class="trending-item">
                 <?php 
                   $imagePath = $destination->image ?? 'assets/images/contact.jpg';
                   // Remove leading slash if present to make path relative

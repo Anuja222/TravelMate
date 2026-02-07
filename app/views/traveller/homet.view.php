@@ -300,7 +300,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
               <div class="card-image">
                 <img src="${img}" alt="${escapeHtml(d.title)}">
                 <div class="card-overlay">
-                  <a href="beachdetail?dest=${d.id}" class="explore-btn">Explore</a>
+                  <a href="destinationview?id=${d.id}" class="explore-btn">Explore</a>
                 </div>
               </div>
               <div class="card-content">
