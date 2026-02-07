@@ -521,6 +521,13 @@ elseif ($page === 'home' || $requestUri === '/') {
     include '../app/views/accommodation/updateProperty.view.php';
 } elseif ($page === 'preference') {
     include '../app/views/traveller/preference.view.php';
+} elseif ($page === 'profile') {
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Profile.php';
+    $profileController = new Profile();
+    // Check if there's a username parameter in the URL
+    $username = $_GET['username'] ?? null;
+    $profileController->index($username);
 } elseif ($page === 'ride_booking_details') {
     include '../app/views/traveller/ride_booking_details.view.php';
 } elseif ($page === 'ride_booking_finish') {
