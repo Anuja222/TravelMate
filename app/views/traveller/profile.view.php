@@ -50,7 +50,7 @@
               </svg>
               <div>
                 <p class="label">Member Since</p>
-                <p class="value"><?php echo isset($user->created_at) ? date('F Y', strtotime($user->created_at)) : 'Recently'; ?></p>
+                <p class="value"><?php echo (is_object($user) && isset($user->created_at)) ? date('F Y', strtotime($user->created_at)) : 'Recently'; ?></p>
               </div>
             </div>
             
@@ -75,12 +75,12 @@
               <div>
                 <p class="label">Phone</p>
                 <p class="value"><?php 
-                  $phone = $user->phone;
+                  $phone = $user->phone ?? '';
                   // Format phone numbers for better readability
-                  if (strlen($phone) == 10) {
+                  if (!empty($phone) && strlen($phone) == 10) {
                     // Format as: XXX XXX XXXX
                     echo htmlspecialchars(substr($phone, 0, 3) . ' ' . substr($phone, 3, 3) . ' ' . substr($phone, 6, 4));
-                  } elseif (strlen($phone) == 9) {
+                  } elseif (!empty($phone) && strlen($phone) == 9) {
                     // Format as: XX XXX XXXX
                     echo htmlspecialchars(substr($phone, 0, 2) . ' ' . substr($phone, 2, 3) . ' ' . substr($phone, 5, 4));
                   } else {
@@ -91,7 +91,7 @@
             </div>
             <?php endif; ?>
             
-            <?php if (!empty($user->date_of_birth)): ?>
+            <?php if (is_object($user) && !empty($user->date_of_birth)): ?>
             <div class="about-item">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -106,7 +106,7 @@
             </div>
             <?php endif; ?>
             
-            <?php if (!empty($user->country)): ?>
+            <?php if (is_object($user) && (!empty($user->country) || !empty($user->city))): ?>
             <div class="about-item">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
@@ -114,12 +114,12 @@
               </svg>
               <div>
                 <p class="label">Location</p>
-                <p class="value"><?php echo htmlspecialchars($user->city && $user->country ? $user->city . ', ' . $user->country : ($user->country ?? $user->city)); ?></p>
+                <p class="value"><?php echo htmlspecialchars((!empty($user->city) && !empty($user->country)) ? $user->city . ', ' . $user->country : (!empty($user->country) ? $user->country : ($user->city ?? ''))); ?></p>
               </div>
             </div>
             <?php endif; ?>
             
-            <?php if (!empty($user->gender)): ?>
+            <?php if (is_object($user) && !empty($user->gender)): ?>
             <div class="about-item">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10"></circle>
@@ -132,7 +132,7 @@
             </div>
             <?php endif; ?>
             
-            <?php if (!empty($user->bio)): ?>
+            <?php if (is_object($user) && !empty($user->bio)): ?>
             <div class="about-item">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
