@@ -553,7 +553,10 @@ elseif ($page === 'home' || $requestUri === '/') {
 } elseif ($page === 'favactivity') {
     include '../app/views/traveller/favactivity.view.php';
 } elseif ($page === 'favdestination') {
-    include '../app/views/traveller/favdestination.view.php';
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Favdestination.php';
+    $favdestinationController = new Favdestination();
+    $favdestinationController->index();
 } elseif ($page === 'surfing') {
     include '../app/views/traveller/surfing.view.php';
 } elseif ($page === 'transport') {
