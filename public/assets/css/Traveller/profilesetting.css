@@ -14,7 +14,7 @@ body{
 .main-content {
     max-width: 900px;
     margin: 0 auto;
-    padding: 1em 4em;
+    padding: 5em 4em;
 }
 
 .settings-header {
@@ -149,6 +149,9 @@ body{
     font-size: 1em;
     transition: border-color 0.3s ease;
     box-sizing: border-box;
+    font-family: 'Inter', Arial, sans-serif;
+    color: #222;
+    background: white;
 }
 
 .form-group input:focus,
@@ -156,11 +159,35 @@ body{
 .form-group select:focus {
     outline: none;
     border-color: #1abc5b;
+    box-shadow: 0 0 0 3px rgba(26, 188, 91, 0.1);
 }
 
 .form-group textarea {
     resize: vertical;
-    min-height: 100px;
+    min-height: 120px;
+    line-height: 1.6;
+}
+
+.form-group input[type="date"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    position: relative;
+    padding: 1em;
+    cursor: pointer;
+}
+
+.form-group input[type="date"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    right: 1em;
+    cursor: pointer;
+    color: #1abc5b;
+    font-size: 1.2em;
+}
+
+.form-group input[type="date"]::-webkit-inner-spin-button,
+.form-group input[type="date"]::-webkit-clear-button {
+    display: none;
 }
 
 .save-btn {

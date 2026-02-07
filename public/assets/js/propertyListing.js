@@ -1,3 +1,4 @@
+console.log('propertyListing.js loaded');
 document.addEventListener('DOMContentLoaded', function() {
     // Helper to compute base URL similar to accommodation.js
     function getBaseUrl() {
@@ -27,40 +28,36 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Accommodation Features Form
-    const featuresForm = document.querySelector('.features-form');
-    if (featuresForm) {
-        featuresForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const features = Array.from(document.querySelectorAll('input[name="features[]"]:checked'))
-                .map(cb => cb.value);
-            
-            localStorage.setItem('property_features', JSON.stringify(features));
-            window.location.href = 'propertyDetails';
-        });
-    }
+    // Accommodation Features Form - Allow normal form submission to /saveFeatures
+    // (No JavaScript hijacking needed - forms submit normally via POST)
 
-    // Property Details Form
-    const propertyDetailsForm = document.querySelector('.property-details-form');
-    if (propertyDetailsForm) {
-        propertyDetailsForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const details = {
-                rooms: document.querySelector('input[name="rooms"]').value,
-                bathrooms: document.querySelector('input[name="bathrooms"]').value,
-                maxGuests: document.querySelector('input[name="max_guests"]').value
-            };
-            
-            localStorage.setItem('property_details', JSON.stringify(details));
-            window.location.href = baseUrl + '/photoUpload';
-        });
-    }
+    // Property Details Form - Allow normal form submission to /saveDetails
+    // (No JavaScript hijacking needed - forms submit normally via POST)
 
     // Photo Upload Form
     const photoForm = document.querySelector('.photo-upload-form');
+    console.log('photoForm element found:', photoForm);
     if (photoForm) {
+        console.log('Initializing photo upload form handlers');
         const MAX_IMAGES = 25;
+        const MIN_IMAGES = 5;
         const photoInput = document.getElementById('photoInput');
+        const photoCountSpan = document.getElementById('photoCount');
+        console.log('photoInput element found:', photoInput);
+
+        const getPreviewContainer = () => {
+            let container = document.getElementById('imagePreviews') || document.querySelector('.image-previews');
+            if (!container) {
+                container = document.createElement('div');
+                container.className = 'image-previews';
+                container.id = 'imagePreviews';
+                const target = document.querySelector('.photo-upload-box');
+                if (target) {
+                    target.after(container);
+                }
+            }
+            return container;
+        };
 
         function fileToDataURL(file) {
             return new Promise((resolve, reject) => {
@@ -73,6 +70,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         async function handleFiles(files) {
             const stored = JSON.parse(localStorage.getItem('property_images') || '[]');
+            const remainingSlots = MAX_IMAGES - stored.length;
+            
+            if (remainingSlots <= 0) {
+                alert(`Maximum ${MAX_IMAGES} photos allowed. Please remove some photos before adding more.`);
+                return;
+            }
+            
             for (let i = 0; i < files.length && stored.length < MAX_IMAGES; i++) {
                 const f = files[i];
                 try {
@@ -84,6 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             try { localStorage.setItem('property_images', JSON.stringify(stored)); } catch(e){ console.error(e); }
             displayImagePreviewsFromStored();
+            updatePhotoCount(stored.length);
         }
 
         photoInput.addEventListener('change', function(e) {
@@ -93,32 +98,42 @@ document.addEventListener('DOMContentLoaded', function() {
             photoInput.value = '';
         });
 
-        photoForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const description = document.getElementById('propertyDescription').value;
-            try { localStorage.setItem('property_description', description); } catch(e){ console.error(e); }
-            window.location.href = baseUrl + '/houseRules';
-        });
+        // Photo form will submit normally to /savePhoto - no hijacking needed
+
+        function updatePhotoCount(count) {
+            if (photoCountSpan) {
+                photoCountSpan.textContent = count;
+                photoCountSpan.style.color = count >= MIN_IMAGES ? 'green' : 'red';
+                photoCountSpan.style.fontWeight = 'bold';
+            }
+        }
 
         function displayImagePreviewsFromStored() {
             const stored = JSON.parse(localStorage.getItem('property_images') || '[]');
-            const previewContainer = document.createElement('div');
-            previewContainer.className = 'image-previews';
-
+            
+            // Get or create the persistent preview container
+            let previewContainer = document.querySelector('.image-previews');
+            if (!previewContainer) {
+                previewContainer = document.createElement('div');
+                previewContainer.className = 'image-previews';
+                const container = document.querySelector('.photo-upload-box');
+                if (container) container.after(previewContainer);
+            }
+            
+            // Clear and re-render
+            previewContainer.innerHTML = '';
             stored.forEach((item, idx) => {
                 const preview = document.createElement('div');
                 preview.className = 'image-preview';
                 preview.innerHTML = `\
                     <img src="${item.dataUrl}" alt="Preview ${idx+1}">\
                     <button type="button" class="remove-image" data-idx="${idx}">&times;</button>\
+                    <span class="image-number">${idx + 1}</span>\
                 `;
                 previewContainer.appendChild(preview);
             });
-
-            const existing = document.querySelector('.image-previews');
-            if (existing) existing.remove();
-            const container = document.querySelector('.photo-upload-box');
-            if (container) container.after(previewContainer);
+            
+            updatePhotoCount(stored.length);
         }
 
         // Remove image handler (delegated)
@@ -131,122 +146,76 @@ document.addEventListener('DOMContentLoaded', function() {
                 stored.splice(idx, 1);
                 try { localStorage.setItem('property_images', JSON.stringify(stored)); } catch(e){console.error(e);} 
                 displayImagePreviewsFromStored();
+                updatePhotoCount(stored.length);
             }
         });
 
         // show previews on load
+        console.log('About to call displayImagePreviewsFromStored()');
         displayImagePreviewsFromStored();
-    }
-
-    // House Rules Form
-    const rulesForm = document.querySelector('.house-rules-form');
-    if (rulesForm) {
-        rulesForm.addEventListener('submit', async function(e) {
+        console.log('About to add submit event listener');
+        photoForm.addEventListener('submit', async function(e) {
+            console.log('SUBMIT EVENT FIRED - e.preventDefault() will be called');
             e.preventDefault();
-
+            console.log('Photo form submit intercepted');
+            const stored = JSON.parse(localStorage.getItem('property_images') || '[]');
+            const description = document.getElementById('propertyDescription').value;
+            
+            console.log('Stored images count:', stored.length);
+            console.log('Description:', description);
+            
+            // Validate minimum photos
+            if (stored.length < MIN_IMAGES) {
+                alert(`Please upload at least ${MIN_IMAGES} photos. You currently have ${stored.length} photo(s).`);
+                return;
+            }
+            
+            if (!description.trim()) {
+                alert('Please provide a property description');
+                return;
+            }
+            
+            // Create FormData with files from localStorage
             const formData = new FormData();
+            formData.append('propertyDescription', description);
             
-            // Gather all data from localStorage
-            const propertyType = localStorage.getItem('property_type');
-            const features = JSON.parse(localStorage.getItem('property_features') || '[]');
-            const details = JSON.parse(localStorage.getItem('property_details') || '{}');
-            const description = localStorage.getItem('property_description');
-            
-            // Add all data to FormData (normalize detail keys and coerce types)
-            formData.append('property_type', propertyType);
-            formData.append('features', JSON.stringify(features));
-            // details may use different key names (max_guests or maxGuests). Normalize safely.
-            const rawRooms = details.rooms ?? details.room ?? details.rooms_count ?? details.room_count ?? 0;
-            const rawBathrooms = details.bathrooms ?? details.bath ?? details.bathroom_count ?? 0;
-            const rawMaxGuests = details.max_guests ?? details.maxGuests ?? details.guests ?? details.maxGuestsCount ?? 0;
-            const rooms = Number.isFinite(Number(rawRooms)) ? Number(rawRooms) : 0;
-            const bathrooms = Number.isFinite(Number(rawBathrooms)) ? Number(rawBathrooms) : 0;
-            const maxGuests = Number.isFinite(Number(rawMaxGuests)) ? Number(rawMaxGuests) : 0;
-            formData.append('rooms', rooms);
-            formData.append('bathrooms', bathrooms);
-            formData.append('max_guests', maxGuests);
-            formData.append('description', description);
-            
-            // Add house rules data (safe checks)
-            const smokingEl = document.querySelector('input[name="smoking"]');
-            const partiesEl = document.querySelector('input[name="parties"]');
-            const petsEl = document.querySelector('input[name="pets"]:checked');
-            formData.append('smoking', smokingEl ? (smokingEl.checked ? 1 : 0) : 0);
-            formData.append('parties', partiesEl ? (partiesEl.checked ? 1 : 0) : 0);
-            formData.append('pets', petsEl ? petsEl.value : 'no');
-            
-            // Add check-in/out times
-            const checkInStart = (document.querySelector('select[name="check_in_start"]') || {}).value || '';
-            const checkInEnd = (document.querySelector('select[name="check_in_end"]') || {}).value || '';
-            // for check out we used names check_out_start / check_out_end in view
-            const checkOutStart = (document.querySelector('select[name="check_out_start"]') || {}).value || '';
-            const checkOutEnd = (document.querySelector('select[name="check_out_end"]') || {}).value || '';
-            
-            formData.append('check_in_start', checkInStart);
-            formData.append('check_in_end', checkInEnd);
-            // Send check out as combined or the end value
-            formData.append('check_out_time', checkOutEnd || checkOutStart);
-
-            // include the saved property title if present, otherwise fallback to property_type or a default
-            const propertyTitle = localStorage.getItem('property_title') || '';
-            const titleToSend = propertyTitle.trim() || (propertyType ? propertyType.replace(/[_-]/g, ' ') : 'Untitled property');
-            formData.append('title', titleToSend);
-
-            try {
-                // Append stored images (dataURLs) as Blob files to the final FormData
-                const stored = JSON.parse(localStorage.getItem('property_images') || '[]');
-                for (let i = 0; i < stored.length; i++) {
-                    const item = stored[i];
-                    try {
-                        const blob = dataURLtoBlob(item.dataUrl);
-                        // use a predictable field name that matches server handling
-                        formData.append('images[]', blob, item.name || `image_${i}.jpg`);
-                    } catch(e){ console.error('Failed to convert image', e); }
+            // Convert dataURLs back to blobs and append as files
+            for (let i = 0; i < stored.length; i++) {
+                const item = stored[i];
+                try {
+                    const blob = dataURLtoBlob(item.dataUrl);
+                    formData.append('images[]', blob, item.name || `image_${i}.jpg`);
+                    console.log('Added image', i, 'to FormData:', item.name);
+                } catch (e) {
+                    console.error('Failed to convert image', i, e);
                 }
-
-                const response = await fetch(baseUrl + '/api/accommodation/create', {
+            }
+            
+            console.log('Sending FormData to /TravelMate/public/savePhoto');
+            try {
+                const response = await fetch('/TravelMate/public/savePhoto', {
                     method: 'POST',
                     body: formData
                 });
-
-                console.log('POST /api/accommodation/create response:', response.status, response.statusText);
-                const contentType = response.headers.get('content-type') || '';
-                let result;
-
-                if (contentType.includes('application/json')) {
-                    try {
-                        result = await response.json();
-                    } catch (parseErr) {
-                        const text = await response.text();
-                        console.error('Failed to parse JSON response from server:', text, parseErr);
-                        alert('Server returned invalid JSON. Check console for details.');
-                        return;
-                    }
+                
+                console.log('Response status:', response.status);
+                if (response.ok) {
+                    console.log('Success, redirecting to houseRules');
+                    // Redirect to house rules page
+                    window.location.href = '/TravelMate/public/houseRules';
                 } else {
                     const text = await response.text();
-                    console.error('Server returned non-JSON response:', response.status, text);
-                    alert('Server returned an unexpected response. See console for details.');
-                    return;
-                }
-
-                if (result && result.success) {
-                    // Clear all localStorage
-                    localStorage.removeItem('property_type');
-                    localStorage.removeItem('property_features');
-                    localStorage.removeItem('property_details');
-                    localStorage.removeItem('property_description');
-                    localStorage.removeItem('property_images');
-                    
-                    window.location.href = baseUrl + '/success';
-                } else {
-                    alert('Error creating property: ' + result.errors.join('\n'));
+                    console.error('Error response:', text);
+                    alert('Error uploading photos. Please try again.');
                 }
             } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while saving the property.');
+                console.error('Fetch error:', error);
+                alert('Error uploading photos. Please try again.');
             }
         });
     }
+    // House Rules Form - Allow normal form submission to /saveAccommodation
+    // (No JavaScript hijacking - just a normal POST submission)
 
     // Helper function to display image previews
     function displayImagePreviews(files) {
