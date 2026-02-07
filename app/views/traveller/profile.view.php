@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars(($user->first_name ?? '') . ' ' . ($user->last_name ?? '')); ?> - TravelMate</title>
+    <title><?php echo htmlspecialchars((is_object($user) ? ($user->first_name ?? '') : '') . ' ' . (is_object($user) ? ($user->last_name ?? '') : '')); ?> - TravelMate</title>
     <link rel="stylesheet" href="assets/css/Traveller/profile.css">
     <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
 </head>
@@ -22,8 +22,8 @@
     <div class="profile-section">
       <img src="assets/images/profile.jpg" alt="User" class="profile-pic">
       <div>
-        <h2 class="profile-name"><?php echo htmlspecialchars(($user->first_name ?? '') . ' ' . ($user->last_name ?? '')); ?></h2>
-        <span class="profile-email"><?php echo htmlspecialchars($user->email ?? ''); ?></span>
+        <h2 class="profile-name"><?php echo htmlspecialchars((is_object($user) ? ($user->first_name ?? '') : '') . ' ' . (is_object($user) ? ($user->last_name ?? '') : '')); ?></h2>
+        <span class="profile-email"><?php echo htmlspecialchars(is_object($user) ? ($user->email ?? '') : ''); ?></span>
       </div>
     </div>
 
@@ -31,7 +31,7 @@
     <div class="my-posts-section">
       <div class="posts-header">
         <h2>Shared Posts (<?php echo isset($posts) && is_array($posts) ? count($posts) : 0; ?> posts)</h2>
-        <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == ($user->id ?? null)): ?>
+        <?php if (isset($_SESSION['user_id']) && is_object($user) && $_SESSION['user_id'] == ($user->id ?? null)): ?>
           <a href="blog" class="btn-create-post">Create New Post</a>
         <?php endif; ?>
       </div>
@@ -54,7 +54,7 @@
               </div>
             </div>
             
-            <?php if (!empty($user->email)): ?>
+            <?php if (is_object($user) && !empty($user->email)): ?>
             <div class="about-item">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
