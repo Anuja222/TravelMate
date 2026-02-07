@@ -134,6 +134,11 @@ main {
   color: #b91c1c;
 }
 
+.completed .status-badge {
+  background-color: #d1fae5;
+  color: #60c0a5;
+}
+
 .booking-details {
   margin-bottom: 20px;
 }
@@ -235,6 +240,30 @@ main {
   transform: translateY(-2px);
 }
 
+.btn-complete,
+.complete-btn {
+  background: #17a2b8;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-complete:hover,
+.complete-btn:hover {
+  background: #138496;
+  transform: translateY(-2px);
+}
+
+/* Backward compatibility: some templates use `complete-btn` class */
+
 /*Filterring bar*/
 .filter-bar {
   display: flex;
@@ -310,6 +339,58 @@ main {
 .history-btn:hover {
   background: #159c49;
   transform: translateY(-2px);
+}
+
+.loading {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+
+.no-bookings {
+    text-align: center;
+    padding: 3rem;
+    color: #888;
+}
+
+.no-bookings i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #ccc;
+}
+
+.error-message {
+    text-align: center;
+    padding: 2rem;
+    color: #d32f2f;
+    background: #ffebee;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.error-message i {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.error-detail {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.5rem;
+}
+
+.retry-btn {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: #1976d2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.retry-btn:hover {
+    background: #1565c0;
 }
 
 /* Responsive styles */
@@ -403,3 +484,4 @@ main {
     padding: 15px;
   }
 }
+
