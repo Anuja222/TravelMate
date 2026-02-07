@@ -444,8 +444,10 @@ elseif ($requestUri === '/api/transport-booking/init-booking' && $_SERVER['REQUE
 }
 
 elseif ($requestUri === '/preference/save' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Preference Save");
     $preferenceController = new PreferenceController();
     $preferenceController->save();
+    exit; // Important: Stop execution after handling the API request
 }
 
 // // Vehicles API
@@ -502,6 +504,11 @@ elseif ($page === 'home' || $requestUri === '/') {
     require_once '../app/controllers/Feed.php';
     $feedController = new Feed();
     $feedController->index();
+} elseif ($page === 'destinationview') {
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Destinationview.php';
+    $destinationviewController = new Destinationview();
+    $destinationviewController->index();
 } elseif ($page === 'header') {
     include '../app/views/traveller/header.view.php';
 } elseif ($page === 'footer') {
@@ -519,6 +526,13 @@ elseif ($page === 'home' || $requestUri === '/') {
     include '../app/views/accommodation/updateProperty.view.php';
 } elseif ($page === 'preference') {
     include '../app/views/traveller/preference.view.php';
+} elseif ($page === 'profile') {
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Profile.php';
+    $profileController = new Profile();
+    // Check if there's a username parameter in the URL
+    $username = $_GET['username'] ?? null;
+    $profileController->index($username);
 } elseif ($page === 'ride_booking_details') {
     include '../app/views/traveller/ride_booking_details.view.php';
 } elseif ($page === 'ride_booking_finish') {
@@ -539,7 +553,10 @@ elseif ($page === 'home' || $requestUri === '/') {
 } elseif ($page === 'favactivity') {
     include '../app/views/traveller/favactivity.view.php';
 } elseif ($page === 'favdestination') {
-    include '../app/views/traveller/favdestination.view.php';
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Favdestination.php';
+    $favdestinationController = new Favdestination();
+    $favdestinationController->index();
 } elseif ($page === 'surfing') {
     include '../app/views/traveller/surfing.view.php';
 } elseif ($page === 'transport') {
