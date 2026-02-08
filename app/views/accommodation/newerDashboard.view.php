@@ -6,6 +6,22 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Check if user is logged in
 $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
+$role = $isLoggedIn ? ($_SESSION['user']['role'] ?? $_SESSION['role'] ?? '') : '';
+
+// Role-based redirect - this is an accommodation provider page
+if (!$isLoggedIn || $role !== 'accommodation') {
+    if ($role === 'admin') {
+        header('Location: ad_dashboard');
+        exit;
+    } elseif ($role === 'transport') {
+        header('Location: tr_dashboard');
+        exit;
+    } else {
+        header('Location: homet');
+        exit;
+    }
+}
+
 $firstName = $isLoggedIn ? $_SESSION['user']['first_name'] : '';
 $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
 ?>

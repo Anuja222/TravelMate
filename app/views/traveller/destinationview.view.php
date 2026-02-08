@@ -14,7 +14,7 @@
   <!-- Hero Section -->
   <section class="hero-section">
     <div class="hero-background" style="background-image: url('<?php 
-      $imagePath = $destination?->image ?? 'assets/images/default-dest.png';
+      $imagePath = is_object($destination) ? ($destination->image ?? 'assets/images/default-dest.png') : 'assets/images/default-dest.png';
       if (substr($imagePath, 0, 1) === '/') {
         $imagePath = substr($imagePath, 1);
       }
@@ -22,8 +22,8 @@
     ?>');">
       <div class="hero-overlay">
         <div class="hero-content">
-          <h1>Discover <?php echo htmlspecialchars($destination?->title ?? 'Paradise'); ?></h1>
-          <p><?php echo htmlspecialchars($destination?->description ?? 'Explore the most beautiful destinations Sri Lanka has to offer'); ?></p>
+          <h1>Discover <?php echo htmlspecialchars(is_object($destination) ? ($destination->title ?? 'Paradise') : 'Paradise'); ?></h1>
+          <p><?php echo htmlspecialchars(is_object($destination) ? ($destination->description ?? 'Explore the most beautiful destinations Sri Lanka has to offer') : 'Explore the most beautiful destinations Sri Lanka has to offer'); ?></p>
         </div>
       </div>
     </div>
@@ -33,7 +33,7 @@
   <section class="beaches-section">
     <div class="container">
       <div class="section-header">
-        <h2>Popular Places in <?php echo htmlspecialchars($destination?->title ?? 'Sri Lanka'); ?></h2>
+        <h2>Popular Places in <?php echo htmlspecialchars(is_object($destination) ? ($destination->title ?? 'Sri Lanka') : 'Sri Lanka'); ?></h2>
         <p>Discover amazing locations and experiences</p>
       </div>
 
@@ -61,7 +61,7 @@
           <?php endforeach; ?>
         </div>
       <?php else: ?>
-        <div class="no-places" style="text-align : center; padding: 60px 20px; background: white; border-radius: 12px; margin: 40px 0;">
+        <div class="no-places" style="text-align: center; padding: 60px 20px; background: white; border-radius: 12px; margin: 40px 0;">
           <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 20px; opacity: 0.3;">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
             <circle cx="12" cy="10" r="3"></circle>
@@ -79,7 +79,7 @@
     <div class="container">
       <div class="section-header">
         <h2>Traveler Stories</h2>
-        <p>See what other travelers have shared about <?php echo htmlspecialchars($destination?->title ?? 'this destination'); ?></p>
+        <p>See what other travelers have shared about <?php echo htmlspecialchars(is_object($destination) ? ($destination->title ?? 'this destination') : 'this destination'); ?></p>
       </div>
 
       <div class="beaches-grid">
