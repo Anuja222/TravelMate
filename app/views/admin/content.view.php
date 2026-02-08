@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog Management - Admin</title>
-    <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/content.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/content.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-<?php include __DIR__ . '/../traveller/header.view.php'; ?>
+<?php include __DIR__ . '/admin_header.view.php'; ?>
 
 <div class="page-container">
     <?php include 'sidebar.view.php'; ?>

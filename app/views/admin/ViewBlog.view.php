@@ -10,7 +10,7 @@
 </head>
 <body>
 
-  <?php include __DIR__ . '/../traveller/header.view.php'; ?>
+  <?php include __DIR__ . '/admin_header.view.php'; ?>
 
   <?php
   // Sample blog data - in a real application, this would come from a database
