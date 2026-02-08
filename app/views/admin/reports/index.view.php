@@ -11,7 +11,7 @@
 </head>
 <body>
 
-<?php include __DIR__ . '/../../traveller/header.view.php'; ?>
+<?php include __DIR__ . '/../admin_header.view.php'; ?>
 
 <?php
   // Null-safe defaults

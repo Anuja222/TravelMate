@@ -17,7 +17,7 @@ $currentPage = explode('?', $currentPage)[0]; // Remove query strings
             </a>
         </li>
         <li>
-            <a href="<?= ROOT ?>/content" class="<?= $currentPage == 'content' ? 'active' : '' ?>">
+            <a href="<?= ROOT ?>/content" class="<?= ($currentPage == 'content' || strpos($_SERVER['REQUEST_URI'], '/admin/blog') !== false) ? 'active' : '' ?>">
                 <i class="fas fa-blog"></i> Blogs
             </a>
         </li>
@@ -39,11 +39,6 @@ $currentPage = explode('?', $currentPage)[0]; // Remove query strings
         <li>
             <a href="<?= ROOT ?>/notifications" class="<?= $currentPage == 'notifications' ? 'active' : '' ?>">
                 <i class="fas fa-bell"></i> Notifications
-            </a>
-        </li>
-        <li>
-            <a href="<?= ROOT ?>/announcement" class="<?= $currentPage == 'announcement' ? 'active' : '' ?>">
-                <i class="fas fa-bullhorn"></i> Announcements
             </a>
         </li>
         <li>
