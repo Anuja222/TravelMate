@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Delete Users</title>
+  <title>Users Management - TravelMate</title>
   <link rel="stylesheet" href="assets/css/Admin/Users.css">
   <link rel="stylesheet" href="assets/css/Admin/common.css">
 </head>
@@ -14,16 +14,20 @@
 
     <div class="content">
       <div class="page-title">
-        <h1>Users</h1>
+        <h1>Users Management</h1>
+        <?php if (isset($users) && count($users) > 0): ?>
+          <p class="user-count">Total Users: <span><?php echo count($users); ?></span></p>
+        <?php endif; ?>
       </div>
 
       <div class="filter-bar">
-        <input type="text" id="searchBox" placeholder="🔍 Search users by name, email, phone...">
+        <input type="text" id="searchBox" placeholder="Search users by name, email, phone...">
         
         <select id="userTypeFilter">
           <option value="all">All User Types</option>
-          <option value="traveler">Travelers</option>
-          <option value="provider">Service Providers</option>
+          <option value="traveller">Travellers</option>
+          <option value="accommodation">Accommodation Providers</option>
+          <option value="transport">Transport Providers</option>
           <option value="admin">Administrators</option>
         </select>
 
@@ -34,151 +38,131 @@
           <option value="inactive">Inactive</option>
         </select>
 
-        <button id="applyFilter">Search</button>
+        <button id="applyFilter">Apply Filters</button>
       </div>
 
-      <div class="users-table-container">
-        <table class="users-table">
-          <thead>
-            <tr>
-              <th>Profile</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>User Type</th>
-              <th>Join Date</th>
-              <th>Status</th>
-              <th>Listings</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <div class="profile-pic">
-                  <img src="assets/images/profile.jpg" alt="Lakmal">
+      <div class="users-grid">
+        <?php if (isset($users) && count($users) > 0): ?>
+          <?php foreach ($users as $user): ?>
+            <div class="user-card">
+              <div class="user-card-header">
+                <div class="profile-pic-large">
+                  <?php if (!empty($user->profile_picture)): ?>
+                    <img src="<?php echo htmlspecialchars($user->profile_picture); ?>" alt="<?php echo htmlspecialchars($user->first_name ?? 'User'); ?>">
+                  <?php else: ?>
+                    <img src="assets/images/profile.jpg" alt="User">
+                  <?php endif; ?>
                 </div>
-              </td>
-              <td>
-                <div class="user-name">
-                  <strong>Lakmal Perera</strong>
-                  <small>+94 77 123 4567</small>
+                <span class="user-type-badge <?php echo strtolower($user->role ?? 'traveler'); ?>">
+                  <?php echo ucfirst($user->role ?? 'Traveler'); ?>
+                </span>
+                <span class="status-badge <?php echo strtolower($user->status ?? 'active'); ?>">
+                  <?php echo ucfirst($user->status ?? 'Active'); ?>
+                </span>
+              </div>
+              
+              <div class="user-card-body">
+                <h3 class="user-card-name"><?php echo htmlspecialchars(($user->first_name ?? '') . ' ' . ($user->last_name ?? '')); ?></h3>
+                
+                <div class="user-card-info">
+                  <div class="info-item">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    <span><?php echo htmlspecialchars($user->email ?? 'No email'); ?></span>
+                  </div>
+                  
+                  <div class="info-item">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                    </svg>
+                    <span><?php echo htmlspecialchars($user->phone ?? 'No phone'); ?></span>
+                  </div>
+                  
+                  <div class="info-item">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <span>Joined: <?php echo isset($user->created_at) ? date('M d, Y', strtotime($user->created_at)) : 'N/A'; ?></span>
+                  </div>
                 </div>
-              </td>
-              <td>lakmal.perera@email.com</td>
-              <td><span class="user-type provider">Provider</span></td>
-              <td>2024-01-15</td>
-              <td><span class="status active">Active</span></td>
-              <td>3 Hotels</td>
-              <td>
-                <div class="action-buttons">
-                  <button class="btn-view" onclick="window.location.href='viewprovider';">View</button>
-                  <button class="btn-suspend" onclick="suspendUser(1, 'Lakmal Perera')">Suspend</button>
-                  <button class="btn-delete" onclick="deleteUser(1, 'Lakmal Perera')">Delete</button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div class="profile-pic">
-                  <img src="assets/images/profile.jpg" alt="Anuja">
-                </div>
-              </td>
-              <td>
-                <div class="user-name">
-                  <strong>Anuja Silva</strong>
-                  <small>+94 71 987 6543</small>
-                </div>
-              </td>
-              <td>anuja.silva@email.com</td>
-              <td><span class="user-type provider">Provider</span></td>
-              <td>2024-02-03</td>
-              <td><span class="status active">Active</span></td>
-              <td>2 Vehicles</td>
-              <td>
-                <div class="action-buttons">
-                  <button class="btn-view" onclick="window.location.href='viewprovider';">View</button>
-                  <button class="btn-suspend" onclick="suspendUser(2, 'Anuja Silva')">Suspend</button>
-                  <button class="btn-delete" onclick="deleteUser(2, 'Anuja Silva')">Delete</button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div class="profile-pic">
-                  <img src="assets/images/profile.jpg" alt="Saman">
-                </div>
-              </td>
-              <td>
-                <div class="user-name">
-                  <strong>Saman Wijeratne</strong>
-                  <small>+94 76 456 7890</small>
-                </div>
-              </td>
-              <td>saman.w@email.com</td>
-              <td><span class="user-type traveler">Traveler</span></td>
-              <td>2024-01-20</td>
-              <td><span class="status active">Active</span></td>
-              <td>0</td>
-              <td>
-                <div class="action-buttons">
-                  <button class="btn-view" onclick="window.location.href='viewtraveller';">View</button>
-                  <button class="btn-suspend" onclick="suspendUser(3, 'Saman Wijeratne')">Suspend</button>
-                  <button class="btn-delete" onclick="deleteUser(3, 'Saman Wijeratne')">Delete</button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div class="profile-pic">
-                  <img src="assets/images/profile.jpg" alt="Minoli">
-                </div>
-              </td>
-              <td>
-                <div class="user-name">
-                  <strong>Minoli Fernando</strong>
-                  <small>+94 75 321 6547</small>
-                </div>
-              </td>
-              <td>minoli.fernando@email.com</td>
-              <td><span class="user-type provider">Provider</span></td>
-              <td>2024-01-28</td>
-              <td><span class="status suspended">Suspended</span></td>
-              <td>1 Hotel</td>
-              <td>
-                <div class="action-buttons">
-                  <button class="btn-view" onclick="window.location.href='viewprovider';">View</button>
-                  <button class="btn-suspend" onclick="activateUser(4, 'Minoli Fernando')">Suspend</button>
-                  <button class="btn-delete" onclick="deleteUser(4, 'Minoli Fernando')">Delete</button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div class="profile-pic">
-                  <img src="assets/images/profile.jpg" alt="Rasika">
-                </div>
-              </td>
-              <td>
-                <div class="user-name">
-                  <strong>Rasika Jayasinghe</strong>
-                  <small>+94 77 789 1234</small>
-                </div>
-              </td>
-              <td>rasika.j@email.com</td>
-              <td><span class="user-type traveler">Traveler</span></td>
-              <td>2024-02-10</td>
-              <td><span class="status active">Active</span></td>
-              <td>0</td>
-              <td>
-                <div class="action-buttons">
-                  <button class="btn-view" onclick="window.location.href='viewtraveller';">View</button>
-                  <button class="btn-suspend" onclick="suspendUser(5, 'Rasika Jayasinghe')">Suspend</button>
-                  <button class="btn-delete" onclick="deleteUser(5, 'Rasika Jayasinghe')">Delete</button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </div>
+              
+              <div class="user-card-footer">
+                <?php if (($user->role ?? '') === 'traveller'): ?>
+                  <button class="btn-view" onclick="window.location.href='viewtraveller?id=<?php echo $user->id; ?>';">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    View
+                  </button>
+                <?php elseif (($user->role ?? '') === 'accommodation'): ?>
+                  <button class="btn-view" onclick="window.location.href='viewprovider?id=<?php echo $user->id; ?>&type=accommodation';">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    View
+                  </button>
+                <?php elseif (($user->role ?? '') === 'transport'): ?>
+                  <button class="btn-view" onclick="window.location.href='viewprovider?id=<?php echo $user->id; ?>&type=transport';">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    View
+                  </button>
+                <?php elseif (($user->role ?? '') === 'admin'): ?>
+                  <button class="btn-view" onclick="window.location.href='viewadmin?id=<?php echo $user->id; ?>';">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    View
+                  </button>
+                <?php else: ?>
+                  <button class="btn-view" onclick="window.location.href='viewprovider?id=<?php echo $user->id; ?>';">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    View
+                  </button>
+                <?php endif; ?>
+                
+                <button class="btn-suspend" onclick="suspendUser(<?php echo $user->id; ?>, '<?php echo htmlspecialchars(($user->first_name ?? '') . ' ' . ($user->last_name ?? ''), ENT_QUOTES); ?>')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="10" y1="15" x2="10" y2="9"></line>
+                    <line x1="14" y1="15" x2="14" y2="9"></line>
+                  </svg>
+                  Suspend
+                </button>
+                
+                <button class="btn-delete" onclick="deleteUser(<?php echo $user->id; ?>, '<?php echo htmlspecialchars(($user->first_name ?? '') . ' ' . ($user->last_name ?? ''), ENT_QUOTES); ?>')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                  Delete
+                </button>
+              </div>
+            </div>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <div class="no-users">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <h3>No users found</h3>
+            <p>There are no users to display at the moment.</p>
+          </div>
+        <?php endif; ?>
       </div>
 
     </div>
@@ -188,13 +172,13 @@
   <div id="deleteModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>⚠️ Confirm User Deletion</h3>
+        <h3>Confirm User Deletion</h3>
         <span class="close" onclick="closeModal()">&times;</span>
       </div>
       <div class="modal-body">
         <p>Are you sure you want to delete user "<span id="userName"></span>"?</p>
         <div class="warning-box">
-          <p class="warning">⚠️ This action will permanently:</p>
+          <p class="warning">This action will permanently:</p>
           <ul>
             <li>Delete the user account and profile</li>
             <li>Remove all their listings and content</li>
@@ -215,7 +199,7 @@
   <div id="suspendModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>⏸️ Suspend User Account</h3>
+        <h3>Suspend User Account</h3>
         <span class="close" onclick="closeSuspendModal()">&times;</span>
       </div>
       <div class="modal-body">

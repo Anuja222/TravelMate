@@ -281,7 +281,7 @@ elseif ($requestUri === '/post/store' && $_SERVER['REQUEST_METHOD'] === 'POST') 
     require_once '../app/core/Controller.php';
     require_once '../app/models/Post.php';
     require_once '../app/controllers/PostController.php';
-    $postController = new PostController();
+    $postController = new Blog();
     $postController->store();
     exit;
 }
@@ -680,7 +680,10 @@ elseif ($page === 'ad_dashboard') {
 }elseif ($page === 'viewVehicle') {
     include '../app/views/admin/viewVehicle.view.php';
 }elseif ($page === 'Users') {
-    include '../app/views/admin/Users.view.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/Users.php';
+    $controller = new Users();
+    $controller->index();
 }elseif ($page === 'content') {
     include '../app/views/admin/content.view.php';
 }elseif ($page === 'notifications') {

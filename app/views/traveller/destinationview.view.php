@@ -48,13 +48,13 @@
                     $placeImage = substr($placeImage, 1);
                   }
                 ?>
-                <img src="<?php echo htmlspecialchars($placeImage); ?>" alt="<?php echo htmlspecialchars($place->name ?? ''); ?>">
+                <img src="<?php echo htmlspecialchars($placeImage); ?>" alt="<?php echo htmlspecialchars($place->title ?? ''); ?>">
                 <div class="card-overlay">
                   <button class="explore-btn" onclick="explorePlace(<?php echo $place->id; ?>)">Explore</button>
                 </div>
               </div>
               <div class="card-content">
-                <h3><?php echo htmlspecialchars($place->name ?? ''); ?></h3>
+                <h3><?php echo htmlspecialchars($place->title ?? ''); ?></h3>
                 <p><?php echo htmlspecialchars(substr($place->description ?? '', 0, 150)); ?><?php echo strlen($place->description ?? '') > 150 ? '...' : ''; ?></p>
               </div>
             </div>
