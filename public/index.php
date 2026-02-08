@@ -984,7 +984,9 @@ elseif ($page === 'ad_dashboard') {
     $adminAnnouncementController = new AdminAnnouncementController();
     $adminAnnouncementController->index();
 }elseif ($page === 'report') {
-    include '../app/views/admin/report.view.php';
+    require_once '../app/controllers/AdminReportsController.php';
+    $controller = new AdminReportsController();
+    $controller->index();
 }elseif ($page === 'ad_setting') {
     include '../app/views/admin/setting.view.php';
 }elseif ($page === 'ad_destinations') {
