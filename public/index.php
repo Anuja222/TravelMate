@@ -257,6 +257,22 @@ elseif ($requestUri === '/blog/delete' && $_SERVER['REQUEST_METHOD'] === 'POST')
     exit;
 }
 
+// Content management routes (Admin)
+elseif ($requestUri === '/content/approve' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/Content.php';
+    $contentController = new Content();
+    $contentController->approve();
+    exit;
+}
+elseif ($requestUri === '/content/reject' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/Content.php';
+    $contentController = new Content();
+    $contentController->reject();
+    exit;
+}
+
 // Post CRUD API routes
 elseif ($requestUri === '/post/store' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     error_log(">>> Routing to Post Store");
@@ -518,6 +534,11 @@ elseif ($page === 'home' || $requestUri === '/') {
     require_once '../app/controllers/Dashboard.php';
     $dashboardController = new Dashboard();
     $dashboardController->index();
+} elseif ($page === 'content') {
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Content.php';
+    $contentController = new Content();
+    $contentController->index();
 } elseif ($page === 'profile_setting') {
     include '../app/views/traveller/profilesetting.view.php';
 } elseif ($page === 'detailsProperty') {

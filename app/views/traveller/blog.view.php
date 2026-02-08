@@ -106,8 +106,8 @@
                     <path d="M25 40L35 50L55 30" stroke="#10b981" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </div>
-            <h2>Post Shared Successfully!</h2>
-            <p>Your travel story has been published to the TravelMate community.</p>
+            <h2>Post Submitted Successfully!</h2>
+            <p>Your travel story has been submitted for admin approval. It will appear in the feed once approved.</p>
             <div class="modal-actions">
                 <button class="btn-view-post" onclick="goToFeed()">View Feed</button>
                 <button class="btn-create-another" onclick="closeSuccessModal()">Share Another</button>
