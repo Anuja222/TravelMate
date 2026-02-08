@@ -36,7 +36,7 @@ class Accommodation {
             smoking, parties, pets, check_in_start, check_in_end,
             check_out_time, status, created_at
         ) VALUES (
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
         )";
         
         $stmt = $conn->prepare($sql);
@@ -68,14 +68,14 @@ class Accommodation {
     }
 
     public static function findByUser($conn, $userId) {
-        $sql = "SELECT * FROM accommodations WHERE user_id = ? ORDER BY created_at DESC";
+        $sql = "SELECT * FROM accommodations WHERE user_id = ? AND deleted_at IS NULL ORDER BY created_at DESC";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$userId]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public static function findAll($conn) {
-        $sql = "SELECT * FROM accommodations WHERE status = 'active' ORDER BY created_at DESC";
+        $sql = "SELECT * FROM accommodations WHERE status = 'active' AND deleted_at IS NULL ORDER BY created_at DESC";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -83,11 +83,11 @@ class Accommodation {
 
     public static function findById($conn, $id, $userId = null) {
         if ($userId) {
-            $sql = "SELECT * FROM accommodations WHERE id = ? AND user_id = ?";
+            $sql = "SELECT * FROM accommodations WHERE id = ? AND user_id = ? AND deleted_at IS NULL";
             $stmt = $conn->prepare($sql);
             $stmt->execute([$id, $userId]);
         } else {
-            $sql = "SELECT * FROM accommodations WHERE id = ?";
+            $sql = "SELECT * FROM accommodations WHERE id = ? AND deleted_at IS NULL";
             $stmt = $conn->prepare($sql);
             $stmt->execute([$id]);
         }
@@ -136,16 +136,18 @@ class Accommodation {
         ]);
     }
 
-    public static function deleteById($conn, $id, $userId) {
-        // First delete related images
-        $sql = "DELETE FROM accommodation_images WHERE accommodation_id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([$id]);
-        
-        // Then delete the accommodation
-        $sql = "DELETE FROM accommodations WHERE id = ? AND user_id = ?";
-        $stmt = $conn->prepare($sql);
-        return $stmt->execute([$id, $userId]);
+    public static function deleteById($conn, $id, $userId = null) {
+        // Soft delete - mark as deleted instead of removing
+        if ($userId) {
+            $sql = "UPDATE accommodations SET deleted_at = NOW(), updated_at = NOW() WHERE id = ? AND user_id = ? AND deleted_at IS NULL";
+            $stmt = $conn->prepare($sql);
+            return $stmt->execute([$id, $userId]);
+        } else {
+            // Admin delete (no user_id check)
+            $sql = "UPDATE accommodations SET deleted_at = NOW(), updated_at = NOW() WHERE id = ? AND deleted_at IS NULL";
+            $stmt = $conn->prepare($sql);
+            return $stmt->execute([$id]);
+        }
     }
 
     public static function addImage($conn, $accommodationId, $imagePath, $isMain = false) {

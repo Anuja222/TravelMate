@@ -80,22 +80,24 @@ class Vehicle
         return $result;
     }
 
-    public static function deleteById($conn, $id, $userId)
+    public static function deleteById($conn, $id, $userId = null)
     {
-        // First delete related documents
-        $sql = "DELETE FROM vehicle_documents WHERE vehicle_id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([$id]);
-        
-        // Then delete the vehicle
-        $sql = "DELETE FROM vehicles WHERE id = ? AND user_id = ?";
-        $stmt = $conn->prepare($sql);
-        return $stmt->execute([$id, $userId]);
+        // Soft delete - mark as deleted instead of removing
+        if ($userId) {
+            $sql = "UPDATE vehicles SET deleted_at = NOW(), updated_at = NOW() WHERE id = ? AND user_id = ? AND deleted_at IS NULL";
+            $stmt = $conn->prepare($sql);
+            return $stmt->execute([$id, $userId]);
+        } else {
+            // Admin delete (no user_id check)
+            $sql = "UPDATE vehicles SET deleted_at = NOW(), updated_at = NOW() WHERE id = ? AND deleted_at IS NULL";
+            $stmt = $conn->prepare($sql);
+            return $stmt->execute([$id]);
+        }
     }
 
     public static function findByUser($conn, $userId)
     {
-        $sql = "SELECT * FROM vehicles WHERE user_id = ? ORDER BY created_at DESC";
+        $sql = "SELECT * FROM vehicles WHERE user_id = ? AND deleted_at IS NULL ORDER BY created_at DESC";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$userId]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -103,7 +105,7 @@ class Vehicle
 
     public static function findAll($conn)
     {
-        $sql = "SELECT * FROM vehicles WHERE status = 'active' ORDER BY created_at DESC";
+        $sql = "SELECT * FROM vehicles WHERE status = 'active' AND deleted_at IS NULL ORDER BY created_at DESC";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -112,11 +114,11 @@ class Vehicle
     public static function findById($conn, $id, $userId = null)
     {
         if ($userId) {
-            $sql = "SELECT * FROM vehicles WHERE id = ? AND user_id = ?";
+            $sql = "SELECT * FROM vehicles WHERE id = ? AND user_id = ? AND deleted_at IS NULL";
             $stmt = $conn->prepare($sql);
             $stmt->execute([$id, $userId]);
         } else {
-            $sql = "SELECT * FROM vehicles WHERE id = ?";
+            $sql = "SELECT * FROM vehicles WHERE id = ? AND deleted_at IS NULL";
             $stmt = $conn->prepare($sql);
             $stmt->execute([$id]);
         }
