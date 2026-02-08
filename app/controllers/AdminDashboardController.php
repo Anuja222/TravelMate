@@ -415,7 +415,7 @@ class AdminDashboardController {
      * Safely get count from a table (with existence check)
      */
     private function getSafeCount($table) {
-        $allowedTables = ['users', 'accommodations', 'vehicles', 'destinations', 'blogs', 'bookings', 'notifications', 'announcements'];
+        $allowedTables = ['users', 'accommodations', 'vehicles', 'destinations', 'blogs', 'bookings', 'notifications'];
         if (!in_array($table, $allowedTables)) {
             return 0;
         }
