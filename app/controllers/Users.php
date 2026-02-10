@@ -6,8 +6,10 @@ class Users extends Controller {
         // Access global database connection (already loaded in index.php)
         global $pdo;
         
-        error_log("Users Controller: Starting index method");
-        error_log("PDO object: " . (isset($pdo) ? 'exists' : 'NOT SET'));
+        // If PDO doesn't exist, try to load it
+        if (!isset($pdo)) {
+            require_once __DIR__ . '/../../config/database.php';
+        }
         
         // Fetch all users from database
         try {
@@ -18,16 +20,20 @@ class Users extends Controller {
                     last_name,
                     email,
                     phone,
+                    date_of_birth,
+                    gender,
                     role,
                     profile_image,
-                    created_at
+                    created_at,
+                    bio,
+                    country,
+                    city
                 FROM users 
                 ORDER BY created_at DESC
             ");
+            
             $stmt->execute();
             $users = $stmt->fetchAll(PDO::FETCH_OBJ);
-            
-            error_log("Users Controller: Fetched " . count($users) . " users");
             
             // Add default status to each user if not in database
             foreach ($users as $user) {
@@ -38,14 +44,15 @@ class Users extends Controller {
         } catch (Exception $e) {
             error_log("Error fetching users: " . $e->getMessage());
             $users = [];
+        } catch (PDOException $e) {
+            error_log("PDO Error fetching users: " . $e->getMessage());
+            $users = [];
         }
         
         // Pass data to view
         $data = [
             'users' => $users
         ];
-        
-        error_log("Users Controller: Passing " . count($data['users']) . " users to view");
         
         $this->view('admin/Users', $data);
     }

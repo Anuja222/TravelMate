@@ -1,4 +1,4 @@
-/* editDestination.css - Modern Design */
+/* editActivity.css - Copy from editDestination.css */
 body {
   background-color: #f3f4f6;
   color: #333;
@@ -15,6 +15,7 @@ body {
   background: #f3f4f6;
   padding: 8em 10em 2em 10em;
   margin: 0 auto 0 auto;
+  max-width: 1500px;
 }
 
 .content {
@@ -399,18 +400,13 @@ body {
     font-size: 18px;
   }
 
-  .subsection-title {
-    font-size: 16px;
-  }
-
   .form-actions {
     flex-direction: column;
   }
 
   .btn-update,
   .btn-primary,
-  .btn-cancel,
-  .btn-secondary {
+  .btn-cancel {
     width: 100%;
     justify-content: center;
   }
@@ -427,11 +423,7 @@ body {
 
   .place-actions {
     width: 100%;
-  }
-
-  .btn-edit-place,
-  .btn-delete-place {
-    flex: 1;
+    justify-content: flex-end;
   }
 }
 
@@ -446,10 +438,5 @@ body {
 
   .page-title h1 {
     font-size: 22px;
-  }
-
-  .form-input,
-  .form-textarea {
-    font-size: 14px;
   }
 }

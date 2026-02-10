@@ -207,6 +207,49 @@ elseif ($requestUri === '/api/destination/create' && $_SERVER['REQUEST_METHOD'] 
     exit;
 }
 
+// Activity API routes
+elseif ($requestUri === '/api/activity/create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/ActivityController.php';
+    $ctrl = new App\Controllers\ActivityController();
+    $ctrl->create();
+    exit;
+} elseif ($requestUri === '/api/activity/list' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    require_once __DIR__ . '/../app/controllers/ActivityController.php';
+    $ctrl = new App\Controllers\ActivityController();
+    $ctrl->list();
+    exit;
+} elseif ($requestUri === '/api/activity/get' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    require_once __DIR__ . '/../app/controllers/ActivityController.php';
+    $ctrl = new App\Controllers\ActivityController();
+    $ctrl->get();
+    exit;
+} elseif ($requestUri === '/api/activity/update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/ActivityController.php';
+    $ctrl = new App\Controllers\ActivityController();
+    $ctrl->update();
+    exit;
+} elseif ($requestUri === '/api/activity/delete' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/ActivityController.php';
+    $ctrl = new App\Controllers\ActivityController();
+    $ctrl->delete();
+    exit;
+} elseif ($requestUri === '/api/activity/place/create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/ActivityController.php';
+    $ctrl = new App\Controllers\ActivityController();
+    $ctrl->placeCreate();
+    exit;
+} elseif ($requestUri === '/api/activity/place/delete' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/ActivityController.php';
+    $ctrl = new App\Controllers\ActivityController();
+    $ctrl->placeDelete();
+    exit;
+} elseif ($requestUri === '/api/activity/place/update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/ActivityController.php';
+    $activityController = new App\Controllers\ActivityController();
+    $activityController->placeUpdate();
+    exit;
+}
+
 // Blog/Post API routes
 if ($requestUri === '/api/blog/create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once '../app/core/Database.php';
@@ -525,6 +568,11 @@ elseif ($page === 'home' || $requestUri === '/') {
     require_once '../app/controllers/Destinationview.php';
     $destinationviewController = new Destinationview();
     $destinationviewController->index();
+} elseif ($page === 'activityview') {
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Activityview.php';
+    $activityviewController = new Activityview();
+    $activityviewController->index();
 } elseif ($page === 'header') {
     include '../app/views/traveller/header.view.php';
 } elseif ($page === 'footer') {
@@ -700,6 +748,12 @@ elseif ($page === 'ad_dashboard') {
     include '../app/views/admin/createDestination.view.php';
 } elseif ($page === 'editDestination') {
     include '../app/views/admin/editDestination.view.php';
+} elseif ($page === 'ViewActivities') {
+    include '../app/views/admin/ViewActivities.view.php';
+} elseif ($page === 'createActivity') {
+    include '../app/views/admin/createActivity.view.php';
+} elseif ($page === 'editActivity') {
+    include '../app/views/admin/editActivity.view.php';
 } elseif ($page === 'viewprovider') {
     include '../app/views/admin/viewprovider.view.php';
 } elseif ($page === 'viewtraveller') {
