@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Popular Destinations - TravelMate Admin</title>
-  <link rel="stylesheet" href="assets/css/Admin/ViewListing.css">
+  <title>Activities - TravelMate Admin</title>
+  <link rel="stylesheet" href="assets/css/Admin/ViewActivities.css">
   <link rel="stylesheet" href="assets/css/Admin/common.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -20,35 +20,13 @@
       <!-- Page Header -->
       <div class="page-title">
         <div class="title-section">
-          <h1><i class="fas fa-map-marked-alt"></i> Popular Destinations</h1>
-          <p class="subtitle">Manage and showcase top travel destinations</p>
+          <h1><i class="fas fa-hiking"></i> Activities Management</h1>
+          <p class="subtitle">Manage adventure activities and experiences</p>
         </div>
-        <button id="btnCreate" class="btn-primary" onclick="window.location.href='createDestination'">
-          <i class="fas fa-plus"></i> Create Destination
+        <button id="btnCreate" class="btn-primary" onclick="window.location.href='createActivity'">
+          <i class="fas fa-plus"></i> Create Activity
         </button>
       </div>
-
-      <!-- Filter Bar -->
-      <!-- <div class="filter-bar">
-        <input type="text" id="searchInput" placeholder="Search destinations..." />
-        <select id="statusFilter">
-          <option value="">All Status</option>
-          <option value="active">Active</option>
-          <option value="pending">Pending</option>
-          <option value="inactive">Inactive</option>
-        </select>
-        <select id="regionFilter">
-          <option value="">All Regions</option>
-          <option value="western">Western Province</option>
-          <option value="central">Central Province</option>
-          <option value="southern">Southern Province</option>
-          <option value="northern">Northern Province</option>
-          <option value="eastern">Eastern Province</option>
-        </select>
-        <button id="btnApplyFilter">
-          <i class="fas fa-filter"></i> Apply Filters
-        </button>
-      </div> -->
 
       <!-- Statistics Summary -->
       <div class="stats-summary">
@@ -81,30 +59,30 @@
         </div>
         <div class="stat-card">
           <div class="stat-icon" style="background: #3498db;">
-            <i class="fas fa-map-marked-alt"></i>
+            <i class="fas fa-hiking"></i>
           </div>
           <div class="stat-info">
             <div class="stat-number" id="totalCount">0</div>
-            <div class="stat-label">Total Destinations</div>
+            <div class="stat-label">Total Activities</div>
           </div>
         </div>
       </div>
 
-      <!-- Destinations Grid -->
-      <div id="destList" class="content-grid">
+      <!-- Activities Grid -->
+      <div id="activityList" class="content-grid">
         <div class="loading-container">
           <i class="fas fa-spinner fa-spin" style="font-size: 32px; color: #1abc5b;"></i>
-          <p>Loading destinations...</p>
+          <p>Loading activities...</p>
         </div>
       </div>
 
       <!-- Empty State -->
       <div id="emptyState" class="empty-state" style="display: none;">
-        <i class="fas fa-map-marked-alt"></i>
-        <h3>No Destinations Found</h3>
-        <p>Start by creating your first destination</p>
-        <button class="btn-primary" onclick="window.location.href='createDestination'">
-          <i class="fas fa-plus"></i> Create First Destination
+        <i class="fas fa-hiking"></i>
+        <h3>No Activities Found</h3>
+        <p>Start by creating your first activity</p>
+        <button class="btn-primary" onclick="window.location.href='createActivity'">
+          <i class="fas fa-plus"></i> Create First Activity
         </button>
       </div>
 
@@ -119,7 +97,7 @@
         <span class="close">&times;</span>
       </div>
       <div class="modal-body">
-        <p>Are you sure you want to delete this destination?</p>
+        <p>Are you sure you want to delete this activity?</p>
         <p class="warning"><i class="fas fa-info-circle"></i> This action cannot be undone.</p>
       </div>
       <div class="modal-footer">
@@ -145,21 +123,21 @@
     </div>
   </div>
 
-  <!-- View Destination Modal -->
+  <!-- View Activity Modal -->
   <div id="viewModal" class="view-modal" style="display: none;">
     <div class="view-modal-content">
       <div class="view-modal-header">
-        <h2 id="viewModalTitle">Destination Details</h2>
+        <h2 id="viewModalTitle">Activity Details</h2>
         <span class="view-modal-close" onclick="closeViewModal()">&times;</span>
       </div>
       <div class="view-modal-body">
-        <div class="view-destination-info">
-          <div class="view-destination-image">
-            <img id="viewDestImage" src="" alt="Destination">
+        <div class="view-activity-info">
+          <div class="view-activity-image">
+            <img id="viewActivityImage" src="" alt="Activity">
           </div>
-          <div class="view-destination-details">
-            <h3 id="viewDestTitle"></h3>
-            <p id="viewDestDescription"></p>
+          <div class="view-activity-details">
+            <h3 id="viewActivityTitle"></h3>
+            <p id="viewActivityDescription"></p>
           </div>
         </div>
         <div class="view-places-section">
@@ -168,7 +146,7 @@
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
               <circle cx="12" cy="10" r="3"></circle>
             </svg>
-            Places in this Destination
+            Locations for this Activity
           </h3>
           <div id="viewPlacesList" class="view-places-grid">
             <!-- Places will be loaded here -->
@@ -176,15 +154,15 @@
         </div>
       </div>
       <div class="view-modal-footer">
-        <button class="btn-edit-dest" id="viewModalEditBtn" onclick="editFromModal()">
-          <i class="fas fa-edit"></i> Edit Destination
+        <button class="btn-edit-activity" id="viewModalEditBtn" onclick="editFromModal()">
+          <i class="fas fa-edit"></i> Edit Activity
         </button>
         <button class="btn-close-modal" onclick="closeViewModal()">Close</button>
       </div>
     </div>
   </div>
 
-  <script src="../public/assets/js/destinations.js"></script>
+  <script src="../public/assets/js/activities.js"></script>
   
   <script>
     // Success Modal Functions
@@ -198,33 +176,33 @@
     }
 
     // View Modal Functions
-    let currentViewDestinationId = null;
+    let currentViewActivityId = null;
 
-    function showViewModal(destinationId) {
-      currentViewDestinationId = destinationId;
+    function showViewModal(activityId) {
+      currentViewActivityId = activityId;
       const modal = document.getElementById('viewModal');
       modal.style.display = 'flex';
       
-      // Fetch destination details
+      // Fetch activity details
       const baseApi = window.location.origin + '/TravelMate/public';
-      fetch(baseApi + '/api/destination/get?id=' + destinationId, { credentials: 'same-origin' })
+      fetch(baseApi + '/api/activity/get?id=' + activityId, { credentials: 'same-origin' })
         .then(r => r.json())
         .then(resp => {
           if (resp.success) {
-            const dest = resp.data;
+            const activity = resp.data;
             const baseUrl = window.location.origin + '/TravelMate/public/';
             
-            document.getElementById('viewModalTitle').textContent = dest.title || 'Destination Details';
-            document.getElementById('viewDestTitle').textContent = dest.title || '';
-            document.getElementById('viewDestDescription').textContent = dest.description || 'No description available';
+            document.getElementById('viewModalTitle').textContent = activity.title || 'Activity Details';
+            document.getElementById('viewActivityTitle').textContent = activity.title || '';
+            document.getElementById('viewActivityDescription').textContent = activity.description || 'No description available';
             
-            const imgSrc = dest.image ? baseUrl + dest.image : 'assets/images/default-dest.png';
-            document.getElementById('viewDestImage').src = imgSrc;
+            const imgSrc = activity.image ? baseUrl + activity.image : 'assets/images/default-activity.png';
+            document.getElementById('viewActivityImage').src = imgSrc;
             
             // Display places
             const placesList = document.getElementById('viewPlacesList');
-            if (dest.places && dest.places.length > 0) {
-              placesList.innerHTML = dest.places.map(place => {
+            if (activity.places && activity.places.length > 0) {
+              placesList.innerHTML = activity.places.map(place => {
                 const placeImg = place.image ? baseUrl + place.image : 'assets/images/default-place.png';
                 return `
                   <div class="view-place-card">
@@ -245,23 +223,23 @@
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                     <circle cx="12" cy="10" r="3"></circle>
                   </svg>
-                  <p>No places added yet</p>
+                  <p>No locations added yet</p>
                 </div>
               `;
             }
           }
         })
-        .catch(err => console.error('Error fetching destination:', err));
+        .catch(err => console.error('Error fetching activity:', err));
     }
 
     function closeViewModal() {
       document.getElementById('viewModal').style.display = 'none';
-      currentViewDestinationId = null;
+      currentViewActivityId = null;
     }
 
     function editFromModal() {
-      if (currentViewDestinationId) {
-        window.location.href = 'editDestination?id=' + currentViewDestinationId;
+      if (currentViewActivityId) {
+        window.location.href = 'editActivity?id=' + currentViewActivityId;
       }
     }
 
@@ -273,9 +251,8 @@
       }
     });
 
-    // Enhanced functionality
+    // Modal handling
     document.addEventListener('DOMContentLoaded', function() {
-      // Modal handling
       const modal = document.getElementById('deleteModal');
       const closeBtn = document.querySelector('.close');
       const cancelBtn = document.getElementById('btnCancelDelete');
@@ -298,31 +275,6 @@
         }
       }
       
-      // Filter functionality
-      const applyFilterBtn = document.getElementById('btnApplyFilter');
-      if (applyFilterBtn) {
-        applyFilterBtn.addEventListener('click', function() {
-          const searchValue = document.getElementById('searchInput').value;
-          const statusValue = document.getElementById('statusFilter').value;
-          const regionValue = document.getElementById('regionFilter').value;
-          
-          // Call filter function from destinations.js
-          if (typeof filterDestinations === 'function') {
-            filterDestinations(searchValue, statusValue, regionValue);
-          }
-        });
-      }
-      
-      // Search on enter key
-      const searchInput = document.getElementById('searchInput');
-      if (searchInput) {
-        searchInput.addEventListener('keypress', function(e) {
-          if (e.key === 'Enter') {
-            applyFilterBtn.click();
-          }
-        });
-      }
-      
       // Update stats animation
       function animateValue(element, start, end, duration) {
         if (!element) return;
@@ -341,10 +293,10 @@
       
       // Example: Update stats (replace with actual data)
       setTimeout(() => {
-        animateValue(document.getElementById('activeCount'), 0, 12, 1000);
-        animateValue(document.getElementById('pendingCount'), 0, 3, 1000);
-        animateValue(document.getElementById('inactiveCount'), 0, 2, 1000);
-        animateValue(document.getElementById('totalCount'), 0, 17, 1000);
+        animateValue(document.getElementById('activeCount'), 0, 8, 1000);
+        animateValue(document.getElementById('pendingCount'), 0, 2, 1000);
+        animateValue(document.getElementById('inactiveCount'), 0, 1, 1000);
+        animateValue(document.getElementById('totalCount'), 0, 11, 1000);
       }, 500);
     });
   </script>
