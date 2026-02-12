@@ -383,4 +383,41 @@ class AccommodationController {
             $this->sendResponse(false, ['Failed to delete accommodation']);
         }
     }
+
+    public function toggleStatus() {
+        global $pdo;
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->sendResponse(false, ['Invalid request method']);
+        }
+        
+        if (!isset($_SESSION['user'])) {
+            $this->sendResponse(false, ['User not authenticated']);
+        }
+        
+        $id = $_POST['id'] ?? null;
+        $status = $_POST['status'] ?? null;
+        
+        if (!$id || !$status) {
+            $this->sendResponse(false, ['Missing required parameters']);
+        }
+        
+        if (!in_array($status, ['active', 'inactive'])) {
+            $this->sendResponse(false, ['Invalid status value']);
+        }
+        
+        try {
+            $stmt = $pdo->prepare("UPDATE accommodations SET status = ? WHERE id = ? AND user_id = ?");
+            $result = $stmt->execute([$status, $id, $_SESSION['user']['id']]);
+            
+            if ($result && $stmt->rowCount() > 0) {
+                $this->sendResponse(true, [], ['status' => $status]);
+            } else {
+                $this->sendResponse(false, ['Failed to update property status']);
+            }
+        } catch (\Exception $e) {
+            error_log("Error toggling accommodation status: " . $e->getMessage());
+            $this->sendResponse(false, ['Failed to update property status']);
+        }
+    }
 }
