@@ -154,6 +154,12 @@ elseif ($requestUri === '/api/accommodation/delete' && $_SERVER['REQUEST_METHOD'
     $controller->delete();
     exit;
 }
+elseif ($requestUri === '/api/accommodation/toggleStatus' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Accommodation Toggle Status");
+    $controller = new AccommodationController();
+    $controller->toggleStatus();
+    exit;
+}
 
 // Accommodation page routes
 elseif (strpos($requestUri, '/accommodation/') === 0) {
@@ -163,6 +169,39 @@ elseif (strpos($requestUri, '/accommodation/') === 0) {
         require_once $viewFile;
         exit;
     }
+}
+
+// Accommodation provider controller routes
+elseif ($requestUri === '/Accomodation_provider/propertyListingStart') {
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/Accomodation_provider.php';
+    $controller = new Accomodation_provider();
+    $controller->propertyListingStart();
+    exit;
+} elseif ($requestUri === '/Accomodation_provider/propertyListingStep1') {
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/Accomodation_provider.php';
+    $controller = new Accomodation_provider();
+    $controller->propertyListingStep1();
+    exit;
+} elseif ($requestUri === '/Accomodation_provider/propertyListingStep2') {
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/Accomodation_provider.php';
+    $controller = new Accomodation_provider();
+    $controller->propertyListingStep2();
+    exit;
+} elseif ($requestUri === '/Accomodation_provider/saveProperty') {
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/Accomodation_provider.php';
+    $controller = new Accomodation_provider();
+    $controller->saveProperty();
+    exit;
+} elseif ($requestUri === '/Accomodation_provider/newerDashboard') {
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/Accomodation_provider.php';
+    $controller = new Accomodation_provider();
+    $controller->newerDashboard();
+    exit;
 }
 
 // Destination API routes
@@ -696,6 +735,21 @@ elseif ($page === 'ac_dashboard') {
     include '../app/views/accommodation/editListing.view.php';
 } else if ($page === 'propertyListingStart') {
     include '../app/views/accommodation/propertyListingStart.view.php';
+} elseif ($page === 'propertyListingStep1') {
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/Accomodation_provider.php';
+    $controller = new Accomodation_provider();
+    $controller->propertyListingStep1();
+} elseif ($page === 'propertyListingStep2') {
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/Accomodation_provider.php';
+    $controller = new Accomodation_provider();
+    $controller->propertyListingStep2();
+} elseif ($page === 'saveProperty') {
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/Accomodation_provider.php';
+    $controller = new Accomodation_provider();
+    $controller->saveProperty();
 } elseif ($page === 'accommodationFeatures') {
     include '../app/views/accommodation/accommodationFeatures.view.php';
 } elseif ($page === 'accommodationPhotos') {
