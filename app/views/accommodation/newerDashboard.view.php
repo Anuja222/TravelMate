@@ -36,6 +36,322 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
   <link rel="stylesheet" href="/TravelMate/public/assets/css/Accommodation/property-cards.css">
   <link rel="stylesheet" href="/TravelMate/public/assets/css/Traveller/usermain.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .property-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      margin-top: 30px;
+      padding: 10px;
+    }
+    
+    .property-card {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .property-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .property-card-image {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      position: relative;
+    }
+    
+    .property-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    
+    .property-card:hover .property-card-image img {
+      transform: scale(1.05);
+    }
+    
+    .property-card-badge {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: linear-gradient(135deg, #1abc5b 0%, #16a085 100%);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: capitalize;
+      box-shadow: 0 3px 10px rgba(26, 188, 91, 0.3);
+    }
+    
+    .property-card-content {
+      padding: 24px;
+    }
+    
+    .property-card-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #2c3e50;
+      margin: 0 0 12px 0;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .property-card-location {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    
+    .property-card-location i {
+      color: #1abc5b;
+      font-size: 16px;
+    }
+    
+    .property-card-description {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 16px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-height: 63px;
+    }
+    
+    .property-card-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #e8e8e8;
+    }
+    
+    .property-card-price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .property-card-price {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .property-card-price-amount {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1abc5b;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+    
+    .property-card-price-amount .currency {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    .property-card-price-label {
+      font-size: 12px;
+      color: #999;
+    }
+    
+    .property-card-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 10px;
+      width: 100%;
+    }
+    
+    .property-card-btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .property-card-btn-edit {
+      background: linear-gradient(135deg, #1abc5b 0%, #16a085 100%);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(26, 188, 91, 0.2);
+    }
+    
+    .property-card-btn-edit:hover {
+      background: linear-gradient(135deg, #16a085 0%, #1abc5b 100%);
+      box-shadow: 0 6px 16px rgba(26, 188, 91, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .property-card-btn-delete {
+      background: #fff;
+      color: #e74c3c;
+      border: 2px solid #e74c3c;
+      padding: 10px 16px;
+    }
+    
+    .property-card-btn-delete:hover {
+      background: #e74c3c;
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
+    }
+    
+    .property-card-btn-toggle {
+      background: #fff;
+      color: #95a5a6;
+      border: 2px solid #95a5a6;
+      padding: 10px 16px;
+      white-space: nowrap;
+    }
+    
+    .property-card-btn-toggle.active {
+      background: #fff;
+      color: #1abc5b;
+      border: 2px solid #1abc5b;
+    }
+    
+    .property-card-btn-toggle:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .property-card-btn-toggle.active:hover {
+      background: rgba(26, 188, 91, 0.1);
+    }
+    
+    .property-card-status {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #1abc5b;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .property-card-status.pending {
+      color: #f39c12;
+    }
+    
+    .property-card-status.inactive {
+      color: #95a5a6;
+    }
+    
+    .loading-message {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+    }
+    
+    .loading-message i {
+      font-size: 32px;
+      margin-bottom: 16px;
+      color: #1abc5b;
+    }
+    
+    .loading-message p {
+      font-size: 16px;
+      margin: 0;
+    }
+    
+    .no-properties-message {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 60px 20px;
+    }
+    
+    .no-properties-message i {
+      font-size: 64px;
+      color: #e8e8e8;
+      margin-bottom: 20px;
+    }
+    
+    .no-properties-message h3 {
+      font-size: 24px;
+      color: #2c3e50;
+      margin: 0 0 10px 0;
+    }
+    
+    .no-properties-message p {
+      font-size: 16px;
+      color: #666;
+      margin: 0 0 24px 0;
+    }
+    
+    .no-properties-message button {
+      background: linear-gradient(135deg, #1abc5b 0%, #16a085 100%);
+      color: #fff;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(26, 188, 91, 0.3);
+    }
+    
+    .no-properties-message button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(26, 188, 91, 0.4);
+    }
+    
+    @media (max-width: 1200px) {
+      .property-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .property-cards-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      .property-card-title {
+        font-size: 20px;
+      }
+      
+      .property-card-actions {
+        grid-template-columns: 1fr;
+        width: 100%;
+      }
+      
+      .property-card-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Navbar -->
@@ -87,7 +403,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
      <section class="favourite">
         <div class="section-header">
           <h3>My Properties</h3>
-          <button class="btn-list-property" onclick="window.location.href='/TravelMate/public/propertyListingStart';">
+          <button class="btn-list-property" onclick="window.location.href='/TravelMate/public/index.php?url=Accomodation_provider/propertyListingStep1';">
             <i class="fas fa-plus"></i> List Your Property
           </button>
         </div>
