@@ -400,36 +400,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (delBtn) {
             const id = delBtn.dataset.id;
             if (!id) return;
-            if (!confirm('Are you sure you want to delete this property?')) return;
-            // call delete API and remove card on success
-            (async function(){
-                try {
-                    const res = await fetch(`${getBaseUrl()}/api/accommodation/delete`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: `id=${encodeURIComponent(id)}`
-                    });
-                    const ct = res.headers.get('content-type') || '';
-                    if (ct.includes('application/json')) {
-                        const json = await res.json();
-                        if (json.success) {
-                            // remove card from DOM
-                            const card = delBtn.closest('.property-card');
-                            if (card) card.remove();
-                            alert('Property deleted');
-                        } else {
-                            alert('Failed to delete property: ' + (json.errors || json.data || 'unknown'));
-                        }
-                    } else {
-                        const text = await res.text();
-                        console.error('Delete non-json response:', text);
-                        alert('Failed to delete property. See console for details.');
-                    }
-                } catch (err) {
-                    console.error('Delete error', err);
-                    alert('Failed to delete property. See console.');
-                }
-            })();
+            
+            // Show custom confirmation modal instead of browser confirm
+            if (typeof window.showConfirmDeleteModal === 'function') {
+                window.showConfirmDeleteModal(id);
+            } else {
+                // Fallback to browser confirm
+                if (!confirm('Are you sure you want to delete this property?')) return;
+                performDelete(id, delBtn);
+            }
             return;
         }
 
@@ -483,7 +462,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                 }
                             }
                             
-                            alert(`Property ${newStatus === 'active' ? 'activated' : 'deactivated'} successfully!`);
+                            // Show success modal
+                            if (typeof window.showStatusModal === 'function') {
+                                window.showStatusModal(newStatus === 'active');
+                            } else {
+                                alert(`Property ${newStatus === 'active' ? 'activated' : 'deactivated'} successfully!`);
+                            }
                         } else {
                             alert('Failed to update status: ' + (json.errors || json.data || 'unknown'));
                         }
@@ -500,6 +484,49 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
     });
+
+// Function to perform the actual delete operation
+async function performDelete(id, buttonElement) {
+    try {
+        const res = await fetch(`${getBaseUrl()}/api/accommodation/delete`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `id=${encodeURIComponent(id)}`
+        });
+        const ct = res.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+            const json = await res.json();
+            if (json.success) {
+                // remove card from DOM
+                const card = buttonElement ? buttonElement.closest('.property-card') : document.querySelector(`[data-id="${id}"]`)?.closest('.property-card');
+                if (card) card.remove();
+                
+                // Show success modal
+                if (typeof window.showDeleteModal === 'function') {
+                    window.showDeleteModal();
+                } else {
+                    alert('Property deleted');
+                }
+            } else {
+                alert('Failed to delete property: ' + (json.errors || json.data || 'unknown'));
+            }
+        } else {
+            const text = await res.text();
+            console.error('Delete non-json response:', text);
+            alert('Failed to delete property. See console for details.');
+        }
+    } catch (err) {
+        console.error('Delete error', err);
+        alert('Failed to delete property. See console.');
+    }
+}
+
+// Listen for custom delete confirmation event
+document.addEventListener('confirmDeleteProperty', function(e) {
+    if (e.detail && e.detail.id) {
+        performDelete(e.detail.id, null);
+    }
+});
 
 // Global functions for property actions
 function editProperty(id) {
