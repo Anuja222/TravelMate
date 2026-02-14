@@ -204,9 +204,10 @@ class AccommodationController {
         try {
             $accommodations = Accommodation::findAll($pdo);
             
-            // Get main image for each accommodation
+            // Get main image and all images for each accommodation
             foreach ($accommodations as &$accommodation) {
                 $accommodation['main_image'] = Accommodation::getMainImage($pdo, $accommodation['id']);
+                $accommodation['images'] = Accommodation::getImages($pdo, $accommodation['id']);
             }
             
             $this->sendResponse(true, [], $accommodations);
