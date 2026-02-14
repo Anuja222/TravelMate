@@ -296,7 +296,11 @@ body{
 }
 
 .location-icon {
-  font-size: 1.2em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
 }
 
 .map-btn {
@@ -499,8 +503,14 @@ body{
   border: 2px solid #e1e5e9;
   border-radius: 8px;
   font-size: 0.95em;
+  font-family: 'Inter', Arial, sans-serif;
   transition: all 0.3s ease;
   background: white;
+}
+
+/* Specific styling for date inputs */
+input[type="date"] {
+  font-family: 'Inter', Arial, sans-serif;
 }
 
 .form-group input:focus,
