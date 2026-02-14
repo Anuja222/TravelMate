@@ -104,6 +104,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
       line-height: 1.3;
       display: -webkit-box;
       -webkit-line-clamp: 2;
+      line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -130,6 +131,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
       margin-bottom: 16px;
       display: -webkit-box;
       -webkit-line-clamp: 3;
+      line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -351,6 +353,287 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
         justify-content: center;
       }
     }
+
+    /* Status Toggle Modal Styles */
+    .status-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(5px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .status-modal-overlay.active {
+      display: flex;
+    }
+
+    .status-modal {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: slideUpScale 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .status-icon-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin: 0 auto 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      animation: scaleIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
+    }
+
+    .status-icon-circle.active-status {
+      background: linear-gradient(135deg, #1abc5b 0%, #16a085 100%);
+    }
+
+    .status-icon-circle.inactive-status {
+      background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+    }
+
+    .status-icon-circle::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      animation: ripple 1.5s ease-out infinite;
+    }
+
+    .status-icon-circle.active-status::before {
+      background: rgba(26, 188, 91, 0.3);
+    }
+
+    .status-icon-circle.inactive-status::before {
+      background: rgba(149, 165, 166, 0.3);
+    }
+
+    .status-icon-circle i {
+      font-size: 50px;
+      color: white;
+      position: relative;
+      z-index: 1;
+      animation: checkmark 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s both;
+    }
+
+    .status-modal h2 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #2c3e50;
+      margin: 0 0 15px 0;
+      animation: fadeInUp 0.5s ease 0.5s both;
+    }
+
+    .status-modal p {
+      font-size: 16px;
+      color: #666;
+      margin: 0 0 30px 0;
+      line-height: 1.6;
+      animation: fadeInUp 0.5s ease 0.6s both;
+    }
+
+    .status-modal-btn {
+      background: linear-gradient(135deg, #1abc5b 0%, #16a085 100%);
+      color: white;
+      border: none;
+      padding: 14px 40px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(26, 188, 91, 0.3);
+      animation: fadeInUp 0.5s ease 0.7s both;
+    }
+
+    .status-modal-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(26, 188, 91, 0.4);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideUpScale {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0) rotate(-180deg);
+      }
+      to {
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    @keyframes checkmark {
+      from {
+        transform: scale(0) rotate(-180deg);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes ripple {
+      0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.6;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    /* Confirmation Modal Styles */
+    .confirm-modal {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 450px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: slideUpScale 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .confirm-icon-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin: 0 auto 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+      position: relative;
+      animation: scaleIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
+    }
+
+    .confirm-icon-circle::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: rgba(243, 156, 18, 0.3);
+      animation: ripple 1.5s ease-out infinite;
+    }
+
+    .confirm-icon-circle i {
+      font-size: 50px;
+      color: white;
+      position: relative;
+      z-index: 1;
+      animation: checkmark 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s both;
+    }
+
+    .confirm-modal h2 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #2c3e50;
+      margin: 0 0 15px 0;
+      animation: fadeInUp 0.5s ease 0.5s both;
+    }
+
+    .confirm-modal p {
+      font-size: 16px;
+      color: #666;
+      margin: 0 0 30px 0;
+      line-height: 1.6;
+      animation: fadeInUp 0.5s ease 0.6s both;
+    }
+
+    .confirm-modal-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      animation: fadeInUp 0.5s ease 0.7s both;
+    }
+
+    .confirm-modal-btn {
+      flex: 1;
+      max-width: 150px;
+      padding: 14px 30px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+    }
+
+    .confirm-modal-btn-cancel {
+      background: #95a5a6;
+      color: white;
+      box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+    }
+
+    .confirm-modal-btn-cancel:hover {
+      background: #7f8c8d;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(149, 165, 166, 0.4);
+    }
+
+    .confirm-modal-btn-delete {
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+    }
+
+    .confirm-modal-btn-delete:hover {
+      background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(231, 76, 60, 0.4);
+    }
   </style>
 </head>
 <body>
@@ -436,6 +719,45 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
       </div>
     </section>
   </main>
+  <!-- Status Toggle Modal -->
+  <div class="status-modal-overlay" id="statusModal">
+    <div class="status-modal">
+      <div class="status-icon-circle" id="statusIconCircle">
+        <i class="fas fa-check" id="statusIcon"></i>
+      </div>
+      <h2 id="statusModalTitle">Property Activated Successfully!</h2>
+      <p id="statusModalMessage">Your property is now visible to travelers and can receive bookings.</p>
+      <button class="status-modal-btn" onclick="closeStatusModal()">Got it</button>
+    </div>
+  </div>
+
+  <!-- Delete Success Modal -->
+  <div class="status-modal-overlay" id="deleteModal">
+    <div class="status-modal">
+      <div class="status-icon-circle" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
+        <i class="fas fa-trash-alt" style="font-size: 50px; color: white; position: relative; z-index: 1;"></i>
+      </div>
+      <h2>Property Deleted Successfully!</h2>
+      <p>The property has been permanently removed from your listings.</p>
+      <button class="status-modal-btn" onclick="closeDeleteModal()">Got it</button>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="status-modal-overlay" id="confirmDeleteModal">
+    <div class="confirm-modal">
+      <div class="confirm-icon-circle">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <h2>Delete Property?</h2>
+      <p>Are you sure you want to delete this property? This action cannot be undone.</p>
+      <div class="confirm-modal-buttons">
+        <button class="confirm-modal-btn confirm-modal-btn-cancel" onclick="closeConfirmModal()">Cancel</button>
+        <button class="confirm-modal-btn confirm-modal-btn-delete" onclick="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
    <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
   <!-- <footer>
@@ -472,6 +794,99 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
   <!-- Dashboard scripts -->
   <script src="/TravelMate/public/assets/js/accommodation.js"></script>
   <script>
+    // Status Modal Functions
+    function showStatusModal(isActive) {
+      const modal = document.getElementById('statusModal');
+      const iconCircle = document.getElementById('statusIconCircle');
+      const icon = document.getElementById('statusIcon');
+      const title = document.getElementById('statusModalTitle');
+      const message = document.getElementById('statusModalMessage');
+      
+      if (isActive) {
+        iconCircle.className = 'status-icon-circle active-status';
+        icon.className = 'fas fa-check';
+        title.textContent = 'Property Activated Successfully!';
+        message.textContent = 'Your property is now visible to travelers and can receive bookings.';
+      } else {
+        iconCircle.className = 'status-icon-circle inactive-status';
+        icon.className = 'fas fa-power-off';
+        title.textContent = 'Property Deactivated Successfully!';
+        message.textContent = 'Your property is now hidden from travelers and will not receive new bookings.';
+      }
+      
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeStatusModal() {
+      const modal = document.getElementById('statusModal');
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    // Delete Modal Functions
+    function showDeleteModal() {
+      const modal = document.getElementById('deleteModal');
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeDeleteModal() {
+      const modal = document.getElementById('deleteModal');
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    // Confirmation Modal Functions
+    let pendingDeleteId = null;
+    
+    function showConfirmDeleteModal(propertyId) {
+      pendingDeleteId = propertyId;
+      const modal = document.getElementById('confirmDeleteModal');
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeConfirmModal() {
+      pendingDeleteId = null;
+      const modal = document.getElementById('confirmDeleteModal');
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    function confirmDelete() {
+      if (pendingDeleteId) {
+        // Trigger the actual delete by dispatching a custom event
+        const event = new CustomEvent('confirmDeleteProperty', { detail: { id: pendingDeleteId } });
+        document.dispatchEvent(event);
+        closeConfirmModal();
+      }
+    }
+    
+    // Close modal when clicking overlay
+    document.getElementById('statusModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeStatusModal();
+      }
+    });
+    
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeDeleteModal();
+      }
+    });
+    
+    document.getElementById('confirmDeleteModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeConfirmModal();
+      }
+    });
+    
+    // Make functions globally available
+    window.showStatusModal = showStatusModal;
+    window.showDeleteModal = showDeleteModal;
+    window.showConfirmDeleteModal = showConfirmDeleteModal;
+    
     // ensure loader runs once script is available
     (function(){
       function tryRun(){
