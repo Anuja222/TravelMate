@@ -38,9 +38,9 @@
         <div class="hotel-info">
           <div class="hotel-header">
             <div class="hotel-title">
-              <h1 id="hotelTitle">Luxury Beach Resort</h1>
+              <h1 id="hotelTitle">Loading accommodation...</h1>
               <div class="hotel-badges" id="hotelBadges">
-                <!-- <span class="badge luxury">Luxury</span> -->
+                <!-- Badge will be populated by JavaScript -->
               </div>
             </div>
             <!-- <div class="hotel-rating">
@@ -52,14 +52,14 @@
 
           <div class="hotel-location">
             <span class="location-icon">📍</span>
-            <span id="hotelLocation">Bentota Beach, Sri Lanka</span>
+            <span id="hotelLocation">Loading...</span>
             <button class="map-btn" onclick="showMap()">View on Map</button>
           </div>
 
           <div class="hotel-description">
             <h3>About This Property</h3>
             <p id="hotelDescription">
-              Experience the ultimate in luxury at our beachfront resort in Bentota. With pristine beaches, world-class amenities, and exceptional service, this resort offers an unforgettable stay in paradise. Our spacious rooms and suites feature modern amenities and stunning ocean views.
+              Loading accommodation details...
             </p>
           </div>
 
@@ -98,7 +98,7 @@
         <div class="booking-widget">
           <div class="widget-header">
             <div class="price-display">
-              <span class="price-amount" id="priceAmount">Rs.45000</span>
+              <span class="price-amount" id="priceAmount">Loading...</span>
               <span class="price-period">/ night</span>
             </div>
             <div class="price-note">Prices may vary by season</div>
@@ -146,10 +146,25 @@
               </select>
             </div>
 
+            <div class="room-selection">
+              <label>Number of Rooms</label>
+              <select id="numberOfRooms" required>
+                <option value="1">1 Room</option>
+                <option value="2">2 Rooms</option>
+                <option value="3">3 Rooms</option>
+                <option value="4">4 Rooms</option>
+                <option value="5">5+ Rooms</option>
+              </select>
+            </div>
+
             <div class="booking-summary" id="bookingSummary" style="display: none;">
               <div class="summary-row">
                 <span>Nights:</span>
                 <span id="nightsCount">0</span>
+              </div>
+              <div class="summary-row">
+                <span>Rooms:</span>
+                <span id="roomsCount">0</span>
               </div>
               <div class="summary-row">
                 <span>Base Price:</span>
@@ -233,6 +248,6 @@
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-  <script src="assets/js/accommodationdetail.js"></script>
+  <script src="assets/js/accommodationdetail.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>
