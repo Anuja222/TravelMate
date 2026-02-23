@@ -6,6 +6,7 @@
   <title>TravelMate - Accommodations</title>
   <link rel="stylesheet" href="assets/css/Traveller/accommodation.css">
   <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
@@ -402,6 +403,11 @@
       // Clear existing static content
       grid.innerHTML = '';
 
+      if (accommodations.length === 0) {
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: #666;">No accommodations available at the moment.</p>';
+        return;
+      }
+
       accommodations.forEach(accommodation => {
         const card = createAccommodationCard(accommodation);
         grid.appendChild(card);
@@ -422,9 +428,15 @@
       const priceRange = price > 45000 ? 'luxury' : price > 15000 ? 'mid' : 'budget';
       card.setAttribute('data-price', priceRange);
       
+      // Format property type for badge
+      const propertyType = accommodation.property_type ? 
+        accommodation.property_type.charAt(0).toUpperCase() + accommodation.property_type.slice(1).replace(/_/g, ' ') : 
+        'Property';
+      
       card.innerHTML = `
         <div class="card-image">
           <img src="${imageUrl}" alt="${escapeHtml(accommodation.title)}" onerror="this.src='assets/images/default-accommodation.png'">
+          <div class="card-badge">${escapeHtml(propertyType)}</div>
           <div class="card-overlay">
             <a href="accommodationdetail?id=${accommodation.id}" class="book-btn">Book Now</a>
           </div>
@@ -433,8 +445,11 @@
           <div class="card-header">
             <h3>${escapeHtml(accommodation.title)}</h3>
           </div>
-          <p class="location">📍 ${escapeHtml(accommodation.location || 'Sri Lanka')}</p>
-          <p class="description">${escapeHtml(accommodation.description || '').substring(0, 100)}${accommodation.description && accommodation.description.length > 100 ? '...' : ''}</p>
+          <p class="location">
+            <i class="fas fa-map-marker-alt"></i>
+            ${escapeHtml(accommodation.location || 'Sri Lanka')}
+          </p>
+          <p class="description">${escapeHtml(accommodation.description || 'No description available')}</p>
           <div class="card-features">
             <span class="feature">🛏️ ${accommodation.rooms || 0} Rooms</span>
             <span class="feature">🚿 ${accommodation.bathrooms || 0} Bathrooms</span>
@@ -442,8 +457,8 @@
           </div>
           <div class="card-footer">
             <div class="price">
-              <span class="price-amount">Rs.${formatPrice(price)}</span>
-              <span class="price-period">/ night</span>
+              <span class="price-amount">LKR ${formatPrice(price)}</span>
+              <span class="price-period">per night</span>
             </div>
             <button class="btn-primary view-btn" onclick="viewDetails(${accommodation.id})">View Details</button>
           </div>

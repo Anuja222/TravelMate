@@ -58,62 +58,9 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                 </div>
                 <a href="favactivity" class="see-all-btn">See All Activities</a>
             </div>
-            <div class="destinations-grid">
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/surfing.png" alt="Surfing">
-                        <div class="card-overlay">
-                            <a href="surfing" class="explore-btn">Explore</a>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Surfing</h3>
-                        <p>Catch the waves, feel the rhythm of the ocean — surfing is where balance meets pure freedom.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/waterafting.png" alt="Water Rafting">
-                        <div class="card-overlay">
-                            <button class="explore-btn">Explore</button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Water Rafting</h3>
-                        <p>Thrilling rapids, splashing waves, and pure adrenaline — water rafting is where adventure
-                            flows wild and free.</p>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/birdwatching.png" alt="Bird Watching">
-                        <div class="card-overlay">
-                            <button class="explore-btn">Explore</button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Bird watching</h3>
-                        <p>Gentle trails, quiet moments, and wings in flight — bird watching is nature’s calmest
-                            spectacle.</p>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/safari.png" alt="Safari">
-                        <div class="card-overlay">
-                            <button class="explore-btn">Explore</button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Safari</h3>
-                        <p>Golden plains, roaming wildlife, and untamed beauty — a safari is the closest you’ll get to
-                            nature’s wild heart.</p>
-                    </div>
-                </div>
+            <div class="destinations-grid" id="popularActivities">
+                <!-- dynamic loaded -->
+                <p>Loading activities...</p>
             </div>
         </section>
 
@@ -126,66 +73,9 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                 </div>
                 <a href="accommodation" class="see-all-btn">See All Accommodations</a>
             </div>
-            <div class="accommodation-grid">
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/luxuryhotel.png" alt="Luxury Beach Resort">
-                        <div class="card-overlay">
-                            <a href="accommodationdetail" class="explore-btn">Book Now</a>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Luxury Beach Resort</h3>
-                        <p>5-star beachfront resort with private pools, spa services, and world-class dining.
-                            All-inclusive packages available.</p>
-                        <span class="price-tag">Rs.45000/night</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/boutiquehotel.png" alt="Boutique City Hotel">
-                        <div class="card-overlay">
-                            <button class="explore-btn">Book Now</button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Boutique City Hotel</h3>
-                        <p>Stylish hotel in the heart of the city. Modern amenities, rooftop bar, and walking distance
-                            to major attractions.</p>
-                        <span class="price-tag">Rs.18000/night</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/mountainlodge.png" alt="Mountain Lodge">
-                        <div class="card-overlay">
-                            <button class="explore-btn">Book Now</button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Mountain Lodge</h3>
-                        <p>Cozy lodge with stunning mountain views. Perfect for hiking enthusiasts and nature lovers
-                            seeking tranquility.</p>
-                        <span class="price-tag">Rs.12000/night</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/backpackerhostel.png" alt="Budget Hostel">
-                        <div class="card-overlay">
-                            <button class="explore-btn">Book Now</button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Backpacker Hostel</h3>
-                        <p>Clean, safe, and social environment for budget travelers. Free WiFi, kitchen facilities, and
-                            organized tours.</p>
-                        <span class="price-tag">Rs.18000/night</span>
-                    </div>
-                </div>
+            <div class="accommodation-grid" id="featuredAccommodations">
+                <!-- dynamic loaded -->
+                <p>Loading accommodations...</p>
             </div>
         </section>
 
@@ -285,15 +175,22 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                 .then(resp => {
                     if (!resp.success) { container.innerHTML = '<p>Failed to load destinations</p>'; return; }
                     const rows = resp.data || [];
+                    if (rows.length === 0) {
+                        container.innerHTML = '<p>No destinations available</p>';
+                        return;
+                    }
+                    container.style.display = 'grid';
+                    container.style.gridTemplateColumns = 'repeat(auto-fill, minmax(280px, 1fr))';
+                    container.style.gap = '2rem';
                     container.innerHTML = rows.slice(0, 4).map(d => {
                         const baseUrl = window.location.origin + '/TravelMate/public';
                         const img = d.image ? baseUrl + d.image : 'assets/images/default-dest.png';
                         return `
-            <div class="card">
+            <div class="card" style="width: 100%; max-width: 100%;">
               <div class="card-image">
                 <img src="${img}" alt="${escapeHtml(d.title)}">
                 <div class="card-overlay">
-                  <a href="beachdetail?dest=${d.id}" class="explore-btn">Explore</a>
+                  <a href="destinationview?id=${d.id}" class="explore-btn">Explore</a>
                 </div>
               </div>
               <div class="card-content">
@@ -306,6 +203,86 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                 }).catch(err => {
                     console.error(err);
                     container.innerHTML = '<p>Error loading destinations</p>';
+                });
+
+            // Load Activities
+            const activityContainer = document.getElementById('popularActivities');
+
+            fetch(baseApi + '/api/activity/list', { credentials: 'same-origin' })
+                .then(r => r.json())
+                .then(resp => {
+                    if (!resp.success) { activityContainer.innerHTML = '<p>Failed to load activities</p>'; return; }
+                    const activities = resp.data || [];
+                    if (activities.length === 0) {
+                        activityContainer.innerHTML = '<p>No activities available</p>';
+                        return;
+                    }
+                    activityContainer.style.display = 'grid';
+                    activityContainer.style.gridTemplateColumns = 'repeat(auto-fill, minmax(280px, 1fr))';
+                    activityContainer.style.gap = '2rem';
+                    activityContainer.innerHTML = activities.slice(0, 4).map(a => {
+                        const baseUrl = window.location.origin + '/TravelMate/public';
+                        const img = a.image ? baseUrl + a.image : 'assets/images/default-activity.png';
+                        return `
+            <div class="card" style="width: 100%; max-width: 100%;">
+              <div class="card-image">
+                <img src="${img}" alt="${escapeHtml(a.title)}">
+                <div class="card-overlay">
+                  <a href="activityview?id=${a.id}" class="explore-btn">Explore</a>
+                </div>
+              </div>
+              <div class="card-content">
+                <h3>${escapeHtml(a.title)}</h3>
+                <p>${escapeHtml((a.description || '').substring(0, 120))}</p>
+              </div>
+            </div>
+          `;
+                    }).join('');
+                }).catch(err => {
+                    console.error(err);
+                    activityContainer.innerHTML = '<p>Error loading activities</p>';
+                });
+
+            // Load Accommodations
+            const accommodationContainer = document.getElementById('featuredAccommodations');
+
+            fetch(baseApi + '/api/accommodation/listAll', { credentials: 'same-origin' })
+                .then(r => r.json())
+                .then(resp => {
+                    if (!resp.success) { accommodationContainer.innerHTML = '<p>Failed to load accommodations</p>'; return; }
+                    const accommodations = resp.data || [];
+                    if (accommodations.length === 0) {
+                        accommodationContainer.innerHTML = '<p>No accommodations available</p>';
+                        return;
+                    }
+                    accommodationContainer.style.display = 'grid';
+                    accommodationContainer.style.gridTemplateColumns = 'repeat(auto-fill, minmax(280px, 1fr))';
+                    accommodationContainer.style.gap = '2rem';
+                    accommodationContainer.innerHTML = accommodations.slice(0, 4).map(acc => {
+                        const baseUrl = window.location.origin + '/TravelMate/public';
+                        const img = acc.main_image ? baseUrl + '/' + acc.main_image : 'assets/images/default-accommodation.png';
+                        const price = acc.price_per_night || 0;
+                        const formattedPrice = parseFloat(price).toLocaleString('en-US');
+                        const description = acc.description || 'Experience comfort and luxury at this amazing property';
+                        return `
+            <div class="card" style="width: 100%; max-width: 100%;">
+              <div class="card-image">
+                <img src="${img}" alt="${escapeHtml(acc.title)}" onerror="this.src='assets/images/default-accommodation.png'">
+                <div class="card-overlay">
+                  <a href="accommodationdetail?id=${acc.id}" class="explore-btn">Book Now</a>
+                </div>
+              </div>
+              <div class="card-content">
+                <h3>${escapeHtml(acc.title)}</h3>
+                <p>${escapeHtml(description.substring(0, 120))}${description.length > 120 ? '...' : ''}</p>
+                <span class="price-tag">Rs.${formattedPrice}/night</span>
+              </div>
+            </div>
+          `;
+                    }).join('');
+                }).catch(err => {
+                    console.error(err);
+                    accommodationContainer.innerHTML = '<p>Error loading accommodations</p>';
                 });
 
             function escapeHtml(text) {

@@ -4,6 +4,11 @@ class Controller{
 
     public function view($name,$data = []){
         
+        // Extract data array to variables
+        if(!empty($data)){
+            extract($data);
+        }
+        
         $filename = "../app/views/".$name.".view.php";
         if(file_exists($filename)){
             require $filename;
