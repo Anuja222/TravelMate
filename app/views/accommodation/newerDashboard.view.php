@@ -955,5 +955,51 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
       tryRun();
     })();
   </script>
+
+  <!-- Scroll to Top Button -->
+  <button id="scrollToTopBtn" title="Back to top" style="
+    display: none;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 999;
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1abc5b 0%, #16a085 100%);
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(26, 188, 91, 0.4);
+    transition: all 0.3s ease;
+    align-items: center;
+    justify-content: center;
+  ">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+  <script>
+    (function() {
+      const btn = document.getElementById('scrollToTopBtn');
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 300) {
+          btn.style.display = 'flex';
+        } else {
+          btn.style.display = 'none';
+        }
+      });
+      btn.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      btn.addEventListener('mouseenter', function() {
+        btn.style.transform = 'scale(1.1)';
+        btn.style.boxShadow = '0 6px 20px rgba(26, 188, 91, 0.5)';
+      });
+      btn.addEventListener('mouseleave', function() {
+        btn.style.transform = 'scale(1)';
+        btn.style.boxShadow = '0 4px 15px rgba(26, 188, 91, 0.4)';
+      });
+    })();
+  </script>
 </body>
 </html>
