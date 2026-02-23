@@ -15,7 +15,7 @@
         <section class="greeting-section">
             <div class="container">
                 <div class="greeting-content">
-                    <h1>Hi,.. <span class="username">Chamuditha</span></h1>
+                    <h1>Hi,.. <span class="username">Traveller</span></h1>
                     <p>Choose the categories that best describe your interests:</p>
                     <!-- <div class="user-avatar">
                         <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=faces" alt="User Avatar">
@@ -224,7 +224,35 @@
         </section>
     </main>
 
-    <script src="../public/assets/js/preference.js"></script>
+    <!-- Success Modal -->
+    <div id="preferenceSuccessModal" class="preference-success-modal">
+        <div class="preference-success-content">
+            <div class="success-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+            </div>
+            <h2>Preferences Saved!</h2>
+            <p>Your travel preferences have been successfully saved.</p>
+            <p class="redirect-note">Redirecting to login in <span id="countdown">3</span> seconds...</p>
+            <div class="modal-actions">
+                <button onclick="redirectToLogin()" class="btn-proceed">
+                    Proceed to Login
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/preference.js"></script>
+    <script>
+    console.log('Inline preference script loaded');
+    console.log('Elements check:', {
+        submitBtn: !!document.querySelector('.next-btn'),
+        categoryCards: document.querySelectorAll('.category-card').length,
+        activityCards: document.querySelectorAll('.activity-card').length
+    });
+    </script>
     </body>
     <style>
             /* Unify navbar link style with other pages */
@@ -269,6 +297,163 @@
             justify-content: center;
             font-size: 0.65em;
             color: #1abc5b;
+        }
+        
+        /* Modal Styles - Matching Project Design */
+        .preference-success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        .preference-success-modal.show {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .preference-success-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.4s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translate(-50%, -40%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%);
+                opacity: 1;
+            }
+        }
+        
+        .preference-success-modal .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleIn 0.5s ease-out 0.2s both;
+        }
+        
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+        
+        .preference-success-modal .success-icon svg {
+            width: 45px;
+            height: 45px;
+            color: white;
+            stroke-width: 3;
+        }
+        
+        .preference-success-content h2 {
+            color: #1e293b;
+            font-size: 28px;
+            font-weight: 600;
+            margin: 0 0 15px 0;
+        }
+        
+        .preference-success-content p {
+            color: #64748b;
+            font-size: 16px;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        
+        .preference-success-content .redirect-note {
+            color: #10b981;
+            font-weight: 500;
+            margin: 20px 0;
+        }
+        
+        #countdown {
+            font-weight: bold;
+            color: #059669;
+            font-size: 20px;
+        }
+        
+        .modal-actions {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .btn-proceed {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-proceed:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        .btn-proceed:active {
+            transform: translateY(0);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .preference-success-content {
+                padding: 30px 20px;
+                width: 95%;
+            }
+            
+            .preference-success-content h2 {
+                font-size: 24px;
+            }
+            
+            .preference-success-modal .success-icon {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .preference-success-modal .success-icon svg {
+                width: 40px;
+                height: 40px;
+            }
         }
     </style>
     <script>

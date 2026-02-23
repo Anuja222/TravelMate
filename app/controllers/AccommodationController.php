@@ -250,9 +250,10 @@ class AccommodationController {
         try {
             $accommodations = Accommodation::findAll($pdo);
             
-            // Get main image for each accommodation
+            // Get main image and all images for each accommodation
             foreach ($accommodations as &$accommodation) {
                 $accommodation['main_image'] = Accommodation::getMainImage($pdo, $accommodation['id']);
+                $accommodation['images'] = Accommodation::getImages($pdo, $accommodation['id']);
             }
             
             $this->sendResponse(true, [], $accommodations);
@@ -316,9 +317,11 @@ class AccommodationController {
                 'propertyType' => $_POST['property_type'] ?? $existing['property_type'],
                 'title' => $_POST['title'] ?? $existing['title'],
                 'description' => $_POST['description'] ?? $existing['description'],
+                'location' => $_POST['location'] ?? ($existing['location'] ?? ''),
                 'rooms' => $_POST['rooms'] ?? $existing['rooms'],
                 'bathrooms' => $_POST['bathrooms'] ?? $existing['bathrooms'],
                 'maxGuests' => $_POST['max_guests'] ?? $existing['max_guests'],
+                'pricePerNight' => $_POST['price_per_night'] ?? ($existing['price_per_night'] ?? 0),
                 // Accept explicit 0/1 values for checkboxes (form should send 0 when unchecked)
                 'smoking' => isset($_POST['smoking']) ? intval($_POST['smoking']) : $existing['smoking'],
                 'parties' => isset($_POST['parties']) ? intval($_POST['parties']) : $existing['parties'],
@@ -634,6 +637,43 @@ class AccommodationController {
                 echo "Error: " . $e->getMessage(); //display error msg on screen
                 exit;
             }
+        }
+    }
+
+    public function toggleStatus() {
+        global $pdo;
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->sendResponse(false, ['Invalid request method']);
+        }
+        
+        if (!isset($_SESSION['user'])) {
+            $this->sendResponse(false, ['User not authenticated']);
+        }
+        
+        $id = $_POST['id'] ?? null;
+        $status = $_POST['status'] ?? null;
+        
+        if (!$id || !$status) {
+            $this->sendResponse(false, ['Missing required parameters']);
+        }
+        
+        if (!in_array($status, ['active', 'inactive'])) {
+            $this->sendResponse(false, ['Invalid status value']);
+        }
+        
+        try {
+            $stmt = $pdo->prepare("UPDATE accommodations SET status = ? WHERE id = ? AND user_id = ?");
+            $result = $stmt->execute([$status, $id, $_SESSION['user']['id']]);
+            
+            if ($result && $stmt->rowCount() > 0) {
+                $this->sendResponse(true, [], ['status' => $status]);
+            } else {
+                $this->sendResponse(false, ['Failed to update property status']);
+            }
+        } catch (\Exception $e) {
+            error_log("Error toggling accommodation status: " . $e->getMessage());
+            $this->sendResponse(false, ['Failed to update property status']);
         }
     }
 }
