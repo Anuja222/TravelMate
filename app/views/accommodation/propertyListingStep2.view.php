@@ -724,6 +724,23 @@ $step1Data = $_SESSION['listing_step1'];
     <!-- Header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumb-bar">
+      <div class="breadcrumb-inner">
+        <a href="/TravelMate/public/index.php?url=Accomodation_provider/newerDashboard" class="breadcrumb-link">
+          <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+        <i class="fas fa-chevron-right breadcrumb-sep"></i>
+        <a href="/TravelMate/public/index.php?url=Accomodation_provider/propertyListingStep1" class="breadcrumb-link">
+          <i class="fas fa-plus-circle"></i> Step 1 — Basic Details
+        </a>
+        <i class="fas fa-chevron-right breadcrumb-sep"></i>
+        <span class="breadcrumb-current">
+          <i class="fas fa-list-check"></i> Step 2 — Features & Details
+        </span>
+      </div>
+    </nav>
+
     <main class="listing-main">
         <div class="form-container">
             <div class="step-indicator">

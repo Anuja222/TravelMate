@@ -14,6 +14,26 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 <body>
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
   <main class="update-property-page">
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumb-nav" style="margin-bottom: 24px;">
+      <div class="breadcrumb-container" style="display: flex; align-items: center; gap: 12px;">
+        <a href="/TravelMate/public/index.php?url=homet" class="breadcrumb-item">
+          <i class="fas fa-home"></i>
+          <span>Home</span>
+        </a>
+        <i class="fas fa-chevron-right breadcrumb-separator"></i>
+        <a href="/TravelMate/public/index.php?url=Accomodation_provider/newerDashboard" class="breadcrumb-item">
+          <i class="fas fa-tachometer-alt"></i>
+          <span>Dashboard</span>
+        </a>
+        <i class="fas fa-chevron-right breadcrumb-separator"></i>
+        <span class="breadcrumb-item active">
+          <i class="fas fa-edit"></i>
+          <span id="propertyNameBreadcrumb">Update Property</span>
+        </span>
+      </div>
+    </nav>
+    
     <h1><i class="fas fa-edit"></i> Update Property</h1>
     <div id="formRoot">
       <div class="loading-state">
@@ -55,6 +75,13 @@ if (session_status() === PHP_SESSION_NONE) session_start();
           root.innerHTML = '<div class="error-state"><i class="fas fa-exclamation-triangle"></i><p>Failed to load property</p></div>'; 
           return; 
         }
+        
+        // Update breadcrumb with property name
+        const breadcrumbName = document.getElementById('propertyNameBreadcrumb');
+        if (breadcrumbName && j.data && j.data.title) {
+          breadcrumbName.textContent = 'Edit: ' + (j.data.title.length > 30 ? j.data.title.substring(0, 30) + '...' : j.data.title);
+        }
+        
         renderForm(j.data);
       } catch (e) { 
         console.error(e); 
