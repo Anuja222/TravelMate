@@ -323,15 +323,19 @@ document.addEventListener('DOMContentLoaded', function() {
             const propertyType = property.property_type ? 
                 property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1).replace(/_/g, ' ') : '';
             
+            const detailUrl = `${baseUrl}/index.php?url=Accomodation_provider/detailsProperty&id=${property.id}`;
+
             card.innerHTML = `
-                <div class="property-card-image">
+                <div class="property-card-image" style="cursor:pointer" data-href="${detailUrl}">
                     <img src="${baseUrl}/${imagePath}" alt="${property.title}" 
                          onerror="this.src='${baseUrl}/assets/images/default-property.jpg'">
                     <div class="property-card-badge">${propertyType}</div>
-                    ${statusClass ? `<div class="property-card-status ${statusClass}">${statusClass.toUpperCase()}</div>` : ''}
+                    <button type="button" class="property-card-btn-toggle toggle-btn ${property.status === 'active' ? 'active' : ''}" data-id="${property.id}" data-status="${property.status}">
+                        <i class="fas fa-power-off"></i> ${property.status === 'active' ? 'Active' : 'Inactive'}
+                    </button>
                 </div>
                 <div class="property-card-content">
-                    <h3 class="property-card-title">${property.title}</h3>
+                    <h3 class="property-card-title" style="cursor:pointer" data-href="${detailUrl}">${property.title}</h3>
                     
                     <div class="property-card-location">
                         <i class="fas fa-map-marker-alt"></i>
@@ -351,27 +355,33 @@ document.addEventListener('DOMContentLoaded', function() {
                             </div>
                         </div>
                         <div class="property-card-actions">
+                            <button type="button" class="property-card-btn property-card-btn-view view-btn" data-id="${property.id}">
+                                <i class="fas fa-eye"></i> View
+                            </button>
                             <button type="button" class="property-card-btn property-card-btn-edit" data-id="${property.id}">
                                 <i class="fas fa-edit"></i> Edit
                             </button>
                             <button type="button" class="property-card-btn property-card-btn-delete delete-btn" data-id="${property.id}">
                                 <i class="fas fa-trash"></i>
                             </button>
-                            <button type="button" class="property-card-btn property-card-btn-toggle toggle-btn ${property.status === 'active' ? 'active' : ''}" data-id="${property.id}" data-status="${property.status}">
-                                <i class="fas fa-power-off"></i> ${property.status === 'active' ? 'Active' : 'Inactive'}
-                            </button>
                         </div>
                     </div>
                 </div>
             `;
             
+            // Click on image or title → view details (but not if toggle button clicked)
+            card.querySelector('.property-card-image').addEventListener('click', function(e) {
+                if (e.target.closest('.property-card-btn-toggle')) return;
+                window.location.href = detailUrl;
+            });
+            card.querySelector('.property-card-title').addEventListener('click', function() {
+                window.location.href = detailUrl;
+            });
+
             // Add click handler to edit button
             const editBtn = card.querySelector('.property-card-btn-edit');
             editBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
-                // Store property info for breadcrumb
-                sessionStorage.setItem('currentPropertyTitle', property.title || 'Property');
-                sessionStorage.setItem('currentPropertyId', property.id);
                 window.location.href = `${baseUrl}/index.php?url=Accomodation_provider/updateProperty&id=${property.id}`;
             });
             
