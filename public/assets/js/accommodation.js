@@ -450,6 +450,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const editBtn = card.querySelector('.property-card-btn-edit');
             editBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
+                // Store property info for breadcrumb
+                sessionStorage.setItem('currentPropertyTitle', property.title || 'Property');
+                sessionStorage.setItem('currentPropertyId', property.id);
                 window.location.href = `${baseUrl}/index.php?url=Accomodation_provider/updateProperty&id=${property.id}`;
             });
 
