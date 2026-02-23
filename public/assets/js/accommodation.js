@@ -327,6 +327,12 @@ document.addEventListener('DOMContentLoaded', function() {
         function displayProperties(properties) {
             propertyListContainer.innerHTML = '';
             
+            // Update the listings count in activity summary
+            const listingsCountElement = document.querySelector('.activity-summary .stat:first-child .stat-num');
+            if (listingsCountElement) {
+                listingsCountElement.textContent = properties.length;
+            }
+            
             if (properties.length === 0) {
                 propertyListContainer.innerHTML = `
                     <div class="no-properties-message">
@@ -623,6 +629,13 @@ async function performDelete(id, buttonElement) {
 
                 if (typeof window.loadUserProperties === 'function') {
                     window.loadUserProperties();
+                }
+                
+                // Update the listings count in activity summary
+                const listingsCountElement = document.querySelector('.activity-summary .stat:first-child .stat-num');
+                if (listingsCountElement) {
+                    const currentCount = parseInt(listingsCountElement.textContent) || 0;
+                    listingsCountElement.textContent = Math.max(0, currentCount - 1);
                 }
                 
                 // Show success modal
