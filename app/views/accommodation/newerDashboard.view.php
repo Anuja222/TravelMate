@@ -683,22 +683,6 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
         </div>
       </div>
       <!-- Favourites -->
-     <section class="favourite">
-        <div class="section-header">
-          <h3>My Properties</h3>
-          <button class="btn-list-property" onclick="window.location.href='/TravelMate/public/index.php?url=Accomodation_provider/propertyListingStep1';">
-            <i class="fas fa-plus"></i> List Your Property
-          </button>
-        </div>
-
-        <div class="property-cards-grid">
-          <!-- Property cards will be loaded here dynamically -->
-          <div class="loading-message" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">
-            <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i>
-            <p>Loading your properties...</p>
-          </div>
-        </div>
-      </section>
       <!-- Activity Summary -->
       <div class="activity-summary">
         <h3>Activity Summary</h3>
@@ -716,7 +700,41 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
             <span class="stat-label">Bookings Received</span>
           </div>
         </div>
-      </div>
+      </div>     
+     <section class="favourite">
+        <div class="section-header">
+          <h3>My Properties</h3>
+          <button class="btn-list-property" onclick="window.location.href='/TravelMate/public/index.php?url=Accomodation_provider/propertyListingStep1';">
+            <i class="fas fa-plus"></i> List Your Property
+          </button>
+        </div>
+
+        <div class="property-cards-grid">
+          <!-- Property cards will be loaded here dynamically -->
+          <div class="loading-message" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i>
+            <p>Loading your properties...</p>
+          </div>
+        </div>
+      </section>
+      <!-- Activity Summary
+      <div class="activity-summary">
+        <h3>Activity Summary</h3>
+        <div class="summary-stats">
+          <div class="stat">
+            <span class="stat-num">0</span>
+            <span class="stat-label">Listings</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">0</span>
+            <span class="stat-label">Booked</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">0</span>
+            <span class="stat-label">Bookings Received</span>
+          </div>
+        </div>
+      </div> -->
     </section>
   </main>
   <!-- Status Toggle Modal -->

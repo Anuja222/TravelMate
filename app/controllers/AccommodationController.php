@@ -271,9 +271,11 @@ class AccommodationController {
                 'propertyType' => $_POST['property_type'] ?? $existing['property_type'],
                 'title' => $_POST['title'] ?? $existing['title'],
                 'description' => $_POST['description'] ?? $existing['description'],
+                'location' => $_POST['location'] ?? ($existing['location'] ?? ''),
                 'rooms' => $_POST['rooms'] ?? $existing['rooms'],
                 'bathrooms' => $_POST['bathrooms'] ?? $existing['bathrooms'],
                 'maxGuests' => $_POST['max_guests'] ?? $existing['max_guests'],
+                'pricePerNight' => $_POST['price_per_night'] ?? ($existing['price_per_night'] ?? 0),
                 // Accept explicit 0/1 values for checkboxes (form should send 0 when unchecked)
                 'smoking' => isset($_POST['smoking']) ? intval($_POST['smoking']) : $existing['smoking'],
                 'parties' => isset($_POST['parties']) ? intval($_POST['parties']) : $existing['parties'],
