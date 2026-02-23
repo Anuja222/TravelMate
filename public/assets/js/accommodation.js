@@ -247,51 +247,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // ========== DASHBOARD - LIST PROPERTIES ==========
     const propertyListContainer = document.querySelector('.property-cards-grid');
     if (propertyListContainer) {
-        const summaryListingsEl = document.getElementById('summaryListings');
-        const summaryBookedEl = document.getElementById('summaryBooked');
-        const summaryBookingsReceivedEl = document.getElementById('summaryBookingsReceived');
-        const summaryOverallRatingEl = document.getElementById('summaryOverallRating');
-        const summaryOverallRatingNoteEl = document.getElementById('summaryOverallRatingNote');
-
-        function updateActivitySummary(properties) {
-            const safeProperties = Array.isArray(properties) ? properties : [];
-            const listings = safeProperties.length;
-            const booked = safeProperties.reduce((sum, property) => {
-                return sum + (parseInt(property.booked_rooms, 10) || 0);
-            }, 0);
-            const bookingsReceived = safeProperties.reduce((sum, property) => {
-                return sum + (parseInt(property.bookings_received, 10) || 0);
-            }, 0);
-            const ratingTotals = safeProperties.reduce((totals, property) => {
-                const ratingCount = parseInt(property.rating_count, 10) || 0;
-                const averageRating = parseFloat(property.avg_rating || 0);
-
-                if (ratingCount > 0 && averageRating > 0) {
-                    totals.weightedSum += averageRating * ratingCount;
-                    totals.totalReviews += ratingCount;
-                }
-
-                return totals;
-            }, { weightedSum: 0, totalReviews: 0 });
-            const overallRating = ratingTotals.totalReviews > 0
-                ? ratingTotals.weightedSum / ratingTotals.totalReviews
-                : 0;
-
-            if (summaryListingsEl) summaryListingsEl.textContent = String(listings);
-            if (summaryBookedEl) summaryBookedEl.textContent = String(booked);
-            if (summaryBookingsReceivedEl) summaryBookingsReceivedEl.textContent = String(bookingsReceived);
-            if (summaryOverallRatingEl) {
-                summaryOverallRatingEl.textContent = ratingTotals.totalReviews > 0
-                    ? `${overallRating.toFixed(1)}`
-                    : '-';
-            }
-            if (summaryOverallRatingNoteEl) {
-                summaryOverallRatingNoteEl.textContent = ratingTotals.totalReviews > 0
-                    ? `Based on ${ratingTotals.totalReviews} review${ratingTotals.totalReviews > 1 ? 's' : ''}`
-                    : 'Not yet rated';
-            }
-        }
-
         // Function to load user's properties
         async function loadUserProperties() {
             try {
@@ -303,24 +258,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         const result = await response.json();
                         if (result.success) {
                             displayProperties(result.data);
-                            updateActivitySummary(result.data);
                         } else {
                             console.error('Failed to load properties:', result.errors);
-                            updateActivitySummary([]);
                         }
                     } catch (err) {
                         const text = await response.text();
                         console.error('Invalid JSON from server (list):', text, err);
-                        updateActivitySummary([]);
                     }
                 } else {
                     const text = await response.text();
                     console.error('Non-JSON response from server (list):', response.status, text);
-                    updateActivitySummary([]);
                 }
             } catch (error) {
                 console.error('Error loading properties:', error);
-                updateActivitySummary([]);
             }
         }
 
@@ -368,51 +318,28 @@ document.addEventListener('DOMContentLoaded', function() {
             const description = property.description || 'No description available';
             const shortDescription = description.length > 120 ? 
                 description.substring(0, 120) + '...' : description;
-
-            const ratingCount = parseInt(property.rating_count, 10) || 0;
-            const avgRatingValue = parseFloat(property.avg_rating || 0);
-
-            function getRatingStarsHtml(avg) {
-                let html = '';
-                for (let index = 1; index <= 5; index++) {
-                    if (avg >= index) {
-                        html += '<i class="fas fa-star"></i>';
-                    } else if (avg >= index - 0.5) {
-                        html += '<i class="fas fa-star-half-alt"></i>';
-                    } else {
-                        html += '<i class="far fa-star"></i>';
-                    }
-                }
-                return html;
-            }
-
-            const ratingStarsHtml = getRatingStarsHtml(avgRatingValue);
-            const ratingLabel = ratingCount > 0
-                ? `${avgRatingValue.toFixed(1)} (${ratingCount})`
-                : 'Not yet rated';
             
             // Format property type for display
             const propertyType = property.property_type ? 
                 property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1).replace(/_/g, ' ') : '';
             
+            const detailUrl = `${baseUrl}/index.php?url=Accomodation_provider/detailsProperty&id=${property.id}`;
+
             card.innerHTML = `
-                <div class="property-card-image">
+                <div class="property-card-image" style="cursor:pointer" data-href="${detailUrl}">
                     <img src="${baseUrl}/${imagePath}" alt="${property.title}" 
                          onerror="this.src='${baseUrl}/assets/images/default-property.jpg'">
                     <div class="property-card-badge">${propertyType}</div>
-                    ${statusClass ? `<div class="property-card-status ${statusClass}">${statusClass.toUpperCase()}</div>` : ''}
+                    <button type="button" class="property-card-btn-toggle toggle-btn ${property.status === 'active' ? 'active' : ''}" data-id="${property.id}" data-status="${property.status}">
+                        <i class="fas fa-power-off"></i> ${property.status === 'active' ? 'Active' : 'Inactive'}
+                    </button>
                 </div>
                 <div class="property-card-content">
-                    <h3 class="property-card-title">${property.title}</h3>
+                    <h3 class="property-card-title" style="cursor:pointer" data-href="${detailUrl}">${property.title}</h3>
                     
                     <div class="property-card-location">
                         <i class="fas fa-map-marker-alt"></i>
                         <span>${property.location}</span>
-                    </div>
-
-                    <div class="property-card-rating">
-                        <div class="rating-stars">${ratingStarsHtml}</div>
-                        <span>${ratingLabel}</span>
                     </div>
                     
                     <p class="property-card-description">${shortDescription}</p>
@@ -428,63 +355,35 @@ document.addEventListener('DOMContentLoaded', function() {
                             </div>
                         </div>
                         <div class="property-card-actions">
+                            <button type="button" class="property-card-btn property-card-btn-view view-btn" data-id="${property.id}">
+                                <i class="fas fa-eye"></i> View
+                            </button>
                             <button type="button" class="property-card-btn property-card-btn-edit" data-id="${property.id}">
                                 <i class="fas fa-edit"></i> Edit
                             </button>
                             <button type="button" class="property-card-btn property-card-btn-delete delete-btn" data-id="${property.id}">
                                 <i class="fas fa-trash"></i>
                             </button>
-                            <button type="button" class="property-card-btn property-card-btn-toggle toggle-btn ${property.status === 'active' ? 'active' : ''}" data-id="${property.id}" data-status="${property.status}">
-                                <i class="fas fa-power-off"></i> ${property.status === 'active' ? 'Inactive' : 'Active'}
-                            </button>
                         </div>
                     </div>
                 </div>
             `;
-
-            card.addEventListener('click', function() {
-                window.location.href = `${baseUrl}/detailsProperty?id=${property.id}`;
-            });
             
+            // Click on image or title → view details (but not if toggle button clicked)
+            card.querySelector('.property-card-image').addEventListener('click', function(e) {
+                if (e.target.closest('.property-card-btn-toggle')) return;
+                window.location.href = detailUrl;
+            });
+            card.querySelector('.property-card-title').addEventListener('click', function() {
+                window.location.href = detailUrl;
+            });
+
             // Add click handler to edit button
             const editBtn = card.querySelector('.property-card-btn-edit');
             editBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
-                // Store property info for breadcrumb
-                sessionStorage.setItem('currentPropertyTitle', property.title || 'Property');
-                sessionStorage.setItem('currentPropertyId', property.id);
                 window.location.href = `${baseUrl}/index.php?url=Accomodation_provider/updateProperty&id=${property.id}`;
             });
-
-            const deleteBtn = card.querySelector('.delete-btn');
-            if (deleteBtn) {
-                deleteBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-
-                    if (typeof window.showConfirmDeleteModal === 'function') {
-                        window.showConfirmDeleteModal(property.id);
-                    } else {
-                        if (!confirm('Are you sure you want to delete this property?')) return;
-                        performDelete(property.id, deleteBtn);
-                    }
-                });
-            }
-
-            const toggleBtn = card.querySelector('.toggle-btn');
-            if (toggleBtn) {
-                toggleBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const currentStatus = toggleBtn.dataset.status || property.status;
-                    handleToggleStatus(property.id, currentStatus, toggleBtn);
-                });
-            }
-
-            const actionsContainer = card.querySelector('.property-card-actions');
-            if (actionsContainer) {
-                actionsContainer.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                });
-            }
             
             return card;
         }
@@ -496,84 +395,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-function resolveBaseUrl() {
-    if (typeof window.getBaseUrl === 'function') {
-        return window.getBaseUrl();
-    }
-    return '/TravelMate/public';
-}
-
-async function handleToggleStatus(id, currentStatus, toggleBtn) {
-    const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-
-    try {
-        const res = await fetch(`${resolveBaseUrl()}/api/accommodation/toggleStatus`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `id=${encodeURIComponent(id)}&status=${encodeURIComponent(newStatus)}`
-        });
-        const ct = res.headers.get('content-type') || '';
-        if (ct.includes('application/json')) {
-            const json = await res.json();
-            if (json.success) {
-                toggleBtn.dataset.status = newStatus;
-                if (newStatus === 'active') {
-                    toggleBtn.classList.add('active');
-                    toggleBtn.innerHTML = '<i class="fas fa-power-off"></i> Inactive';
-                } else {
-                    toggleBtn.classList.remove('active');
-                    toggleBtn.innerHTML = '<i class="fas fa-power-off"></i> Active';
-                }
-
-                const card = toggleBtn.closest('.property-card');
-                if (card) {
-                    const statusBadge = card.querySelector('.property-card-status');
-                    if (newStatus === 'active') {
-                        if (statusBadge) statusBadge.remove();
-                    } else {
-                        if (!statusBadge) {
-                            const imageDiv = card.querySelector('.property-card-image');
-                            const badge = document.createElement('div');
-                            badge.className = `property-card-status ${newStatus}`;
-                            badge.textContent = newStatus.toUpperCase();
-                            imageDiv.appendChild(badge);
-                        } else {
-                            statusBadge.className = `property-card-status ${newStatus}`;
-                            statusBadge.textContent = newStatus.toUpperCase();
-                        }
-                    }
-                }
-
-                if (typeof window.showStatusModal === 'function') {
-                    window.showStatusModal(newStatus === 'active');
-                } else {
-                    alert(`Property ${newStatus === 'active' ? 'activated' : 'deactivated'} successfully!`);
-                }
-
-                if (typeof window.loadUserProperties === 'function') {
-                    window.loadUserProperties();
-                }
-            } else {
-                alert('Failed to update status: ' + (json.errors || json.data || 'unknown'));
-            }
-        } else {
-            const text = await res.text();
-            console.error('Toggle non-json response:', text);
-            alert('Failed to update status. See console for details.');
-        }
-    } catch (err) {
-        console.error('Toggle error', err);
-        alert('Failed to update status. See console.');
-    }
-}
-
     // Delegated click handlers for property action buttons (View / Update / Delete)
     document.addEventListener('click', function(e){
         const viewBtn = e.target.closest('.view-btn');
         if (viewBtn) {
             const id = viewBtn.dataset.id;
             if (id) {
-                window.location.href = `${resolveBaseUrl()}/detailsProperty?id=${id}`;
+                window.location.href = `${getBaseUrl()}/detailsProperty?id=${id}`;
             }
             return;
         }
@@ -582,7 +410,7 @@ async function handleToggleStatus(id, currentStatus, toggleBtn) {
         if (editBtn) {
             const id = editBtn.dataset.id;
             if (id) {
-                window.location.href = `${resolveBaseUrl()}/updateProperty?id=${id}`;
+                window.location.href = `${getBaseUrl()}/updateProperty?id=${id}`;
             }
             return;
         }
@@ -608,8 +436,70 @@ async function handleToggleStatus(id, currentStatus, toggleBtn) {
             const id = toggleBtn.dataset.id;
             const currentStatus = toggleBtn.dataset.status;
             if (!id) return;
-
-            handleToggleStatus(id, currentStatus, toggleBtn);
+            
+            const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+            
+            // call toggle API
+            (async function(){
+                try {
+                    const res = await fetch(`${getBaseUrl()}/api/accommodation/toggleStatus`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: `id=${encodeURIComponent(id)}&status=${encodeURIComponent(newStatus)}`
+                    });
+                    const ct = res.headers.get('content-type') || '';
+                    if (ct.includes('application/json')) {
+                        const json = await res.json();
+                        if (json.success) {
+                            // Update button appearance and status
+                            toggleBtn.dataset.status = newStatus;
+                            if (newStatus === 'active') {
+                                toggleBtn.classList.add('active');
+                                toggleBtn.innerHTML = '<i class="fas fa-power-off"></i> Active';
+                            } else {
+                                toggleBtn.classList.remove('active');
+                                toggleBtn.innerHTML = '<i class="fas fa-power-off"></i> Inactive';
+                            }
+                            
+                            // Update status badge
+                            const card = toggleBtn.closest('.property-card');
+                            if (card) {
+                                const statusBadge = card.querySelector('.property-card-status');
+                                if (newStatus === 'active') {
+                                    if (statusBadge) statusBadge.remove();
+                                } else {
+                                    if (!statusBadge) {
+                                        const imageDiv = card.querySelector('.property-card-image');
+                                        const badge = document.createElement('div');
+                                        badge.className = `property-card-status ${newStatus}`;
+                                        badge.textContent = newStatus.toUpperCase();
+                                        imageDiv.appendChild(badge);
+                                    } else {
+                                        statusBadge.className = `property-card-status ${newStatus}`;
+                                        statusBadge.textContent = newStatus.toUpperCase();
+                                    }
+                                }
+                            }
+                            
+                            // Show success modal
+                            if (typeof window.showStatusModal === 'function') {
+                                window.showStatusModal(newStatus === 'active');
+                            } else {
+                                alert(`Property ${newStatus === 'active' ? 'activated' : 'deactivated'} successfully!`);
+                            }
+                        } else {
+                            alert('Failed to update status: ' + (json.errors || json.data || 'unknown'));
+                        }
+                    } else {
+                        const text = await res.text();
+                        console.error('Toggle non-json response:', text);
+                        alert('Failed to update status. See console for details.');
+                    }
+                } catch (err) {
+                    console.error('Toggle error', err);
+                    alert('Failed to update status. See console.');
+                }
+            })();
             return;
         }
     });
@@ -617,7 +507,7 @@ async function handleToggleStatus(id, currentStatus, toggleBtn) {
 // Function to perform the actual delete operation
 async function performDelete(id, buttonElement) {
     try {
-        const res = await fetch(`${resolveBaseUrl()}/api/accommodation/delete`, {
+        const res = await fetch(`${getBaseUrl()}/api/accommodation/delete`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `id=${encodeURIComponent(id)}`
@@ -629,10 +519,6 @@ async function performDelete(id, buttonElement) {
                 // remove card from DOM
                 const card = buttonElement ? buttonElement.closest('.property-card') : document.querySelector(`[data-id="${id}"]`)?.closest('.property-card');
                 if (card) card.remove();
-
-                if (typeof window.loadUserProperties === 'function') {
-                    window.loadUserProperties();
-                }
                 
                 // Update the listings count in activity summary
                 const listingsCountElement = document.querySelector('.activity-summary .stat:first-child .stat-num');
@@ -670,7 +556,7 @@ document.addEventListener('confirmDeleteProperty', function(e) {
 
 // Global functions for property actions
 function editProperty(id) {
-    window.location.href = `${resolveBaseUrl()}/updateProperty?id=${id}`;
+    window.location.href = `${getBaseUrl()}/updateProperty?id=${id}`;
 }
 
 async function deleteProperty(id) {
@@ -679,7 +565,7 @@ async function deleteProperty(id) {
     }
     
     try {
-        const response = await fetch(`${resolveBaseUrl()}/api/accommodation/delete`, {
+        const response = await fetch(`${getBaseUrl()}/api/accommodation/delete`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -687,7 +573,7 @@ async function deleteProperty(id) {
             body: `id=${id}`
         });
 
-        console.log('POST delete', `${resolveBaseUrl()}/api/accommodation/delete`, response.status, response.statusText);
+        console.log('POST delete', `${getBaseUrl()}/api/accommodation/delete`, response.status, response.statusText);
         const ctDel = response.headers.get('content-type') || '';
         if (ctDel.includes('application/json')) {
             try {

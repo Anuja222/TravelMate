@@ -108,6 +108,16 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
       -webkit-box-orient: vertical;
       overflow: hidden;
       text-overflow: ellipsis;
+      transition: color 0.2s;
+    }
+
+    .property-card-title:hover {
+      color: #3498db;
+    }
+
+    .property-card-image:hover img {
+      transform: scale(1.05);
+      transition: transform 0.3s ease;
     }
     
     .property-card-location {
@@ -183,6 +193,18 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
       gap: 10px;
       width: 100%;
     }
+
+    .property-card-btn-view {
+      background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+    }
+
+    .property-card-btn-view:hover {
+      background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
+      box-shadow: 0 6px 16px rgba(52, 152, 219, 0.3);
+      transform: translateY(-2px);
+    }
     
     .property-card-btn {
       padding: 10px 20px;
@@ -224,26 +246,42 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
     }
     
     .property-card-btn-toggle {
-      background: #fff;
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.95);
       color: #95a5a6;
       border: 2px solid #95a5a6;
-      padding: 10px 16px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
       white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      z-index: 2;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
     
     .property-card-btn-toggle.active {
-      background: #fff;
+      background: rgba(255, 255, 255, 0.95);
       color: #1abc5b;
-      border: 2px solid #1abc5b;
+      border-color: #1abc5b;
+      box-shadow: 0 2px 10px rgba(26, 188, 91, 0.25);
     }
     
     .property-card-btn-toggle:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transform: scale(1.05);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
     }
     
     .property-card-btn-toggle.active:hover {
       background: rgba(26, 188, 91, 0.1);
+      border-color: #1abc5b;
     }
     
     .property-card-status {
