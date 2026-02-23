@@ -277,6 +277,12 @@ document.addEventListener('DOMContentLoaded', function() {
         function displayProperties(properties) {
             propertyListContainer.innerHTML = '';
             
+            // Update the listings count in activity summary
+            const listingsCountElement = document.querySelector('.activity-summary .stat:first-child .stat-num');
+            if (listingsCountElement) {
+                listingsCountElement.textContent = properties.length;
+            }
+            
             if (properties.length === 0) {
                 propertyListContainer.innerHTML = `
                     <div class="no-properties-message">
@@ -500,6 +506,13 @@ async function performDelete(id, buttonElement) {
                 // remove card from DOM
                 const card = buttonElement ? buttonElement.closest('.property-card') : document.querySelector(`[data-id="${id}"]`)?.closest('.property-card');
                 if (card) card.remove();
+                
+                // Update the listings count in activity summary
+                const listingsCountElement = document.querySelector('.activity-summary .stat:first-child .stat-num');
+                if (listingsCountElement) {
+                    const currentCount = parseInt(listingsCountElement.textContent) || 0;
+                    listingsCountElement.textContent = Math.max(0, currentCount - 1);
+                }
                 
                 // Show success modal
                 if (typeof window.showDeleteModal === 'function') {
