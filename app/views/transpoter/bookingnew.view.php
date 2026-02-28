@@ -54,15 +54,15 @@ if (!$isTransporter) {
         <div class="summary-stats">
           <div class="stat">
             <div class="stat-num">0</div>
-            <div class="stat-label">Pending</div>
+            <div class="stat-label">PENDING</div>
           </div>
           <div class="stat">
             <div class="stat-num">0</div>
-            <div class="stat-label">Confirmed</div>
+            <div class="stat-label">COMPLETED</div>
           </div>
           <div class="stat">
             <div class="stat-num">0</div>
-            <div class="stat-label">Total Bookings</div>
+            <div class="stat-label">TOTAL BOOKINGS</div>
           </div>
         </div>
       </section>
@@ -74,8 +74,6 @@ if (!$isTransporter) {
           <select id="categoryFilter">
             <option value="all">All Status</option>
             <option value="pending">Pending</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="cancelled">Cancelled</option>
             <option value="completed">Completed</option>
           </select>
           <button id="applyFilter">Search</button>
@@ -87,6 +85,14 @@ if (!$isTransporter) {
         </div>
       </section>
     </div>
+
+    <!-- Booking Details Modal -->
+    <div id="bookingDetailsModal" class="modal">
+        <div class="modal-content" id="modalContent">
+            <!-- Content will be loaded dynamically -->
+        </div>
+    </div>
+
   </main>
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
