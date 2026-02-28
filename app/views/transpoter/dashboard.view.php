@@ -46,13 +46,18 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
   <!-- MAIN CONTENT -->
   <main>
     <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <ul>
-        <li><a href="tr_dashboard" class="active"><i ></i> Dashboard</a></li>
-        <li><a href="bookingnew"><i></i> Bookings</a></li>
-        <li><a href="setting"><i></i> Setting</a></li>
-      </ul>
+   <aside class="sidebar">
+        <div class="sidebar-inner">
+          <div class="sidebar-menu">
+            <a href="/TravelMate/public/tr_dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="/TravelMate/public/bookingnew"><i class="fas fa-calendar-alt"></i> Bookings</a>
+            <a href="/TravelMate/public/payment-history"><i class="fas fa-credit-card"></i> Payment History</a>
+            <a href="/TravelMate/public/statistics"><i class="fas fa-chart-line"></i> Statistics</a>
+            <a href="/TravelMate/public/setting"><i class="fas fa-cog"></i> Settings</a>
+          </div>
+        </div>
     </aside>
+
 
     <div class="dashboard-content">
 
@@ -85,7 +90,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
       <section class="favourites">
         <div class="section-header">
           <h3>My Vehicles</h3>
-          <button class="btn-list-vehicle" onclick="window.location.href='vehicleType';">
+          <button class="btn-list-vehicle" onclick="window.location.href='/TravelMate/public/vehicleType';">
             <i class="fas fa-plus"></i> List Your Vehicle
           </button>
         </div>

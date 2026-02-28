@@ -78,9 +78,14 @@
     /* Filter Container */
     .filter-container {
       display: flex;
-      gap: 15px;
-      margin-bottom: 25px;
-      flex-wrap: wrap;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 25px;
+    padding: 15px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); 
     }
 
     .search-box {
@@ -99,9 +104,9 @@
     }
 
     .search-box input:focus {
-      outline: none;
       border-color: #1abc5b;
-      box-shadow: 0 0 0 3px rgba(26, 188, 91, 0.1);
+    box-shadow: 0 0 5px rgba(26, 188, 91, 0.3);
+    outline: none;
     }
 
     .search-box i {
@@ -121,6 +126,7 @@
       cursor: pointer;
       min-width: 180px;
     }
+
 
     /* Bookings List */
     .bookings {
