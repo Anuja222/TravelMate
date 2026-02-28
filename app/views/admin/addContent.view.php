@@ -2,15 +2,16 @@
 <html>
 <head>
   <title>Add Content</title>
-  <link rel="stylesheet" href="assets/css/Admin/addContent.css">
-  <link rel="stylesheet" href="assets/css/Admin/common.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/addContent.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
-  <?php include 'sidebar.view.php'; ?>
+  <?php include __DIR__ . '/admin_header.view.php'; ?>
 
   <div class="page-container">
+    <?php include 'sidebar.view.php'; ?>
     <div class="content">
       <div class="page-title">
         <h1>Add New Content</h1>

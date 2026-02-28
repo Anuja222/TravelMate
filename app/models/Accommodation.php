@@ -11,11 +11,10 @@ class Accommodation {
     public $rooms;
     public $bathrooms;
     public $maxGuests;
+    public $pricePerNight;
     public $smoking;
     public $parties;
     public $pets;
-    public $pricePerNight;
-    public $pricePerGuest;
     public $checkInStart;
     public $checkInEnd;
     public $checkOutTime;
@@ -32,7 +31,7 @@ class Accommodation {
     public function create($conn) {
         $sql = "INSERT INTO accommodations (
             user_id, property_type, title, description, location,
-            rooms, bathrooms, max_guests, price_per_night, price_per_guest,
+            rooms, bathrooms, max_guests, price_per_night,
             smoking, parties, pets, check_in_start, check_in_end,
             check_out_time, status, created_at
         ) VALUES (
@@ -50,7 +49,6 @@ class Accommodation {
             $this->bathrooms,
             $this->maxGuests,
             $this->pricePerNight,
-            $this->pricePerGuest,
             $this->smoking,
             $this->parties,
             $this->pets,
@@ -99,11 +97,11 @@ class Accommodation {
                 property_type = ?,
                 title = ?,
                 description = ?,
+                location = ?,
                 rooms = ?,
                 bathrooms = ?,
                 max_guests = ?,
-                price_per_night = ?,  
-                price_per_guest = ?,
+                price_per_night = ?,
                 smoking = ?,
                 parties = ?,
                 pets = ?,
@@ -119,11 +117,11 @@ class Accommodation {
             $this->propertyType,
             $this->title,
             $this->description,
+            $this->location,
             $this->rooms,
             $this->bathrooms,
             $this->maxGuests,
-            $this->pricePerNight,   
-            $this->pricePerGuest, 
+            $this->pricePerNight,
             $this->smoking,
             $this->parties,
             $this->pets,
@@ -168,5 +166,4 @@ class Accommodation {
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result ? $result['image_path'] : null;
     }
-    
 }
