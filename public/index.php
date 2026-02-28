@@ -68,7 +68,7 @@ $page = basename($requestUri);
 error_log("Processed URI: $requestUri");
 error_log("Page: $page");
 
-// ========== VEHICLE API ROUTES (MUST BE BEFORE PAGE ROUTES) ==========
+// vehicle listing API routes.
 if ($requestUri === '/api/vehicle/create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     error_log(">>> Routing to Vehicle Create");
     require_once __DIR__ . '/../app/controllers/VehicleController.php';
@@ -297,6 +297,9 @@ elseif ($requestUri === '/api/destination/create' && $_SERVER['REQUEST_METHOD'] 
 } elseif ($requestUri === '/api/destination/place/update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $destinationController = new DestinationController();
     $destinationController->placeUpdate();
+    exit;
+}elseif (preg_match('#^/transport-booking-details/(.+)$#', $requestUri, $matches)) {
+    include '../app/views/transpoter/transportBookingDetails.view.php';
     exit;
 }
 
@@ -601,6 +604,73 @@ elseif ($requestUri === '/preference/save' && $_SERVER['REQUEST_METHOD'] === 'PO
     $preferenceController->save();
     exit; // Important: Stop execution after handling the API request
 }
+elseif ($requestUri === '/api/transport-booking/transporter-bookings' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    require_once __DIR__ . '/../app/controllers/BookingTransController.php';
+    $BookingTransController = new App\Controllers\BookingTransController();
+    $BookingTransController->getTransporterBookings();
+    exit;
+} elseif (preg_match('#^/api/transport-booking/update-status$#', $requestUri) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/BookingTransController.php';
+    $BookingTransController = new App\Controllers\BookingTransController();
+    $BookingTransController->updateBookingStatus();
+    exit;
+} elseif (preg_match('#^/api/transport-booking/transporter-details/(.+)$#', $requestUri, $matches) && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    require_once __DIR__ . '/../app/controllers/BookingTransController.php';
+    $BookingTransController = new App\Controllers\BookingTransController();
+    $BookingTransController->getTransporterBookingDetails($matches[1]);
+    exit;
+}
+
+// Payment History API routes of transporter
+elseif ($requestUri === '/api/payment-history/list' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    require_once __DIR__ . '/../app/controllers/PaymentController.php';
+    $paymentController = new App\Controllers\PaymentController();
+    $paymentController->getPaymentHistory();
+    exit;
+} elseif ($requestUri === '/api/payment-history/filter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/PaymentController.php';
+    $paymentController = new App\Controllers\PaymentController();
+    $paymentController->filterPayments();
+    exit;
+} elseif ($requestUri === '/api/payment-history/stats' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    require_once __DIR__ . '/../app/controllers/PaymentController.php';
+    $paymentController = new App\Controllers\PaymentController();
+    $paymentController->getPaymentStats();
+    exit;
+} elseif (preg_match('#^/api/payment-history/invoice/(.+)$#', $requestUri, $matches) && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    require_once __DIR__ . '/../app/controllers/PaymentController.php';
+    $paymentController = new App\Controllers\PaymentController();
+    $paymentController->getInvoice($matches[1]);
+    exit;
+}
+
+// Statistics API routes of transporter
+elseif ($requestUri === '/api/statistics/overview' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    require_once __DIR__ . '/../app/controllers/StatisticsController.php';
+    $statsController = new App\Controllers\StatisticsController();
+    $statsController->getOverview();
+    exit;
+} elseif ($requestUri === '/api/statistics/revenue' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    require_once __DIR__ . '/../app/controllers/StatisticsController.php';
+    $statsController = new App\Controllers\StatisticsController();
+    $statsController->getRevenueData();
+    exit;
+} elseif ($requestUri === '/api/statistics/bookings' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    require_once __DIR__ . '/../app/controllers/StatisticsController.php';
+    $statsController = new App\Controllers\StatisticsController();
+    $statsController->getBookingStats();
+    exit;
+} elseif ($requestUri === '/api/statistics/vehicles' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    require_once __DIR__ . '/../app/controllers/StatisticsController.php';
+    $statsController = new App\Controllers\StatisticsController();
+    $statsController->getVehiclePerformance();
+    exit;
+} elseif ($requestUri === '/api/statistics/export' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/StatisticsController.php';
+    $statsController = new App\Controllers\StatisticsController();
+    $statsController->exportData();
+    exit;
+}
 
 // // Vehicles API
 // elseif ($requestUri === '/api/vehicle/create' && $_SERVER['REQUEST_METHOD'] === 'POST') {    
@@ -695,7 +765,28 @@ elseif ($page === 'home' || $requestUri === '/') {
     // Check if there's a username parameter in the URL
     $username = $_GET['username'] ?? null;
     $profileController->index($username);
-} elseif ($page === 'ride_booking_details') {
+
+// Trnasporter pages
+}elseif ($page === 'tr_dashboard') {
+    include '../app/views/transpoter/dashboard.view.php';
+} elseif ($page === 'vehicleType') {
+    include '../app/views/transpoter/vehicleType.view.php';
+} elseif ($page === 'personalDetails') {
+    include '../app/views/transpoter/personalDetails.view.php';
+} elseif ($page === 'vehicleDocument') {
+    include '../app/views/transpoter/vehicleDocument.view.php';
+    
+}elseif (preg_match('#^/transport-booking-details/([^/]+)$#', $requestUri, $matches)) {
+    // Store the booking ID in a query parameter or make it available to the view
+    $_GET['booking_id'] = $matches[1];
+    include '../app/views/transpoter/transportBookingDetails.view.php';
+    exit;
+
+} elseif ($page === 'bookingnew') {
+    include '../app/views/transpoter/bookingnew.view.php';
+} elseif ($page === 'ViewDetailspending') {
+    include '../app/views/transpoter/ViewDetailspending.view.php';
+}  elseif ($page === 'ride_booking_details') {
     include '../app/views/traveller/ride_booking_details.view.php';
 } elseif ($page === 'ride_booking_finish') {
     include '../app/views/traveller/ride_booking_finish.view.php';
@@ -743,7 +834,8 @@ elseif ($page === 'home' || $requestUri === '/') {
     include '../app/views/traveller/mytransportbookings.view.php';
 } 
 
-//Transpoter pages
+
+// Transporter pages
 elseif ($page === 'tr_dashboard') {
     include '../app/views/transpoter/dashboard.view.php';
 } elseif ($page === 'vehicleType') {
@@ -760,6 +852,10 @@ elseif ($page === 'tr_dashboard') {
     include '../app/views/transpoter/bookingHistory.view.php';
 } elseif ($page === 'setting') {
     include '../app/views/transpoter/setting.view.php';
+} elseif ($page === 'payment-history') {
+    include '../app/views/transpoter/payment_history.view.php';
+} elseif ($page === 'statistics') {
+    include '../app/views/transpoter/statistics.view.php';
 } elseif ($page === 'tripDetails') {
     include '../app/views/transpoter/tripDetails.view.php';
 } elseif ($page === 'ViewDetailsAccepted') {
@@ -771,6 +867,7 @@ elseif ($page === 'tr_dashboard') {
 } elseif ($page === 'confirmBooking') {
     include '../app/views/transpoter/confirmBooking.view.php';
 }
+
 
 //accomodation pages
 elseif ($page === 'ac_dashboard') {
