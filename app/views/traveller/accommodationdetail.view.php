@@ -38,9 +38,9 @@
         <div class="hotel-info">
           <div class="hotel-header">
             <div class="hotel-title">
-              <h1 id="hotelTitle">Loading accommodation...</h1>
+              <h1 id="hotelTitle">Luxury Beach Resort</h1>
               <div class="hotel-badges" id="hotelBadges">
-                <!-- Badge will be populated by JavaScript -->
+                <!-- <span class="badge luxury">Luxury</span> -->
               </div>
             </div>
             <!-- <div class="hotel-rating">
@@ -51,19 +51,15 @@
           </div>
 
           <div class="hotel-location">
-            <span class="location-icon">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#1abc5b"/>
-              </svg>
-            </span>
-            <span id="hotelLocation">Loading...</span>
+            <span class="location-icon">📍</span>
+            <span id="hotelLocation">Bentota Beach, Sri Lanka</span>
             <button class="map-btn" onclick="showMap()">View on Map</button>
           </div>
 
           <div class="hotel-description">
             <h3>About This Property</h3>
             <p id="hotelDescription">
-              Loading accommodation details...
+              Experience the ultimate in luxury at our beachfront resort in Bentota. With pristine beaches, world-class amenities, and exceptional service, this resort offers an unforgettable stay in paradise. Our spacious rooms and suites feature modern amenities and stunning ocean views.
             </p>
           </div>
 
@@ -102,7 +98,7 @@
         <div class="booking-widget">
           <div class="widget-header">
             <div class="price-display">
-              <span class="price-amount" id="priceAmount">Loading...</span>
+              <span class="price-amount" id="priceAmount">Rs.45000</span>
               <span class="price-period">/ night</span>
             </div>
             <div class="price-note">Prices may vary by season</div>
@@ -150,25 +146,10 @@
               </select>
             </div>
 
-            <div class="room-selection">
-              <label>Number of Rooms</label>
-              <select id="numberOfRooms" required>
-                <option value="1">1 Room</option>
-                <option value="2">2 Rooms</option>
-                <option value="3">3 Rooms</option>
-                <option value="4">4 Rooms</option>
-                <option value="5">5+ Rooms</option>
-              </select>
-            </div>
-
             <div class="booking-summary" id="bookingSummary" style="display: none;">
               <div class="summary-row">
                 <span>Nights:</span>
                 <span id="nightsCount">0</span>
-              </div>
-              <div class="summary-row">
-                <span>Rooms:</span>
-                <span id="roomsCount">0</span>
               </div>
               <div class="summary-row">
                 <span>Base Price:</span>
@@ -252,6 +233,6 @@
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-  <script src="assets/js/accommodationdetail.js?v=<?php echo time(); ?>"></script>
+  <script src="assets/js/accommodationdetail.js"></script>
 </body>
 </html>

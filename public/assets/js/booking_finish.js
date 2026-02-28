@@ -74,35 +74,20 @@ async function completeBooking() {
     const marketingConsent = document.getElementById('marketing') ? 
         document.getElementById('marketing').checked : false;
     
-    console.log('Booking data from localStorage:', bookingData);
-    console.log('User details:', userDetails);
-    console.log('Payment details:', paymentDetails);
-    
     if (!bookingData || !userDetails || !paymentDetails) {
         alert('Booking information is incomplete. Please try again.');
         return;
     }
     
-    // Validate required booking fields
-    if (!bookingData.accommodationId) {
-        alert('Accommodation ID is missing. Please start the booking process again.');
-        localStorage.removeItem('currentBooking');
-        localStorage.removeItem('userDetails');
-        localStorage.removeItem('paymentDetails');
-        window.location.href = 'homet';
-        return;
-    }
-    
     // Generate booking confirmation number
-    const bookingId = 'BKG' + Date.now() + Math.floor(Math.random() * 1000);
+    const bookingId = 'BK' + Date.now() + Math.floor(Math.random() * 1000);
     
     // Prepare data for database (only required fields)
     const bookingDataForDB = {
         bookingId: bookingId,
-        accommodationId: bookingData.accommodationId,
+		userId: loggedInUserId,
         roomId: bookingData.roomId,
         roomName: bookingData.roomName,
-        numberOfRooms: bookingData.numberOfRooms || 1,
         checkinDate: bookingData.checkinDate,
         checkoutDate: bookingData.checkoutDate,
         adults: bookingData.adults,
@@ -117,8 +102,6 @@ async function completeBooking() {
         bookingDate: new Date().toISOString()
     };
     
-    console.log('Sending booking data to API:', bookingDataForDB);
-    
     try {
         // Send booking to database
         const response = await fetch('/TravelMate/public/api/booking/create', {
@@ -129,9 +112,7 @@ async function completeBooking() {
             body: JSON.stringify(bookingDataForDB)
         });
 
-        console.log('Response status:', response.status);
         const result = await response.json();
-        console.log('Response data:', result);
 
         if (result.success && result.data) {
             // Create full booking object for localStorage
@@ -201,16 +182,11 @@ async function completeBooking() {
             
         } else {
             // Handle error
-            console.error('Booking creation failed:', result);
             let errorMsg = 'Failed to complete booking. ';
             if (result.errors) {
-                if (typeof result.errors === 'object') {
-                    errorMsg += Object.values(result.errors).join('. ');
-                } else {
-                    errorMsg += result.errors;
+                for (const key in result.errors) {
+                    errorMsg += result.errors[key] + ' ';
                 }
-            } else if (result.message) {
-                errorMsg += result.message;
             }
             alert(errorMsg);
         }

@@ -2,12 +2,12 @@
 <html>
 <head>
   <title>Forgot Password - TravelMate Admin</title>
-  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/forgotPassword.css?v=<?= time() ?>">
-  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="forgotpassword.css">
+  <link rel="stylesheet" href="common.css">
 </head>
 <body>
 
-  <?php include __DIR__ . '/admin_header.view.php'; ?>
+  <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
   <div class="forgot-password-container">
     <div class="forgot-password-card">

@@ -160,12 +160,6 @@ elseif ($requestUri === '/api/accommodation/delete' && $_SERVER['REQUEST_METHOD'
     $controller->delete();
     exit;
 }
-elseif ($requestUri === '/api/accommodation/toggleStatus' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    error_log(">>> Routing to Accommodation Toggle Status");
-    $controller = new AccommodationController();
-    $controller->toggleStatus();
-    exit;
-}
 
 // Accommodation form page handlers
 elseif ($requestUri === '/selectPropertyType' && $_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -225,39 +219,6 @@ elseif (preg_match('#^/viewProperty/(\d+)$#', $requestUri, $matches)) {
 }
 
 
-// Accommodation provider controller routes
-elseif ($requestUri === '/Accomodation_provider/propertyListingStart') {
-    require_once '../app/core/Controller.php';
-    require_once '../app/controllers/Accomodation_provider.php';
-    $controller = new Accomodation_provider();
-    $controller->propertyListingStart();
-    exit;
-} elseif ($requestUri === '/Accomodation_provider/propertyListingStep1') {
-    require_once '../app/core/Controller.php';
-    require_once '../app/controllers/Accomodation_provider.php';
-    $controller = new Accomodation_provider();
-    $controller->propertyListingStep1();
-    exit;
-} elseif ($requestUri === '/Accomodation_provider/propertyListingStep2') {
-    require_once '../app/core/Controller.php';
-    require_once '../app/controllers/Accomodation_provider.php';
-    $controller = new Accomodation_provider();
-    $controller->propertyListingStep2();
-    exit;
-} elseif ($requestUri === '/Accomodation_provider/saveProperty') {
-    require_once '../app/core/Controller.php';
-    require_once '../app/controllers/Accomodation_provider.php';
-    $controller = new Accomodation_provider();
-    $controller->saveProperty();
-    exit;
-} elseif ($requestUri === '/Accomodation_provider/newerDashboard') {
-    require_once '../app/core/Controller.php';
-    require_once '../app/controllers/Accomodation_provider.php';
-    $controller = new Accomodation_provider();
-    $controller->newerDashboard();
-    exit;
-}
-
 // Destination API routes
 elseif ($requestUri === '/api/destination/create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once __DIR__ . '/../app/controllers/DestinationController.php';
@@ -300,49 +261,6 @@ elseif ($requestUri === '/api/destination/create' && $_SERVER['REQUEST_METHOD'] 
     exit;
 }elseif (preg_match('#^/transport-booking-details/(.+)$#', $requestUri, $matches)) {
     include '../app/views/transpoter/transportBookingDetails.view.php';
-    exit;
-}
-
-// Activity API routes
-elseif ($requestUri === '/api/activity/create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    require_once __DIR__ . '/../app/controllers/ActivityController.php';
-    $ctrl = new App\Controllers\ActivityController();
-    $ctrl->create();
-    exit;
-} elseif ($requestUri === '/api/activity/list' && $_SERVER['REQUEST_METHOD'] === 'GET') {
-    require_once __DIR__ . '/../app/controllers/ActivityController.php';
-    $ctrl = new App\Controllers\ActivityController();
-    $ctrl->list();
-    exit;
-} elseif ($requestUri === '/api/activity/get' && $_SERVER['REQUEST_METHOD'] === 'GET') {
-    require_once __DIR__ . '/../app/controllers/ActivityController.php';
-    $ctrl = new App\Controllers\ActivityController();
-    $ctrl->get();
-    exit;
-} elseif ($requestUri === '/api/activity/update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    require_once __DIR__ . '/../app/controllers/ActivityController.php';
-    $ctrl = new App\Controllers\ActivityController();
-    $ctrl->update();
-    exit;
-} elseif ($requestUri === '/api/activity/delete' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    require_once __DIR__ . '/../app/controllers/ActivityController.php';
-    $ctrl = new App\Controllers\ActivityController();
-    $ctrl->delete();
-    exit;
-} elseif ($requestUri === '/api/activity/place/create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    require_once __DIR__ . '/../app/controllers/ActivityController.php';
-    $ctrl = new App\Controllers\ActivityController();
-    $ctrl->placeCreate();
-    exit;
-} elseif ($requestUri === '/api/activity/place/delete' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    require_once __DIR__ . '/../app/controllers/ActivityController.php';
-    $ctrl = new App\Controllers\ActivityController();
-    $ctrl->placeDelete();
-    exit;
-} elseif ($requestUri === '/api/activity/place/update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    require_once __DIR__ . '/../app/controllers/ActivityController.php';
-    $activityController = new App\Controllers\ActivityController();
-    $activityController->placeUpdate();
     exit;
 }
 
@@ -396,22 +314,6 @@ elseif ($requestUri === '/blog/delete' && $_SERVER['REQUEST_METHOD'] === 'POST')
     exit;
 }
 
-// Content management routes (Admin)
-elseif ($requestUri === '/content/approve' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    require_once '../app/core/Controller.php';
-    require_once '../app/controllers/Content.php';
-    $contentController = new Content();
-    $contentController->approve();
-    exit;
-}
-elseif ($requestUri === '/content/reject' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    require_once '../app/core/Controller.php';
-    require_once '../app/controllers/Content.php';
-    $contentController = new Content();
-    $contentController->reject();
-    exit;
-}
-
 // Post CRUD API routes
 elseif ($requestUri === '/post/store' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     error_log(">>> Routing to Post Store");
@@ -420,7 +322,7 @@ elseif ($requestUri === '/post/store' && $_SERVER['REQUEST_METHOD'] === 'POST') 
     require_once '../app/core/Controller.php';
     require_once '../app/models/Post.php';
     require_once '../app/controllers/PostController.php';
-    $postController = new Blog();
+    $postController = new PostController();
     $postController->store();
     exit;
 }
@@ -834,11 +736,6 @@ elseif ($page === 'home' || $requestUri === '/') {
     require_once '../app/controllers/Destinationview.php';
     $destinationviewController = new Destinationview();
     $destinationviewController->index();
-} elseif ($page === 'activityview') {
-    require_once '../app/core/init.php';
-    require_once '../app/controllers/Activityview.php';
-    $activityviewController = new Activityview();
-    $activityviewController->index();
 } elseif ($page === 'header') {
     include '../app/views/traveller/header.view.php';
 } elseif ($page === 'footer') {
@@ -848,11 +745,6 @@ elseif ($page === 'home' || $requestUri === '/') {
     require_once '../app/controllers/Dashboard.php';
     $dashboardController = new Dashboard();
     $dashboardController->index();
-} elseif ($page === 'content') {
-    require_once '../app/core/init.php';
-    require_once '../app/controllers/Content.php';
-    $contentController = new Content();
-    $contentController->index();
 } elseif ($page === 'profile_setting') {
     include '../app/views/traveller/profilesetting.view.php';
 } elseif ($page === 'detailsProperty') {
@@ -990,21 +882,6 @@ elseif ($page === 'ac_dashboard') {
     include '../app/views/accommodation/editListing.view.php';
 } else if ($page === 'propertyListingStart') {
     include '../app/views/accommodation/propertyListingStart.view.php';
-} elseif ($page === 'propertyListingStep1') {
-    require_once '../app/core/Controller.php';
-    require_once '../app/controllers/Accomodation_provider.php';
-    $controller = new Accomodation_provider();
-    $controller->propertyListingStep1();
-} elseif ($page === 'propertyListingStep2') {
-    require_once '../app/core/Controller.php';
-    require_once '../app/controllers/Accomodation_provider.php';
-    $controller = new Accomodation_provider();
-    $controller->propertyListingStep2();
-} elseif ($page === 'saveProperty') {
-    require_once '../app/core/Controller.php';
-    require_once '../app/controllers/Accomodation_provider.php';
-    $controller = new Accomodation_provider();
-    $controller->saveProperty();
 } elseif ($page === 'accommodationFeatures') {
     include '../app/views/accommodation/accommodationFeatures.view.php';
 } elseif ($page === 'accommodationPhotos') {
@@ -1014,9 +891,21 @@ elseif ($page === 'ac_dashboard') {
 } elseif ($page === 'accommodationCalendar') {
     include '../app/views/accommodation/accommodationCalendar.view.php';
 } elseif ($page === 'propertyDetails') {
-    include '../app/views/accommodation/propertyDetails.view.php';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        require_once __DIR__ . '/../app/controllers/AccommodationController.php';
+        $controller = new AccommodationController();
+        $controller->index();
+    } else {
+        include '../app/views/accommodation/propertyDetails.view.php';
+    }
 } elseif ($page === 'bedRoom') {
-    include '../app/views/accommodation/bedRoom.view.php';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        require_once __DIR__ . '/../app/controllers/AccommodationController.php';
+        $controller = new AccommodationController();
+        $controller->saveBedRoom();
+    } else {
+        include '../app/views/accommodation/bedRoom.view.php';
+    }
 } elseif ($page === 'editBedrooms') {
     include '../app/views/accommodation/editBedrooms.view.php';
 } elseif ($page === 'viewProperty') {
@@ -1045,10 +934,7 @@ elseif ($page === 'ad_dashboard') {
 }elseif ($page === 'viewVehicle') {
     include '../app/views/admin/viewVehicle.view.php';
 }elseif ($page === 'Users') {
-    require_once '../app/core/Controller.php';
-    require_once '../app/controllers/Users.php';
-    $controller = new Users();
-    $controller->index();
+    include '../app/views/admin/Users.view.php';
 }elseif ($page === 'content') {
     include '../app/views/admin/content.view.php';
 }elseif ($page === 'notifications') {
@@ -1065,12 +951,6 @@ elseif ($page === 'ad_dashboard') {
     include '../app/views/admin/createDestination.view.php';
 } elseif ($page === 'editDestination') {
     include '../app/views/admin/editDestination.view.php';
-} elseif ($page === 'ViewActivities') {
-    include '../app/views/admin/ViewActivities.view.php';
-} elseif ($page === 'createActivity') {
-    include '../app/views/admin/createActivity.view.php';
-} elseif ($page === 'editActivity') {
-    include '../app/views/admin/editActivity.view.php';
 } elseif ($page === 'viewprovider') {
     include '../app/views/admin/viewprovider.view.php';
 } elseif ($page === 'viewtraveller') {

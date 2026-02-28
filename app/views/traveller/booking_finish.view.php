@@ -108,7 +108,7 @@ $id = $isLoggedIn ? $_SESSION['user']['id'] : '';
         </div>
     </div>
 
-    <script src="/TravelMate/public/assets/js/booking_finish.js?v=<?php echo time(); ?>"></script>
+    <script src="/TravelMate/public/assets/js/booking_finish.js"></script>
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 </body>
 

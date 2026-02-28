@@ -1,21 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vehicle Details - Audi A4</title>
-  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css?v=<?= time() ?>">
-  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/viewVehicle.css?v=<?= time() ?>">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/Admin/common.css">
+  <link rel="stylesheet" href="assets/css/Admin/viewVehicle.css">
 </head>
 <body>
 
-  <?php include __DIR__ . '/admin_header.view.php'; ?>
+  <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
   <div class="page-container">
 
     <div class="content">
-      <?php include __DIR__ . '/flash_messages.php'; ?>
       <div class="detail-container">
         <div class="detail-header">
           <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Audi A4">
