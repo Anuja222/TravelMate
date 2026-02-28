@@ -6,20 +6,6 @@
   <title>TravelMate - Transportation</title>
   <link rel="stylesheet" href="assets/css/Traveller/transport.css">
   <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
-  <style>
-    /* Fix grid layout for single items */
-    .transportation-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 30px;
-      margin-top: 40px;
-    }
-    
-    .transport-card {
-      width: 100%;
-      max-width: 100%;
-    }
-  </style>
 </head>
 <body>
   <!-- Header/Navbar -->

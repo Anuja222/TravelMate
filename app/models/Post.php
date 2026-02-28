@@ -11,7 +11,6 @@ class Post {
         'location',
         'category',
         'description',
-        'status',
         'image',
         'travel_date',
         'rating',
@@ -52,7 +51,6 @@ class Post {
                     u.email
                 FROM {$this->table} p
                 LEFT JOIN users u ON p.user_id = u.id
-                WHERE p.status = 'approved'
                 ORDER BY p.created_at DESC";
         
         return $this->query($query);

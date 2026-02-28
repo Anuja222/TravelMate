@@ -4,9 +4,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Include config for ROOT constant
-require_once __DIR__ . '/../../core/config.php';
-
 // Check if user is logged in
 $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
 $firstName = $isLoggedIn ? $_SESSION['user']['first_name'] : '';
@@ -17,32 +14,32 @@ $role = $isLoggedIn ? $_SESSION['user']['role'] : '';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="stylesheet" href="<?= ROOT ?>/assets/css/main.css">
-    <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Traveller/usermain.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
 </head>
 <header>
     <nav class="navbar">
         <div class="logo-container">
-            <img src="<?= ROOT ?>/assets/images/logo.jpg" class="logo" alt="TravelMate Logo">
+            <img src="assets/images/logo.jpg" class="logo" alt="TravelMate Logo">
             <h2>TravelMate</h2>
         </div>
         <ul class="nav-links">
             <?php if ($role !== 'admin'): ?>
                 <?php if (!$isLoggedIn): ?>
-                    <li><a href="<?= ROOT ?>/home">Home</a></li>
+                    <li><a href="home">Home</a></li>
                 <?php else: ?>
                     <?php if ($role === 'traveller'): ?>
-                        <li><a href="<?= ROOT ?>/homet">Home</a></li>
+                        <li><a href="homet">Home</a></li>
                     <?php elseif ($role === 'transport'): ?>
-                        <li><a href="<?= ROOT ?>/tr_dashboard">Home</a></li>
+                        <li><a href="tr_dashboard">Home</a></li>
                     <?php elseif ($role === 'accommodation'): ?>
-                        <li><a href="<?= ROOT ?>/ac_dashboard">Home</a></li>
+                        <li><a href="ac_dashboard">Home</a></li>
                     <?php endif; ?>
                 <?php endif; ?>
-                <li><a href="<?= ROOT ?>/about">About Us</a></li>
-                <li><a href="<?= ROOT ?>/contact">Contact Us</a></li>
+                <li><a href="about">About Us</a></li>
+                <li><a href="contact">Contact Us</a></li>
                 <?php if ($role === 'traveller'): ?>
-                    <li><a href="<?= ROOT ?>/feed">Vlog</a></li>
+                    <li><a href="feed">Vlog</a></li>
                 <?php endif; ?>
             <?php endif; ?>
         </ul>
@@ -50,8 +47,8 @@ $role = $isLoggedIn ? $_SESSION['user']['role'] : '';
         <?php if (!$isLoggedIn): ?>
             <!-- Show when user is NOT logged in -->
             <div class="nav-actions">
-                <a href="<?= ROOT ?>/signupmodel" class="btn signup">Sign Up</a>
-                <a href="<?= ROOT ?>/login" class="btn login">Login</a>
+                <a href="signupmodel" class="btn signup">Sign Up</a>
+                <a href="login" class="btn login">Login</a>
             </div>
         <?php else: ?>
             <!-- Show when user IS logged in -->
@@ -71,7 +68,7 @@ $role = $isLoggedIn ? $_SESSION['user']['role'] : '';
                 </div>
 
                 <div class="user-menu">
-                    <img src="<?= ROOT ?>/assets/images/profile.jpg" class="user-icon" alt="User Icon" id="userMenuBtn">
+                    <img src="assets/images/profile.jpg" class="user-icon" alt="User Icon" id="userMenuBtn">
                     <div class="user-dropdown" id="userDropdown">
                         <div class="user-info">
                             <strong><?php echo htmlspecialchars($firstName); ?>
@@ -80,16 +77,16 @@ $role = $isLoggedIn ? $_SESSION['user']['role'] : '';
                         </div>
                         <hr>
                         <?php if ($role === 'traveller'): ?>
-                            <a href="<?= ROOT ?>/dashboard">My Profile</a>
+                            <a href="dashboard">My Profile</a>
                         <?php elseif ($role === 'transport'): ?>
-                            <a href="<?= ROOT ?>/tr_dashboard">My Profile</a>
+                            <a href="tr_dashboard">My Profile</a>
                         <?php elseif ($role === 'admin'): ?>
-                            <a href="<?= ROOT ?>/ad_dashboard">My Profile</a>
+                            <a href="ad_dashboard">My Profile</a>
                         <?php elseif ($role === 'accommodation'): ?>
-                        <li><a href="<?= ROOT ?>/ac_dashboard">My Profile</a></li>
+                        <li><a href="ac_dashboard">My Profile</a></li>
                         <?php endif; ?>
                         <hr>
-                        <a href="<?= ROOT ?>/logout" class="logout-link">Logout</a>
+                        <a href="logout" class="logout-link">Logout</a>
                     </div>
                 </div>
             </div>

@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TravelMate - Admin Login</title>
-  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/adminLogin.css?v=<?= time() ?>">
-  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="assets/css/Admin/adminLogin.css">
+  <link rel="stylesheet" href="assets/css/Admin/common.css">
 </head>
 <body>
   <!-- Auth Section -->
