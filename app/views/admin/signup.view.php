@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>TravelMate - Sign Up</title>
-  <link rel="stylesheet" href="loginsignup.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/loginSignup.css?v=<?= time() ?>">
 </head>
 <body>
   <!-- Auth Section -->

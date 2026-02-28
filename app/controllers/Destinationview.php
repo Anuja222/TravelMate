@@ -29,7 +29,7 @@ class Destinationview extends Controller {
         
         // Fetch places related to this destination (if you have a places table)
         try {
-            $stmt = $pdo->prepare("SELECT * FROM places WHERE destination_id = ? ORDER BY name ASC");
+            $stmt = $pdo->prepare("SELECT * FROM destination_places WHERE destination_id = ? ORDER BY created_at DESC");
             $stmt->execute([$destinationId]);
             $places = $stmt->fetchAll(PDO::FETCH_OBJ);
         } catch (Exception $e) {

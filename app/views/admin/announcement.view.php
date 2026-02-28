@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Announcements - Admin Panel</title>
-  <link rel="stylesheet" href="assets/css/Admin/common.css">
-  <link rel="stylesheet" href="assets/css/Admin/announcement.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/announcement.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
+  <?php include __DIR__ . '/admin_header.view.php'; ?>
 
   <div class="page-container">
 
     <?php include 'sidebar.view.php'; ?>
 
     <div class="content">
+      <?php include __DIR__ . '/flash_messages.php'; ?>
       <!-- Page Header -->
       <div class="page-header">
         <h1>Announcements</h1>
@@ -25,98 +29,65 @@
       <!-- Statistics -->
       <div class="stats-row">
         <div class="stat-card">
-          <div class="stat-number">24</div>
+          <div class="stat-number"><?php echo $stats['total'] ?? 0; ?></div>
           <div class="stat-label">Total Announcements</div>
         </div>
         <div class="stat-card">
-          <div class="stat-number">18</div>
+          <div class="stat-number"><?php echo $stats['active'] ?? 0; ?></div>
           <div class="stat-label">Active Announcements</div>
         </div>
         <div class="stat-card">
-          <div class="stat-number">2,847</div>
-          <div class="stat-label">Total Recipients</div>
+          <div class="stat-number"><?php echo number_format($stats['total_views'] ?? 0); ?></div>
+          <div class="stat-label">Total Views</div>
         </div>
         <div class="stat-card">
-          <div class="stat-number">92%</div>
+          <div class="stat-number">-</div>
           <div class="stat-label">Read Rate</div>
         </div>
       </div>
 
       <!-- Announcements List -->
       <div class="announcements-grid">
-        <!-- Announcement 1 -->
-        <div class="announcement-card">
-          <div class="announcement-header">
-            <h3 class="announcement-title">System Maintenance - March 20</h3>
-            <div class="announcement-meta">
-              <span>📅 Mar 15, 2024</span>
-              <span>👁️ 2.1k views</span>
+        <?php if (isset($announcements) && is_array($announcements) && count($announcements) > 0): ?>
+          <?php foreach ($announcements as $announcement): ?>
+            <?php 
+              $audienceClass = 'audience-' . ($announcement->audience ?? 'all');
+              $audienceLabel = ucfirst($announcement->audience ?? 'All');
+            ?>
+            <div class="announcement-card" data-id="<?php echo $announcement->id; ?>">
+              <div class="announcement-header">
+                <h3 class="announcement-title"><?php echo htmlspecialchars($announcement->title); ?></h3>
+                <div class="announcement-meta">
+                  <span>📅 <?php echo date('M d, Y', strtotime($announcement->created_at)); ?></span>
+                  <span>👁️ <?php echo number_format($announcement->views ?? 0); ?> views</span>
+                </div>
+              </div>
+              <div class="announcement-audience">
+                <span class="audience-badge <?php echo $audienceClass; ?>"><?php echo $audienceLabel; ?> Users</span>
+                <span class="status-badge <?php echo $announcement->status ?? 'active'; ?>"><?php echo ucfirst($announcement->status ?? 'Active'); ?></span>
+              </div>
+              <div class="announcement-content">
+                <p><?php echo htmlspecialchars(substr($announcement->content, 0, 200)); ?>...</p>
+              </div>
+              <div class="announcement-actions">
+                <button class="btn-action btn-edit" onclick="editAnnouncement(<?php echo $announcement->id; ?>)">Edit</button>
+                <button class="btn-action btn-delete" onclick="deleteAnnouncement(<?php echo $announcement->id; ?>)">Delete</button>
+              </div>
             </div>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <!-- Empty State -->
+          <div class="empty-state">
+            <div class="empty-state-icon">📢</div>
+            <h3>No Announcements Yet</h3>
+            <p>Create your first announcement to keep users informed about important updates.</p>
+            <button class="btn-new-announcement" onclick="openNewAnnouncementModal()" style="margin-top: 20px;">
+              <span>📢</span> Create Announcement
+            </button>
           </div>
-          <div class="announcement-audience">
-            <span class="audience-badge audience-all">All Users</span>
-          </div>
-          <div class="announcement-content">
-            <p>We will be performing scheduled system maintenance on March 20, 2024 from 2:00 AM to 6:00 AM (UTC). During this time, the platform will be temporarily unavailable. We apologize for any inconvenience.</p>
-          </div>
-          <div class="announcement-actions">
-            <button class="btn-action btn-edit" onclick="editAnnouncement(1)">Edit</button>
-            <button class="btn-action btn-delete" onclick="deleteAnnouncement(1)">Delete</button>
-          </div>
-        </div>
-
-        <!-- Announcement 2 -->
-        <div class="announcement-card">
-          <div class="announcement-header">
-            <h3 class="announcement-title">New Feature: Advanced Booking Analytics</h3>
-            <div class="announcement-meta">
-              <span>📅 Mar 10, 2024</span>
-              <span>👁️ 1.8k views</span>
-            </div>
-          </div>
-          <div class="announcement-audience">
-            <span class="audience-badge audience-providers">Service Providers</span>
-          </div>
-          <div class="announcement-content">
-            <p>We're excited to introduce our new Advanced Booking Analytics dashboard! Service providers can now access detailed insights about booking patterns, customer preferences, and revenue trends.</p>
-          </div>
-          <div class="announcement-actions">
-            <button class="btn-action btn-edit" onclick="editAnnouncement(2)">Edit</button>
-            <button class="btn-action btn-delete" onclick="deleteAnnouncement(2)">Delete</button>
-          </div>
-        </div>
-
-        <!-- Announcement 3 -->
-        <div class="announcement-card">
-          <div class="announcement-header">
-            <h3 class="announcement-title">Summer Travel Deals & Promotions</h3>
-            <div class="announcement-meta">
-              <span>📅 Mar 5, 2024</span>
-              <span>👁️ 2.5k views</span>
-            </div>
-          </div>
-          <div class="announcement-audience">
-            <span class="audience-badge audience-travelers">Travelers</span>
-          </div>
-          <div class="announcement-content">
-            <p>Get ready for summer! We've partnered with top hotels and service providers to bring you exclusive summer deals. Book before April 15th to get up to 30% off on selected destinations.</p>
-          </div>
-          <div class="announcement-actions">
-            <button class="btn-action btn-edit" onclick="editAnnouncement(3)">Edit</button>
-            <button class="btn-action btn-delete" onclick="deleteAnnouncement(3)">Delete</button>
-          </div>
-        </div>
+        <?php endif; ?>
       </div>
 
-      <!-- Empty State (hidden by default) -->
-      <div class="empty-state" style="display: none;">
-        <div class="empty-state-icon">📢</div>
-        <h3>No Announcements Yet</h3>
-        <p>Create your first announcement to keep users informed about important updates.</p>
-        <button class="btn-new-announcement" onclick="openNewAnnouncementModal()" style="margin-top: 20px;">
-          <span>📢</span> Create Announcement
-        </button>
-      </div>
     </div>
   </div>
 
@@ -248,40 +219,45 @@
       const sendNotification = document.getElementById('sendNotification').checked;
       
       // Get selected audiences
-      const audiences = [];
-      if (document.getElementById('audienceAll').checked) audiences.push('all');
-      if (document.getElementById('audienceTravelers').checked) audiences.push('travelers');
-      if (document.getElementById('audienceProviders').checked) audiences.push('providers');
+      let audience = 'all';
+      if (document.getElementById('audienceTravelers').checked) audience = 'travelers';
+      if (document.getElementById('audienceProviders').checked) audience = 'providers';
       
       if (!title || !content) {
         alert('Please fill in all required fields.');
         return;
       }
       
-      if (audiences.length === 0) {
-        alert('Please select at least one target audience.');
-        return;
+      const url = isEditing ? '/api/admin/announcement/update' : '/api/admin/announcement/create';
+      const data = {
+        title: title,
+        content: content,
+        audience: audience
+      };
+      
+      if (isEditing) {
+        data.id = currentAnnouncementId;
       }
       
-      // In a real application, you would send this data to the server
-      console.log('Sending announcement:', {
-        title,
-        content,
-        audiences,
-        priority,
-        sendNotification,
-        isEditing,
-        id: currentAnnouncementId
+      fetch(url, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(result => {
+        if (result.success) {
+          alert(isEditing ? 'Announcement updated successfully!' : 'Announcement created successfully!');
+          closeModal();
+          location.reload();
+        } else {
+          alert('Error: ' + result.error);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to save announcement');
       });
-      
-      // Show success message
-      alert(isEditing ? 'Announcement updated successfully!' : 'Announcement sent successfully!');
-      
-      closeModal();
-      
-      // In a real application, you would refresh the announcements list
-      // For demo, we'll just log to console
-      console.log('Announcements list should be refreshed');
     }
 
     function deleteAnnouncement(id) {
@@ -291,14 +267,25 @@
 
     function confirmDelete() {
       if (currentAnnouncementId) {
-        // In a real application, you would send delete request to server
-        console.log('Deleting announcement:', currentAnnouncementId);
-        alert('Announcement deleted successfully!');
-        closeDeleteModal();
-        
-        // In a real application, you would remove the announcement from the list
-        // For demo, we'll just log to console
-        console.log('Announcement should be removed from the list');
+        fetch('/api/admin/announcement/delete', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({id: currentAnnouncementId})
+        })
+        .then(response => response.json())
+        .then(result => {
+          if (result.success) {
+            alert('Announcement deleted successfully!');
+            closeDeleteModal();
+            location.reload();
+          } else {
+            alert('Error: ' + result.error);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Failed to delete announcement');
+        });
       }
     }
 

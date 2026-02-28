@@ -10,8 +10,8 @@ function checkBookingData() {
     const bookingData = JSON.parse(window.localStorage.getItem('currentBooking'));
     
     if (!bookingData || bookingData.bookingStep < 2) {
-        alert('No booking found. Please start from the availability page.');
-        window.location.href = 'booking_availability';
+        alert('No booking found. Please start from the accommodation detail page.');
+        window.location.href = 'homet';
         return;
     }
 }
