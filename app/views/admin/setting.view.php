@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Site Config</title>
-  <link rel="stylesheet" href="assets/css/Admin/setting.css">
-  <link rel="stylesheet" href="assets/css/Admin/common.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/setting.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
+  <?php include __DIR__ . '/admin_header.view.php'; ?>
       
   <!-- Content Area -->
  <div class="page-container">
@@ -15,6 +18,7 @@
  <?php include 'sidebar.view.php'; ?>
 
   <div class="content">
+    <?php include __DIR__ . '/flash_messages.php'; ?>
     <div class="page-title">  
       <h1>Settings</h1>
     </div>

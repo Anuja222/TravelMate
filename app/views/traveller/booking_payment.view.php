@@ -88,7 +88,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
         </form>
     </div>
 
-    <script src="/TravelMate/public/assets/js/booking_payment.js"></script>
+    <script src="/TravelMate/public/assets/js/booking_payment.js?v=<?php echo time(); ?>"></script>
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 </body>
 </html>
