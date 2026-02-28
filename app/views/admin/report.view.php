@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard - System Reports</title>
-  <link rel="stylesheet" href="assets/css/Admin/common.css">
-  <link rel="stylesheet" href="assets/css/Admin/report.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/report.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
+  <?php include __DIR__ . '/admin_header.view.php'; ?>
 
   <div class="page-container">
 
     <?php include 'sidebar.view.php'; ?>
 
     <div class="content">
+      <?php include __DIR__ . '/flash_messages.php'; ?>
       <!-- Dashboard Header -->
       <div class="dashboard-header">
         <div class="dashboard-title">
@@ -141,7 +145,7 @@
               <tr>
                 <td>
                   <div style="display: flex; align-items: center; gap: 10px;">
-                    <img src="assets/images/profile.jpg" alt="User" class="user-avatar">
+                    <img src="<?= ROOT ?>/assets/images/profile.jpg" alt="User" class="user-avatar">
                     <span>Amal Kumarasinghe</span>
                   </div>
                 </td>
@@ -152,7 +156,7 @@
               <tr>
                 <td>
                   <div style="display: flex; align-items: center; gap: 10px;">
-                    <img src="assets/images/profile.jpg" alt="User" class="user-avatar">
+                    <img src="<?= ROOT ?>/assets/images/profile.jpg" alt="User" class="user-avatar">
                     <span>Sunil Perera</span>
                   </div>
                 </td>
@@ -163,7 +167,7 @@
               <tr>
                 <td>
                   <div style="display: flex; align-items: center; gap: 10px;">
-                    <img src="assets/images/profile.jpg" alt="User" class="user-avatar">
+                    <img src="<?= ROOT ?>/assets/images/profile.jpg" alt="User" class="user-avatar">
                     <span>Mala Fernando</span>
                   </div>
                 </td>
@@ -174,7 +178,7 @@
               <tr>
                 <td>
                   <div style="display: flex; align-items: center; gap: 10px;">
-                    <img src="assets/images/profile.jpg" alt="User" class="user-avatar">
+                    <img src="<?= ROOT ?>/assets/images/profile.jpg" alt="User" class="user-avatar">
                     <span>Ravi Jayasuriya</span>
                   </div>
                 </td>
@@ -230,37 +234,6 @@
               </tr>
             </tbody>
           </table>
-        </div>
-      </div>
-
-      <!-- Quick Actions -->
-      <div class="quick-actions">
-        <h3 style="margin: 0 0 20px 0; color: #222;">Quick Actions</h3>
-        <div class="actions-grid">
-          <div class="action-btn" onclick="window.location.href='Users'">
-            <div class="action-icon">👥</div>
-            <div class="action-label">Manage Users</div>
-          </div>
-          <div class="action-btn" onclick="window.location.href='content'">
-            <div class="action-icon">📝</div>
-            <div class="action-label">Content Moderation</div>
-          </div>
-          <div class="action-btn" onclick="window.location.href='ViewListing'">
-            <div class="action-icon">🏨</div>
-            <div class="action-label">View Listings</div>
-          </div>
-          <div class="action-btn" onclick="generateReport()">
-            <div class="action-icon">📊</div>
-            <div class="action-label">Generate Report</div>
-          </div>
-          <div class="action-btn" onclick="systemSettings()">
-            <div class="action-icon">⚙️</div>
-            <div class="action-label">System Settings</div>
-          </div>
-          <div class="action-btn" onclick="backupSystem()">
-            <div class="action-icon">💾</div>
-            <div class="action-label">Backup System</div>
-          </div>
         </div>
       </div>
     </div>

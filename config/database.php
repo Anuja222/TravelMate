@@ -1,11 +1,13 @@
 <?php
-$host = "127.0.0.1";      // or "localhost"
-$db   = "travelmate";     // your database name
-$user = "root";           // XAMPP default user
-$pass = "";               // XAMPP default password (empty)
+$host = "127.0.0.1";
+$db   = "travelmate";
+$user = "root";
+$pass = "";
 $charset = 'utf8mb4';
+$port = "3307";
 
-$dsn = "mysql:host=$host;port=3306;dbname=$db;charset=$charset"; // create database connection
+$dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
+
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
