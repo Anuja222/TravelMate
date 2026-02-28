@@ -6,7 +6,7 @@ if($_SERVER['SERVER_NAME'] == 'localhost'){
     define('DBUSER','root');
     define('DBPASS','');
     define('DBDRIVER', '');
-    define('ROOT','http://localhost:8080/TravelMate/public');
+    define('ROOT','http://localhost/TravelMate/public');
 }
 else{
     define('DBNAME', 'travelmate');

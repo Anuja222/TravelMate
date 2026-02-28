@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>TravelMate - <?php echo htmlspecialchars($destination?->title ?? 'Destination'); ?></title>
+  <title>TravelMate - <?php echo htmlspecialchars($destination->title ?? 'Destination'); ?></title>
   <link rel="stylesheet" href="assets/css/Traveller/beach.css">
   <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
 </head>
@@ -14,7 +14,7 @@
   <!-- Hero Section -->
   <section class="hero-section">
     <div class="hero-background" style="background-image: url('<?php 
-      $imagePath = is_object($destination) ? ($destination->image ?? 'assets/images/default-dest.png') : 'assets/images/default-dest.png';
+      $imagePath = $destination->image ?? 'assets/images/default-dest.png';
       if (substr($imagePath, 0, 1) === '/') {
         $imagePath = substr($imagePath, 1);
       }
@@ -22,8 +22,8 @@
     ?>');">
       <div class="hero-overlay">
         <div class="hero-content">
-          <h1>Discover <?php echo htmlspecialchars(is_object($destination) ? ($destination->title ?? 'Paradise') : 'Paradise'); ?></h1>
-          <p><?php echo htmlspecialchars(is_object($destination) ? ($destination->description ?? 'Explore the most beautiful destinations Sri Lanka has to offer') : 'Explore the most beautiful destinations Sri Lanka has to offer'); ?></p>
+          <h1>Discover <?php echo htmlspecialchars($destination->title ?? 'Paradise'); ?></h1>
+          <p><?php echo htmlspecialchars($destination->description ?? 'Explore the most beautiful destinations Sri Lanka has to offer'); ?></p>
         </div>
       </div>
     </div>
@@ -33,7 +33,7 @@
   <section class="beaches-section">
     <div class="container">
       <div class="section-header">
-        <h2>Popular Places in <?php echo htmlspecialchars(is_object($destination) ? ($destination->title ?? 'Sri Lanka') : 'Sri Lanka'); ?></h2>
+        <h2>Popular Places in <?php echo htmlspecialchars($destination->title ?? 'Sri Lanka'); ?></h2>
         <p>Discover amazing locations and experiences</p>
       </div>
 
@@ -48,13 +48,13 @@
                     $placeImage = substr($placeImage, 1);
                   }
                 ?>
-                <img src="<?php echo htmlspecialchars($placeImage); ?>" alt="<?php echo htmlspecialchars($place->title ?? ''); ?>">
+                <img src="<?php echo htmlspecialchars($placeImage); ?>" alt="<?php echo htmlspecialchars($place->name ?? ''); ?>">
                 <div class="card-overlay">
                   <button class="explore-btn" onclick="explorePlace(<?php echo $place->id; ?>)">Explore</button>
                 </div>
               </div>
               <div class="card-content">
-                <h3><?php echo htmlspecialchars($place->title ?? ''); ?></h3>
+                <h3><?php echo htmlspecialchars($place->name ?? ''); ?></h3>
                 <p><?php echo htmlspecialchars(substr($place->description ?? '', 0, 150)); ?><?php echo strlen($place->description ?? '') > 150 ? '...' : ''; ?></p>
               </div>
             </div>
@@ -79,7 +79,7 @@
     <div class="container">
       <div class="section-header">
         <h2>Traveler Stories</h2>
-        <p>See what other travelers have shared about <?php echo htmlspecialchars(is_object($destination) ? ($destination->title ?? 'this destination') : 'this destination'); ?></p>
+        <p>See what other travelers have shared about <?php echo htmlspecialchars($destination->title ?? 'this destination'); ?></p>
       </div>
 
       <div class="beaches-grid">

@@ -1,35 +1,15 @@
-<?php
-// Detect admin session
-if (session_status() === PHP_SESSION_NONE) { session_start(); }
-$_isAdmin = isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin';
-require_once __DIR__ . '/../core/config.php';
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>TravelMate - Contact Us</title>
-  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/contact.css">
-  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/main.css">
-  <?php if ($_isAdmin): ?>
-    <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <?php endif; ?>
+  <link rel="stylesheet" href="assets/css/contact.css">
+  <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
   <!-- Header/Navbar -->
-  <?php if ($_isAdmin): ?>
-    <?php include __DIR__ . '/admin/admin_header.view.php'; ?>
-  <?php else: ?>
-    <?php include __DIR__ . '/traveller/header.view.php'; ?>
-  <?php endif; ?>
-
-  <?php if ($_isAdmin): ?>
-  <div class="page-container">
-    <?php include __DIR__ . '/admin/sidebar.view.php'; ?>
-    <div class="content">
-  <?php endif; ?>
+  <?php include __DIR__ . '../Traveller/header.view.php'; ?>
 
   <!-- Hero Section -->
   <section class="hero">
@@ -165,10 +145,5 @@ require_once __DIR__ . '/../core/config.php';
   </footer>
 
   <script src="../public/assets/js/contact.js"></script>
-
-  <?php if ($_isAdmin): ?>
-    </div><!-- /.content -->
-  </div><!-- /.page-container -->
-  <?php endif; ?>
 </body>
 </html>

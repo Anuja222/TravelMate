@@ -1,7 +1,6 @@
 <?php
 namespace App\Controllers;
 
-require_once __DIR__ . '/../core/config.php';
 require_once __DIR__ . '/../models/Destination.php';
 require_once __DIR__ . '/../../config/database.php';
 
@@ -206,42 +205,5 @@ class DestinationController
 
         $ok = Destination::updatePlace($pdo, $id, $title, $slug, $description, $imagePath);
         $this->sendResponse((bool)$ok, $ok ? [] : ['error'=>'Update failed'], $ok ? ['id' => $id] : null);
-    }
-
-    /**
-     * View places for a destination category (public page)
-     */
-    public function viewCategoryPlaces()
-    {
-        global $pdo;
-        
-        $categoryId = $_GET['id'] ?? null;
-        
-        if (!$categoryId) {
-            header('Location: ' . ROOT . '/favdestination');
-            exit;
-        }
-
-        // Get category details
-        $category = Destination::findById($pdo, $categoryId);
-        
-        if (!$category) {
-            header('Location: ' . ROOT . '/favdestination');
-            exit;
-        }
-
-        // Convert to object for view compatibility
-        $categoryObj = (object) $category;
-
-        // Get all places in this category
-        $placesArray = Destination::listPlaces($pdo, $categoryId);
-        $places = array_map(function($p) { return (object) $p; }, $placesArray);
-
-        $data = [
-            'category' => $categoryObj,
-            'places' => $places
-        ];
-        
-        require_once __DIR__ . '/../views/traveller/destination_places.view.php';
     }
 }
