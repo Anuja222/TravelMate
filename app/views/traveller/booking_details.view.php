@@ -101,7 +101,7 @@ $maskedPhone = $phone ? substr($phone, 1) : '';
         </form>
     </div>
 
-    <script src="/TravelMate/public/assets/js/booking_details.js?v=<?php echo time(); ?>"></script>
+    <script src="/TravelMate/public/assets/js/booking_details.js"></script>
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 </body>
 </html>
