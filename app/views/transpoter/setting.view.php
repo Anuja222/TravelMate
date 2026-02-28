@@ -67,6 +67,10 @@
             <i class="fas fa-bell"></i>
             <span>Notifications</span>
           </button>
+          <button class="tab-btn" data-tab="account-status">
+            <i class="fas fa-toggle-on"></i>
+            <span>Account Status</span>
+          </button>
           <button class="tab-btn danger-tab" data-tab="delete">
             <i class="fas fa-exclamation-triangle"></i>
             <span>Delete Account</span>
@@ -205,7 +209,7 @@
             </section>
           </div>
 
-         <!-- Notifications Tab -->
+          <!-- Notifications Tab -->
           <div class="tab-pane" id="notifications-tab">
             <section class="settings-section">
               <div class="section-header">
@@ -325,6 +329,175 @@
             </section>
           </div>
 
+          <!-- Account Status Tab -->
+          <div class="tab-pane" id="account-status-tab">
+            <section class="settings-section">
+              <div class="section-header">
+                <i class="fas fa-toggle-on" style="color: var(--primary);"></i>
+                <h2>Account Status</h2>
+              </div>
+              
+              <div class="status-container">
+                <!-- Current Status Card -->
+                <div class="status-gradient-card">
+                  <div class="status-flex">
+                    <div class="status-user-info">
+                      <div class="status-icon-circle">
+                        <i class="fas fa-user-circle"></i>
+                      </div>
+                      <div>
+                        <h3 class="status-title">Current Account Status</h3>
+                        <div class="status-badges-container">
+                          <span id="currentStatusBadge" class="status-badge-active">
+                            <i class="fas fa-check-circle"></i> Active
+                          </span>
+                          <span id="vehicleVisibilityBadge" class="visibility-badge-active">
+                            <i class="fas fa-eye"></i> Vehicles visible to travellers
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="status-toggle-wrapper">
+                      <div class="status-toggle-label">
+                        <span>Account Status</span>
+                        <span id="statusText" class="status-toggle-value">Active</span>
+                      </div>
+                      <label class="toggle-switch status-toggle-switch-lg">
+                        <input type="checkbox" id="accountStatusToggle" checked>
+                        <span class="toggle-slider"></span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Guidelines & Information -->
+                <div class="info-grid">
+                  <!-- Active Mode Card -->
+                  <div class="info-card-active">
+                    <div class="info-header">
+                      <div class="info-icon-active">
+                        <i class="fas fa-check-circle"></i>
+                      </div>
+                      <h4 class="info-title">Active Mode</h4>
+                    </div>
+                    <ul class="info-list">
+                      <li class="info-list-item">
+                        <i class="fas fa-car active-icon"></i>
+                        <span>All vehicles visible in search results</span>
+                      </li>
+                      <li class="info-list-item">
+                        <i class="fas fa-calendar-check active-icon"></i>
+                        <span>Receive new booking requests</span>
+                      </li>
+                      <li class="info-list-item">
+                        <i class="fas fa-bell active-icon"></i>
+                        <span>Full notification access</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <!-- Deactivated Mode Card -->
+                  <div class="info-card-inactive">
+                    <div class="info-header">
+                      <div class="info-icon-inactive">
+                        <i class="fas fa-pause-circle"></i>
+                      </div>
+                      <h4 class="info-title">Deactivated Mode</h4>
+                    </div>
+                    <ul class="info-list">
+                      <li class="info-list-item">
+                        <i class="fas fa-eye-slash inactive-icon"></i>
+                        <span>Vehicles hidden from travellers</span>
+                      </li>
+                      <li class="info-list-item">
+                        <i class="fas fa-clock inactive-icon"></i>
+                        <span>No new booking requests</span>
+                      </li>
+                      <li class="info-list-item">
+                        <i class="fas fa-save inactive-icon"></i>
+                        <span>All data & vehicles preserved</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Important Notes -->
+                <div class="notes-warning">
+                  <div class="notes-heading">
+                    <i class="fas fa-info-circle"></i>
+                    <h4>Important Information</h4>
+                  </div>
+                  <ul class="notes-list">
+                    <li>When deactivated, your vehicles will not appear in any traveller searches or listings</li>
+                    <li>Existing bookings will still be honored and you can communicate with travellers who have active bookings</li>
+                    <li>You can reactivate your account at any time - all your vehicles and settings will be restored</li>
+                    <li>Deactivation is temporary - use "Delete Account" if you wish to permanently remove your account</li>
+                  </ul>
+                </div>
+
+                <!-- Deactivation Confirmation Box -->
+                <div id="deactivationConfirmBox" class="deactivation-box">
+                  <div class="deactivation-heading">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h4>Confirm Account Deactivation</h4>
+                  </div>
+                  <p class="deactivation-message">Please confirm that you want to deactivate your account. This will hide all your vehicles from travellers.</p>
+                  
+                  <div class="form-group">
+                    <label for="deactivationReason">Reason for deactivation (optional):</label>
+                    <select id="deactivationReason" class="deactivation-select">
+                      <option value="">Select a reason</option>
+                      <option value="temporary_break">Taking a temporary break</option>
+                      <option value="maintenance">Vehicle maintenance/updates</option>
+                      <option value="holiday">Going on holiday</option>
+                      <option value="business_pause">Business paused</option>
+                      <option value="other">Other reason</option>
+                    </select>
+                  </div>
+                  
+                  <div id="otherReasonGroup" style="display: none;">
+                    <label for="otherReason">Please specify:</label>
+                    <textarea id="otherReason" rows="2" class="deactivation-textarea" placeholder="Tell us more..."></textarea>
+                  </div>
+                  
+                  <div class="deactivation-checkbox">
+                    <label>
+                      <input type="checkbox" id="confirmDeactivationCheckbox">
+                      <span>I understand that my vehicles will be hidden from travellers until I reactivate my account</span>
+                    </label>
+                  </div>
+                  
+                  <div class="deactivation-actions">
+                    <button class="delete-btn" id="confirmDeactivationBtn" disabled>
+                      <i class="fas fa-pause-circle"></i> Confirm Deactivation
+                    </button>
+                    <button class="cancel-btn" id="cancelDeactivationBtn">
+                      <i class="fas fa-times"></i> Cancel
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Reactivation Confirmation Box -->
+                <div id="reactivationConfirmBox" class="reactivation-box">
+                  <div class="reactivation-heading">
+                    <i class="fas fa-check-circle"></i>
+                    <h4>Reactivate Account</h4>
+                  </div>
+                  <p class="reactivation-message">Your account is currently deactivated. Reactivate to make your vehicles visible to travellers again.</p>
+                  
+                  <div class="reactivation-actions">
+                    <button class="save-btn" id="confirmReactivationBtn">
+                      <i class="fas fa-play-circle"></i> Reactivate Account
+                    </button>
+                    <button class="cancel-btn" id="cancelReactivationBtn">
+                      <i class="fas fa-times"></i> Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
           <!-- Delete Account Tab -->
           <div class="tab-pane" id="delete-tab">
             <section class="settings-section delete-account-section">
@@ -392,472 +565,6 @@
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-  <script>
-  // DOM Elements
-  const profileForm = document.getElementById('profileForm');
-  const securityForm = document.getElementById('securityForm');
-  const notificationForm = document.getElementById('notificationForm');
-  const deleteAccountForm = document.getElementById('deleteAccountForm');
-  const toast = document.getElementById('toast');
-  const deleteAccountModal = document.getElementById('deleteAccountModal');
-  const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-  const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-  const deleteAccountBtn = document.getElementById('deleteAccountBtn');
-  const profilePhoto = document.getElementById('profilePhoto');
-  const photoPreview = document.getElementById('photoPreview');
-  const removePhotoBtn = document.getElementById('removePhoto');
-  const newPasswordInput = document.getElementById('new_password');
-  const passwordStrength = document.getElementById('passwordStrength');
-  const passwordStrengthText = document.getElementById('passwordStrengthText');
-  const reasonRadios = document.querySelectorAll('input[name="delete_reason"]');
-  const feedbackGroup = document.getElementById('feedbackGroup');
-
-  // Tab functionality
-  const tabBtns = document.querySelectorAll('.tab-btn');
-  const tabPanes = document.querySelectorAll('.tab-pane');
-
-  tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      // Remove active class from all tabs and panes
-      tabBtns.forEach(b => b.classList.remove('active'));
-      tabPanes.forEach(p => p.classList.remove('active'));
-
-      // Add active class to clicked tab
-      btn.classList.add('active');
-
-      // Show corresponding pane
-      const tabId = btn.getAttribute('data-tab');
-      document.getElementById(`${tabId}-tab`).classList.add('active');
-    });
-  });
-
-  // Event Listeners
-  document.addEventListener('DOMContentLoaded', initApp);
-  profileForm.addEventListener('submit', handleProfileSubmit);
-  securityForm.addEventListener('submit', handleSecuritySubmit);
-  notificationForm.addEventListener('submit', handleNotificationSubmit);
-  deleteAccountBtn.addEventListener('click', showDeleteModal);
-  confirmDeleteBtn.addEventListener('click', handleAccountDeletion);
-  cancelDeleteBtn.addEventListener('click', hideDeleteModal);
-  profilePhoto.addEventListener('change', handleProfilePhotoUpload);
-  removePhotoBtn.addEventListener('click', removeProfilePhoto);
-  newPasswordInput.addEventListener('input', checkPasswordStrength);
-  reasonRadios.forEach(radio => radio.addEventListener('change', toggleFeedbackField));
-
-  // Initialize the application
-  function initApp() {
-    loadSavedSettings();
-    
-    window.addEventListener('click', (e) => {
-      if (e.target === deleteAccountModal) {
-        hideDeleteModal();
-      }
-    });
-  }
-
-  // Load saved settings from localStorage
-  function loadSavedSettings() {
-    const savedProfile = JSON.parse(localStorage.getItem('profileSettings')) || {};
-    if (savedProfile.firstName) document.getElementById('firstName').value = savedProfile.firstName;
-    if (savedProfile.lastName) document.getElementById('lastName').value = savedProfile.lastName;
-    if (savedProfile.email) document.getElementById('email').value = savedProfile.email;
-    if (savedProfile.phone) document.getElementById('phone').value = savedProfile.phone;
-    if (savedProfile.dateOfBirth) document.getElementById('dateOfBirth').value = savedProfile.dateOfBirth;
-    if (savedProfile.gender) document.getElementById('gender').value = savedProfile.gender;
-    
-    const savedNotifications = JSON.parse(localStorage.getItem('notificationSettings')) || {};
-    Object.keys(savedNotifications).forEach(key => {
-      const checkbox = document.querySelector(`[name="${key}"]`);
-      if (checkbox) checkbox.checked = savedNotifications[key];
-    });
-    
-    const savedPhoto = localStorage.getItem('profilePhoto');
-    if (savedPhoto) {
-      photoPreview.innerHTML = `<img src="${savedPhoto}" alt="Profile Photo">`;
-      removePhotoBtn.style.display = 'block';
-    }
-  }
-
-  // Handle profile form submission
-  function handleProfileSubmit(e) {
-    e.preventDefault();
-    
-    if (validateProfileForm()) {
-      const submitBtn = document.getElementById('profileSaveBtn');
-      const spinner = document.getElementById('profileSpinner');
-      
-      submitBtn.disabled = true;
-      spinner.style.display = 'inline-block';
-      
-      setTimeout(() => {
-        const formData = {
-          firstName: document.getElementById('firstName').value,
-          lastName: document.getElementById('lastName').value,
-          email: document.getElementById('email').value,
-          phone: document.getElementById('phone').value,
-          dateOfBirth: document.getElementById('dateOfBirth').value,
-          gender: document.getElementById('gender').value
-        };
-        
-        localStorage.setItem('profileSettings', JSON.stringify(formData));
-        
-        submitBtn.disabled = false;
-        spinner.style.display = 'none';
-        
-        showToast('Profile updated successfully!', 'success');
-      }, 1500);
-    }
-  }
-
-  // Validate profile form
-  function validateProfileForm() {
-    let isValid = true;
-    
-    resetErrors('profileForm');
-    
-    const firstName = document.getElementById('firstName').value.trim();
-    if (!firstName) {
-      showError('firstNameGroup', 'First name is required');
-      isValid = false;
-    }
-    
-    const lastName = document.getElementById('lastName').value.trim();
-    if (!lastName) {
-      showError('lastNameGroup', 'Last name is required');
-      isValid = false;
-    }
-    
-    const email = document.getElementById('email').value.trim();
-    if (!email) {
-      showError('emailGroup', 'Email is required');
-      isValid = false;
-    } else if (!isValidEmail(email)) {
-      showError('emailGroup', 'Please enter a valid email address');
-      isValid = false;
-    }
-    
-    const phone = document.getElementById('phone').value.trim();
-    if (!phone) {
-      showError('phoneGroup', 'Phone number is required');
-      isValid = false;
-    } else if (!isValidPhone(phone)) {
-      showError('phoneGroup', 'Please enter a valid phone number');
-      isValid = false;
-    }
-    
-    const dob = document.getElementById('dateOfBirth').value;
-    if (!dob) {
-      showError('dobGroup', 'Date of birth is required');
-      isValid = false;
-    } else {
-      const birthDate = new Date(dob);
-      const today = new Date();
-      const age = today.getFullYear() - birthDate.getFullYear();
-      
-      if (age < 13) {
-        showError('dobGroup', 'You must be at least 13 years old');
-        isValid = false;
-      }
-    }
-    
-    const gender = document.getElementById('gender').value;
-    if (!gender) {
-      showError('genderGroup', 'Please select your gender');
-      isValid = false;
-    }
-    
-    return isValid;
-  }
-
-  // Handle security form submission
-  function handleSecuritySubmit(e) {
-    e.preventDefault();
-    
-    if (validateSecurityForm()) {
-      const submitBtn = document.getElementById('securitySaveBtn');
-      const spinner = document.getElementById('securitySpinner');
-      
-      submitBtn.disabled = true;
-      spinner.style.display = 'inline-block';
-      
-      setTimeout(() => {
-        submitBtn.disabled = false;
-        spinner.style.display = 'none';
-        
-        showToast('Password updated successfully!', 'success');
-        
-        securityForm.reset();
-        passwordStrength.className = 'password-strength';
-        passwordStrengthText.textContent = '';
-      }, 1500);
-    }
-  }
-
-  // Validate security form
-  function validateSecurityForm() {
-    let isValid = true;
-    
-    resetErrors('securityForm');
-    
-    const currentPassword = document.getElementById('current_password').value;
-    if (!currentPassword) {
-      showError('currentPasswordGroup', 'Current password is required');
-      isValid = false;
-    }
-    
-    const newPassword = document.getElementById('new_password').value;
-    if (!newPassword) {
-      showError('newPasswordGroup', 'New password is required');
-      isValid = false;
-    } else if (newPassword.length < 8) {
-      showError('newPasswordGroup', 'Password must be at least 8 characters');
-      isValid = false;
-    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(newPassword)) {
-      showError('newPasswordGroup', 'Password must contain uppercase, lowercase, and numbers');
-      isValid = false;
-    }
-    
-    const confirmPassword = document.getElementById('confirm_password').value;
-    if (!confirmPassword) {
-      showError('confirmPasswordGroup', 'Please confirm your password');
-      isValid = false;
-    } else if (newPassword !== confirmPassword) {
-      showError('confirmPasswordGroup', 'Passwords do not match');
-      isValid = false;
-    }
-    
-    return isValid;
-  }
-
-  // Handle notification form submission
-  function handleNotificationSubmit(e) {
-    e.preventDefault();
-    
-    const submitBtn = document.getElementById('notificationSaveBtn');
-    const spinner = document.getElementById('notificationSpinner');
-    
-    submitBtn.disabled = true;
-    spinner.style.display = 'inline-block';
-    
-    const notificationSettings = {};
-    const checkboxes = notificationForm.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach(checkbox => {
-      notificationSettings[checkbox.name] = checkbox.checked;
-    });
-    
-    setTimeout(() => {
-      localStorage.setItem('notificationSettings', JSON.stringify(notificationSettings));
-      
-      submitBtn.disabled = false;
-      spinner.style.display = 'none';
-      
-      showToast('Notification preferences saved!', 'success');
-    }, 1000);
-  }
-
-  // Show delete account confirmation modal
-  function showDeleteModal() {
-    if (validateDeleteForm()) {
-      deleteAccountModal.style.display = 'flex';
-    }
-  }
-
-  // Hide delete account confirmation modal
-  function hideDeleteModal() {
-    deleteAccountModal.style.display = 'none';
-  }
-
-  // Handle account deletion
-  function handleAccountDeletion() {
-    confirmDeleteBtn.innerHTML = '<span class="spinner"></span> Deleting account...';
-    confirmDeleteBtn.disabled = true;
-    
-    setTimeout(() => {
-      localStorage.removeItem('profileSettings');
-      localStorage.removeItem('notificationSettings');
-      localStorage.removeItem('profilePhoto');
-      
-      showToast('Your account has been deleted successfully', 'success');
-      
-      setTimeout(() => {
-        window.location.href = 'index.php';
-      }, 2000);
-    }, 2000);
-  }
-
-  // Validate delete account form
-  function validateDeleteForm() {
-    let isValid = true;
-    
-    resetErrors('deleteAccountForm');
-    
-    const selectedReason = document.querySelector('input[name="delete_reason"]:checked');
-    if (!selectedReason) {
-      showError('feedbackGroup', 'Please select a reason for deleting your account');
-      isValid = false;
-    }
-    
-    if (selectedReason && selectedReason.value === 'other') {
-      const feedback = document.getElementById('feedback').value.trim();
-      if (!feedback) {
-        showError('feedbackGroup', 'Please provide feedback');
-        isValid = false;
-      }
-    }
-    
-    const confirmText = document.getElementById('confirmDelete').value;
-    if (confirmText !== 'DELETE') {
-      showError('confirmDeleteGroup', 'Please type DELETE to confirm');
-      isValid = false;
-    }
-    
-    return isValid;
-  }
-
-  // Handle profile photo upload
-  function handleProfilePhotoUpload(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    
-    if (!file.type.match('image.*')) {
-      showError('photoPreview', 'Please select an image file');
-      return;
-    }
-    
-    if (file.size > 5 * 1024 * 1024) {
-      showError('photoPreview', 'File size must be less than 5MB');
-      return;
-    }
-    
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      photoPreview.innerHTML = `<img src="${e.target.result}" alt="Profile Photo">`;
-      removePhotoBtn.style.display = 'block';
-      
-      localStorage.setItem('profilePhoto', e.target.result);
-      
-      showToast('Profile photo updated successfully!', 'success');
-    };
-    reader.readAsDataURL(file);
-  }
-
-  // Remove profile photo
-  function removeProfilePhoto() {
-    photoPreview.innerHTML = `
-      <svg class="default-avatar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-        <circle cx="12" cy="7" r="4"></circle>
-      </svg>
-    `;
-    removePhotoBtn.style.display = 'none';
-    
-    localStorage.removeItem('profilePhoto');
-    
-    showToast('Profile photo removed', 'success');
-  }
-
-  // Check password strength
-  function checkPasswordStrength() {
-    const password = newPasswordInput.value;
-    const strengthBar = passwordStrength;
-    const strengthText = passwordStrengthText;
-    
-    if (!password) {
-      strengthBar.className = 'password-strength';
-      strengthText.textContent = '';
-      return;
-    }
-    
-    let strength = 0;
-    
-    if (password.length >= 8) strength += 1;
-    if (/[a-z]/.test(password)) strength += 1;
-    if (/[A-Z]/.test(password)) strength += 1;
-    if (/\d/.test(password)) strength += 1;
-    if (/[^A-Za-z0-9]/.test(password)) strength += 1;
-    
-    if (strength <= 2) {
-      strengthBar.className = 'password-strength strength-weak';
-      strengthText.textContent = 'Weak password';
-      strengthText.style.color = '#ff4d4f';
-    } else if (strength <= 4) {
-      strengthBar.className = 'password-strength strength-medium';
-      strengthText.textContent = 'Medium strength';
-      strengthText.style.color = '#faad14';
-    } else {
-      strengthBar.className = 'password-strength strength-strong';
-      strengthText.textContent = 'Strong password';
-      strengthText.style.color = '#52c41a';
-    }
-  }
-
-  // Toggle feedback field based on selected reason
-  function toggleFeedbackField() {
-    const selectedReason = document.querySelector('input[name="delete_reason"]:checked');
-    if (selectedReason && selectedReason.value === 'other') {
-      feedbackGroup.style.display = 'block';
-    } else {
-      feedbackGroup.style.display = 'none';
-    }
-  }
-
-  // Show error message
-  function showError(elementId, message) {
-    const element = document.getElementById(elementId);
-    const errorElement = element.querySelector('.error-message') || document.getElementById(elementId + 'Error');
-    
-    element.classList.add('error');
-    if (errorElement) {
-      errorElement.textContent = message;
-      errorElement.style.display = 'block';
-    }
-  }
-
-  // Reset all errors in a form
-  function resetErrors(formId) {
-    const form = document.getElementById(formId);
-    const errorElements = form.querySelectorAll('.error-message');
-    const errorGroups = form.querySelectorAll('.form-group.error');
-    
-    errorElements.forEach(el => {
-      el.textContent = '';
-      el.style.display = 'none';
-    });
-    
-    errorGroups.forEach(group => {
-      group.classList.remove('error');
-    });
-  }
-
-  // Show toast notification
-  function showToast(message, type = 'success') {
-    toast.textContent = message;
-    toast.className = 'toast';
-    
-    if (type === 'error') {
-      toast.classList.add('error');
-      toast.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
-    } else {
-      toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
-    }
-    
-    toast.classList.add('show');
-    
-    setTimeout(() => {
-      toast.classList.remove('show');
-    }, 3000);
-  }
-
-  // Utility functions
-  function isValidEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  }
-
-  function isValidPhone(phone) {
-    const re = /^[\+]?[1-9][\d]{0,15}$/;
-    return re.test(phone.replace(/[\s\-\(\)]/g, ''));
-  }
-  </script>
+  <script src="assets/js/Transporter/settings.js"></script>
 </body>
 </html>
