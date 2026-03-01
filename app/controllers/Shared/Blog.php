@@ -27,10 +27,10 @@ class Blog extends Controller{
             }
             
             // Load config and dependencies
-            require_once __DIR__ . '/../core/config.php';
-            require_once __DIR__ . '/../core/Model.php';
-            require_once __DIR__ . '/../core/Database.php';
-            require_once __DIR__ . '/../models/Post.php';
+            require_once __DIR__ . '/../../core/config.php';
+            require_once __DIR__ . '/../../core/Model.php';
+            require_once __DIR__ . '/../../core/Database.php';
+            require_once __DIR__ . '/../../models/Post.php';
             
             $post = new Post();
             
@@ -38,7 +38,7 @@ class Blog extends Controller{
             $imagePath = '';
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
                 // Use absolute path from public directory
-                $uploadDir = __DIR__ . '/../../public/uploads/posts/';
+                $uploadDir = __DIR__ . '/../../../public/uploads/posts/';
                 if (!file_exists($uploadDir)) {
                     mkdir($uploadDir, 0777, true);
                 }

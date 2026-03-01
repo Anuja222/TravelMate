@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__ . '/../models/Accommodation.php';
-require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../models/Accommodation.php';
+require_once __DIR__ . '/../../../config/database.php';
 
 use App\Models\Accommodation;
 
@@ -20,7 +20,7 @@ class Accomodation_provider extends Controller {
             exit;
         }
         
-        $this->uploadDir = __DIR__ . '/../../public/uploads/accommodations';
+        $this->uploadDir = __DIR__ . '/../../../public/uploads/accommodations';
         if (!is_dir($this->uploadDir)) {
             mkdir($this->uploadDir, 0777, true);
         }

@@ -1,8 +1,8 @@
 <?php
 namespace App\Controllers;
 
-require_once __DIR__ . '/../models/Accommodation.php';
-require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../models/Accommodation.php';
+require_once __DIR__ . '/../../../config/database.php';
 
 use App\Models\Accommodation;
 
@@ -13,7 +13,7 @@ class AccommodationController {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        $this->uploadDir = __DIR__ . '/../../public/uploads/accommodations';
+        $this->uploadDir = __DIR__ . '/../../../public/uploads/accommodations';
         if (!is_dir($this->uploadDir)) {
             mkdir($this->uploadDir, 0777, true);
         }
@@ -299,7 +299,7 @@ class AccommodationController {
                         $row = $stmtImg->fetch(\PDO::FETCH_ASSOC);
                         if ($row) {
                             // remove file if exists
-                            $fileOnDisk = __DIR__ . '/../../public/' . $row['image_path'];
+                            $fileOnDisk = __DIR__ . '/../../../public/' . $row['image_path'];
                             if (file_exists($fileOnDisk)) {
                                 @unlink($fileOnDisk);
                             }

@@ -1,7 +1,7 @@
 <?php
 namespace App\Controllers;
 
-require_once __DIR__ . '/../models/Preference.php';
+require_once __DIR__ . '/../../models/Preference.php';
 use App\Models\Preference as PreferenceModel;
 
 class PreferenceController {

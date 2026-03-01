@@ -4,10 +4,10 @@ class Feed extends Controller{
 
     public function index($a = '', $b = '' , $c = ''){
         // Load config and dependencies
-        require_once __DIR__ . '/../core/config.php';
-        require_once __DIR__ . '/../core/Model.php';
-        require_once __DIR__ . '/../core/Database.php';
-        require_once __DIR__ . '/../models/Post.php';
+        require_once __DIR__ . '/../../core/config.php';
+        require_once __DIR__ . '/../../core/Model.php';
+        require_once __DIR__ . '/../../core/Database.php';
+        require_once __DIR__ . '/../../models/Post.php';
         
         global $pdo;
         

@@ -2,9 +2,9 @@
 namespace App\Controllers;
 
 // Manually include dependencies
-require_once __DIR__ . '/../models/User.php';
-require_once __DIR__ . '/../Validation/Validator.php';
-require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../models/User.php';
+require_once __DIR__ . '/../../Validation/Validator.php';
+require_once __DIR__ . '/../../../config/database.php';
 
 use App\Models\User;
 use App\Validation\Validator;
@@ -156,7 +156,7 @@ class AuthController
 
     public function showSignup()
     {
-        include __DIR__ . '/../views/traveller/signup.view.php';
+        include __DIR__ . '/../../views/traveller/signup.view.php';
     }
 
     public function showLogin()
@@ -166,7 +166,7 @@ class AuthController
             header('Location: homet');
             exit;
         }
-        include __DIR__ . '/../views/traveller/login.view.php';
+        include __DIR__ . '/../../views/traveller/login.view.php';
     }
 
     private function sendResponse($success, $errors = [], $user = null)
