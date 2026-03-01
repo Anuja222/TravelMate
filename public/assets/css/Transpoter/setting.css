@@ -1454,3 +1454,102 @@ input:checked + .toggle-slider:before {
     align-items: center;
   }
 }
+
+/* Guidelines Styles */
+.guidelines-container {
+    margin: 20px 0;
+}
+
+.guidelines-box {
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.guidelines-box.warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+}
+
+.guidelines-box.info {
+    background-color: #d1ecf1;
+    border: 1px solid #bee5eb;
+    color: #0c5460;
+}
+
+.guidelines-box h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.guidelines-box h4 i {
+    font-size: 1.2rem;
+}
+
+.guidelines-content {
+    margin-left: 10px;
+}
+
+.guidelines-content ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.guidelines-content li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.guidelines-content li i {
+    margin-right: 8px;
+    color: #28a745;
+}
+
+.guidelines-box.warning .guidelines-content li i {
+    color: #856404;
+}
+
+.guidelines-box .note {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px dashed rgba(0,0,0,0.1);
+    font-style: italic;
+}
+
+.deactivation-info {
+    background: rgba(255,255,255,0.1);
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.deactivation-info p {
+    margin: 5px 0;
+}
+
+.status-badge-deactivated {
+    background: rgba(231, 76, 60, 0.2);
+    color: #c0392b;
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.visibility-badge-deactivated {
+    background: rgba(231, 76, 60, 0.1);
+    color: #c0392b;
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
