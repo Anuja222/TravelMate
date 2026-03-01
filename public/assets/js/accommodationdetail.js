@@ -112,6 +112,7 @@ async function loadAccommodationData(accommodationId) {
         populateAccommodationDetails();
         populateThumbnails();
         updateMainImage();
+        loadRoomAvailability();
         
         console.log('Page populated successfully');
         
@@ -219,6 +220,80 @@ function populateAccommodationDetails() {
 function formatPropertyType(type) {
     if (!type) return 'Property';
     return type.charAt(0).toUpperCase() + type.slice(1).replace(/_/g, ' ');
+}
+
+// Load room availability data
+async function loadRoomAvailability() {
+    if (!accommodationData || !accommodationData.id) {
+        console.error('No accommodation data available for room availability');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${getBaseUrl()}/api/accommodation/roomAvailability?id=${accommodationData.id}`);
+        const result = await response.json();
+
+        if (result.success && result.data) {
+            // Update room counts
+            document.getElementById('totalRooms').textContent = result.data.total_rooms;
+            document.getElementById('availableRooms').textContent = result.data.available_rooms;
+            document.getElementById('unavailableRooms').textContent = result.data.unavailable_rooms;
+
+            // Update availability message
+            const messageDiv = document.getElementById('availabilityMessage');
+            const availableRooms = result.data.available_rooms;
+            
+            if (availableRooms === 0) {
+                messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> No rooms available';
+                messageDiv.className = 'availability-message error';
+                messageDiv.style.display = 'flex';
+            } else if (availableRooms <= 2) {
+                messageDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Only ${availableRooms} room${availableRooms > 1 ? 's' : ''} left!`;
+                messageDiv.className = 'availability-message warning';
+                messageDiv.style.display = 'flex';
+            } else {
+                messageDiv.innerHTML = '<i class="fas fa-check-circle"></i> Rooms available';
+                messageDiv.className = 'availability-message success';
+                messageDiv.style.display = 'flex';
+            }
+
+            // Populate number of rooms dropdown based on available rooms
+            updateNumberOfRoomsDropdown(availableRooms);
+
+            console.log('Room availability loaded:', result.data);
+        } else {
+            console.error('Failed to load room availability:', result.message);
+        }
+    } catch (error) {
+        console.error('Error loading room availability:', error);
+    }
+}
+
+// Update number of rooms dropdown based on available rooms
+function updateNumberOfRoomsDropdown(availableRooms) {
+    const selectElement = document.getElementById('numberOfRooms');
+    if (!selectElement) return;
+
+    // Clear existing options
+    selectElement.innerHTML = '';
+
+    // Add options based on available rooms
+    if (availableRooms === 0) {
+        const option = document.createElement('option');
+        option.value = '0';
+        option.textContent = 'No rooms available';
+        option.disabled = true;
+        selectElement.appendChild(option);
+    } else {
+        for (let i = 1; i <= availableRooms; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = `${i} Room${i > 1 ? 's' : ''}`;
+            selectElement.appendChild(option);
+        }
+    }
+
+    console.log(`Updated room dropdown with ${availableRooms} available rooms`);
 }
 
 // Update guests dropdown based on max capacity
