@@ -1,9 +1,9 @@
 <?php
 namespace App\Controllers;
 
-require_once __DIR__ . '/../models/Booking.php';
-require_once __DIR__ . '/../Validation/Validator.php';
-require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../models/Booking.php';
+require_once __DIR__ . '/../../Validation/Validator.php';
+require_once __DIR__ . '/../../../config/database.php';
 
 use App\Models\Booking;
 use App\Validation\Validator;

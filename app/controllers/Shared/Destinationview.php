@@ -4,7 +4,7 @@ class Destinationview extends Controller {
 
     public function index($a = '', $b = '', $c = '') {
         // Load config to get database connection
-        require_once __DIR__ . '/../core/config.php';
+        require_once __DIR__ . '/../../core/config.php';
         global $pdo;
         
         // Get destination ID from URL parameter

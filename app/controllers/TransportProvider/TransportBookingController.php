@@ -6,8 +6,8 @@ use App\Models\Vehicle;
 use PDO;
 use Exception;
 
-require_once __DIR__ . '/../models/TransportBooking.php';
-require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../models/TransportBooking.php';
+require_once __DIR__ . '/../../../config/database.php';
 
 class TransportBookingController
 {
