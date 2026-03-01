@@ -160,6 +160,12 @@ elseif ($requestUri === '/api/accommodation/toggleStatus' && $_SERVER['REQUEST_M
     $controller->toggleStatus();
     exit;
 }
+elseif ($requestUri === '/api/accommodation/roomAvailability' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    error_log(">>> Routing to Accommodation Room Availability");
+    $controller = new AccommodationController();
+    $controller->getRoomAvailability();
+    exit;
+}
 
 // Accommodation page routes
 elseif (strpos($requestUri, '/accommodation/') === 0) {

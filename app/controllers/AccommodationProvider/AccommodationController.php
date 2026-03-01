@@ -421,4 +421,52 @@ class AccommodationController {
             $this->sendResponse(false, ['Failed to update property status']);
         }
     }
+
+    public function getRoomAvailability() {
+        global $pdo;
+        
+        $id = $_GET['id'] ?? null;
+        if (!$id) {
+            $this->sendResponse(false, ['Accommodation ID not provided']);
+            return;
+        }
+        
+        try {
+            // Get total rooms from accommodation
+            $stmt = $pdo->prepare("SELECT rooms FROM accommodations WHERE id = ?");
+            $stmt->execute([$id]);
+            $accommodation = $stmt->fetch(\PDO::FETCH_ASSOC);
+            
+            if (!$accommodation) {
+                $this->sendResponse(false, ['Accommodation not found']);
+                return;
+            }
+            
+            $totalRooms = (int)$accommodation['rooms'];
+            
+            // Get booked rooms (only active/confirmed bookings that haven't been completed or cancelled)
+            $stmt = $pdo->prepare("
+                SELECT COALESCE(SUM(number_of_rooms), 0) as booked_rooms 
+                FROM bookings 
+                WHERE accommodation_id = ? 
+                AND booking_status IN ('confirmed', 'pending')
+                AND checkout_date >= CURDATE()
+            ");
+            $stmt->execute([$id]);
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            
+            $bookedRooms = (int)$result['booked_rooms'];
+            $availableRooms = max(0, $totalRooms - $bookedRooms);
+            
+            $this->sendResponse(true, [], [
+                'total_rooms' => $totalRooms,
+                'available_rooms' => $availableRooms,
+                'unavailable_rooms' => $bookedRooms
+            ]);
+            
+        } catch (\Exception $e) {
+            error_log("Error getting room availability: " . $e->getMessage());
+            $this->sendResponse(false, ['Failed to get room availability']);
+        }
+    }
 }

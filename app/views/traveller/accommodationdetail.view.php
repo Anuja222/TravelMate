@@ -68,6 +68,29 @@
           </div>
 
           <div class="hotel-amenities">
+            <h3>Room Availability</h3>
+            <div class="room-availability-section" style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                <div style="background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                  <div style="font-size: 14px; color: #666; margin-bottom: 8px;">Total Rooms</div>
+                  <div id="totalRooms" style="font-size: 32px; font-weight: 700; color: #2c3e50;">-</div>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                  <div style="font-size: 14px; color: #666; margin-bottom: 8px;">Available Rooms</div>
+                  <div id="availableRooms" style="font-size: 32px; font-weight: 700; color: #1abc5b;">-</div>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                  <div style="font-size: 14px; color: #666; margin-bottom: 8px;">Booked Rooms</div>
+                  <div id="unavailableRooms" style="font-size: 32px; font-weight: 700; color: #e74c3c;">-</div>
+                </div>
+              </div>
+              <div id="availabilityMessage" style="margin-top: 15px; padding: 12px; background: white; border-radius: 8px; text-align: center; font-size: 14px; color: #666; display: none;">
+                <!-- Availability message will be shown here -->
+              </div>
+            </div>
+          </div>
+
+          <div class="hotel-amenities">
             <h3>Amenities & Features</h3>
             <div class="amenities-grid" id="amenitiesGrid">
               <!-- Amenities will be populated by JavaScript -->
@@ -153,11 +176,7 @@
             <div class="room-selection">
               <label>Number of Rooms</label>
               <select id="numberOfRooms" required>
-                <option value="1">1 Room</option>
-                <option value="2">2 Rooms</option>
-                <option value="3">3 Rooms</option>
-                <option value="4">4 Rooms</option>
-                <option value="5">5+ Rooms</option>
+                <option value="">Loading...</option>
               </select>
             </div>
 
