@@ -1,19 +1,19 @@
 <?php
 namespace App\Controllers;
 
-require_once __DIR__ . '/../models/Activity.php';
-require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../models/Destination.php';
+require_once __DIR__ . '/../../../config/database.php';
 
-use App\Models\Activity;
+use App\Models\Destination;
 
-class ActivityController
+class DestinationController
 {
     private $uploadDir;
 
     public function __construct()
     {
         if (session_status() === PHP_SESSION_NONE) session_start();
-        $this->uploadDir = __DIR__ . '/../../public/uploads/activities';
+        $this->uploadDir = __DIR__ . '/../../../public/uploads/destinations';
         if (!is_dir($this->uploadDir)) mkdir($this->uploadDir, 0755, true);
     }
 
@@ -30,10 +30,10 @@ class ActivityController
         $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
         $allowed = ['jpg','jpeg','png'];
         if (!in_array($ext, $allowed)) return null;
-        $fileName = uniqid('activity_', true) . '.' . $ext;
+        $fileName = uniqid('dest_', true) . '.' . $ext;
         $dest = $this->uploadDir . '/' . $fileName;
         if (move_uploaded_file($tmpPath, $dest)) {
-            return '/uploads/activities/' . $fileName;
+            return '/uploads/destinations/' . $fileName;
         }
         return null;
     }
@@ -43,12 +43,16 @@ class ActivityController
         global $pdo;
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') $this->sendResponse(false, ['error'=>'Invalid method']);
 
+        // Only admin users allowed (optional)
+        // if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') $this->sendResponse(false, ['error'=>'Unauthorized']);
+
         $title = trim($_POST['title'] ?? '');
         $description = trim($_POST['description'] ?? '');
         $slug = trim($_POST['slug'] ?? '');
         if (empty($title)) $this->sendResponse(false, ['error'=>'Title required']);
 
         if (empty($slug)) {
+            // simple slug
             $slug = strtolower(preg_replace('/[^a-z0-9]+/','-', $title));
         } else {
             $slug = strtolower(preg_replace('/[^a-z0-9]+/','-', $slug));
@@ -59,7 +63,7 @@ class ActivityController
             $imagePath = $this->saveFile($_FILES['image']['tmp_name'], $_FILES['image']['name']);
         }
 
-        $activity = new Activity([
+        $dest = new Destination([
             'title' => $title,
             'slug' => $slug,
             'description' => $description,
@@ -67,7 +71,7 @@ class ActivityController
         ]);
 
         try {
-            $id = $activity->create($pdo);
+            $id = $dest->create($pdo);
             if ($id) {
                 $this->sendResponse(true, [], ['id' => $id]);
             } else {
@@ -82,7 +86,7 @@ class ActivityController
     {
         global $pdo;
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') $this->sendResponse(false, ['error'=>'Invalid method']);
-        $rows = Activity::findAll($pdo);
+        $rows = Destination::findAll($pdo);
         $this->sendResponse(true, [], $rows);
     }
 
@@ -92,9 +96,9 @@ class ActivityController
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') $this->sendResponse(false, ['error'=>'Invalid method']);
         $id = $_GET['id'] ?? null;
         if (!$id) $this->sendResponse(false, ['error'=>'Missing id']);
-        $row = Activity::findById($pdo, $id);
+        $row = Destination::findById($pdo, $id);
         if (!$row) $this->sendResponse(false, ['error'=>'Not found']);
-        $places = Activity::listPlaces($pdo, $id);
+        $places = Destination::listPlaces($pdo, $id);
         $row['places'] = $places;
         $this->sendResponse(true, [], $row);
     }
@@ -105,7 +109,7 @@ class ActivityController
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') $this->sendResponse(false, ['error'=>'Invalid method']);
         $id = $_POST['id'] ?? null;
         if (!$id) $this->sendResponse(false, ['error'=>'Missing id']);
-        $existing = Activity::findById($pdo, $id);
+        $existing = Destination::findById($pdo, $id);
         if (!$existing) $this->sendResponse(false, ['error'=>'Not found']);
 
         $title = trim($_POST['title'] ?? $existing['title']);
@@ -119,7 +123,7 @@ class ActivityController
             if ($saved) $imagePath = $saved;
         }
 
-        $activity = new Activity([
+        $dest = new Destination([
             'id' => $id,
             'title' => $title,
             'slug' => $slug,
@@ -127,7 +131,7 @@ class ActivityController
             'image' => $imagePath
         ]);
 
-        $ok = $activity->update($pdo);
+        $ok = $dest->update($pdo);
         $this->sendResponse((bool)$ok, $ok ? [] : ['error'=>'Update failed'], $ok ? ['id' => $id] : null);
     }
 
@@ -137,19 +141,19 @@ class ActivityController
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') $this->sendResponse(false, ['error'=>'Invalid method']);
         $id = $_POST['id'] ?? null;
         if (!$id) $this->sendResponse(false, ['error'=>'Missing id']);
-        $ok = Activity::deleteById($pdo, $id);
+        $ok = Destination::deleteById($pdo, $id);
         $this->sendResponse((bool)$ok, $ok ? [] : ['error'=>'Delete failed']);
     }
 
-    // Places (locations related to activity)
+    // Places
     public function placeCreate()
     {
         global $pdo;
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') $this->sendResponse(false, ['error'=>'Invalid method']);
-        $activityId = $_POST['activity_id'] ?? null;
+        $destinationId = $_POST['destination_id'] ?? null;
         $title = trim($_POST['title'] ?? '');
         $description = trim($_POST['description'] ?? '');
-        if (!$activityId || !$title) $this->sendResponse(false, ['error'=>'Missing data']);
+        if (!$destinationId || !$title) $this->sendResponse(false, ['error'=>'Missing data']);
 
         $slug = trim($_POST['slug'] ?? '');
         if (empty($slug)) $slug = strtolower(preg_replace('/[^a-z0-9]+/','-', $title));
@@ -159,7 +163,7 @@ class ActivityController
             $imagePath = $this->saveFile($_FILES['image']['tmp_name'], $_FILES['image']['name']);
         }
 
-        $id = Activity::createPlace($pdo, $activityId, $title, $slug, $description, $imagePath);
+        $id = Destination::createPlace($pdo, $destinationId, $title, $slug, $description, $imagePath);
         if ($id) $this->sendResponse(true, [], ['id' => $id]);
         $this->sendResponse(false, ['error'=>'Failed to create place']);
     }
@@ -170,7 +174,7 @@ class ActivityController
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') $this->sendResponse(false, ['error'=>'Invalid method']);
         $id = $_POST['id'] ?? null;
         if (!$id) $this->sendResponse(false, ['error'=>'Missing id']);
-        $ok = Activity::deletePlaceById($pdo, $id);
+        $ok = Destination::deletePlaceById($pdo, $id);
         $this->sendResponse((bool)$ok, $ok ? [] : ['error'=>'Delete failed']);
     }
 
@@ -182,7 +186,7 @@ class ActivityController
         $id = $_POST['id'] ?? null;
         if (!$id) $this->sendResponse(false, ['error'=>'Missing id']);
 
-        $existing = Activity::findPlaceById($pdo, $id);
+        $existing = Destination::findPlaceById($pdo, $id);
         if (!$existing) $this->sendResponse(false, ['error'=>'Place not found']);
 
         $title = trim($_POST['title'] ?? $existing['title']);
@@ -199,7 +203,7 @@ class ActivityController
             if ($saved) $imagePath = $saved;
         }
 
-        $ok = Activity::updatePlace($pdo, $id, $title, $slug, $description, $imagePath);
+        $ok = Destination::updatePlace($pdo, $id, $title, $slug, $description, $imagePath);
         $this->sendResponse((bool)$ok, $ok ? [] : ['error'=>'Update failed'], $ok ? ['id' => $id] : null);
     }
 }

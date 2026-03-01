@@ -8,7 +8,7 @@ class Users extends Controller {
         
         // If PDO doesn't exist, try to load it
         if (!isset($pdo)) {
-            require_once __DIR__ . '/../../config/database.php';
+            require_once __DIR__ . '/../../../config/database.php';
         }
         
         // Fetch all users from database

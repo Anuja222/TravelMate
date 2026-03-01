@@ -10,7 +10,7 @@ class Profilesetting extends Controller{
         }
         
         // Load database config and create connection
-        require_once '../config/database.php';
+        require_once __DIR__ . '/../../../config/database.php';
         
         $dsn = "mysql:host=" . DBHOST . ";dbname=" . DBNAME . ";charset=utf8mb4";
         $conn = new PDO($dsn, DBUSER, DBPASS);
@@ -29,10 +29,10 @@ class Profilesetting extends Controller{
         ob_start();
         
         // Load necessary files
-        require_once '../app/core/config.php';
-        require_once '../app/core/Model.php';
-        require_once '../app/core/Database.php';
-        require_once '../app/models/User.php';
+        require_once __DIR__ . '/../../core/config.php';
+        require_once __DIR__ . '/../../core/Model.php';
+        require_once __DIR__ . '/../../core/Database.php';
+        require_once __DIR__ . '/../../models/User.php';
         
         // Check if user is logged in
         if (!isset($_SESSION['user']['id'])) {

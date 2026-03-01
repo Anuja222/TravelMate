@@ -352,7 +352,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <i class="fas fa-trash"></i>
                             </button>
                             <button type="button" class="property-card-btn property-card-btn-toggle toggle-btn ${property.status === 'active' ? 'active' : ''}" data-id="${property.id}" data-status="${property.status}">
-                                <i class="fas fa-power-off"></i> ${property.status === 'active' ? 'Active' : 'Inactive'}
+                                <i class="fas fa-power-off"></i> ${property.status === 'active' ? 'Inactive' : 'Active'}
                             </button>
                         </div>
                     </div>
@@ -436,10 +436,10 @@ document.addEventListener('DOMContentLoaded', function() {
                             toggleBtn.dataset.status = newStatus;
                             if (newStatus === 'active') {
                                 toggleBtn.classList.add('active');
-                                toggleBtn.innerHTML = '<i class="fas fa-power-off"></i> Active';
+                                toggleBtn.innerHTML = '<i class="fas fa-power-off"></i> Inactive';
                             } else {
                                 toggleBtn.classList.remove('active');
-                                toggleBtn.innerHTML = '<i class="fas fa-power-off"></i> Inactive';
+                                toggleBtn.innerHTML = '<i class="fas fa-power-off"></i> Active';
                             }
                             
                             // Update status badge

@@ -1,8 +1,8 @@
 <?php
 namespace App\Controllers;
 
-require_once __DIR__ . '/../models/Vehicle.php';
-require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../models/Vehicle.php';
+require_once __DIR__ . '/../../../config/database.php';
 
 use App\Models\Vehicle;
 
@@ -14,7 +14,7 @@ class VehicleController
     {
         if (session_status() === PHP_SESSION_NONE)
             session_start();
-        $this->uploadDir = __DIR__ . '/../../public/uploads/vehicles';
+        $this->uploadDir = __DIR__ . '/../../../public/uploads/vehicles';
         if (!is_dir($this->uploadDir)) {
             mkdir($this->uploadDir, 0755, true);
         }
