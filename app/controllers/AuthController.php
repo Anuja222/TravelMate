@@ -84,13 +84,18 @@ class AuthController
         $userId = $user->createUser($pdo);
 
         if ($userId) {
+            // Set default account_status to active for new users
+            $updateSql = "UPDATE users SET account_status = 'active' WHERE id = ?";
+            $updateStmt = $pdo->prepare($updateSql);
+            $updateStmt->execute([$userId]);
+            
             $this->sendResponse(true, [], ['userId' => $userId, 'role' => $role]);
         } else {
             $this->sendResponse(false, ['general' => 'Registration failed']);
         }
     }
 
-    // Login user
+    // Login user - FIXED VERSION with account_status
     public function loginUser()
     {
         global $pdo;
@@ -108,7 +113,14 @@ class AuthController
             return;
         }
 
-        // Set session with user data
+        // CRITICAL FIX: Get the account_status from database
+        // If it's NULL or empty, set to 'active' as default
+        $accountStatus = $userData['account_status'] ?? 'active';
+        if (empty($accountStatus)) {
+            $accountStatus = 'active';
+        }
+
+        // Set session with ALL user data including account_status
         $_SESSION['user'] = [
             'id' => $userData['id'],
             'email' => $userData['email'],
@@ -118,6 +130,7 @@ class AuthController
             'gender' => $userData['gender'] ?? '',
             'dateOfBirth' => $userData['date_of_birth'] ?? '',
             'role' => $userData['role'],
+            'account_status' => $accountStatus, // CRITICAL: Add this line - should be 'active' or 'deactivated'
             'logged_in' => true,
             'login_time' => time()
         ];
@@ -126,7 +139,8 @@ class AuthController
             'id' => $userData['id'],
             'email' => $userData['email'],
             'first_name' => $userData['first_name'],
-            'role' => $userData['role']
+            'role' => $userData['role'],
+            'account_status' => $accountStatus // Also return in response
         ]);
     }
 
@@ -163,7 +177,12 @@ class AuthController
     {
         // Redirect if already logged in
         if (isset($_SESSION['user']) && !empty($_SESSION['user'])) {
-            header('Location: homet');
+            // Check account status and redirect accordingly
+            if ($_SESSION['user']['role'] === 'transport') {
+                header('Location: tr_dashboard');
+            } else {
+                header('Location: homet');
+            }
             exit;
         }
         include __DIR__ . '/../views/traveller/login.view.php';
