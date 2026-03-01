@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 body: fd,
                 credentials: 'same-origin'
             })
-            .then(r => r.json())
+            .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     // Clear session storage
@@ -167,8 +167,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     sessionStorage.removeItem('ac_type');
                     sessionStorage.removeItem('ownership');
 
-                    alert('Vehicle registered successfully!');
-                    window.location.href = 'tr_dashboard';
+                    // Show success modal instead of alert
+                    showVehicleSuccessModal();
                 } else {
                     const errorMsg = data.errors && data.errors.error ? data.errors.error : 'Failed to save vehicle';
                     alert(errorMsg);
@@ -185,47 +185,60 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ========== DASHBOARD - LIST VEHICLES ==========
-    const vehicleListContainer = document.querySelector('.my-vehicle-list');
+    // ========== DASHBOARD - LIST VEHICLES (FIXED) ==========
+    const vehicleListContainer = document.querySelector('.vehicle-cards-grid'); // FIXED: Changed from '.my-vehicle-list'
     if (vehicleListContainer) {
         fetch(baseUrl + '/api/vehicle/list', {
             method: 'GET',
             credentials: 'same-origin'
         })
-        .then(r => r.json())
+        .then(response => response.json())
         .then(res => {
+            console.log('Vehicle list response:', res); // Debug log
+            
+            // FIX: Check the correct response structure
             if (!res.success) {
                 vehicleListContainer.innerHTML = '<p>Failed to load vehicles.</p>';
                 return;
             }
 
-            const vehicles = res.data || [];
+            // FIX: Access vehicles from data.vehicles (not data)
+            const vehicles = res.data?.vehicles || [];
+            
             if (vehicles.length === 0) {
                 vehicleListContainer.innerHTML = '<p>No vehicles listed yet.</p>';
                 return;
             }
 
-            vehicleListContainer.innerHTML = vehicles.map(v => {
-                const type = escapeHtml(v.vehicle_type || 'Vehicle');
-                const model = escapeHtml(v.vehicle_model || '');
-                const number = escapeHtml(v.vehicle_number || '');
-                const district = escapeHtml(v.working_district || '');
+            vehicleListContainer.innerHTML = ''; // Clear container
+            
+            vehicles.forEach(vehicle => {
+                const card = document.createElement('div');
+                card.className = 'vehicle-card-item';
                 
-                return `
-                    <div class="vehicle-item" data-id="${v.id}">
+                // Create vehicle card HTML (simplified version)
+                const type = escapeHtml(vehicle.vehicle_type || 'Vehicle');
+                const model = escapeHtml(vehicle.vehicle_model || '');
+                const number = escapeHtml(vehicle.vehicle_number || '');
+                const district = escapeHtml(vehicle.working_district || '');
+                
+                card.innerHTML = `
+                    <div class="vehicle-info">
                         <h4>${model || type}</h4>
                         <p>${number} ${district ? '• ' + district : ''}</p>
                         <div class="actions">
-                            <button class="btn-edit" data-id="${v.id}">
+                            <button class="btn-edit" data-id="${vehicle.id}">
                                 <i class="fas fa-edit"></i> Edit
                             </button>
-                            <button class="btn-delete" data-id="${v.id}">
+                            <button class="btn-delete" data-id="${vehicle.id}">
                                 <i class="fas fa-trash"></i> Delete
                             </button>
                         </div>
                     </div>
                 `;
-            }).join('');
+                
+                vehicleListContainer.appendChild(card);
+            });
 
             // Attach edit handlers
             document.querySelectorAll('.btn-edit').forEach(btn => {
@@ -416,6 +429,22 @@ document.addEventListener('DOMContentLoaded', function () {
             window.location.href = 'tr_dashboard';
         });
     }
+
+    // Show vehicle registration success modal function
+    window.showVehicleSuccessModal = function() {
+        const modal = document.getElementById('vehicleSuccessModal');
+        if (modal) {
+            modal.style.display = 'block';
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
+        }
+    };
+
+    // Go to dashboard function
+    window.goToDashboard = function() {
+        window.location.href = 'tr_dashboard';
+    };
 
     // Utility function
     function escapeHtml(text) {
