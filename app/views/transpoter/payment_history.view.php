@@ -27,6 +27,32 @@ if (!$isTransporter) {
 
 <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
+<!-- Payment Details Modal - This is a hidden modal that pops up when view button is clicked -->
+<div class="modal" id="paymentModal">
+    <div class="modal-content payment-modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-receipt"></i> Payment Details</h3>
+            <button class="modal-close-btn" onclick="closePaymentModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body" id="paymentModalBody">
+            <!-- Dynamic content will be loaded here via JavaScript when view button is clicked -->
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn download-btn" onclick="downloadInvoice()">
+                <i class="fas fa-download"></i> Download Invoice
+            </button>
+            <button class="modal-btn print-btn" onclick="printInvoice()">
+                <i class="fas fa-print"></i> Print
+            </button>
+            <button class="modal-btn close-btn" onclick="closePaymentModal()">
+                <i class="fas fa-times"></i> Close
+            </button>
+        </div>
+    </div>
+</div>
+
 <!-- MAIN CONTENT -->
 <main>
     <!-- SIDEBAR -->
@@ -136,7 +162,7 @@ if (!$isTransporter) {
                         <th>Amount</th>
                         <th>Payment Method</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -153,8 +179,8 @@ if (!$isTransporter) {
                         <td><span class="payment-method"><i class="fas fa-credit-card"></i> Card</span></td>
                         <td><span class="status-badge completed">Completed</span></td>
                         <td>
-                            <button class="action-btn view-btn" onclick="viewInvoice('TB-2024-001')">
-                                <i class="fas fa-file-invoice"></i>
+                            <button class="view-payment-btn" onclick="showPaymentDetails('TB-2024-001')">
+                                <i class="fas fa-eye"></i> View
                             </button>
                         </td>
                     </tr>
@@ -172,8 +198,8 @@ if (!$isTransporter) {
                         <td><span class="payment-method"><i class="fas fa-mobile-alt"></i> Digital Wallet</span></td>
                         <td><span class="status-badge completed">Completed</span></td>
                         <td>
-                            <button class="action-btn view-btn" onclick="viewInvoice('TB-2024-002')">
-                                <i class="fas fa-file-invoice"></i>
+                            <button class="view-payment-btn" onclick="showPaymentDetails('TB-2024-002')">
+                                <i class="fas fa-eye"></i> View
                             </button>
                         </td>
                     </tr>
@@ -191,8 +217,8 @@ if (!$isTransporter) {
                         <td><span class="payment-method"><i class="fas fa-university"></i> Bank Transfer</span></td>
                         <td><span class="status-badge pending">Pending</span></td>
                         <td>
-                            <button class="action-btn view-btn" onclick="viewInvoice('TB-2024-003')">
-                                <i class="fas fa-file-invoice"></i>
+                            <button class="view-payment-btn" onclick="showPaymentDetails('TB-2024-003')">
+                                <i class="fas fa-eye"></i> View
                             </button>
                         </td>
                     </tr>
@@ -210,8 +236,8 @@ if (!$isTransporter) {
                         <td><span class="payment-method"><i class="fas fa-credit-card"></i> Card</span></td>
                         <td><span class="status-badge failed">Failed</span></td>
                         <td>
-                            <button class="action-btn view-btn" onclick="viewInvoice('TB-2024-004')">
-                                <i class="fas fa-file-invoice"></i>
+                            <button class="view-payment-btn" onclick="showPaymentDetails('TB-2024-004')">
+                                <i class="fas fa-eye"></i> View
                             </button>
                         </td>
                     </tr>
@@ -229,8 +255,8 @@ if (!$isTransporter) {
                         <td><span class="payment-method"><i class="fas fa-credit-card"></i> Card</span></td>
                         <td><span class="status-badge refunded">Refunded</span></td>
                         <td>
-                            <button class="action-btn view-btn" onclick="viewInvoice('TB-2024-005')">
-                                <i class="fas fa-file-invoice"></i>
+                            <button class="view-payment-btn" onclick="showPaymentDetails('TB-2024-005')">
+                                <i class="fas fa-eye"></i> View
                             </button>
                         </td>
                     </tr>
@@ -254,14 +280,274 @@ if (!$isTransporter) {
 <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
 <script>
-function viewInvoice(bookingId) {
-    // Redirect to invoice page
-    window.location.href = `/TravelMate/public/invoice/${bookingId}`;
+// Payment data (in a real app, this would come from the server)
+const paymentDetails = {
+    'TB-2024-001': {
+        bookingId: '#TB-2024-001',
+        date: 'Mar 15, 2024',
+        time: '10:30 AM',
+        customer: {
+            name: 'John Smith',
+            email: 'john@email.com',
+            phone: '+94 77 123 4567'
+        },
+        amount: 'LKR 45,000',
+        paymentMethod: 'Credit Card',
+        cardDetails: '**** **** **** 4242',
+        status: 'completed',
+        transactionId: 'TXN-123456789',
+        tripDetails: {
+            from: 'Colombo',
+            to: 'Kandy',
+            date: 'Mar 15, 2024',
+            time: '08:00 AM',
+            vehicle: 'Toyota Prius (PB-1234)'
+        }
+    },
+    'TB-2024-002': {
+        bookingId: '#TB-2024-002',
+        date: 'Mar 14, 2024',
+        time: '02:15 PM',
+        customer: {
+            name: 'Sarah Johnson',
+            email: 'sarah@email.com',
+            phone: '+94 77 234 5678'
+        },
+        amount: 'LKR 32,500',
+        paymentMethod: 'Digital Wallet',
+        walletDetails: 'PickMe Pay',
+        status: 'completed',
+        transactionId: 'TXN-234567890',
+        tripDetails: {
+            from: 'Galle',
+            to: 'Matara',
+            date: 'Mar 14, 2024',
+            time: '01:00 PM',
+            vehicle: 'Honda Vezel (PB-5678)'
+        }
+    },
+    'TB-2024-003': {
+        bookingId: '#TB-2024-003',
+        date: 'Mar 12, 2024',
+        time: '09:45 AM',
+        customer: {
+            name: 'Michael Chen',
+            email: 'michael@email.com',
+            phone: '+94 77 345 6789'
+        },
+        amount: 'LKR 28,000',
+        paymentMethod: 'Bank Transfer',
+        bankDetails: 'Commercial Bank - ****1234',
+        status: 'pending',
+        transactionId: 'TXN-345678901',
+        tripDetails: {
+            from: 'Negombo',
+            to: 'Colombo',
+            date: 'Mar 12, 2024',
+            time: '08:30 AM',
+            vehicle: 'Suzuki Swift (PB-9012)'
+        }
+    },
+    'TB-2024-004': {
+        bookingId: '#TB-2024-004',
+        date: 'Mar 10, 2024',
+        time: '04:20 PM',
+        customer: {
+            name: 'Emily Davis',
+            email: 'emily@email.com',
+            phone: '+94 77 456 7890'
+        },
+        amount: 'LKR 52,000',
+        paymentMethod: 'Credit Card',
+        cardDetails: '**** **** **** 5678',
+        status: 'failed',
+        failureReason: 'Insufficient funds',
+        transactionId: 'TXN-456789012',
+        tripDetails: {
+            from: 'Colombo',
+            to: 'Galle',
+            date: 'Mar 10, 2024',
+            time: '03:00 PM',
+            vehicle: 'Toyota KDH (PB-3456)'
+        }
+    },
+    'TB-2024-005': {
+        bookingId: '#TB-2024-005',
+        date: 'Mar 8, 2024',
+        time: '11:00 AM',
+        customer: {
+            name: 'Robert Wilson',
+            email: 'robert@email.com',
+            phone: '+94 77 567 8901'
+        },
+        amount: 'LKR 18,500',
+        paymentMethod: 'Credit Card',
+        cardDetails: '**** **** **** 9012',
+        status: 'refunded',
+        refundReason: 'Trip cancelled by customer',
+        refundDate: 'Mar 9, 2024',
+        transactionId: 'TXN-567890123',
+        tripDetails: {
+            from: 'Kandy',
+            to: 'Nuwara Eliya',
+            date: 'Mar 8, 2024',
+            time: '09:00 AM',
+            vehicle: 'Micro Panda (PB-7890)'
+        }
+    }
+};
+
+let currentBookingId = '';
+
+function showPaymentDetails(bookingId) {
+    currentBookingId = bookingId;
+    const payment = paymentDetails[bookingId];
+    if (!payment) return;
+    
+    const modalBody = document.getElementById('paymentModalBody');
+    const statusClass = payment.status.toLowerCase();
+    
+    modalBody.innerHTML = `
+        <div class="payment-detail-header">
+            <div class="payment-status-badge ${statusClass}">
+                ${payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
+            </div>
+            <div class="payment-transaction-id">
+                <i class="fas fa-hashtag"></i> TXN: ${payment.transactionId}
+            </div>
+        </div>
+        
+        <div class="payment-detail-grid">
+            <div class="payment-detail-section">
+                <h4><i class="fas fa-info-circle"></i> Booking Information</h4>
+                <div class="detail-item">
+                    <span class="detail-label">Booking ID:</span>
+                    <span class="detail-value">${payment.bookingId}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Date & Time:</span>
+                    <span class="detail-value">${payment.date} at ${payment.time}</span>
+                </div>
+            </div>
+            
+            <div class="payment-detail-section">
+                <h4><i class="fas fa-user"></i> Customer Information</h4>
+                <div class="detail-item">
+                    <span class="detail-label">Name:</span>
+                    <span class="detail-value">${payment.customer.name}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value">${payment.customer.email}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Phone:</span>
+                    <span class="detail-value">${payment.customer.phone}</span>
+                </div>
+            </div>
+            
+            <div class="payment-detail-section">
+                <h4><i class="fas fa-car"></i> Trip Details</h4>
+                <div class="detail-item">
+                    <span class="detail-label">Route:</span>
+                    <span class="detail-value">${payment.tripDetails.from} → ${payment.tripDetails.to}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Departure:</span>
+                    <span class="detail-value">${payment.tripDetails.date} at ${payment.tripDetails.time}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Vehicle:</span>
+                    <span class="detail-value">${payment.tripDetails.vehicle}</span>
+                </div>
+            </div>
+            
+            <div class="payment-detail-section">
+                <h4><i class="fas fa-credit-card"></i> Payment Information</h4>
+                <div class="detail-item highlight">
+                    <span class="detail-label">Amount:</span>
+                    <span class="detail-value amount-value">${payment.amount}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Method:</span>
+                    <span class="detail-value">${payment.paymentMethod}</span>
+                </div>
+                ${payment.cardDetails ? `
+                <div class="detail-item">
+                    <span class="detail-label">Card:</span>
+                    <span class="detail-value">${payment.cardDetails}</span>
+                </div>
+                ` : ''}
+                ${payment.walletDetails ? `
+                <div class="detail-item">
+                    <span class="detail-label">Wallet:</span>
+                    <span class="detail-value">${payment.walletDetails}</span>
+                </div>
+                ` : ''}
+                ${payment.bankDetails ? `
+                <div class="detail-item">
+                    <span class="detail-label">Bank:</span>
+                    <span class="detail-value">${payment.bankDetails}</span>
+                </div>
+                ` : ''}
+                ${payment.failureReason ? `
+                <div class="detail-item error">
+                    <span class="detail-label">Reason:</span>
+                    <span class="detail-value">${payment.failureReason}</span>
+                </div>
+                ` : ''}
+                ${payment.refundReason ? `
+                <div class="detail-item">
+                    <span class="detail-label">Refund Reason:</span>
+                    <span class="detail-value">${payment.refundReason}</span>
+                </div>
+                ` : ''}
+                ${payment.refundDate ? `
+                <div class="detail-item">
+                    <span class="detail-label">Refund Date:</span>
+                    <span class="detail-value">${payment.refundDate}</span>
+                </div>
+                ` : ''}
+            </div>
+        </div>
+    `;
+    
+    // Show the modal
+    document.getElementById('paymentModal').style.display = 'flex';
+    // Prevent body from scrolling when modal is open
+    document.body.style.overflow = 'hidden';
+}
+
+function closePaymentModal() {
+    document.getElementById('paymentModal').style.display = 'none';
+    // Re-enable body scrolling
+    document.body.style.overflow = 'auto';
+}
+
+function downloadInvoice() {
+    if (currentBookingId) {
+        alert(`Downloading invoice for booking ${currentBookingId}`);
+        // In a real app, this would trigger a PDF download
+    }
+}
+
+function printInvoice() {
+    if (currentBookingId) {
+        alert(`Printing invoice for booking ${currentBookingId}`);
+        // In a real app, this would open a print-friendly version
+    }
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('paymentModal');
+    if (event.target === modal) {
+        closePaymentModal();
+    }
 }
 
 // Filter functionality
-document.querySelector('.filter-btn').addEventListener('click', function() {
-    // In a real app, this would apply filters and reload data
+document.querySelector('.filter-btn')?.addEventListener('click', function() {
     alert('Filters applied! In a real application, this would filter the payment history.');
 });
 </script>
