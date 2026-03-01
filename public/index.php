@@ -84,14 +84,14 @@ elseif ($requestUri === '/api/vehicle/list' && $_SERVER['REQUEST_METHOD'] === 'G
     $vehicleController->listByUser();
     exit;
 } 
-
+   
 elseif ($requestUri === '/api/vehicle/listAll' && $_SERVER['REQUEST_METHOD'] === 'GET') {
     error_log(">>> Routing to Vehicle List All");
     require_once __DIR__ . '/../app/controllers/VehicleController.php';
     $vehicleController = new App\Controllers\VehicleController();
-    $vehicleController->listAll();
+    $vehicleController->listAllForTravellers(); // Make sure this matches
     exit;
-} 
+}
 
 elseif ($requestUri === '/api/vehicle/get' && $_SERVER['REQUEST_METHOD'] === 'GET') {
     error_log(">>> Routing to Vehicle Get");
@@ -623,6 +623,40 @@ elseif ($requestUri === '/api/transport-booking/stats' && $_SERVER['REQUEST_METH
     require_once __DIR__ . '/../app/controllers/TransportBookingController.php';
     $transportBookingController = new App\Controllers\TransportBookingController();
     $transportBookingController->getStats();
+    exit;
+}
+
+// Transporter Settings API routes
+elseif ($requestUri === '/api/settings/account-status' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    require_once __DIR__ . '/../app/controllers/settingsTransporterController.php';
+    $settingsController = new App\Controllers\SettingsController();
+    $settingsController->getAccountStatus();
+    exit;
+}
+elseif ($requestUri === '/api/settings/account-status' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/settingsTransporterController.php';
+    $settingsController = new App\Controllers\SettingsController();
+    $settingsController->updateAccountStatus();
+    exit;
+}
+
+// Vehicle deactivation routes
+elseif ($requestUri === '/api/vehicle/deactivate' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/VehicleController.php';
+    $vehicleController = new App\Controllers\VehicleController();
+    $vehicleController->deactivateVehicle();
+    exit;
+}
+elseif ($requestUri === '/api/vehicle/reactivate' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/VehicleController.php';
+    $vehicleController = new App\Controllers\VehicleController();
+    $vehicleController->reactivateVehicle();
+    exit;
+}
+elseif ($requestUri === '/api/vehicle/deactivation-status' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    require_once __DIR__ . '/../app/controllers/VehicleController.php';
+    $vehicleController = new App\Controllers\VehicleController();
+    $vehicleController->getVehicleDeactivationStatus();
     exit;
 }
 

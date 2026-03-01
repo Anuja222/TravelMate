@@ -1,7 +1,11 @@
 /**
- * setting.js - Settings page functionality for Transporter
- * Path: TravelMate/assets/js/Transpoter/setting.js
+ * settings.js - Settings page functionality for Transporter
+ * Path: TravelMate/assets/js/Transpoter/settings.js
  */
+
+const BASE_PATH = window.location.pathname.includes('/TravelMate/') 
+    ? '/TravelMate/public' 
+    : '';
 
 // DOM Elements
 document.addEventListener('DOMContentLoaded', function() {
@@ -12,36 +16,9 @@ document.addEventListener('DOMContentLoaded', function() {
  * Main initialization function
  */
 function initApp() {
-    // DOM Elements
-    const profileForm = document.getElementById('profileForm');
-    const securityForm = document.getElementById('securityForm');
-    const notificationForm = document.getElementById('notificationForm');
-    const deleteAccountForm = document.getElementById('deleteAccountForm');
-    const deleteAccountModal = document.getElementById('deleteAccountModal');
-    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-    const deleteAccountBtn = document.getElementById('deleteAccountBtn');
-    const profilePhoto = document.getElementById('profilePhoto');
-    const removePhotoBtn = document.getElementById('removePhoto');
-    const newPasswordInput = document.getElementById('new_password');
-    const reasonRadios = document.querySelectorAll('input[name="delete_reason"]');
-    const feedbackGroup = document.getElementById('feedbackGroup');
-
-    // Account Status Elements
-    const accountStatusToggle = document.getElementById('accountStatusToggle');
-    const deactivationReason = document.getElementById('deactivationReason');
-    const otherReasonGroup = document.getElementById('otherReasonGroup');
-    const confirmDeactivationCheckbox = document.getElementById('confirmDeactivationCheckbox');
-    const confirmDeactivationBtn = document.getElementById('confirmDeactivationBtn');
-    const cancelDeactivationBtn = document.getElementById('cancelDeactivationBtn');
-    const confirmReactivationBtn = document.getElementById('confirmReactivationBtn');
-    const cancelReactivationBtn = document.getElementById('cancelReactivationBtn');
-
-    // Initialize all functionality
     initTabs();
     initEventListeners();
-    loadSavedSettings();
-    loadAccountStatus();
+    loadAccountStatus(); // This is the critical function
     initModalClose();
 }
 
@@ -57,6 +34,23 @@ function initEventListeners() {
     if (profileForm) profileForm.addEventListener('submit', handleProfileSubmit);
     if (securityForm) securityForm.addEventListener('submit', handleSecuritySubmit);
     if (notificationForm) notificationForm.addEventListener('submit', handleNotificationSubmit);
+    
+    // Account Status
+    const accountStatusToggle = document.getElementById('accountStatusToggle');
+    const deactivationReason = document.getElementById('deactivationReason');
+    const confirmDeactivationCheckbox = document.getElementById('confirmDeactivationCheckbox');
+    const confirmDeactivationBtn = document.getElementById('confirmDeactivationBtn');
+    const cancelDeactivationBtn = document.getElementById('cancelDeactivationBtn');
+    const confirmReactivationBtn = document.getElementById('confirmReactivationBtn');
+    const cancelReactivationBtn = document.getElementById('cancelReactivationBtn');
+    
+    if (accountStatusToggle) accountStatusToggle.addEventListener('change', handleAccountStatusToggle);
+    if (deactivationReason) deactivationReason.addEventListener('change', toggleOtherReasonField);
+    if (confirmDeactivationCheckbox) confirmDeactivationCheckbox.addEventListener('change', toggleConfirmDeactivationBtn);
+    if (confirmDeactivationBtn) confirmDeactivationBtn.addEventListener('click', confirmDeactivation);
+    if (cancelDeactivationBtn) cancelDeactivationBtn.addEventListener('click', cancelDeactivation);
+    if (confirmReactivationBtn) confirmReactivationBtn.addEventListener('click', confirmReactivation);
+    if (cancelReactivationBtn) cancelReactivationBtn.addEventListener('click', cancelReactivation);
     
     // Delete account
     const deleteAccountBtn = document.getElementById('deleteAccountBtn');
@@ -81,23 +75,6 @@ function initEventListeners() {
     // Delete account reason radios
     const reasonRadios = document.querySelectorAll('input[name="delete_reason"]');
     reasonRadios.forEach(radio => radio.addEventListener('change', toggleFeedbackField));
-    
-    // Account Status
-    const accountStatusToggle = document.getElementById('accountStatusToggle');
-    const deactivationReason = document.getElementById('deactivationReason');
-    const confirmDeactivationCheckbox = document.getElementById('confirmDeactivationCheckbox');
-    const confirmDeactivationBtn = document.getElementById('confirmDeactivationBtn');
-    const cancelDeactivationBtn = document.getElementById('cancelDeactivationBtn');
-    const confirmReactivationBtn = document.getElementById('confirmReactivationBtn');
-    const cancelReactivationBtn = document.getElementById('cancelReactivationBtn');
-    
-    if (accountStatusToggle) accountStatusToggle.addEventListener('change', handleAccountStatusToggle);
-    if (deactivationReason) deactivationReason.addEventListener('change', toggleOtherReasonField);
-    if (confirmDeactivationCheckbox) confirmDeactivationCheckbox.addEventListener('change', toggleConfirmDeactivationBtn);
-    if (confirmDeactivationBtn) confirmDeactivationBtn.addEventListener('click', confirmDeactivation);
-    if (cancelDeactivationBtn) cancelDeactivationBtn.addEventListener('click', cancelDeactivation);
-    if (confirmReactivationBtn) confirmReactivationBtn.addEventListener('click', confirmReactivation);
-    if (cancelReactivationBtn) cancelReactivationBtn.addEventListener('click', cancelReactivation);
 }
 
 /**
@@ -124,6 +101,407 @@ function initTabs() {
             }
         });
     });
+}
+
+/**
+ * Load account status from server - FIXED VERSION
+ */
+function loadAccountStatus() {
+    const accountStatusToggle = document.getElementById('accountStatusToggle');
+    const currentStatusBadge = document.getElementById('currentStatusBadge');
+    const vehicleVisibilityBadge = document.getElementById('vehicleVisibilityBadge');
+    const statusText = document.getElementById('statusText');
+    
+    if (!accountStatusToggle) return;
+    
+    // Show loading state
+    accountStatusToggle.disabled = true;
+    if (currentStatusBadge) currentStatusBadge.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+    
+    console.log('Fetching account status from:', BASE_PATH + '/api/settings/account-status');
+    
+    fetch(`${BASE_PATH}/api/settings/account-status`, {
+        method: 'GET',
+        credentials: 'same-origin',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        return response.json();
+    })
+    .then(result => {
+        console.log('Account status API response:', result);
+        
+        if (result.success && result.data) {
+            // Get the exact status value from API
+            const statusValue = result.data.status;
+            console.log('Status value from API:', statusValue);
+            
+            // Determine if active or deactivated - be explicit about this
+            const isActive = (statusValue === 'active');
+            console.log('Is active?', isActive, '(status was:', statusValue + ')');
+            
+            // Set toggle state
+            accountStatusToggle.checked = isActive;
+            
+            // Update UI display
+            updateStatusUI(isActive, result.data);
+            
+            // Update guidelines based on upcoming bookings
+            updateDeactivationGuidelines(result.data);
+        } else {
+            console.error('Failed to load account status - API returned:', result);
+            showToast('Failed to load account status', 'error');
+            // Set to default active state
+            accountStatusToggle.checked = true;
+            updateStatusUI(true, {});
+        }
+    })
+    .catch(error => {
+        console.error('Error loading account status:', error);
+        showToast('Error loading account status', 'error');
+        // Set to default active state on error
+        accountStatusToggle.checked = true;
+        updateStatusUI(true, {});
+    })
+    .finally(() => {
+        accountStatusToggle.disabled = false;
+    });
+}
+
+/**
+ * Update deactivation guidelines based on upcoming bookings
+ */
+function updateDeactivationGuidelines(data) {
+    const guidelinesContainer = document.getElementById('deactivationGuidelines');
+    if (!guidelinesContainer) return;
+    
+    if (data.upcoming_bookings > 0) {
+        guidelinesContainer.innerHTML = `
+            <div class="guidelines-box warning">
+                <h4><i class="fas fa-exclamation-triangle"></i> Important: You Have Upcoming Bookings</h4>
+                <p>You currently have <strong>${data.upcoming_bookings}</strong> upcoming confirmed booking(s).</p>
+                <div class="guidelines-content">
+                    <h5>Before Deactivating Your Account:</h5>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> All existing bookings MUST be fulfilled - you cannot cancel them</li>
+                        <li><i class="fas fa-check-circle"></i> You are responsible for completing all confirmed trips</li>
+                        <li><i class="fas fa-check-circle"></i> If you have vehicle issues, you must arrange alternative transportation</li>
+                        <li><i class="fas fa-check-circle"></i> If you have driver issues, you must arrange an alternative driver</li>
+                        <li><i class="fas fa-check-circle"></i> Communicate any changes to your travellers immediately</li>
+                    </ul>
+                    <p class="note"><i class="fas fa-info-circle"></i> After deactivation, your vehicles will be hidden from future searches, but you can still manage your existing bookings through the Bookings page.</p>
+                </div>
+            </div>
+        `;
+    } else {
+        guidelinesContainer.innerHTML = `
+            <div class="guidelines-box info">
+                <h4><i class="fas fa-info-circle"></i> Account Deactivation Guidelines</h4>
+                <div class="guidelines-content">
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> When deactivated, your vehicles will be hidden from traveller searches</li>
+                        <li><i class="fas fa-check-circle"></i> You will not receive any new booking requests</li>
+                        <li><i class="fas fa-check-circle"></i> You can still manage your existing bookings</li>
+                        <li><i class="fas fa-check-circle"></i> You can reactivate your account at any time</li>
+                        <li><i class="fas fa-check-circle"></i> All your vehicle data and settings will be preserved</li>
+                    </ul>
+                </div>
+            </div>
+        `;
+    }
+}
+
+/**
+ * Update status UI - FIXED VERSION
+ */
+function updateStatusUI(isActive, data = {}) {
+    const currentStatusBadge = document.getElementById('currentStatusBadge');
+    const vehicleVisibilityBadge = document.getElementById('vehicleVisibilityBadge');
+    const statusText = document.getElementById('statusText');
+    const deactivationConfirmBox = document.getElementById('deactivationConfirmBox');
+    const reactivationConfirmBox = document.getElementById('reactivationConfirmBox');
+    const accountStatusToggle = document.getElementById('accountStatusToggle');
+    
+    console.log('updateStatusUI called with isActive =', isActive, 'data =', data);
+    
+    if (!currentStatusBadge || !vehicleVisibilityBadge || !statusText) {
+        console.error('Missing UI elements:', { currentStatusBadge, vehicleVisibilityBadge, statusText });
+        return;
+    }
+    
+    if (isActive) {
+        console.log('Displaying ACTIVE status');
+        currentStatusBadge.innerHTML = '<i class="fas fa-check-circle"></i> Active';
+        currentStatusBadge.className = 'status-badge-active';
+        vehicleVisibilityBadge.innerHTML = '<i class="fas fa-eye"></i> Vehicles visible to travellers';
+        vehicleVisibilityBadge.className = 'visibility-badge-active';
+        statusText.textContent = 'Active';
+        statusText.style.color = '#10b981';
+        
+        // Ensure toggle is checked
+        if (accountStatusToggle) accountStatusToggle.checked = true;
+        
+        if (deactivationConfirmBox) deactivationConfirmBox.style.display = 'none';
+        if (reactivationConfirmBox) reactivationConfirmBox.style.display = 'none';
+    } else {
+        console.log('Displaying DEACTIVATED status');
+        currentStatusBadge.innerHTML = '<i class="fas fa-pause-circle"></i> Deactivated';
+        currentStatusBadge.className = 'status-badge-deactivated';
+        vehicleVisibilityBadge.innerHTML = '<i class="fas fa-eye-slash"></i> Vehicles hidden from travellers';
+        vehicleVisibilityBadge.className = 'visibility-badge-deactivated';
+        statusText.textContent = 'Deactivated';
+        statusText.style.color = '#ef4444';
+        
+        // Ensure toggle is unchecked
+        if (accountStatusToggle) accountStatusToggle.checked = false;
+        
+        if (deactivationConfirmBox) deactivationConfirmBox.style.display = 'none';
+        if (reactivationConfirmBox) reactivationConfirmBox.style.display = 'block';
+        
+        // Show deactivation info if available
+        if (data.deactivated_at) {
+            console.log('Showing deactivation info for date:', data.deactivated_at);
+            const date = new Date(data.deactivated_at);
+            const infoEl = document.getElementById('deactivationInfo');
+            if (infoEl) {
+                infoEl.innerHTML = `
+                    <div class="deactivation-info">
+                        <p><strong>Deactivated on:</strong> ${date.toLocaleDateString()} at ${date.toLocaleTimeString()}</p>
+                        <p><strong>Reason:</strong> ${data.deactivation_reason || 'Not specified'}</p>
+                    </div>
+                `;
+            }
+        }
+    }
+}
+
+/**
+ * Handle account status toggle - FIXED VERSION
+ */
+function handleAccountStatusToggle() {
+    const isActive = document.getElementById('accountStatusToggle').checked;
+    const deactivationConfirmBox = document.getElementById('deactivationConfirmBox');
+    const reactivationConfirmBox = document.getElementById('reactivationConfirmBox');
+    
+    if (!isActive) {
+        // User is trying to deactivate - show deactivation confirmation
+        if (deactivationConfirmBox) {
+            deactivationConfirmBox.style.display = 'block';
+            document.getElementById('accountStatusToggle').checked = true; // Revert toggle
+        }
+    } else {
+        // User is trying to reactivate - show reactivation confirmation
+        if (reactivationConfirmBox) {
+            reactivationConfirmBox.style.display = 'block';
+            document.getElementById('accountStatusToggle').checked = false; // Revert toggle
+        }
+        if (deactivationConfirmBox) deactivationConfirmBox.style.display = 'none';
+    }
+}
+
+/**
+ * Toggle other reason field
+ */
+function toggleOtherReasonField() {
+    const deactivationReason = document.getElementById('deactivationReason');
+    const otherReasonGroup = document.getElementById('otherReasonGroup');
+    
+    if (deactivationReason && deactivationReason.value === 'other') {
+        otherReasonGroup.style.display = 'block';
+    } else if (otherReasonGroup) {
+        otherReasonGroup.style.display = 'none';
+    }
+}
+
+/**
+ * Toggle confirm deactivation button
+ */
+function toggleConfirmDeactivationBtn() {
+    const confirmDeactivationCheckbox = document.getElementById('confirmDeactivationCheckbox');
+    const confirmDeactivationBtn = document.getElementById('confirmDeactivationBtn');
+    
+    if (confirmDeactivationBtn) {
+        confirmDeactivationBtn.disabled = !confirmDeactivationCheckbox.checked;
+    }
+}
+
+/**
+ * Confirm deactivation - FIXED VERSION
+ */
+function confirmDeactivation() {
+    const deactivationReason = document.getElementById('deactivationReason');
+    const otherReason = document.getElementById('otherReason');
+    const confirmDeactivationBtn = document.getElementById('confirmDeactivationBtn');
+    
+    // Gather data
+    let reason = deactivationReason ? deactivationReason.value : '';
+    let feedback = '';
+    
+    if (reason === 'other') {
+        reason = 'other';
+        feedback = otherReason ? otherReason.value : '';
+    }
+    
+    // Show loading state
+    const originalText = confirmDeactivationBtn.innerHTML;
+    confirmDeactivationBtn.innerHTML = '<span class="spinner"></span> Deactivating...';
+    confirmDeactivationBtn.disabled = true;
+    
+    console.log('Sending deactivation request to:', BASE_PATH + '/api/settings/account-status');
+    console.log('Payload:', { status: 'deactivated', reason: reason, feedback: feedback });
+    
+    // Send to API
+    fetch(`${BASE_PATH}/api/settings/account-status`, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            status: 'deactivated',
+            reason: reason,
+            feedback: feedback
+        })
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log('Deactivation response:', result);
+        
+        if (result.success) {
+            // Update UI
+            document.getElementById('accountStatusToggle').checked = false;
+            updateStatusUI(false, result.data);
+            
+            // Hide confirmation box
+            const deactivationConfirmBox = document.getElementById('deactivationConfirmBox');
+            if (deactivationConfirmBox) deactivationConfirmBox.style.display = 'none';
+            
+            // Reset form
+            if (deactivationReason) deactivationReason.value = '';
+            if (otherReason) otherReason.value = '';
+            const otherReasonGroup = document.getElementById('otherReasonGroup');
+            if (otherReasonGroup) otherReasonGroup.style.display = 'none';
+            const confirmCheckbox = document.getElementById('confirmDeactivationCheckbox');
+            if (confirmCheckbox) confirmCheckbox.checked = false;
+            
+            // Show success message
+            showToast(result.data?.message || 'Account deactivated successfully', 'success');
+            
+            // Reload account status to show updated info
+            loadAccountStatus();
+        } else {
+            showToast(result.errors?.general || 'Failed to deactivate account', 'error');
+            // Reset button
+            confirmDeactivationBtn.innerHTML = originalText;
+            confirmDeactivationBtn.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Network error. Please try again.', 'error');
+        // Reset button
+        confirmDeactivationBtn.innerHTML = originalText;
+        confirmDeactivationBtn.disabled = false;
+    });
+}
+
+/**
+ * Cancel deactivation
+ */
+function cancelDeactivation() {
+    document.getElementById('accountStatusToggle').checked = true;
+    const deactivationConfirmBox = document.getElementById('deactivationConfirmBox');
+    if (deactivationConfirmBox) deactivationConfirmBox.style.display = 'none';
+    
+    // Reset form
+    const deactivationReason = document.getElementById('deactivationReason');
+    if (deactivationReason) deactivationReason.value = '';
+    
+    const otherReason = document.getElementById('otherReason');
+    if (otherReason) otherReason.value = '';
+    
+    const otherReasonGroup = document.getElementById('otherReasonGroup');
+    if (otherReasonGroup) otherReasonGroup.style.display = 'none';
+    
+    const confirmCheckbox = document.getElementById('confirmDeactivationCheckbox');
+    if (confirmCheckbox) confirmCheckbox.checked = false;
+    
+    toggleConfirmDeactivationBtn();
+}
+
+/**
+ * Confirm reactivation - FIXED VERSION
+ */
+function confirmReactivation() {
+    const confirmReactivationBtn = document.getElementById('confirmReactivationBtn');
+    
+    // Show loading state
+    const originalText = confirmReactivationBtn.innerHTML;
+    confirmReactivationBtn.innerHTML = '<span class="spinner"></span> Reactivating...';
+    confirmReactivationBtn.disabled = true;
+    
+    console.log('Sending reactivation request to:', BASE_PATH + '/api/settings/account-status');
+    
+    // Send to API
+    fetch(`${BASE_PATH}/api/settings/account-status`, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            status: 'active',
+            reason: '',
+            feedback: ''
+        })
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log('Reactivation response:', result);
+        
+        if (result.success) {
+            // Update UI
+            document.getElementById('accountStatusToggle').checked = true;
+            updateStatusUI(true, result.data);
+            
+            // Hide confirmation box
+            const reactivationConfirmBox = document.getElementById('reactivationConfirmBox');
+            if (reactivationConfirmBox) reactivationConfirmBox.style.display = 'none';
+            
+            // Show toast
+            showToast(result.data?.message || 'Account reactivated successfully', 'success');
+            
+            // Reload account status
+            loadAccountStatus();
+        } else {
+            showToast(result.errors?.general || 'Failed to reactivate account', 'error');
+            // Reset button
+            confirmReactivationBtn.innerHTML = originalText;
+            confirmReactivationBtn.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Network error. Please try again.', 'error');
+        // Reset button
+        confirmReactivationBtn.innerHTML = originalText;
+        confirmReactivationBtn.disabled = false;
+    });
+}
+
+/**
+ * Cancel reactivation
+ */
+function cancelReactivation() {
+    document.getElementById('accountStatusToggle').checked = false;
+    const reactivationConfirmBox = document.getElementById('reactivationConfirmBox');
+    if (reactivationConfirmBox) reactivationConfirmBox.style.display = 'none';
 }
 
 /**
@@ -252,8 +630,10 @@ function handleSecuritySubmit(e) {
             
             // Reset form
             e.target.reset();
-            document.getElementById('passwordStrength').className = 'password-strength';
-            document.getElementById('passwordStrengthText').textContent = '';
+            const passwordStrength = document.getElementById('passwordStrength');
+            if (passwordStrength) passwordStrength.className = 'password-strength';
+            const passwordStrengthText = document.getElementById('passwordStrengthText');
+            if (passwordStrengthText) passwordStrengthText.textContent = '';
         }, 1500);
     }
 }
@@ -474,8 +854,8 @@ function checkPasswordStrength() {
     const strengthText = document.getElementById('passwordStrengthText');
     
     if (!password) {
-        strengthBar.className = 'password-strength';
-        strengthText.textContent = '';
+        if (strengthBar) strengthBar.className = 'password-strength';
+        if (strengthText) strengthText.textContent = '';
         return;
     }
     
@@ -497,18 +877,26 @@ function checkPasswordStrength() {
     if (/[^A-Za-z0-9]/.test(password)) strength += 1;
     
     // Update UI based on strength
-    if (strength <= 2) {
-        strengthBar.className = 'password-strength strength-weak';
-        strengthText.textContent = 'Weak password';
-        strengthText.style.color = '#ff4d4f';
-    } else if (strength <= 4) {
-        strengthBar.className = 'password-strength strength-medium';
-        strengthText.textContent = 'Medium strength';
-        strengthText.style.color = '#faad14';
-    } else {
-        strengthBar.className = 'password-strength strength-strong';
-        strengthText.textContent = 'Strong password';
-        strengthText.style.color = '#52c41a';
+    if (strengthBar) {
+        if (strength <= 2) {
+            strengthBar.className = 'password-strength strength-weak';
+            if (strengthText) {
+                strengthText.textContent = 'Weak password';
+                strengthText.style.color = '#ff4d4f';
+            }
+        } else if (strength <= 4) {
+            strengthBar.className = 'password-strength strength-medium';
+            if (strengthText) {
+                strengthText.textContent = 'Medium strength';
+                strengthText.style.color = '#faad14';
+            }
+        } else {
+            strengthBar.className = 'password-strength strength-strong';
+            if (strengthText) {
+                strengthText.textContent = 'Strong password';
+                strengthText.style.color = '#52c41a';
+            }
+        }
     }
 }
 
@@ -559,199 +947,6 @@ function loadSavedSettings() {
             removePhotoBtn.style.display = 'block';
         }
     }
-}
-
-/**
- * Load account status from localStorage
- */
-function loadAccountStatus() {
-    const accountStatusToggle = document.getElementById('accountStatusToggle');
-    const currentStatusBadge = document.getElementById('currentStatusBadge');
-    const vehicleVisibilityBadge = document.getElementById('vehicleVisibilityBadge');
-    const statusText = document.getElementById('statusText');
-    
-    if (!accountStatusToggle) return;
-    
-    const accountStatus = localStorage.getItem('accountStatus') || 'active';
-    const isActive = accountStatus === 'active';
-    
-    accountStatusToggle.checked = isActive;
-    updateStatusUI(isActive);
-}
-
-/**
- * Update status UI
- */
-function updateStatusUI(isActive) {
-    const currentStatusBadge = document.getElementById('currentStatusBadge');
-    const vehicleVisibilityBadge = document.getElementById('vehicleVisibilityBadge');
-    const statusText = document.getElementById('statusText');
-    const deactivationConfirmBox = document.getElementById('deactivationConfirmBox');
-    const reactivationConfirmBox = document.getElementById('reactivationConfirmBox');
-    
-    if (!currentStatusBadge || !vehicleVisibilityBadge || !statusText) return;
-    
-    if (isActive) {
-        currentStatusBadge.innerHTML = '<i class="fas fa-check-circle"></i> Active';
-        currentStatusBadge.style.background = 'rgba(255,255,255,0.2)';
-        vehicleVisibilityBadge.innerHTML = '<i class="fas fa-eye"></i> Vehicles visible to travellers';
-        statusText.textContent = 'Active';
-        
-        if (deactivationConfirmBox) deactivationConfirmBox.style.display = 'none';
-        if (reactivationConfirmBox) reactivationConfirmBox.style.display = 'none';
-    } else {
-        currentStatusBadge.innerHTML = '<i class="fas fa-pause-circle"></i> Deactivated';
-        currentStatusBadge.style.background = 'rgba(231, 76, 60, 0.2)';
-        vehicleVisibilityBadge.innerHTML = '<i class="fas fa-eye-slash"></i> Vehicles hidden from travellers';
-        statusText.textContent = 'Deactivated';
-        
-        if (deactivationConfirmBox) deactivationConfirmBox.style.display = 'none';
-        if (reactivationConfirmBox) reactivationConfirmBox.style.display = 'block';
-    }
-}
-
-/**
- * Handle account status toggle
- */
-function handleAccountStatusToggle() {
-    const isActive = document.getElementById('accountStatusToggle').checked;
-    const deactivationConfirmBox = document.getElementById('deactivationConfirmBox');
-    const reactivationConfirmBox = document.getElementById('reactivationConfirmBox');
-    
-    if (!isActive) {
-        // Show deactivation confirmation
-        if (deactivationConfirmBox) deactivationConfirmBox.style.display = 'block';
-        if (reactivationConfirmBox) reactivationConfirmBox.style.display = 'none';
-    } else {
-        // Show reactivation confirmation
-        if (deactivationConfirmBox) deactivationConfirmBox.style.display = 'none';
-        if (reactivationConfirmBox) reactivationConfirmBox.style.display = 'block';
-    }
-}
-
-/**
- * Toggle other reason field
- */
-function toggleOtherReasonField() {
-    const deactivationReason = document.getElementById('deactivationReason');
-    const otherReasonGroup = document.getElementById('otherReasonGroup');
-    
-    if (deactivationReason.value === 'other') {
-        otherReasonGroup.style.display = 'block';
-    } else {
-        otherReasonGroup.style.display = 'none';
-    }
-}
-
-/**
- * Toggle confirm deactivation button
- */
-function toggleConfirmDeactivationBtn() {
-    const confirmDeactivationCheckbox = document.getElementById('confirmDeactivationCheckbox');
-    const confirmDeactivationBtn = document.getElementById('confirmDeactivationBtn');
-    
-    confirmDeactivationBtn.disabled = !confirmDeactivationCheckbox.checked;
-}
-
-/**
- * Confirm deactivation
- */
-function confirmDeactivation() {
-    const deactivationReason = document.getElementById('deactivationReason');
-    const otherReason = document.getElementById('otherReason');
-    const confirmDeactivationBtn = document.getElementById('confirmDeactivationBtn');
-    
-    // Show loading state
-    confirmDeactivationBtn.innerHTML = '<span class="spinner"></span> Deactivating...';
-    confirmDeactivationBtn.disabled = true;
-    
-    setTimeout(() => {
-        // Save deactivation info
-        const deactivationInfo = {
-            status: 'deactivated',
-            reason: deactivationReason.value,
-            otherReason: deactivationReason.value === 'other' ? otherReason.value : '',
-            deactivatedAt: new Date().toISOString()
-        };
-        
-        localStorage.setItem('accountStatus', 'deactivated');
-        localStorage.setItem('deactivationInfo', JSON.stringify(deactivationInfo));
-        
-        // Update UI
-        document.getElementById('accountStatusToggle').checked = false;
-        updateStatusUI(false);
-        
-        // Hide confirmation box
-        document.getElementById('deactivationConfirmBox').style.display = 'none';
-        
-        // Reset form
-        deactivationReason.value = '';
-        otherReason.value = '';
-        document.getElementById('otherReasonGroup').style.display = 'none';
-        document.getElementById('confirmDeactivationCheckbox').checked = false;
-        confirmDeactivationBtn.disabled = true;
-        
-        // Show toast
-        showToast('Account deactivated successfully. Your vehicles are now hidden from travellers.', 'success');
-        
-        // Reset button
-        confirmDeactivationBtn.innerHTML = '<i class="fas fa-pause-circle"></i> Confirm Deactivation';
-    }, 1500);
-}
-
-/**
- * Cancel deactivation
- */
-function cancelDeactivation() {
-    document.getElementById('accountStatusToggle').checked = true;
-    document.getElementById('deactivationConfirmBox').style.display = 'none';
-    
-    // Reset form
-    document.getElementById('deactivationReason').value = '';
-    document.getElementById('otherReason').value = '';
-    document.getElementById('otherReasonGroup').style.display = 'none';
-    document.getElementById('confirmDeactivationCheckbox').checked = false;
-    document.getElementById('confirmDeactivationBtn').disabled = true;
-}
-
-/**
- * Confirm reactivation
- */
-function confirmReactivation() {
-    const confirmReactivationBtn = document.getElementById('confirmReactivationBtn');
-    
-    // Show loading state
-    confirmReactivationBtn.innerHTML = '<span class="spinner"></span> Reactivating...';
-    confirmReactivationBtn.disabled = true;
-    
-    setTimeout(() => {
-        // Save reactivation
-        localStorage.setItem('accountStatus', 'active');
-        localStorage.removeItem('deactivationInfo');
-        
-        // Update UI
-        document.getElementById('accountStatusToggle').checked = true;
-        updateStatusUI(true);
-        
-        // Hide confirmation box
-        document.getElementById('reactivationConfirmBox').style.display = 'none';
-        
-        // Show toast
-        showToast('Account reactivated successfully. Your vehicles are now visible to travellers.', 'success');
-        
-        // Reset button
-        confirmReactivationBtn.innerHTML = '<i class="fas fa-play-circle"></i> Reactivate Account';
-        confirmReactivationBtn.disabled = false;
-    }, 1500);
-}
-
-/**
- * Cancel reactivation
- */
-function cancelReactivation() {
-    document.getElementById('accountStatusToggle').checked = false;
-    document.getElementById('reactivationConfirmBox').style.display = 'none';
-    updateStatusUI(false);
 }
 
 /**

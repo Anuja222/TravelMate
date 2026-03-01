@@ -331,171 +331,162 @@
 
           <!-- Account Status Tab -->
           <div class="tab-pane" id="account-status-tab">
-            <section class="settings-section">
-              <div class="section-header">
-                <i class="fas fa-toggle-on" style="color: var(--primary);"></i>
-                <h2>Account Status</h2>
-              </div>
-              
-              <div class="status-container">
-                <!-- Current Status Card -->
-                <div class="status-gradient-card">
-                  <div class="status-flex">
-                    <div class="status-user-info">
-                      <div class="status-icon-circle">
-                        <i class="fas fa-user-circle"></i>
-                      </div>
-                      <div>
-                        <h3 class="status-title">Current Account Status</h3>
-                        <div class="status-badges-container">
-                          <span id="currentStatusBadge" class="status-badge-active">
-                            <i class="fas fa-check-circle"></i> Active
-                          </span>
-                          <span id="vehicleVisibilityBadge" class="visibility-badge-active">
-                            <i class="fas fa-eye"></i> Vehicles visible to travellers
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="status-toggle-wrapper">
-                      <div class="status-toggle-label">
-                        <span>Account Status</span>
-                        <span id="statusText" class="status-toggle-value">Active</span>
-                      </div>
-                      <label class="toggle-switch status-toggle-switch-lg">
-                        <input type="checkbox" id="accountStatusToggle" checked>
-                        <span class="toggle-slider"></span>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Guidelines & Information -->
-                <div class="info-grid">
-                  <!-- Active Mode Card -->
-                  <div class="info-card-active">
-                    <div class="info-header">
-                      <div class="info-icon-active">
-                        <i class="fas fa-check-circle"></i>
-                      </div>
-                      <h4 class="info-title">Active Mode</h4>
-                    </div>
-                    <ul class="info-list">
-                      <li class="info-list-item">
-                        <i class="fas fa-car active-icon"></i>
-                        <span>All vehicles visible in search results</span>
-                      </li>
-                      <li class="info-list-item">
-                        <i class="fas fa-calendar-check active-icon"></i>
-                        <span>Receive new booking requests</span>
-                      </li>
-                      <li class="info-list-item">
-                        <i class="fas fa-bell active-icon"></i>
-                        <span>Full notification access</span>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <!-- Deactivated Mode Card -->
-                  <div class="info-card-inactive">
-                    <div class="info-header">
-                      <div class="info-icon-inactive">
-                        <i class="fas fa-pause-circle"></i>
-                      </div>
-                      <h4 class="info-title">Deactivated Mode</h4>
-                    </div>
-                    <ul class="info-list">
-                      <li class="info-list-item">
-                        <i class="fas fa-eye-slash inactive-icon"></i>
-                        <span>Vehicles hidden from travellers</span>
-                      </li>
-                      <li class="info-list-item">
-                        <i class="fas fa-clock inactive-icon"></i>
-                        <span>No new booking requests</span>
-                      </li>
-                      <li class="info-list-item">
-                        <i class="fas fa-save inactive-icon"></i>
-                        <span>All data & vehicles preserved</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-
-                <!-- Important Notes -->
-                <div class="notes-warning">
-                  <div class="notes-heading">
-                    <i class="fas fa-info-circle"></i>
-                    <h4>Important Information</h4>
-                  </div>
-                  <ul class="notes-list">
-                    <li>When deactivated, your vehicles will not appear in any traveller searches or listings</li>
-                    <li>Existing bookings will still be honored and you can communicate with travellers who have active bookings</li>
-                    <li>You can reactivate your account at any time - all your vehicles and settings will be restored</li>
-                    <li>Deactivation is temporary - use "Delete Account" if you wish to permanently remove your account</li>
-                  </ul>
-                </div>
-
-                <!-- Deactivation Confirmation Box -->
-                <div id="deactivationConfirmBox" class="deactivation-box">
-                  <div class="deactivation-heading">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <h4>Confirm Account Deactivation</h4>
-                  </div>
-                  <p class="deactivation-message">Please confirm that you want to deactivate your account. This will hide all your vehicles from travellers.</p>
-                  
-                  <div class="form-group">
-                    <label for="deactivationReason">Reason for deactivation (optional):</label>
-                    <select id="deactivationReason" class="deactivation-select">
-                      <option value="">Select a reason</option>
-                      <option value="temporary_break">Taking a temporary break</option>
-                      <option value="maintenance">Vehicle maintenance/updates</option>
-                      <option value="holiday">Going on holiday</option>
-                      <option value="business_pause">Business paused</option>
-                      <option value="other">Other reason</option>
-                    </select>
+              <section class="settings-section">
+                  <div class="section-header">
+                      <i class="fas fa-toggle-on" style="color: var(--primary);"></i>
+                      <h2>Account Status</h2>
                   </div>
                   
-                  <div id="otherReasonGroup" style="display: none;">
-                    <label for="otherReason">Please specify:</label>
-                    <textarea id="otherReason" rows="2" class="deactivation-textarea" placeholder="Tell us more..."></textarea>
-                  </div>
-                  
-                  <div class="deactivation-checkbox">
-                    <label>
-                      <input type="checkbox" id="confirmDeactivationCheckbox">
-                      <span>I understand that my vehicles will be hidden from travellers until I reactivate my account</span>
-                    </label>
-                  </div>
-                  
-                  <div class="deactivation-actions">
-                    <button class="delete-btn" id="confirmDeactivationBtn" disabled>
-                      <i class="fas fa-pause-circle"></i> Confirm Deactivation
-                    </button>
-                    <button class="cancel-btn" id="cancelDeactivationBtn">
-                      <i class="fas fa-times"></i> Cancel
-                    </button>
-                  </div>
-                </div>
+                  <div class="status-container">
+                      <!-- Current Status Card -->
+                      <div class="status-gradient-card">
+                          <div class="status-flex">
+                              <div class="status-user-info">
+                                  <div class="status-icon-circle">
+                                      <i class="fas fa-user-circle"></i>
+                                  </div>
+                                  <div>
+                                      <h3 class="status-title">Current Account Status</h3>
+                                      <div class="status-badges-container">
+                                          <span id="currentStatusBadge" class="status-badge-active">
+                                              <i class="fas fa-check-circle"></i> Active
+                                          </span>
+                                          <span id="vehicleVisibilityBadge" class="visibility-badge-active">
+                                              <i class="fas fa-eye"></i> Vehicles visible to travellers
+                                          </span>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="status-toggle-wrapper">
+                                  <div class="status-toggle-label">
+                                      <span>Account Status</span>
+                                      <span id="statusText" class="status-toggle-value">Active</span>
+                                  </div>
+                                  <label class="toggle-switch status-toggle-switch-lg">
+                                      <input type="checkbox" id="accountStatusToggle" checked>
+                                      <span class="toggle-slider"></span>
+                                  </label>
+                              </div>
+                          </div>
+                      </div>
 
-                <!-- Reactivation Confirmation Box -->
-                <div id="reactivationConfirmBox" class="reactivation-box">
-                  <div class="reactivation-heading">
-                    <i class="fas fa-check-circle"></i>
-                    <h4>Reactivate Account</h4>
+                      <!-- Guidelines Section - Dynamic Content -->
+                      <div id="deactivationGuidelines" class="guidelines-container">
+                          <!-- Content will be loaded dynamically -->
+                      </div>
+
+                      <!-- Info Cards Grid -->
+                      <div class="info-grid">
+                          <!-- Active Mode Card -->
+                          <div class="info-card-active">
+                              <div class="info-header">
+                                  <div class="info-icon-active">
+                                      <i class="fas fa-check-circle"></i>
+                                  </div>
+                                  <h4 class="info-title">Active Mode</h4>
+                              </div>
+                              <ul class="info-list">
+                                  <li class="info-list-item">
+                                      <i class="fas fa-car active-icon"></i>
+                                      <span>All vehicles visible in search results</span>
+                                  </li>
+                                  <li class="info-list-item">
+                                      <i class="fas fa-calendar-check active-icon"></i>
+                                      <span>Receive new booking requests</span>
+                                  </li>
+                                  <li class="info-list-item">
+                                      <i class="fas fa-bell active-icon"></i>
+                                      <span>Full notification access</span>
+                                  </li>
+                              </ul>
+                          </div>
+
+                          <!-- Deactivated Mode Card -->
+                          <div class="info-card-inactive">
+                              <div class="info-header">
+                                  <div class="info-icon-inactive">
+                                      <i class="fas fa-pause-circle"></i>
+                                  </div>
+                                  <h4 class="info-title">Deactivated Mode</h4>
+                              </div>
+                              <ul class="info-list">
+                                  <li class="info-list-item">
+                                      <i class="fas fa-eye-slash inactive-icon"></i>
+                                      <span>Vehicles hidden from travellers</span>
+                                  </li>
+                                  <li class="info-list-item">
+                                      <i class="fas fa-clock inactive-icon"></i>
+                                      <span>No new booking requests</span>
+                                  </li>
+                                  <li class="info-list-item">
+                                      <i class="fas fa-save inactive-icon"></i>
+                                      <span>All data & vehicles preserved</span>
+                                  </li>
+                              </ul>
+                          </div>
+                      </div>
+
+                      <!-- Deactivation Confirmation Box -->
+                      <div id="deactivationConfirmBox" class="deactivation-box" style="display: none;">
+                          <div class="deactivation-heading">
+                              <i class="fas fa-exclamation-triangle"></i>
+                              <h4>Confirm Account Deactivation</h4>
+                          </div>
+                          <p class="deactivation-message">Please confirm that you want to deactivate your account.</p>
+                          
+                          <div class="form-group">
+                              <label for="deactivationReason">Reason for deactivation (optional):</label>
+                              <select id="deactivationReason" class="deactivation-select">
+                                  <option value="">Select a reason</option>
+                                  <option value="temporary_break">Taking a temporary break</option>
+                                  <option value="maintenance">Vehicle maintenance/updates</option>
+                                  <option value="holiday">Going on holiday</option>
+                                  <option value="business_pause">Business paused</option>
+                                  <option value="other">Other reason</option>
+                              </select>
+                          </div>
+                          
+                          <div id="otherReasonGroup" style="display: none;">
+                              <label for="otherReason">Please specify:</label>
+                              <textarea id="otherReason" rows="2" class="deactivation-textarea" placeholder="Tell us more..."></textarea>
+                          </div>
+                          
+                          <div class="deactivation-checkbox">
+                              <label>
+                                  <input type="checkbox" id="confirmDeactivationCheckbox">
+                                  <span>I understand that deactivating my account will hide my vehicles from travellers, but I am still responsible for fulfilling all existing bookings.</span>
+                              </label>
+                          </div>
+                          
+                          <div class="deactivation-actions">
+                              <button class="delete-btn" id="confirmDeactivationBtn" disabled>
+                                  <i class="fas fa-pause-circle"></i> Confirm Deactivation
+                              </button>
+                              <button class="cancel-btn" id="cancelDeactivationBtn">
+                                  <i class="fas fa-times"></i> Cancel
+                              </button>
+                          </div>
+                      </div>
+
+                      <!-- Reactivation Confirmation Box -->
+                      <div id="reactivationConfirmBox" class="reactivation-box" style="display: none;">
+                          <div class="reactivation-heading">
+                              <i class="fas fa-check-circle"></i>
+                              <h4>Reactivate Account</h4>
+                          </div>
+                          <p class="reactivation-message">Your account is currently deactivated. Reactivate to make your vehicles visible to travellers again.</p>
+                          
+                          <div class="reactivation-actions">
+                              <button class="save-btn" id="confirmReactivationBtn">
+                                  <i class="fas fa-play-circle"></i> Reactivate Account
+                              </button>
+                              <button class="cancel-btn" id="cancelReactivationBtn">
+                                  <i class="fas fa-times"></i> Cancel
+                              </button>
+                          </div>
+                      </div>
                   </div>
-                  <p class="reactivation-message">Your account is currently deactivated. Reactivate to make your vehicles visible to travellers again.</p>
-                  
-                  <div class="reactivation-actions">
-                    <button class="save-btn" id="confirmReactivationBtn">
-                      <i class="fas fa-play-circle"></i> Reactivate Account
-                    </button>
-                    <button class="cancel-btn" id="cancelReactivationBtn">
-                      <i class="fas fa-times"></i> Cancel
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </section>
+              </section>
           </div>
 
           <!-- Delete Account Tab -->

@@ -130,7 +130,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-  <script src="../public/assets/js/vehicle.js"></script>
+    <script src="../public/assets/js/vehicle.js"></script>
 
   <script>
     // Performance stats animation
@@ -179,17 +179,43 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
         });
 
         const result = await response.json();
+        console.log('Vehicle list response:', result); // Debug log
 
-        if (result.success && result.data && result.data.length > 0) {
-          displayVehicles(result.data);
-        } else {
-          const container = document.querySelector('.vehicle-cards-grid');
-          if (container) {
-            container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;"><p>No vehicles found. <a href="vehicleType" style="color: #1abc5b;">Add your first vehicle</a></p></div>';
+        // FIX: Check the correct response structure
+        if (result.success) {
+          // FIX: Access vehicles from data.vehicles (not data)
+          const vehicles = result.data?.vehicles || [];
+          
+          if (vehicles.length > 0) {
+            displayVehicles(vehicles);
+          } else {
+            const container = document.querySelector('.vehicle-cards-grid');
+            if (container) {
+              container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;"><p>No vehicles found. <a href="vehicleType" style="color: #1abc5b;">Add your first vehicle</a></p></div>';
+            }
           }
+          
+          // Show account status message if account is deactivated
+          if (result.data?.account_deactivated) {
+            showAccountStatusMessage(result.data.message);
+          }
+        } else {
+          console.error('Failed to load vehicles:', result.errors);
         }
       } catch (error) {
         console.error('Error loading vehicles:', error);
+      }
+    }
+
+    function showAccountStatusMessage(message) {
+      // Create and show a toast or banner message
+      const container = document.querySelector('.vehicle-cards-grid');
+      if (container && message) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'account-status-message';
+        messageDiv.style.cssText = 'grid-column: 1/-1; background: #fff3cd; color: #856404; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ffeeba;';
+        messageDiv.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+        container.parentNode.insertBefore(messageDiv, container);
       }
     }
 
