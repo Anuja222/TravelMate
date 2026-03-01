@@ -384,3 +384,679 @@
     height: 36px;
   }
 }
+
+/* Add these styles to the existing payment_history.css file */
+
+/* View Payment Button */
+.view-payment-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.view-payment-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(26, 188, 91, 0.3);
+}
+
+.view-payment-btn i {
+    font-size: 0.9rem;
+}
+
+/* Payment Modal Styles */
+.payment-modal-content {
+    max-width: 600px;
+    width: 90%;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 20px;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 20px 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-header h3 i {
+    font-size: 1.5rem;
+}
+
+.modal-close-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 1.1rem;
+}
+
+.modal-close-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+.modal-body {
+    padding: 25px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+/* Payment Detail Sections */
+.payment-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--gray-200);
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.payment-status-badge {
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.payment-status-badge.completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.payment-status-badge.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.payment-status-badge.failed {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.payment-status-badge.refunded {
+    background: #d1e7ff;
+    color: #0a58ca;
+}
+
+.payment-transaction-id {
+    color: var(--gray-600);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.payment-detail-section {
+    margin-bottom: 25px;
+    padding: 15px;
+    background: var(--gray-100);
+    border-radius: 12px;
+    border: 1px solid var(--gray-200);
+}
+
+.payment-detail-section h4 {
+    margin: 0 0 15px 0;
+    color: var(--secondary);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--gray-300);
+}
+
+.payment-detail-section h4 i {
+    color: var(--primary);
+}
+
+.detail-row {
+    display: flex;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+.detail-label {
+    width: 120px;
+    color: var(--gray-600);
+    font-weight: 500;
+}
+
+.detail-value {
+    flex: 1;
+    color: var(--secondary);
+    font-weight: 500;
+}
+
+.amount-highlight {
+    color: var(--primary);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.error-text {
+    color: var(--danger);
+    font-weight: 600;
+}
+
+/* Modal Actions */
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid var(--gray-200);
+}
+
+.download-btn,
+.print-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.download-btn {
+    background: var(--primary);
+    color: white;
+}
+
+.download-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(26, 188, 91, 0.3);
+}
+
+.print-btn {
+    background: var(--gray-200);
+    color: var(--secondary);
+}
+
+.print-btn:hover {
+    background: var(--gray-300);
+    transform: translateY(-2px);
+}
+
+/* Responsive styles for modal */
+@media (max-width: 768px) {
+    .payment-modal-content {
+        width: 95%;
+        margin: 10px;
+    }
+    
+    .modal-header {
+        padding: 15px 20px;
+    }
+    
+    .modal-header h3 {
+        font-size: 1.1rem;
+    }
+    
+    .modal-body {
+        padding: 20px;
+    }
+    
+    .payment-detail-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .detail-row {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .detail-label {
+        width: 100%;
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+    }
+    
+    .view-payment-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Payment Modal Styles - Enhanced for popup modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    backdrop-filter: blur(5px);
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.payment-modal-content {
+    background: white;
+    border-radius: 24px;
+    max-width: 700px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 20px 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-radius: 24px 24px 0 0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+}
+
+.modal-header h3 i {
+    font-size: 1.6rem;
+}
+
+.modal-close-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.modal-close-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+.modal-body {
+    padding: 25px;
+    max-height: calc(85vh - 140px);
+    overflow-y: auto;
+}
+
+.modal-footer {
+    padding: 20px 25px;
+    border-top: 2px solid var(--gray-200);
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    background: var(--gray-100);
+    border-radius: 0 0 24px 24px;
+}
+
+.modal-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.download-btn {
+    background: var(--primary);
+    color: white;
+}
+
+.download-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(26, 188, 91, 0.3);
+}
+
+.print-btn {
+    background: var(--gray-700);
+    color: white;
+}
+
+.print-btn:hover {
+    background: var(--gray-800);
+    transform: translateY(-2px);
+}
+
+.close-btn {
+    background: var(--gray-300);
+    color: var(--gray-700);
+}
+
+.close-btn:hover {
+    background: var(--gray-400);
+    transform: translateY(-2px);
+}
+
+/* Payment Detail Styles */
+.payment-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--gray-200);
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.payment-status-badge {
+    padding: 8px 24px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.payment-status-badge.completed {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.payment-status-badge.pending {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+.payment-status-badge.failed {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.payment-status-badge.refunded {
+    background: #d1e7ff;
+    color: #0a58ca;
+    border: 1px solid #b8daff;
+}
+
+.payment-transaction-id {
+    color: var(--gray-600);
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gray-100);
+    padding: 6px 15px;
+    border-radius: 30px;
+    border: 1px solid var(--gray-300);
+}
+
+.payment-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.payment-detail-section {
+    background: var(--gray-100);
+    border-radius: 16px;
+    padding: 18px;
+    border: 1px solid var(--gray-200);
+    transition: all 0.3s ease;
+}
+
+.payment-detail-section:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.payment-detail-section h4 {
+    margin: 0 0 15px 0;
+    color: var(--secondary);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--gray-300);
+    font-weight: 600;
+}
+
+.payment-detail-section h4 i {
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
+.detail-item {
+    display: flex;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+    padding: 5px 0;
+    border-bottom: 1px dashed var(--gray-300);
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.detail-item.highlight {
+    background: rgba(26, 188, 91, 0.1);
+    margin: -5px -5px 5px -5px;
+    padding: 10px;
+    border-radius: 8px;
+    border-bottom: none;
+}
+
+.detail-item.error {
+    background: rgba(231, 76, 60, 0.1);
+    margin: -5px -5px 5px -5px;
+    padding: 10px;
+    border-radius: 8px;
+    border-bottom: none;
+}
+
+.detail-label {
+    width: 100px;
+    color: var(--gray-600);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.detail-value {
+    flex: 1;
+    color: var(--secondary);
+    font-weight: 500;
+    word-break: break-word;
+}
+
+.amount-value {
+    color: var(--primary);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+/* View Payment Button */
+.view-payment-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    border: 1px solid var(--primary);
+}
+
+.view-payment-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(26, 188, 91, 0.3);
+    border-color: var(--primary-dark);
+}
+
+.view-payment-btn i {
+    font-size: 0.9rem;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .payment-modal-content {
+        width: 95%;
+        max-height: 90vh;
+    }
+    
+    .modal-header {
+        padding: 15px 20px;
+    }
+    
+    .modal-header h3 {
+        font-size: 1.2rem;
+    }
+    
+    .modal-header h3 i {
+        font-size: 1.3rem;
+    }
+    
+    .modal-body {
+        padding: 15px;
+    }
+    
+    .modal-footer {
+        padding: 15px 20px;
+        flex-direction: column;
+    }
+    
+    .modal-btn {
+        width: 100%;
+    }
+    
+    .payment-detail-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .payment-detail-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .detail-item {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .detail-label {
+        width: 100%;
+    }
+    
+    .payment-transaction-id {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .view-payment-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .view-payment-btn i {
+        font-size: 0.8rem;
+    }
+    
+    .payment-detail-section {
+        padding: 12px;
+    }
+}
