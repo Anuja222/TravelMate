@@ -21,36 +21,7 @@ body {
   padding: 0 20px;
 }
 
-/* Page Title */
-.page-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.title-section h1 {
-  margin: 0;
-  font-size: 28px;
-  font-weight: 700;
-  color: #2c3e50;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.title-section h1 i {
-  color: #1abc5b;
-}
-
-.subtitle {
-  margin: 5px 0 0 0;
-  color: #7f8c8d;
-  font-size: 14px;
-}
-
+/* Button Styles */
 .btn-primary {
   background: #1abc5b;
   color: #fff;

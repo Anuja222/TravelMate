@@ -56,6 +56,7 @@ class VehicleController
         $year = $_POST['vehicle_year'] ?? '';
         $color = $_POST['vehicle_color'] ?? '';
         $number = $_POST['vehicle_number'] ?? '';
+        $costPerKm = $_POST['cost_per_km'] ?? '';
         $status = $_POST['status'] ?? 'active';
 
         error_log("Parsed Data - Type: $vehicleType, District: $workingDistrict, Model: $model");
@@ -63,6 +64,10 @@ class VehicleController
         // Validate required fields
         if (empty($vehicleType)) {
             $this->sendResponse(false, ['error' => 'Vehicle type is required']);
+        }
+
+        if ($costPerKm === '' || !is_numeric($costPerKm) || (float) $costPerKm <= 0) {
+            $this->sendResponse(false, ['error' => 'Cost per 1km must be a positive number']);
         }
 
         $vehicle = new Vehicle([
@@ -75,6 +80,7 @@ class VehicleController
             'year' => $year,
             'color' => $color,
             'number' => $number,
+            'costPerKm' => (float) $costPerKm,
             'status' => $status
         ]);
 
@@ -336,7 +342,12 @@ class VehicleController
         $year = $_POST['vehicle_year'] ?? $existingVehicle['vehicle_year'];
         $color = $_POST['vehicle_color'] ?? $existingVehicle['vehicle_color'];
         $number = $_POST['vehicle_number'] ?? $existingVehicle['vehicle_number'];
+        $costPerKm = $_POST['cost_per_km'] ?? $existingVehicle['cost_per_km'];
         $status = $_POST['status'] ?? $existingVehicle['status'];
+
+        if ($costPerKm === '' || !is_numeric($costPerKm) || (float) $costPerKm <= 0) {
+            $this->sendResponse(false, ['error' => 'Cost per 1km must be a positive number']);
+        }
 
         error_log("Update Data - Type: $vehicleType, Model: $model, Year: $year, Color: $color, Number: $number");
 
@@ -351,6 +362,7 @@ class VehicleController
             'year' => $year,
             'color' => $color,
             'number' => $number,
+            'costPerKm' => (float) $costPerKm,
             'status' => $status
         ]);
 

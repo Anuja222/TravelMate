@@ -89,6 +89,21 @@
 
         <div class="section">
           <h2 class="section-title">
+            <i class="fas fa-money-bill-wave"></i>
+            Pricing
+          </h2>
+
+          <div class="form-group">
+            <label for="cost-per-km">Cost per 1km (LKR) <span class="required-asterisk">*</span></label>
+            <input type="number" id="cost-per-km" name="cost_per_km" min="0.01" step="0.01" placeholder="e.g., 120.00" required>
+            <div class="error-message" id="cost-per-km-error"></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section">
+          <h2 class="section-title">
             <i class="fas fa-snowflake"></i>
             Air Conditioning
           </h2>
@@ -759,6 +774,15 @@
           }
         }
 
+        if (field.id === 'cost-per-km' && field.value) {
+          const cost = parseFloat(field.value);
+          if (isNaN(cost) || cost <= 0) {
+            if (errorElement) errorElement.textContent = 'Please enter a valid amount greater than 0';
+            field.style.borderColor = '#e74c3c';
+            return false;
+          }
+        }
+
         if (errorElement) errorElement.textContent = '';
         field.style.borderColor = '#ddd';
         return true;
@@ -775,6 +799,7 @@
           document.getElementById('vehicle-year')?.value,
           document.getElementById('vehicle-color')?.value,
           document.getElementById('vehicle-number')?.value,
+          document.getElementById('cost-per-km')?.value,
           document.getElementById('revenue-license')?.files.length,
           document.getElementById('insurance')?.files.length,
           document.getElementById('registration')?.files.length,

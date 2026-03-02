@@ -19,9 +19,17 @@
     <div class="content">
       <!-- Page Header -->
       <div class="page-title">
-        <div class="title-section">
-          <h1><i class="fas fa-map-marked-alt"></i> Popular Destinations</h1>
-          <p class="subtitle">Manage and showcase top travel destinations</p>
+        <div class="page-title-content">
+          <div class="page-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+          </div>
+          <div class="page-title-text">
+            <h1>Popular Destinations</h1>
+            <p class="page-subtitle">Manage and showcase top travel destinations</p>
+          </div>
         </div>
         <button id="btnCreate" class="btn-primary" onclick="window.location.href='createDestination'">
           <i class="fas fa-plus"></i> Create Destination

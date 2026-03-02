@@ -13,6 +13,7 @@ class Vehicle
     public $year;
     public $color;
     public $number;
+    public $costPerKm;
     public $status;
 
     public function __construct($data = [])
@@ -25,8 +26,8 @@ class Vehicle
 
     public function create($conn)
     {
-        $sql = "INSERT INTO vehicles (user_id, vehicle_type, working_district, passenger_count, ac_type, vehicle_model, vehicle_year, vehicle_color, vehicle_number, status, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+        $sql = "INSERT INTO vehicles (user_id, vehicle_type, working_district, passenger_count, ac_type, vehicle_model, vehicle_year, vehicle_color, vehicle_number, cost_per_km, status, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
         $stmt = $conn->prepare($sql);
         $result = $stmt->execute([
             $this->userId,
@@ -38,6 +39,7 @@ class Vehicle
             $this->year,
             $this->color,
             $this->number,
+            $this->costPerKm,
             $this->status ?? 'active'
         ]);
         
@@ -59,6 +61,7 @@ class Vehicle
                 vehicle_year = ?, 
                 vehicle_color = ?, 
                 vehicle_number = ?, 
+                cost_per_km = ?,
                 status = ?,
                 updated_at = NOW()
                 WHERE id = ? AND user_id = ?";
@@ -72,6 +75,7 @@ class Vehicle
             $this->year,
             $this->color,
             $this->number,
+            $this->costPerKm,
             $this->status ?? 'active',
             $this->id,
             $this->userId

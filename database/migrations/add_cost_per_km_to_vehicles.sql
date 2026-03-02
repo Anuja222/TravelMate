@@ -1,0 +1,2 @@
+ALTER TABLE vehicles
+ADD COLUMN cost_per_km DECIMAL(10,2) NOT NULL DEFAULT 0.00 AFTER vehicle_number;
