@@ -133,6 +133,12 @@ main {
   color: #1abc5b;
 }
 
+.sidebar ul li a.active {
+  background: #e9f6ee;
+  color: #1abc5b;
+  font-weight: 700;
+}
+
 .dashboard-content {
   flex: 1;
   margin-top: 1em;

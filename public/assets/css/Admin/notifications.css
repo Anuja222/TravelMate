@@ -1,15 +1,4 @@
-  /* Page Title */
-        .page-title h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #111;
-            margin-bottom: 30px;
-            border-bottom: 3px solid #1abc5b;
-            display: inline-block;
-            padding-bottom: 8px;
-        }
-
-        /* Filter Bar */
+  /* Filter Bar */
         .filter-bar {
             display: flex;
             flex-wrap: wrap;

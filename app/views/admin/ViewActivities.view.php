@@ -19,9 +19,18 @@
     <div class="content">
       <!-- Page Header -->
       <div class="page-title">
-        <div class="title-section">
-          <h1><i class="fas fa-hiking"></i> Activities Management</h1>
-          <p class="subtitle">Manage adventure activities and experiences</p>
+        <div class="page-title-content">
+          <div class="page-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="8.5" cy="7" r="4"></circle>
+              <polyline points="17 11 19 13 23 9"></polyline>
+            </svg>
+          </div>
+          <div class="page-title-text">
+            <h1>Activities Management</h1>
+            <p class="page-subtitle">Manage adventure activities and experiences</p>
+          </div>
         </div>
         <button id="btnCreate" class="btn-primary" onclick="window.location.href='createActivity'">
           <i class="fas fa-plus"></i> Create Activity

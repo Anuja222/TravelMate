@@ -664,7 +664,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
     <aside class="sidebar">
       <ul>
         <li><a href="ac_dashboard">Dashboard</a></li>
-        <li><a href="ac_dashboard">Bookings</a></li>
+        <li><a href="ac_bookings">Bookings</a></li>
         <li><a href="acc_setting">Settings</a></li>
       </ul>
     </aside>

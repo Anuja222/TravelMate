@@ -318,4 +318,91 @@ footer {
     .btn-subscribe:hover {
       background: #16a085;
     }
+
+/* Common Page Title Styles */
+.page-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.page-title-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.page-icon {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+.page-icon svg {
+  width: 28px;
+  height: 28px;
+  color: #ffffff;
+  stroke-width: 2.5;
+}
+
+.page-title-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.page-title h1 {
+  margin: 0;
+  font-size: 2.25rem;
+  color: #2c5f5d;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.page-subtitle {
+  margin: 0;
+  font-size: 1rem;
+  color: #6b7280;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* Responsive styles for page title */
+@media (max-width: 768px) {
+  .page-title {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .page-title-content {
+    gap: 12px;
+  }
+  
+  .page-icon {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .page-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .page-title h1 {
+    font-size: 1.75rem;
+  }
+  
+  .page-subtitle {
+    font-size: 0.9rem;
+  }
+}
     

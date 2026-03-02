@@ -223,9 +223,12 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
       card.className = 'vehicle-card-item';
 
       // Determine badge text and class based on status
-      const badgeText = vehicle.status === 'active' ? 'Active' :
-        vehicle.status === 'booked' ? 'Booked' : 'Available';
-      const badgeClass = `vehicle-status-badge status-${vehicle.status || 'available'}`;
+      const status = (vehicle.status || 'active').toLowerCase();
+      const badgeText = status === 'inactive' ? 'Inactive' : status === 'pending' ? 'Pending' : 'Active';
+      const badgeClass = `vehicle-status-badge status-${status}`;
+      const toggleNextStatus = status === 'active' ? 'inactive' : 'active';
+      const toggleLabel = status === 'active' ? 'Deactivate' : 'Activate';
+      const toggleBtnClass = `vehicle-card-btn-toggle ${status === 'active' ? 'active' : ''}`;
 
       // Get base URL for images
       const baseUrl = window.location.origin + '/TravelMate/public';
@@ -262,28 +265,47 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
         vehicleImage = vehicleTypeIcons[vehicle.vehicle_type];
       }
 
+      const costPerKm = Number(vehicle.cost_per_km || 0);
+      const formattedCost = costPerKm > 0 ? costPerKm.toFixed(2) : '0.00';
+
       card.innerHTML = `
-    <div class="${badgeClass}">${badgeText}</div>
-    <img src="${vehicleImage}" class="vehicle-card-image" alt="${vehicle.vehicle_type}" 
-         onerror="this.onerror=null; this.src='assets/trimages/car.png';">
+    <div class="vehicle-card-image-wrap">
+      <div class="${badgeClass}">${badgeText}</div>
+      <img src="${vehicleImage}" class="vehicle-card-image" alt="${vehicle.vehicle_type}" 
+           onerror="this.onerror=null; this.src='assets/trimages/car.png';">
+    </div>
     <div class="vehicle-card-content">
       <h4 class="vehicle-card-title">${vehicle.vehicle_model || 'Vehicle'}</h4>
       <div class="vehicle-card-location">
-        <i class="fas fa-map-marker-alt"></i> ${vehicle.working_district || 'Sri Lanka'}
+        <i class="fas fa-map-marker-alt"></i>
+        <span>${vehicle.working_district || 'Sri Lanka'}</span>
       </div>
-      <div class="vehicle-card-rating">★★★★☆ <span>(0 Reviews)</span></div>
       <div class="vehicle-card-specs">
         <span><i class="fas fa-users"></i> ${vehicle.passenger_count || 'N/A'} seats</span>
         <span><i class="fas fa-snowflake"></i> ${vehicle.ac_type === 'ac' ? 'A/C' : 'Non-A/C'}</span>
       </div>
-      <div class="vehicle-card-number">${vehicle.vehicle_number || 'N/A'}</div>
-      <div class="vehicle-card-actions">
-        <a href="editVehicle?id=${vehicle.id}" class="vehicle-card-btn-edit">
-          <i class="fas fa-edit"></i> Edit
-        </a>
-        <a href="DeleteVehicle?id=${vehicle.id}" class="vehicle-card-btn-delete">
-          <i class="fas fa-trash"></i> Delete
-        </a>
+
+      <div class="vehicle-card-footer">
+        <div class="vehicle-card-price-row">
+          <div class="vehicle-card-price">
+            <div class="vehicle-card-price-amount">
+              <span class="currency">LKR</span> ${formattedCost}
+            </div>
+            <div class="vehicle-card-price-label">per 1km</div>
+          </div>
+          <div class="vehicle-card-number">${vehicle.vehicle_number || 'N/A'}</div>
+        </div>
+        <div class="vehicle-card-actions">
+          <a href="editVehicle?id=${vehicle.id}" class="vehicle-card-btn-edit">
+            <i class="fas fa-edit"></i> Edit
+          </a>
+          <a href="DeleteVehicle?id=${vehicle.id}" class="vehicle-card-btn-delete">
+            <i class="fas fa-trash"></i> Delete
+          </a>
+          <button type="button" class="${toggleBtnClass}" onclick="toggleVehicleStatus(${vehicle.id}, '${toggleNextStatus}')">
+            <i class="fas fa-power-off"></i> ${toggleLabel}
+          </button>
+        </div>
       </div>
     </div>
   `;
@@ -295,6 +317,34 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
     document.addEventListener('DOMContentLoaded', function () {
       loadUserVehicles();
     });
+
+    async function toggleVehicleStatus(vehicleId, nextStatus) {
+      try {
+        const formData = new FormData();
+        formData.append('id', vehicleId);
+        formData.append('status', nextStatus);
+
+        const response = await fetch('<?php echo '/TravelMate/public'; ?>/api/vehicle/update', {
+          method: 'POST',
+          body: formData,
+          credentials: 'same-origin'
+        });
+
+        const result = await response.json();
+        if (!result.success) {
+          const msg = result.errors && result.errors.error ? result.errors.error : 'Failed to update vehicle status';
+          alert(msg);
+          return;
+        }
+
+        await loadUserVehicles();
+      } catch (error) {
+        console.error('Error toggling vehicle status:', error);
+        alert('Failed to update vehicle status. Please try again.');
+      }
+    }
+
+    window.toggleVehicleStatus = toggleVehicleStatus;
   </script>
 </body>
 

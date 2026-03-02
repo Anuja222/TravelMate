@@ -17,7 +17,7 @@
       <div class="main-image">
         <img id="mainTransportImage" src="assets/images/car.png" alt="Transport Main Image">
         <div class="image-counter">
-          <span id="imageCounter">1 / 4</span>
+          <span id="imageCounter">0 / 0</span>
         </div>
         <div class="gallery-nav">
           <button class="nav-btn prev" onclick="previousImage()">‹</button>
@@ -38,7 +38,7 @@
         <div class="transport-info">
           <div class="transport-header">
             <div class="transport-title">
-              <h1 id="transportTitle">Premium SUV - Toyota Land Cruiser</h1>
+              <h1 id="transportTitle">Loading transport details...</h1>
               <div class="transport-badges" id="transportBadges">
                 <!-- <span class="badge luxury">Luxury</span> -->
               </div>
@@ -47,14 +47,14 @@
 
           <div class="transport-location">
             <span class="location-icon">📍</span>
-            <span id="defaultLocation">Colombo International Airport</span>
+            <span id="defaultLocation">Loading location...</span>
             <button class="map-btn" onclick="showMap()">View on Map</button>
           </div>
 
           <div class="transport-description">
             <h3>About This Vehicle</h3>
             <p id="transportDescription">
-              Experience comfortable and reliable transportation with our premium SUV service. Perfect for families or groups, this spacious vehicle offers luxury, safety, and convenience throughout your journey in Sri Lanka. Equipped with modern amenities and driven by professional, experienced chauffeurs.
+              Transport details are loading. Please wait...
             </p>
           </div>
 
@@ -100,7 +100,7 @@
         <div class="booking-widget">
           <div class="widget-header">
             <div class="price-display">
-              <span class="price-amount" id="priceAmount">Rs.12,500</span>
+              <span class="price-amount" id="priceAmount">Rs.0</span>
               <span class="price-period">/ day</span>
             </div>
             <div class="price-note">Prices may vary by duration and destination</div>
@@ -414,7 +414,7 @@
     }
   </style>
 
-  <script src="assets/js/transportdetails.js"></script>
+  <script src="assets/js/transportdetails.js?v=<?php echo file_exists(__DIR__ . '/../../../public/assets/js/transportdetails.js') ? filemtime(__DIR__ . '/../../../public/assets/js/transportdetails.js') : time(); ?>"></script>
   <script>
     // Modal helper functions
     function showBookingSuccessModal(bookingId) {
