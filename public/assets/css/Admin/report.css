@@ -1,25 +1,4 @@
-  /* Dashboard Header */
-    .dashboard-header {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-      padding: 25px 30px;
-      margin-bottom: 25px;
-    }
-
-    .dashboard-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .dashboard-title h1 {
-      margin: 0;
-      font-size: 2rem;
-      color: #222;
-    }
-
+  /* Date Range Selector */
     .date-range {
       display: flex;
       align-items: center;

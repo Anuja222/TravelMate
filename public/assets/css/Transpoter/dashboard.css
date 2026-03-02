@@ -11,7 +11,7 @@ main {
   gap: 2em;
   max-width: 1300px;
   margin: 0 auto 100px auto;
-  padding: 1em 0 0 0;
+  padding: 6em 0 0 0;
 }
 
 .dashboard-content {
@@ -488,45 +488,55 @@ main {
 /* Individual Vehicle Card */
 .vehicle-card-item {
   background: #fff;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
-  min-height: 450px;
+  min-height: 470px;
 }
 
 .vehicle-card-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.vehicle-card-image-wrap {
+  position: relative;
 }
 
 /* Vehicle Image */
 .vehicle-card-image {
   width: 100%;
-  height: 200px;
+  height: 240px;
   object-fit: cover;
   flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.vehicle-card-item:hover .vehicle-card-image {
+  transform: scale(1.05);
 }
 
 /* Vehicle Info Section */
 .vehicle-card-content {
-  padding: 20px;
+  padding: 22px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   flex-grow: 1;
 }
 
 .vehicle-card-title {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 22px;
+  font-weight: 700;
   color: #2c3e50;
-  margin: 0 0 10px 0;
-  min-height: 24px;
+  margin: 0;
+  min-height: 52px;
+  line-height: 1.2;
 }
 
 .vehicle-card-location {
@@ -535,6 +545,8 @@ main {
   gap: 8px;
   color: #666;
   font-size: 14px;
+  margin-bottom: 2px;
+  min-height: 22px;
 }
 
 .vehicle-card-location i {
@@ -547,6 +559,7 @@ main {
   display: flex;
   align-items: center;
   gap: 5px;
+  margin-bottom: 2px;
 }
 
 .vehicle-card-rating span {
@@ -557,10 +570,11 @@ main {
 .vehicle-card-specs {
   display: flex;
   gap: 15px;
-  margin: 8px 0;
+  margin: 0;
   font-size: 14px;
   color: #666;
   flex-wrap: wrap;
+  min-height: 24px;
 }
 
 .vehicle-card-specs span {
@@ -574,106 +588,160 @@ main {
 }
 
 .vehicle-card-number {
-  background: #f0f0f0;
+  background: #f7f8fa;
+  border: 1px solid #edf0f3;
   padding: 8px 12px;
   border-radius: 4px;
-  font-weight: bold;
+  font-weight: 700;
   text-align: center;
-  margin: 8px 0;
+  margin: 0;
   font-size: 14px;
   font-family: monospace;
-  letter-spacing: 1px;
+  letter-spacing: 0.7px;
+  min-width: 120px;
 }
 
 .vehicle-card-price {
-  font-size: 20px;
-  font-weight: bold;
-  color: #1abc5b;
-  margin: 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0;
 }
 
-.vehicle-card-price span {
+.vehicle-card-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #e8e8e8;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.vehicle-card-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.vehicle-card-price-amount {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1abc5b;
+  line-height: 1;
+}
+
+.vehicle-card-price-amount .currency {
   font-size: 14px;
-  font-weight: normal;
+  font-weight: 600;
+}
+
+.vehicle-card-price-label {
+  font-size: 12px;
   color: #999;
 }
 
 /* Action Buttons */
 .vehicle-card-actions {
-  display: flex;
-  gap: 15px;
-  margin-top: auto;
-  padding-top: 15px;
-  border-top: 1px solid #eee;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
 }
 
-.vehicle-card-actions a {
-  flex: 1;
+.vehicle-card-actions a,
+.vehicle-card-btn-toggle {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 12px 15px;
-  border-radius: 6px;
+  gap: 6px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: 8px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   text-decoration: none;
   transition: all 0.3s ease;
   text-align: center;
+  box-sizing: border-box;
 }
 
 .vehicle-card-btn-edit {
-  background: #3498db;
+  background: linear-gradient(135deg, #1abc5b 0%, #16a085 100%);
   color: white;
+  box-shadow: 0 4px 12px rgba(26, 188, 91, 0.2);
 }
 
 .vehicle-card-btn-edit:hover {
-  background: #2980b9;
+  background: linear-gradient(135deg, #16a085 0%, #1abc5b 100%);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+  box-shadow: 0 6px 16px rgba(26, 188, 91, 0.3);
 }
 
 .vehicle-card-btn-delete {
-  background: #e74c3c;
-  color: white;
+  background: #fff;
+  color: #e74c3c;
+  border: 2px solid #e74c3c;
 }
 
 .vehicle-card-btn-delete:hover {
   background: #c0392b;
+  color: #fff;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
 }
 
 .vehicle-card-actions a i {
   font-size: 14px;
 }
 
+.vehicle-card-btn-toggle {
+  background: #fff;
+  color: #95a5a6;
+  border: 2px solid #95a5a6;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.vehicle-card-btn-toggle.active {
+  color: #1abc5b;
+  border: 2px solid #1abc5b;
+}
+
+.vehicle-card-btn-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.vehicle-card-btn-toggle.active:hover {
+  background: rgba(26, 188, 91, 0.1);
+}
+
 /* Status Badge */
 .vehicle-status-badge {
   position: absolute;
   top: 15px;
-  right: 15px;
-  background: #1abc5b;
+  left: 15px;
+  background: linear-gradient(135deg, #1abc5b 0%, #16a085 100%);
   color: white;
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
   z-index: 10;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 3px 10px rgba(26, 188, 91, 0.3);
   text-transform: uppercase;
 }
 
 .vehicle-status-badge.status-active {
-  background: #1abc5b;
+  background: linear-gradient(135deg, #1abc5b 0%, #16a085 100%);
 }
 
-.vehicle-status-badge.status-booked {
-  background: #f39c12;
+.vehicle-status-badge.status-pending {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
 }
 
-.vehicle-status-badge.status-available {
-  background: #3498db;
+.vehicle-status-badge.status-inactive {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
 }
 
 /* Responsive Design */
@@ -690,15 +758,16 @@ main {
   }
   
   .vehicle-card-item {
-    min-height: 420px;
+    min-height: 440px;
   }
   
   .vehicle-card-actions {
-    flex-direction: column;
+    grid-template-columns: 1fr;
     gap: 10px;
   }
   
-  .vehicle-card-actions a {
+  .vehicle-card-actions a,
+  .vehicle-card-btn-toggle {
     width: 100%;
   }
 }
@@ -709,11 +778,11 @@ main {
   }
   
   .vehicle-card-title {
-    font-size: 16px;
+    font-size: 19px;
   }
-  
-  .vehicle-card-price {
-    font-size: 18px;
+
+  .vehicle-card-price-amount {
+    font-size: 20px;
   }
   
   .vehicle-card-image {

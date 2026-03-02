@@ -8,12 +8,24 @@
 <body>
 
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
-  <?php include 'sidebar.view.php'; ?>
 
   <div class="page-container">
+    <?php include 'sidebar.view.php'; ?>
+
     <div class="content">
       <div class="page-title">
-        <h1>Add New Content</h1>
+        <div class="page-title-content">
+          <div class="page-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </div>
+          <div class="page-title-text">
+            <h1>Add New Content</h1>
+            <p class="page-subtitle">Create and publish new content</p>
+          </div>
+        </div>
       </div>
 
       <div class="form-container">

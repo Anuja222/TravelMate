@@ -15,21 +15,30 @@
 
     <div class="content">
       <!-- Dashboard Header -->
-      <div class="dashboard-header">
-        <div class="dashboard-title">
-          <h1>System Dashboard</h1>
-          <div class="date-range">
-            <span>Period:</span>
-            <select id="timePeriod">
-              <option value="today">Today</option>
-              <option value="week" selected>This Week</option>
-              <option value="month">This Month</option>
-              <option value="quarter">This Quarter</option>
-              <option value="year">This Year</option>
-            </select>
+      <div class="page-title">
+        <div class="page-title-content">
+          <div class="page-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="20" x2="12" y2="10"></line>
+              <line x1="18" y1="20" x2="18" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="16"></line>
+            </svg>
+          </div>
+          <div class="page-title-text">
+            <h1>System Dashboard</h1>
+            <p class="page-subtitle">Overview of platform performance and key metrics</p>
           </div>
         </div>
-        <p style="color: #666; margin: 0;">Overview of platform performance and key metrics</p>
+        <div class="date-range">
+          <span>Period:</span>
+          <select id="timePeriod">
+            <option value="today">Today</option>
+            <option value="week" selected>This Week</option>
+            <option value="month">This Month</option>
+            <option value="quarter">This Quarter</option>
+            <option value="year">This Year</option>
+          </select>
+        </div>
       </div>
 
       <!-- Stats Grid -->

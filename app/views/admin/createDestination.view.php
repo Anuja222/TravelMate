@@ -11,10 +11,22 @@
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
   <div class="page-container">
+    <?php include 'sidebar.view.php'; ?>
+
     <div class="content">
       <div class="page-title">
-        <h1>Create New Destination</h1>
-        <p style="color: #666; margin-top: 10px;">Add a new destination to your listing</p>
+        <div class="page-title-content">
+          <div class="page-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+          </div>
+          <div class="page-title-text">
+            <h1>Create New Destination</h1>
+            <p class="page-subtitle">Add a new destination to your listing</p>
+          </div>
+        </div>
       </div>
 
       <div class="form-card">

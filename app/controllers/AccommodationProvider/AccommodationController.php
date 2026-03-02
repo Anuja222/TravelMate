@@ -469,4 +469,54 @@ class AccommodationController {
             $this->sendResponse(false, ['Failed to get room availability']);
         }
     }
+
+    // Get all bookings for provider's accommodations
+    public function getProviderBookings() {
+        global $pdo;
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        error_log("=== Get Provider Bookings Called ===");
+        error_log("Session User: " . print_r($_SESSION['user'] ?? 'NOT SET', true));
+        
+        if (!isset($_SESSION['user'])) {
+            error_log("Unauthorized access to provider bookings - no user session");
+            $this->sendResponse(false, ['Unauthorized access - Please log in']);
+            return;
+        }
+        
+        try {
+            $userId = $_SESSION['user']['id'];
+            error_log("Fetching bookings for user_id: " . $userId);
+            
+            // Get all bookings for this provider's accommodations with accommodation and user details
+            $sql = "SELECT 
+                        b.*,
+                        a.title as accommodation_name,
+                        a.property_type,
+                        ai.image_path as accommodation_image,
+                        CONCAT(u.first_name, ' ', COALESCE(u.last_name, '')) as customer_name,
+                        u.email as customer_email,
+                        u.phone as customer_phone
+                    FROM bookings b
+                    INNER JOIN accommodations a ON b.accommodation_id = a.id
+                    INNER JOIN users u ON b.user_id = u.id
+                    LEFT JOIN accommodation_images ai ON a.id = ai.accommodation_id AND ai.is_main = 1
+                    WHERE a.user_id = ?
+                    ORDER BY b.created_at DESC";
+            
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$userId]);
+            $bookings = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            
+            error_log("Found " . count($bookings) . " bookings");
+            
+            $this->sendResponse(true, [], ['bookings' => $bookings]);
+            
+        } catch (\Exception $e) {
+            error_log("Error getting provider bookings: " . $e->getMessage());
+            $this->sendResponse(false, ['Failed to get bookings']);
+        }
+    }
 }

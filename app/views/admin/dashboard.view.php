@@ -16,7 +16,20 @@
   <div class="content">
 
     <div class="page-title">
-      <h1>Welcome, Admin</h1>
+      <div class="page-title-content">
+        <div class="page-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+        </div>
+        <div class="page-title-text">
+          <h1>Admin Dashboard</h1>
+          <p class="page-subtitle">Welcome back! Here's what's happening today</p>
+        </div>
+      </div>
     </div>
 
     <div class="cards-container">

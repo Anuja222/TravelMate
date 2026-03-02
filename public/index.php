@@ -166,6 +166,14 @@ elseif ($requestUri === '/api/accommodation/roomAvailability' && $_SERVER['REQUE
     $controller->getRoomAvailability();
     exit;
 }
+elseif ($requestUri === '/api/accommodation/providerBookings' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    error_log(">>> Routing to Provider Bookings");
+    if (ob_get_level()) ob_clean(); // Clear any output buffer if buffering is active
+    ini_set('display_errors', '0'); // Disable display_errors for API
+    $controller = new AccommodationController();
+    $controller->getProviderBookings();
+    exit;
+}
 
 // Accommodation page routes
 elseif (strpos($requestUri, '/accommodation/') === 0) {
@@ -776,6 +784,8 @@ elseif ($page === 'ac_dashboard') {
     include '../app/views/accommodation/detailsProperty.view.php';
 } elseif ($page === 'updateProperty') {
     include '../app/views/accommodation/updateProperty.view.php';
+} elseif ($page === 'ac_bookings') {
+    include '../app/views/accommodation/bookings.view.php';
 }
 
 //admin pages
@@ -810,6 +820,10 @@ elseif ($page === 'ad_dashboard') {
     include '../app/views/admin/editDestination.view.php';
 } elseif ($page === 'ViewActivities') {
     include '../app/views/admin/ViewActivities.view.php';
+} elseif ($page === 'accommodations') {
+    include '../app/views/admin/ViewAccommodations.view.php';
+} elseif ($page === 'transports') {
+    include '../app/views/admin/ViewTransports.view.php';
 } elseif ($page === 'createActivity') {
     include '../app/views/admin/createActivity.view.php';
 } elseif ($page === 'editActivity') {
