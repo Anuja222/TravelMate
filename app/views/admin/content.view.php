@@ -27,13 +27,18 @@
       </div>
       <div class="page-title-text">
         <h1>Blog Management</h1>
-        <p class="page-subtitle">Review and approve traveler blog posts</p>
+        <p class="page-subtitle">Review and monitor traveler blog posts</p>
       </div>
     </div>
   </div>
 
+  <div class="section-header">
+    <h2>Pending Review</h2>
+    <p>Posts waiting for admin approval.</p>
+  </div>
+
   <?php if (isset($pendingPosts) && count($pendingPosts) > 0): ?>
-    <div class="posts-grid">
+    <div class="posts-grid pending-posts-grid">
       <?php foreach ($pendingPosts as $post): ?>
         <div class="post-card" data-post-id="<?= $post->id ?>">
           <div class="post-image">
@@ -81,7 +86,7 @@
             </p>
             
             <div class="post-actions">
-              <button class="btn-view" onclick="viewFullPost(<?= $post->id ?>, <?= htmlspecialchars(json_encode($post), ENT_QUOTES) ?>)">
+              <button class="btn-view" onclick="viewFullPost(<?= $post->id ?>, <?= htmlspecialchars(json_encode($post), ENT_QUOTES) ?>, 'pending')">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                   <circle cx="12" cy="12" r="3"></circle>
@@ -114,6 +119,93 @@
       </svg>
       <h3>No Pending Posts</h3>
       <p>All blog posts have been reviewed.</p>
+    </div>
+  <?php endif; ?>
+
+  <div class="section-header" style="margin-top: 42px;">
+    <h2>Currently in Feed</h2>
+    <p>Posts that are already approved and visible to travelers.</p>
+  </div>
+
+  <?php if (isset($approvedPosts) && count($approvedPosts) > 0): ?>
+    <div class="posts-grid feed-posts-grid">
+      <?php foreach ($approvedPosts as $post): ?>
+        <div class="post-card" data-feed-post-id="<?= $post->id ?>">
+          <div class="post-image">
+            <?php if (!empty($post->image)): ?>
+              <img src="<?= htmlspecialchars($post->image) ?>" alt="<?= htmlspecialchars($post->title) ?>" onerror="this.src='assets/images/default-post.png'">
+            <?php else: ?>
+              <img src="assets/images/default-post.png" alt="No image">
+            <?php endif; ?>
+            <div class="post-category-badge">
+              <?= htmlspecialchars(ucfirst($post->category ?? 'General')) ?>
+            </div>
+          </div>
+
+          <div class="post-content">
+            <h3 class="post-title"><?= htmlspecialchars($post->title) ?></h3>
+
+            <div class="post-meta">
+              <div class="meta-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <?= htmlspecialchars($post->first_name . ' ' . $post->last_name) ?>
+              </div>
+              <div class="meta-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                <?= htmlspecialchars($post->location ?? 'Not specified') ?>
+              </div>
+              <div class="meta-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <?= date('M d, Y', strtotime($post->created_at)) ?>
+              </div>
+            </div>
+
+            <p class="post-description">
+              <?= htmlspecialchars(substr($post->description ?? '', 0, 120)) ?><?= strlen($post->description ?? '') > 120 ? '...' : '' ?>
+            </p>
+
+            <div class="post-actions">
+              <button class="btn-view" onclick="viewFullPost(<?= $post->id ?>, <?= htmlspecialchars(json_encode($post), ENT_QUOTES) ?>, 'feed')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                View Full
+              </button>
+              <button class="btn-delete" onclick="deleteFeedPost(<?= $post->id ?>)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                  <path d="M10 11v6"></path>
+                  <path d="M14 11v6"></path>
+                  <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+                </svg>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    </div>
+  <?php else: ?>
+    <div class="empty-state">
+      <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+      </svg>
+      <h3>No Feed Posts</h3>
+      <p>Approved posts will appear here.</p>
     </div>
   <?php endif; ?>
 </div>
@@ -165,6 +257,18 @@
 </div>
 
 <style>
+  .section-header h2 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 24px;
+  }
+
+  .section-header p {
+    margin: 8px 0 0 0;
+    color: #6b7280;
+    font-size: 14px;
+  }
+
   /* Grid Layout */
   .posts-grid {
     display: grid;
@@ -318,6 +422,17 @@
   }
   
   .btn-reject:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  }
+
+  .btn-delete {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+  }
+
+  .btn-delete:hover {
     background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
@@ -514,6 +629,41 @@
       }
     );
   }
+
+  function deleteFeedPost(postId) {
+    showConfirmModal(
+      'Delete Feed Post',
+      'Are you sure you want to permanently delete this post from the feed?',
+      'Delete',
+      '#ef4444',
+      '<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>',
+      function() {
+        fetch('content/delete', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: 'post_id=' + postId
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            closeConfirmModal();
+            showSuccessModalWithMessage('Post Deleted', 'The post has been removed from the feed.');
+            removeFeedPostFromList(postId);
+          } else {
+            closeConfirmModal();
+            alert('Error: ' + data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          closeConfirmModal();
+          alert('Failed to delete post');
+        });
+      }
+    );
+  }
   
   function removePostFromList(postId) {
     const postCard = document.querySelector(`.post-card[data-post-id="${postId}"]`);
@@ -525,7 +675,7 @@
         postCard.remove();
         
         // Check if there are no more posts
-        const postsGrid = document.querySelector('.posts-grid');
+        const postsGrid = document.querySelector('.pending-posts-grid');
         if (postsGrid && postsGrid.querySelectorAll('.post-card').length === 0) {
           // Replace only the grid, not the entire content
           postsGrid.outerHTML = `
@@ -542,8 +692,34 @@
       }, 300);
     }
   }
+
+  function removeFeedPostFromList(postId) {
+    const postCard = document.querySelector(`.feed-posts-grid .post-card[data-feed-post-id="${postId}"]`);
+    if (postCard) {
+      postCard.style.transition = 'all 0.3s ease';
+      postCard.style.opacity = '0';
+      postCard.style.transform = 'scale(0.9)';
+      setTimeout(() => {
+        postCard.remove();
+
+        const postsGrid = document.querySelector('.feed-posts-grid');
+        if (postsGrid && postsGrid.querySelectorAll('.post-card').length === 0) {
+          postsGrid.outerHTML = `
+            <div class="empty-state">
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+              </svg>
+              <h3>No Feed Posts</h3>
+              <p>Approved posts will appear here.</p>
+            </div>
+          `;
+        }
+      }, 300);
+    }
+  }
   
-  function viewFullPost(postId, postData) {
+  function viewFullPost(postId, postData, postType = 'pending') {
     const modal = document.getElementById('viewPostModal');
     document.getElementById('modalPostTitle').textContent = postData.title;
     
@@ -588,11 +764,18 @@
     
     // Display action buttons
     const actionsDiv = document.getElementById('modalPostActions');
-    actionsDiv.innerHTML = `
-      <button onclick="closeModal()" style="padding: 10px 24px; background: #f3f4f6; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; color: #374151; font-weight: 600;">Close</button>
-      <button onclick="approvePost(${postId}); closeModal();" style="padding: 10px 24px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; border-radius: 8px; font-size: 14px; cursor: pointer; color: white; font-weight: 600;">Approve Post</button>
-      <button onclick="rejectPost(${postId}); closeModal();" style="padding: 10px 24px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; border-radius: 8px; font-size: 14px; cursor: pointer; color: white; font-weight: 600;">Reject Post</button>
-    `;
+    if (postType === 'feed') {
+      actionsDiv.innerHTML = `
+        <button onclick="closeModal()" style="padding: 10px 24px; background: #f3f4f6; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; color: #374151; font-weight: 600;">Close</button>
+        <button onclick="deleteFeedPost(${postId}); closeModal();" style="padding: 10px 24px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; border-radius: 8px; font-size: 14px; cursor: pointer; color: white; font-weight: 600;">Delete Post</button>
+      `;
+    } else {
+      actionsDiv.innerHTML = `
+        <button onclick="closeModal()" style="padding: 10px 24px; background: #f3f4f6; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; color: #374151; font-weight: 600;">Close</button>
+        <button onclick="approvePost(${postId}); closeModal();" style="padding: 10px 24px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; border-radius: 8px; font-size: 14px; cursor: pointer; color: white; font-weight: 600;">Approve Post</button>
+        <button onclick="rejectPost(${postId}); closeModal();" style="padding: 10px 24px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; border-radius: 8px; font-size: 14px; cursor: pointer; color: white; font-weight: 600;">Reject Post</button>
+      `;
+    }
     
     modal.style.display = 'flex';
   }

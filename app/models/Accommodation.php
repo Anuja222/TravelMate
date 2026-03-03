@@ -51,7 +51,7 @@ class Accommodation {
             $this->checkInStart,
             $this->checkInEnd,
             $this->checkOutTime,
-            $this->status ?? 'active'
+            $this->status ?? 'pending'
         ]);
 
         if (!$result) {
@@ -70,6 +70,13 @@ class Accommodation {
 
     public static function findAll($conn) {
         $sql = "SELECT * FROM accommodations WHERE status = 'active' ORDER BY created_at DESC";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public static function findAllForAdmin($conn) {
+        $sql = "SELECT * FROM accommodations ORDER BY created_at DESC";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);

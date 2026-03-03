@@ -9,6 +9,99 @@ $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
 $firstName = $isLoggedIn ? $_SESSION['user']['first_name'] : '';
 $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
 $role = $isLoggedIn ? $_SESSION['user']['role'] : '';
+
+$requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
+$requestPath = rtrim($requestPath, '/');
+$currentRoute = strtolower(basename($requestPath));
+
+if ($currentRoute === '' || $currentRoute === 'public' || $currentRoute === 'index.php') {
+    if ($role === 'traveller') {
+        $currentRoute = 'homet';
+    } elseif ($role === 'transport') {
+        $currentRoute = 'tr_dashboard';
+    } elseif ($role === 'accommodation') {
+        $currentRoute = 'ac_dashboard';
+    } else {
+        $currentRoute = 'home';
+    }
+}
+
+$homeRouteByRole = [
+    'traveller' => 'homet',
+    'transport' => 'tr_dashboard',
+    'accommodation' => 'ac_dashboard',
+    'admin' => 'ad_dashboard'
+];
+
+$homeRoute = $homeRouteByRole[$role] ?? 'home';
+$routeMeta = [
+    'homet' => ['label' => 'Home'],
+    'dashboard' => ['label' => 'My Profile'],
+    'profile' => ['label' => 'Profile'],
+    'profilesetting' => ['label' => 'Profile Settings', 'parent' => 'profile'],
+    'favdestination' => ['label' => 'Destinations'],
+    'destinationview' => ['label' => 'Destination Details', 'parent' => 'favdestination'],
+    'favactivity' => ['label' => 'Activities'],
+    'activityview' => ['label' => 'Activity Details', 'parent' => 'favactivity'],
+    'accommodation' => ['label' => 'Accommodations'],
+    'accommodationdetail' => ['label' => 'Accommodation Details', 'parent' => 'accommodation'],
+    'booking_availability' => ['label' => 'Availability', 'parent' => 'accommodationdetail'],
+    'booking_details' => ['label' => 'Booking Details', 'parent' => 'booking_availability'],
+    'booking_payment' => ['label' => 'Payment', 'parent' => 'booking_details'],
+    'booking_finish' => ['label' => 'Booking Confirmed', 'parent' => 'booking_payment'],
+    'transport' => ['label' => 'Transport'],
+    'transportdetails' => ['label' => 'Transport Details', 'parent' => 'transport'],
+    'transport_booking_details' => ['label' => 'Booking Details', 'parent' => 'transportdetails'],
+    'transport_booking_payment' => ['label' => 'Payment', 'parent' => 'transport_booking_details'],
+    'transport_booking_finish' => ['label' => 'Booking Confirmed', 'parent' => 'transport_booking_payment'],
+    'mybookings' => ['label' => 'My Bookings'],
+    'mybooking_details' => ['label' => 'Booking Details', 'parent' => 'mybookings'],
+    'mytransportbookings' => ['label' => 'Transport Bookings'],
+    'feed' => ['label' => 'Vlog'],
+    'blog' => ['label' => 'Blog'],
+    'about' => ['label' => 'About Us'],
+    'contact' => ['label' => 'Contact Us']
+];
+
+$buildBreadcrumb = function ($route) use (&$buildBreadcrumb, $routeMeta) {
+    if (!isset($routeMeta[$route])) {
+        return [];
+    }
+
+    $meta = $routeMeta[$route];
+    $items = [];
+
+    if (!empty($meta['parent'])) {
+        $items = $buildBreadcrumb($meta['parent']);
+    }
+
+    $items[] = [
+        'route' => $route,
+        'label' => $meta['label']
+    ];
+
+    return $items;
+};
+
+$directionItems = [];
+if ($role === 'traveller') {
+    $directionItems[] = ['route' => 'homet', 'label' => 'Home'];
+    $dynamicItems = $buildBreadcrumb($currentRoute);
+
+    if (!empty($dynamicItems)) {
+        foreach ($dynamicItems as $item) {
+            if ($item['route'] === 'homet') {
+                continue;
+            }
+            $directionItems[] = $item;
+        }
+    } elseif ($currentRoute !== 'homet') {
+        $directionItems[] = [
+            'route' => $currentRoute,
+            'label' => ucwords(str_replace(['_', '-'], ' ', $currentRoute))
+        ];
+    }
+}
 ?>
 
 <head>
@@ -26,20 +119,20 @@ $role = $isLoggedIn ? $_SESSION['user']['role'] : '';
         <ul class="nav-links">
             <?php if ($role !== 'admin'): ?>
                 <?php if (!$isLoggedIn): ?>
-                    <li><a href="home">Home</a></li>
+                    <li><a href="home" class="<?php echo $currentRoute === 'home' ? 'active' : ''; ?>">Home</a></li>
                 <?php else: ?>
                     <?php if ($role === 'traveller'): ?>
-                        <li><a href="homet">Home</a></li>
+                        <li><a href="homet" class="<?php echo $currentRoute === 'homet' ? 'active' : ''; ?>">Home</a></li>
                     <?php elseif ($role === 'transport'): ?>
-                        <li><a href="tr_dashboard">Home</a></li>
+                        <li><a href="tr_dashboard" class="<?php echo $currentRoute === 'tr_dashboard' ? 'active' : ''; ?>">Home</a></li>
                     <?php elseif ($role === 'accommodation'): ?>
-                        <li><a href="ac_dashboard">Home</a></li>
+                        <li><a href="ac_dashboard" class="<?php echo $currentRoute === 'ac_dashboard' ? 'active' : ''; ?>">Home</a></li>
                     <?php endif; ?>
                 <?php endif; ?>
-                <li><a href="about">About Us</a></li>
-                <li><a href="contact">Contact Us</a></li>
+                <li><a href="about" class="<?php echo $currentRoute === 'about' ? 'active' : ''; ?>">About Us</a></li>
+                <li><a href="contact" class="<?php echo $currentRoute === 'contact' ? 'active' : ''; ?>">Contact Us</a></li>
                 <?php if ($role === 'traveller'): ?>
-                    <li><a href="feed">Vlog</a></li>
+                    <li><a href="feed" class="<?php echo $currentRoute === 'feed' ? 'active' : ''; ?>">Vlog</a></li>
                 <?php endif; ?>
             <?php endif; ?>
         </ul>
@@ -92,6 +185,29 @@ $role = $isLoggedIn ? $_SESSION['user']['role'] : '';
             </div>
         <?php endif; ?>
     </nav>
+
+    <?php if ($role === 'traveller' && $isLoggedIn): ?>
+        <div class="page-direction-wrap">
+            <div class="page-direction" aria-label="Current page direction">
+                <span class="direction-label">You are here</span>
+                <div class="direction-path">
+                    <?php foreach ($directionItems as $index => $item): ?>
+                        <?php if ($index > 0): ?>
+                            <span class="direction-separator">›</span>
+                        <?php endif; ?>
+
+                        <?php if ($index === count($directionItems) - 1): ?>
+                            <span class="direction-current"><?php echo htmlspecialchars($item['label']); ?></span>
+                        <?php else: ?>
+                            <a href="<?php echo htmlspecialchars($item['route']); ?>" class="direction-link">
+                                <?php echo htmlspecialchars($item['label']); ?>
+                            </a>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
 </header>
 
 <style>

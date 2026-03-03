@@ -38,8 +38,9 @@ function loadTransports() {
     .then(data => {
         if (data.success) {
             allTransports = data.data || [];
-            filteredTransports = [...allTransports];
+            filteredTransports = allTransports.filter(v => v.status !== 'pending');
             updateStatistics();
+            displayPendingTransports();
             displayTransports(filteredTransports);
         } else {
             console.error('Failed to load transports:', data.errors);
@@ -82,12 +83,40 @@ function displayTransports(transports) {
     grid.innerHTML = transports.map(transport => createTransportCard(transport)).join('');
 }
 
+function displayPendingTransports() {
+    const grid = document.getElementById('pendingTransportsGrid');
+    const emptyState = document.getElementById('pendingEmptyState');
+
+    if (!grid || !emptyState) {
+        return;
+    }
+
+    const pendingTransports = allTransports.filter(v => v.status === 'pending');
+
+    if (pendingTransports.length === 0) {
+        grid.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+    }
+
+    grid.style.display = 'grid';
+    emptyState.style.display = 'none';
+    grid.innerHTML = pendingTransports.map(transport => createTransportCard(transport)).join('');
+}
+
 // Show empty state
 function showEmptyState() {
     const grid = document.getElementById('transportsGrid');
     const emptyState = document.getElementById('emptyState');
+    const pendingGrid = document.getElementById('pendingTransportsGrid');
+    const pendingEmptyState = document.getElementById('pendingEmptyState');
     grid.style.display = 'none';
     emptyState.style.display = 'block';
+
+    if (pendingGrid && pendingEmptyState) {
+        pendingGrid.style.display = 'none';
+        pendingEmptyState.style.display = 'block';
+    }
 }
 
 // Create transport card HTML
@@ -107,6 +136,7 @@ function createTransportCard(transport) {
     const acType = transport.ac_type || 'N/A';
     const vehicleNumber = transport.vehicle_number || 'N/A';
     const year = transport.vehicle_year || 'N/A';
+    const color = transport.vehicle_color || 'Not specified';
     
     return `
         <div class="transport-card" onclick="viewTransport(${transport.id})">
@@ -117,36 +147,92 @@ function createTransportCard(transport) {
             <div class="transport-content">
                 <div class="transport-type">${escapeHtml(vehicleType)}</div>
                 <h3 class="transport-title">${escapeHtml(model)}</h3>
-                <div class="transport-location">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>${escapeHtml(district)}</span>
-                </div>
-                <div class="transport-details">
-                    <div class="detail-item">
-                        <i class="fas fa-users"></i>
-                        <span>${passengers} Seats</span>
+
+                <div class="transport-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>${escapeHtml(district)}</span>
                     </div>
-                    <div class="detail-item">
-                        <i class="fas fa-wind"></i>
-                        <span>${acType.toUpperCase()}</span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-calendar"></i>
-                        <span>${year}</span>
+                    <div class="meta-item">
+                        <i class="fas fa-car"></i>
+                        <span>${passengers} Seats • ${acType.toUpperCase()} • ${year}</span>
                     </div>
                 </div>
+
+                <p class="transport-description">Vehicle No: ${escapeHtml(vehicleNumber)} • Color: ${escapeHtml(color)}</p>
+
                 <div class="transport-footer">
                     <div>
                         <div class="transport-price">${escapeHtml(vehicleNumber)}</div>
                         <div class="price-label">Vehicle No.</div>
                     </div>
-                    <button class="btn-view" onclick="event.stopPropagation(); viewTransport(${transport.id})">
-                        View Details
-                    </button>
+                    <div class="card-actions">
+                        <button class="btn-view" onclick="event.stopPropagation(); viewTransport(${transport.id})">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            View Full
+                        </button>
+                        ${transport.status === 'pending' ? `
+                            <button class="btn-approve" onclick="event.stopPropagation(); moderateVehicle(${transport.id}, 'approve')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                Approve
+                            </button>
+                            <button class="btn-reject" onclick="event.stopPropagation(); moderateVehicle(${transport.id}, 'reject')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                                Reject
+                            </button>
+                        ` : ''}
+                    </div>
                 </div>
             </div>
         </div>
     `;
+}
+
+function moderateVehicle(id, action) {
+    const endpoint = action === 'approve' ? 'approve' : 'reject';
+    const label = action === 'approve' ? 'approve' : 'reject';
+
+    if (!confirm(`Are you sure you want to ${label} this vehicle?`)) {
+        return;
+    }
+
+    const baseUrl = getBaseUrl();
+    fetch(`${baseUrl}/api/vehicle/${endpoint}`, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `id=${encodeURIComponent(id)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data.success) {
+            alert(data.errors?.error || `Failed to ${label} vehicle`);
+            return;
+        }
+
+        const vehicle = allTransports.find(v => Number(v.id) === Number(id));
+        if (vehicle) {
+            vehicle.status = data.data?.status || (action === 'approve' ? 'active' : 'inactive');
+        }
+
+        updateStatistics();
+        displayPendingTransports();
+        applyFilters();
+    })
+    .catch(error => {
+        console.error(`Error trying to ${label} vehicle:`, error);
+        alert(`Failed to ${label} vehicle`);
+    });
 }
 
 // Apply filters
@@ -156,7 +242,9 @@ function applyFilters() {
     const typeFilter = document.getElementById('typeFilter').value.toLowerCase();
     const acFilter = document.getElementById('acFilter').value.toLowerCase();
     
-    filteredTransports = allTransports.filter(transport => {
+    const nonPendingTransports = allTransports.filter(v => v.status !== 'pending');
+
+    filteredTransports = nonPendingTransports.filter(transport => {
         const matchesSearch = !searchTerm || 
             (transport.vehicle_model && transport.vehicle_model.toLowerCase().includes(searchTerm)) ||
             (transport.vehicle_number && transport.vehicle_number.toLowerCase().includes(searchTerm)) ||
