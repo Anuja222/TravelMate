@@ -40,7 +40,7 @@ class Vehicle
             $this->color,
             $this->number,
             $this->costPerKm,
-            $this->status ?? 'active'
+            $this->status ?? 'pending'
         ]);
         
         if (!$result) {
@@ -76,7 +76,7 @@ class Vehicle
             $this->color,
             $this->number,
             $this->costPerKm,
-            $this->status ?? 'active',
+            $this->status ?? 'pending',
             $this->id,
             $this->userId
         ]);
@@ -108,6 +108,14 @@ class Vehicle
     public static function findAll($conn)
     {
         $sql = "SELECT * FROM vehicles WHERE status = 'active' ORDER BY created_at DESC";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public static function findAllForAdmin($conn)
+    {
+        $sql = "SELECT * FROM vehicles ORDER BY created_at DESC";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);

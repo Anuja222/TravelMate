@@ -27,8 +27,9 @@ function loadAccommodations() {
     .then(data => {
         if (data.success) {
             allAccommodations = data.data || [];
-            filteredAccommodations = [...allAccommodations];
+            filteredAccommodations = allAccommodations.filter(a => a.status !== 'pending');
             updateStatistics();
+            displayPendingAccommodations();
             displayAccommodations(filteredAccommodations);
         } else {
             console.error('Failed to load accommodations:', data.errors);
@@ -68,11 +69,32 @@ function displayAccommodations(accommodations) {
     grid.style.display = 'grid';
     emptyState.style.display = 'none';
     
-    grid.innerHTML = accommodations.map(accommodation => createAccommodationCard(accommodation)).join('');
+    grid.innerHTML = accommodations.map(accommodation => createAccommodationCard(accommodation, 'other')).join('');
+}
+
+function displayPendingAccommodations() {
+    const grid = document.getElementById('pendingAccommodationsGrid');
+    const emptyState = document.getElementById('pendingEmptyState');
+
+    if (!grid || !emptyState) {
+        return;
+    }
+
+    const pendingAccommodations = allAccommodations.filter(a => a.status === 'pending');
+
+    if (pendingAccommodations.length === 0) {
+        grid.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+    }
+
+    grid.style.display = 'grid';
+    emptyState.style.display = 'none';
+    grid.innerHTML = pendingAccommodations.map(accommodation => createAccommodationCard(accommodation, 'pending')).join('');
 }
 
 // Create accommodation card HTML
-function createAccommodationCard(accommodation) {
+function createAccommodationCard(accommodation, section = 'other') {
     const baseUrl = getBaseUrl();
     const image = accommodation.main_image 
         ? `${baseUrl}/${accommodation.main_image}` 
@@ -91,6 +113,8 @@ function createAccommodationCard(accommodation) {
     const rooms = accommodation.rooms || 0;
     const bathrooms = accommodation.bathrooms || 0;
     const maxGuests = accommodation.max_guests || 0;
+    const description = accommodation.description || 'No description provided for this property.';
+    const shortDescription = description.length > 120 ? `${description.substring(0, 120)}...` : description;
     
     return `
         <div class="accommodation-card" onclick="viewAccommodation(${accommodation.id})">
@@ -101,36 +125,132 @@ function createAccommodationCard(accommodation) {
             <div class="accommodation-content">
                 <div class="accommodation-type">${escapeHtml(propertyType)}</div>
                 <h3 class="accommodation-title">${escapeHtml(title)}</h3>
-                <div class="accommodation-location">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>${escapeHtml(location)}</span>
-                </div>
-                <div class="accommodation-details">
-                    <div class="detail-item">
+
+                <div class="accommodation-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>${escapeHtml(location)}</span>
+                    </div>
+                    <div class="meta-item">
                         <i class="fas fa-bed"></i>
-                        <span>${rooms} Rooms</span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-bath"></i>
-                        <span>${bathrooms} Baths</span>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-users"></i>
-                        <span>${maxGuests} Guests</span>
+                        <span>${rooms} Rooms • ${bathrooms} Baths • ${maxGuests} Guests</span>
                     </div>
                 </div>
+
+                <p class="accommodation-description">${escapeHtml(shortDescription)}</p>
+
                 <div class="accommodation-footer">
                     <div>
                         <div class="accommodation-price">${price}</div>
                         <div class="price-label">per night</div>
                     </div>
-                    <button class="btn-view" onclick="event.stopPropagation(); viewAccommodation(${accommodation.id})">
-                        View Details
-                    </button>
+                    <div class="card-actions">
+                        <button class="btn-view" onclick="event.stopPropagation(); viewAccommodation(${accommodation.id})">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            View Full
+                        </button>
+                        ${section === 'pending' ? `
+                            <button class="btn-approve" onclick="event.stopPropagation(); moderateAccommodation(${accommodation.id}, 'approve')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                Approve
+                            </button>
+                            <button class="btn-reject" onclick="event.stopPropagation(); moderateAccommodation(${accommodation.id}, 'reject')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                                Reject
+                            </button>
+                        ` : `
+                            <button class="btn-delete" onclick="event.stopPropagation(); deleteAccommodationByAdmin(${accommodation.id})">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                                Delete
+                            </button>
+                        `}
+                    </div>
                 </div>
             </div>
         </div>
     `;
+}
+
+function deleteAccommodationByAdmin(id) {
+    if (!confirm('Are you sure you want to permanently delete this accommodation?')) {
+        return;
+    }
+
+    const baseUrl = getBaseUrl();
+    fetch(`${baseUrl}/api/accommodation/deleteByAdmin`, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `id=${encodeURIComponent(id)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data.success) {
+            alert(data.errors?.[0] || 'Failed to delete accommodation');
+            return;
+        }
+
+        allAccommodations = allAccommodations.filter(a => Number(a.id) !== Number(id));
+        updateStatistics();
+        displayPendingAccommodations();
+        applyFilters();
+    })
+    .catch(error => {
+        console.error('Error deleting accommodation:', error);
+        alert('Failed to delete accommodation');
+    });
+}
+
+function moderateAccommodation(id, action) {
+    const endpoint = action === 'approve' ? 'approve' : 'reject';
+    const label = action === 'approve' ? 'approve' : 'reject';
+
+    if (!confirm(`Are you sure you want to ${label} this property?`)) {
+        return;
+    }
+
+    const baseUrl = getBaseUrl();
+    fetch(`${baseUrl}/api/accommodation/${endpoint}`, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `id=${encodeURIComponent(id)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data.success) {
+            alert(data.errors?.[0] || `Failed to ${label} accommodation`);
+            return;
+        }
+
+        const accommodation = allAccommodations.find(a => Number(a.id) === Number(id));
+        if (accommodation) {
+            accommodation.status = data.data?.status || (action === 'approve' ? 'active' : 'inactive');
+        }
+
+        updateStatistics();
+        displayPendingAccommodations();
+        applyFilters();
+    })
+    .catch(error => {
+        console.error(`Error trying to ${label} accommodation:`, error);
+        alert(`Failed to ${label} accommodation`);
+    });
 }
 
 // Apply filters
@@ -139,7 +259,9 @@ function applyFilters() {
     const statusFilter = document.getElementById('statusFilter').value;
     const typeFilter = document.getElementById('typeFilter').value.toLowerCase();
     
-    filteredAccommodations = allAccommodations.filter(accommodation => {
+    const nonPendingAccommodations = allAccommodations.filter(a => a.status !== 'pending');
+
+    filteredAccommodations = nonPendingAccommodations.filter(accommodation => {
         const matchesSearch = !searchTerm || 
             (accommodation.title && accommodation.title.toLowerCase().includes(searchTerm)) ||
             (accommodation.location && accommodation.location.toLowerCase().includes(searchTerm)) ||
@@ -268,9 +390,16 @@ document.addEventListener('keydown', function(e) {
 function showEmptyState() {
     const grid = document.getElementById('accommodationsGrid');
     const emptyState = document.getElementById('emptyState');
+    const pendingGrid = document.getElementById('pendingAccommodationsGrid');
+    const pendingEmptyState = document.getElementById('pendingEmptyState');
     
     grid.style.display = 'none';
     emptyState.style.display = 'block';
+
+    if (pendingGrid && pendingEmptyState) {
+        pendingGrid.style.display = 'none';
+        pendingEmptyState.style.display = 'block';
+    }
 }
 
 // Get status color

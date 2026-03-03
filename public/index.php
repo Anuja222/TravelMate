@@ -111,6 +111,22 @@ elseif ($requestUri === '/api/vehicle/delete' && $_SERVER['REQUEST_METHOD'] === 
     exit;
 }
 
+elseif ($requestUri === '/api/vehicle/approve' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Vehicle Approve by Admin");
+    require_once __DIR__ . '/../app/controllers/TransportProvider/VehicleController.php';
+    $vehicleController = new App\Controllers\VehicleController();
+    $vehicleController->approveByAdmin();
+    exit;
+}
+
+elseif ($requestUri === '/api/vehicle/reject' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Vehicle Reject by Admin");
+    require_once __DIR__ . '/../app/controllers/TransportProvider/VehicleController.php';
+    $vehicleController = new App\Controllers\VehicleController();
+    $vehicleController->rejectByAdmin();
+    exit;
+}
+
 // Accommodation API routes
 elseif ($requestUri === '/api/accommodation/upload-temp' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     error_log(">>> Routing to Accommodation uploadTemp");
@@ -158,6 +174,24 @@ elseif ($requestUri === '/api/accommodation/toggleStatus' && $_SERVER['REQUEST_M
     error_log(">>> Routing to Accommodation Toggle Status");
     $controller = new AccommodationController();
     $controller->toggleStatus();
+    exit;
+}
+elseif ($requestUri === '/api/accommodation/approve' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Accommodation Approve by Admin");
+    $controller = new AccommodationController();
+    $controller->approveByAdmin();
+    exit;
+}
+elseif ($requestUri === '/api/accommodation/reject' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Accommodation Reject by Admin");
+    $controller = new AccommodationController();
+    $controller->rejectByAdmin();
+    exit;
+}
+elseif ($requestUri === '/api/accommodation/deleteByAdmin' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Accommodation Delete by Admin");
+    $controller = new AccommodationController();
+    $controller->deleteByAdmin();
     exit;
 }
 elseif ($requestUri === '/api/accommodation/roomAvailability' && $_SERVER['REQUEST_METHOD'] === 'GET') {

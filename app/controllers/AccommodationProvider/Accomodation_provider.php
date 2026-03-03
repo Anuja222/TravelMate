@@ -159,7 +159,7 @@ class Accomodation_provider extends Controller {
                 ?, ?, ?,
                 ?, ?, ?,
                 ?, ?, ?,
-                ?, ?, 'active', NOW(), NOW()
+                ?, ?, 'pending', NOW(), NOW()
             )";
             
             $stmt = $pdo->prepare($sql);

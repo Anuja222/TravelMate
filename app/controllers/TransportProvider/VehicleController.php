@@ -57,7 +57,7 @@ class VehicleController
         $color = $_POST['vehicle_color'] ?? '';
         $number = $_POST['vehicle_number'] ?? '';
         $costPerKm = $_POST['cost_per_km'] ?? '';
-        $status = $_POST['status'] ?? 'active';
+        $status = 'pending';
 
         error_log("Parsed Data - Type: $vehicleType, District: $workingDistrict, Model: $model");
 
@@ -253,7 +253,8 @@ class VehicleController
         global $pdo;
 
         try {
-            $vehicles = Vehicle::findAll($pdo);
+            $isAdmin = isset($_SESSION['user']) && (($_SESSION['user']['role'] ?? '') === 'admin');
+            $vehicles = $isAdmin ? Vehicle::findAllForAdmin($pdo) : Vehicle::findAll($pdo);
 
             // Add main image to each vehicle
             foreach ($vehicles as &$vehicle) {
@@ -269,6 +270,70 @@ class VehicleController
         } catch (\Exception $e) {
             error_log("Error listing all vehicles: " . $e->getMessage());
             $this->sendResponse(false, ['error' => 'Failed to load vehicles']);
+        }
+    }
+
+    public function approveByAdmin()
+    {
+        global $pdo;
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->sendResponse(false, ['error' => 'Invalid method']);
+        }
+
+        if (!isset($_SESSION['user']) || (($_SESSION['user']['role'] ?? '') !== 'admin')) {
+            $this->sendResponse(false, ['error' => 'Unauthorized']);
+        }
+
+        $id = $_POST['id'] ?? null;
+        if (!$id) {
+            $this->sendResponse(false, ['error' => 'Missing vehicle ID']);
+        }
+
+        try {
+            $stmt = $pdo->prepare("UPDATE vehicles SET status = 'active', updated_at = NOW() WHERE id = ?");
+            $ok = $stmt->execute([$id]);
+
+            if ($ok && $stmt->rowCount() > 0) {
+                $this->sendResponse(true, [], ['status' => 'active']);
+            }
+
+            $this->sendResponse(false, ['error' => 'Failed to approve vehicle']);
+        } catch (\Exception $e) {
+            error_log("Approve vehicle error: " . $e->getMessage());
+            $this->sendResponse(false, ['error' => 'Failed to approve vehicle']);
+        }
+    }
+
+    public function rejectByAdmin()
+    {
+        global $pdo;
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->sendResponse(false, ['error' => 'Invalid method']);
+        }
+
+        if (!isset($_SESSION['user']) || (($_SESSION['user']['role'] ?? '') !== 'admin')) {
+            $this->sendResponse(false, ['error' => 'Unauthorized']);
+        }
+
+        $id = $_POST['id'] ?? null;
+        if (!$id) {
+            $this->sendResponse(false, ['error' => 'Missing vehicle ID']);
+        }
+
+        try {
+            $stmt = $pdo->prepare("UPDATE vehicles SET status = 'inactive', updated_at = NOW() WHERE id = ?");
+            $ok = $stmt->execute([$id]);
+
+            if ($ok && $stmt->rowCount() > 0) {
+                $this->sendResponse(true, [], ['status' => 'inactive']);
+            }
+
+            $this->sendResponse(false, ['error' => 'Failed to reject vehicle']);
+        } catch (\Exception $e) {
+            error_log("Reject vehicle error: " . $e->getMessage());
+            $this->sendResponse(false, ['error' => 'Failed to reject vehicle']);
         }
     }
 

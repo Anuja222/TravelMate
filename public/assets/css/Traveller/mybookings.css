@@ -1,17 +1,142 @@
 /* Additional CSS for My Bookings page */
 body {
     margin: 0;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Inter', Arial, sans-serif;
     /* background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); */
     min-height: 100vh;
+    background: #f8f9fa;
+}
+
+.bookings-layout {
+    display: flex;
+    gap: 2em;
+    max-width: 1300px;
+    margin: -6em auto 0 auto;
+    padding: 12em 0 0 0;
+}
+
+.sidebar {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    width: 280px;
+    min-width: 280px;
+    max-width: 280px;
+    padding: 1.5em 0;
+    margin-right: 2em;
+    margin-top: 1em;
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+}
+
+.sidebar-menu {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-item {
+    margin: 0;
+}
+
+.sidebar-link {
+    color: #555;
+    font-size: 15px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    padding: 1em 1.5em;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    border-left: 4px solid transparent;
+}
+
+.sidebar-link:hover {
+    background: linear-gradient(90deg, #e9f6ee 0%, transparent 100%);
+    color: #1abc5b;
+    border-left-color: #1abc5b;
+}
+
+.sidebar-text {
+    flex: 1;
+}
+
+.sidebar-logout {
+    border-top: 1px solid #e9ecef;
+    margin-top: 1em;
+}
+
+.logout-link {
+    color: #dc3545;
+}
+
+.logout-link:hover {
+    background: linear-gradient(90deg, #ffe9ec 0%, transparent 100%);
+    color: #b02a37;
+    border-left-color: #dc3545;
+}
+
+.sidebar-link.active {
+    background: linear-gradient(90deg, #e9f6ee 0%, transparent 100%);
+    color: #1abc5b;
+    border-left-color: #1abc5b;
+    font-weight: 400;
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #1abc5b;
+    border-radius: 10px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: #169d4a;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    margin-top: 1.6em;
+    margin-bottom: 1.6em;
+}
+
+.sidebar ul li a {
+    color: #222;
+    font-size: 1em;
+    font-weight: 400;
+    display: block;
+    padding: 0.6em 1em;
+    border-radius: 6px;
+    transition: background 0.15s;
+    text-decoration: none;
+}
+
+.sidebar ul li a:hover {
+    background: #e9f6ee;
+    color: #1abc5b;
 }
 
 .main-content {
-    margin-top: 0;
-    padding: 6em 2em 2em 2em;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-top: 1em;
+    padding: 0 2em 2em 0;
+    flex: 1;
+    max-width: 100%;
+    min-width: 0;
 }
 
 .page-header {
@@ -421,6 +546,27 @@ body {
 }
 
 /* Responsive Design */
+@media (max-width: 1100px) {
+    .bookings-layout {
+        flex-direction: column;
+        gap: 1em;
+        padding: 0.5em;
+    }
+
+    .sidebar {
+        width: 100%;
+        margin: 8em 0 1em 0;
+        min-height: unset;
+        padding: 1em 0.5em;
+        position: static;
+    }
+
+    .main-content {
+        margin-top: 0;
+        padding: 0.5em;
+    }
+}
+
 @media (max-width: 768px) {
     .main-content {
         padding: 1em;
