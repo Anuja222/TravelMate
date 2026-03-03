@@ -57,7 +57,7 @@ class AccommodationController {
         $checkInStart = $_POST['check_in_start'] ?? '';
         $checkInEnd = $_POST['check_in_end'] ?? '';
         $checkOutTime = $_POST['check_out_time'] ?? '';
-        $status = $_POST['status'] ?? 'active';
+        $status = 'pending';
 
         // Validate required fields
         if (empty($propertyType) || empty($title) || empty($description)) {
@@ -202,7 +202,10 @@ class AccommodationController {
         global $pdo;
         
         try {
-            $accommodations = Accommodation::findAll($pdo);
+            $isAdmin = isset($_SESSION['user']) && (($_SESSION['user']['role'] ?? '') === 'admin');
+            $accommodations = $isAdmin
+                ? Accommodation::findAllForAdmin($pdo)
+                : Accommodation::findAll($pdo);
             
             // Get main image and all images for each accommodation
             foreach ($accommodations as &$accommodation) {
@@ -467,6 +470,126 @@ class AccommodationController {
         } catch (\Exception $e) {
             error_log("Error getting room availability: " . $e->getMessage());
             $this->sendResponse(false, ['Failed to get room availability']);
+        }
+    }
+
+    public function approveByAdmin() {
+        global $pdo;
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->sendResponse(false, ['Invalid request method']);
+        }
+
+        if (!isset($_SESSION['user']) || ($_SESSION['user']['role'] ?? '') !== 'admin') {
+            $this->sendResponse(false, ['Unauthorized']);
+        }
+
+        $id = $_POST['id'] ?? null;
+        if (!$id) {
+            $this->sendResponse(false, ['Accommodation ID not provided']);
+        }
+
+        try {
+            $stmt = $pdo->prepare("UPDATE accommodations SET status = 'active', updated_at = NOW() WHERE id = ?");
+            $result = $stmt->execute([$id]);
+
+            if ($result && $stmt->rowCount() > 0) {
+                $this->sendResponse(true, [], ['status' => 'active']);
+            }
+
+            $this->sendResponse(false, ['Failed to approve accommodation']);
+        } catch (\Exception $e) {
+            error_log("Error approving accommodation: " . $e->getMessage());
+            $this->sendResponse(false, ['Failed to approve accommodation']);
+        }
+    }
+
+    public function rejectByAdmin() {
+        global $pdo;
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->sendResponse(false, ['Invalid request method']);
+        }
+
+        if (!isset($_SESSION['user']) || ($_SESSION['user']['role'] ?? '') !== 'admin') {
+            $this->sendResponse(false, ['Unauthorized']);
+        }
+
+        $id = $_POST['id'] ?? null;
+        if (!$id) {
+            $this->sendResponse(false, ['Accommodation ID not provided']);
+        }
+
+        try {
+            $stmt = $pdo->prepare("UPDATE accommodations SET status = 'inactive', updated_at = NOW() WHERE id = ?");
+            $result = $stmt->execute([$id]);
+
+            if ($result && $stmt->rowCount() > 0) {
+                $this->sendResponse(true, [], ['status' => 'inactive']);
+            }
+
+            $this->sendResponse(false, ['Failed to reject accommodation']);
+        } catch (\Exception $e) {
+            error_log("Error rejecting accommodation: " . $e->getMessage());
+            $this->sendResponse(false, ['Failed to reject accommodation']);
+        }
+    }
+
+    public function deleteByAdmin() {
+        global $pdo;
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->sendResponse(false, ['Invalid request method']);
+        }
+
+        if (!isset($_SESSION['user']) || (($_SESSION['user']['role'] ?? '') !== 'admin')) {
+            $this->sendResponse(false, ['Unauthorized']);
+        }
+
+        $id = $_POST['id'] ?? null;
+        if (!$id) {
+            $this->sendResponse(false, ['Accommodation ID not provided']);
+        }
+
+        try {
+            $pdo->beginTransaction();
+
+            $imgStmt = $pdo->prepare("SELECT image_path FROM accommodation_images WHERE accommodation_id = ?");
+            $imgStmt->execute([$id]);
+            $images = $imgStmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            $delImgsStmt = $pdo->prepare("DELETE FROM accommodation_images WHERE accommodation_id = ?");
+            $delImgsStmt->execute([$id]);
+
+            $delAmenitiesStmt = $pdo->prepare("DELETE FROM accommodation_amenities WHERE accommodation_id = ?");
+            $delAmenitiesStmt->execute([$id]);
+
+            $delAccommodationStmt = $pdo->prepare("DELETE FROM accommodations WHERE id = ?");
+            $result = $delAccommodationStmt->execute([$id]);
+
+            if (!$result || $delAccommodationStmt->rowCount() === 0) {
+                $pdo->rollBack();
+                $this->sendResponse(false, ['Failed to delete accommodation']);
+            }
+
+            $pdo->commit();
+
+            foreach ($images as $image) {
+                if (!empty($image['image_path'])) {
+                    $filePath = __DIR__ . '/../../../public/' . ltrim($image['image_path'], '/');
+                    if (file_exists($filePath)) {
+                        @unlink($filePath);
+                    }
+                }
+            }
+
+            $this->sendResponse(true, [], ['id' => (int)$id]);
+        } catch (\Exception $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            error_log("Error deleting accommodation by admin: " . $e->getMessage());
+            $this->sendResponse(false, ['Failed to delete accommodation']);
         }
     }
 

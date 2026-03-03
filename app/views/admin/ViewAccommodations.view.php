@@ -95,7 +95,34 @@
         </button>
       </div>
 
+      <!-- Pending Accommodations Section -->
+      <div class="section-block">
+        <div class="section-title-row">
+          <h2>Pending Accommodations</h2>
+          <p>Review newly submitted properties and approve or reject them.</p>
+        </div>
+
+        <div id="pendingAccommodationsGrid" class="accommodations-grid">
+          <div class="loading-state">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading pending accommodations...</p>
+          </div>
+        </div>
+
+        <div id="pendingEmptyState" class="empty-state" style="display: none; margin-bottom: 20px;">
+          <div class="empty-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <h3>No Pending Accommodations</h3>
+          <p>All submitted properties have been reviewed.</p>
+        </div>
+      </div>
+
       <!-- Accommodations Grid -->
+      <div class="section-title-row" style="margin-top: 10px;">
+        <h2>All Other Accommodations</h2>
+        <p>Browse approved and inactive properties.</p>
+      </div>
       <div id="accommodationsGrid" class="accommodations-grid">
         <!-- Loading state -->
         <div class="loading-state">

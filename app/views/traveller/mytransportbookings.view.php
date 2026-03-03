@@ -10,8 +10,39 @@
 <body>
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
+    <main class="bookings-layout">
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="mybookings" class="sidebar-link">
+                        <span class="sidebar-text">Accommodation Bookings</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="mytransportbookings" class="sidebar-link active">
+                        <span class="sidebar-text">Transport Bookings</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="feed" class="sidebar-link">
+                        <span class="sidebar-text">Vlogs</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="profile_setting" class="sidebar-link">
+                        <span class="sidebar-text">Settings</span>
+                    </a>
+                </li>
+                <li class="sidebar-item sidebar-logout">
+                    <a href="logout.php" class="sidebar-link logout-link">
+                        <span class="sidebar-text">Log Out</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
     <!-- Main Content -->
-    <div class="main-content">
+    <section class="main-content">
         <div class="page-header">
             <h1>My Transport Bookings</h1>
             <p>Manage and view all your transport reservations</p>
@@ -78,7 +109,8 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+    </main>
 
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 

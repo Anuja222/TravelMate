@@ -103,7 +103,34 @@
         </button>
       </div>
 
+      <!-- Pending Vehicles Section -->
+      <div class="section-block">
+        <div class="section-title-row">
+          <h2>Pending Vehicles</h2>
+          <p>Review newly submitted vehicles and approve or reject them.</p>
+        </div>
+
+        <div id="pendingTransportsGrid" class="transports-grid">
+          <div class="loading-state">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading pending vehicles...</p>
+          </div>
+        </div>
+
+        <div id="pendingEmptyState" class="empty-state" style="display: none; margin-bottom: 20px;">
+          <div class="empty-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <h3>No Pending Vehicles</h3>
+          <p>All submitted vehicles have been reviewed.</p>
+        </div>
+      </div>
+
       <!-- Transports Grid -->
+      <div class="section-title-row" style="margin-top: 10px;">
+        <h2>All Other Vehicles</h2>
+        <p>Browse approved and inactive vehicles.</p>
+      </div>
       <div id="transportsGrid" class="transports-grid">
         <!-- Loading state -->
         <div class="loading-state">
