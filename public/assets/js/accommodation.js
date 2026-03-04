@@ -247,6 +247,25 @@ document.addEventListener('DOMContentLoaded', function() {
     // ========== DASHBOARD - LIST PROPERTIES ==========
     const propertyListContainer = document.querySelector('.property-cards-grid');
     if (propertyListContainer) {
+        const summaryListingsEl = document.getElementById('summaryListings');
+        const summaryBookedEl = document.getElementById('summaryBooked');
+        const summaryBookingsReceivedEl = document.getElementById('summaryBookingsReceived');
+
+        function updateActivitySummary(properties) {
+            const safeProperties = Array.isArray(properties) ? properties : [];
+            const listings = safeProperties.length;
+            const booked = safeProperties.reduce((sum, property) => {
+                return sum + (parseInt(property.booked_rooms, 10) || 0);
+            }, 0);
+            const bookingsReceived = safeProperties.reduce((sum, property) => {
+                return sum + (parseInt(property.bookings_received, 10) || 0);
+            }, 0);
+
+            if (summaryListingsEl) summaryListingsEl.textContent = String(listings);
+            if (summaryBookedEl) summaryBookedEl.textContent = String(booked);
+            if (summaryBookingsReceivedEl) summaryBookingsReceivedEl.textContent = String(bookingsReceived);
+        }
+
         // Function to load user's properties
         async function loadUserProperties() {
             try {
@@ -258,19 +277,24 @@ document.addEventListener('DOMContentLoaded', function() {
                         const result = await response.json();
                         if (result.success) {
                             displayProperties(result.data);
+                            updateActivitySummary(result.data);
                         } else {
                             console.error('Failed to load properties:', result.errors);
+                            updateActivitySummary([]);
                         }
                     } catch (err) {
                         const text = await response.text();
                         console.error('Invalid JSON from server (list):', text, err);
+                        updateActivitySummary([]);
                     }
                 } else {
                     const text = await response.text();
                     console.error('Non-JSON response from server (list):', response.status, text);
+                    updateActivitySummary([]);
                 }
             } catch (error) {
                 console.error('Error loading properties:', error);
+                updateActivitySummary([]);
             }
         }
 
@@ -358,6 +382,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
             `;
+
+            card.addEventListener('click', function() {
+                window.location.href = `${baseUrl}/detailsProperty?id=${property.id}`;
+            });
             
             // Add click handler to edit button
             const editBtn = card.querySelector('.property-card-btn-edit');
@@ -365,6 +393,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 e.stopPropagation();
                 window.location.href = `${baseUrl}/index.php?url=Accomodation_provider/updateProperty&id=${property.id}`;
             });
+
+            const actionsContainer = card.querySelector('.property-card-actions');
+            if (actionsContainer) {
+                actionsContainer.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
             
             return card;
         }
@@ -500,6 +535,10 @@ async function performDelete(id, buttonElement) {
                 // remove card from DOM
                 const card = buttonElement ? buttonElement.closest('.property-card') : document.querySelector(`[data-id="${id}"]`)?.closest('.property-card');
                 if (card) card.remove();
+
+                if (typeof window.loadUserProperties === 'function') {
+                    window.loadUserProperties();
+                }
                 
                 // Show success modal
                 if (typeof window.showDeleteModal === 'function') {

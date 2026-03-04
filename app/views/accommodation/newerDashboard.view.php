@@ -682,6 +682,25 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
           <span class="profile-email"><?php echo htmlspecialchars($_SESSION['user']['email']); ?></span>
         </div>
       </div>
+      <!-- Activity Summary -->
+      <div class="activity-summary">
+        <h3>Activity Summary</h3>
+        <div class="summary-stats">
+          <div class="stat">
+            <span class="stat-num" id="summaryListings">0</span>
+            <span class="stat-label">Listings</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num" id="summaryBooked">0</span>
+            <span class="stat-label">Booked</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num" id="summaryBookingsReceived">0</span>
+            <span class="stat-label">Bookings Received</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Favourites -->
      <section class="favourite">
         <div class="section-header">
@@ -699,24 +718,6 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
           </div>
         </div>
       </section>
-      <!-- Activity Summary -->
-      <div class="activity-summary">
-        <h3>Activity Summary</h3>
-        <div class="summary-stats">
-          <div class="stat">
-            <span class="stat-num">0</span>
-            <span class="stat-label">Listings</span>
-          </div>
-          <div class="stat">
-            <span class="stat-num">0</span>
-            <span class="stat-label">Booked</span>
-          </div>
-          <div class="stat">
-            <span class="stat-num">0</span>
-            <span class="stat-label">Bookings Received</span>
-          </div>
-        </div>
-      </div>
     </section>
   </main>
   <!-- Status Toggle Modal -->
