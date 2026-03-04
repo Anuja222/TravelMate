@@ -96,10 +96,12 @@
           <div class="card-content">
             <div class="card-header">
               <h3>Luxury Beach Resort</h3>
-              <!-- <div class="rating">
-                <span class="stars">★★★★★</span>
-                <span class="rating-score">4.8</span>
-              </div> -->
+              <div class="location" style="font-weight:600; margin-top: 6px;">
+                <span style="color:#f59e0b; display:inline-flex; gap:2px;">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                </span>
+                <span>5.0 (1)</span>
+              </div>
             </div>
             <p class="location">📍 Bentota Beach</p>
             <p class="description">Beachfront luxury resort with world-class amenities and stunning ocean views</p>
@@ -130,6 +132,12 @@
           <div class="card-content">
             <div class="card-header">
               <h3>Kandy Boutique Hotel</h3>
+              <div class="location" style="font-weight:600; margin-top: 6px;">
+                <span style="color:#f59e0b; display:inline-flex; gap:2px;">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                </span>
+                <span>4.0 (1)</span>
+              </div>
             </div>
             <p class="location">📍 Kandy City Center</p>
             <p class="description">Charming boutique hotel in the heart of the cultural capital</p>
@@ -160,6 +168,12 @@
           <div class="card-content">
             <div class="card-header">
               <h3>Mountain Lodge</h3>
+              <div class="location" style="font-weight:600; margin-top: 6px;">
+                <span style="color:#f59e0b; display:inline-flex; gap:2px;">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                </span>
+                <span>4.0 (1)</span>
+              </div>
             </div>
             <p class="location">📍 Kandy City Center</p>
             <p class="description">Charming boutique hotel in the heart of the cultural capital</p>
@@ -190,6 +204,12 @@
           <div class="card-content">
             <div class="card-header">
               <h3>Hill Country Villa</h3>
+              <div class="location" style="font-weight:600; margin-top: 6px;">
+                <span style="color:#f59e0b; display:inline-flex; gap:2px;">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                </span>
+                <span>4.0 (1)</span>
+              </div>
             </div>
             <p class="location">📍 Ella Hills</p>
             <p class="description">Private villa with panoramic mountain views and tea plantation walks</p>
@@ -220,6 +240,12 @@
           <div class="card-content">
             <div class="card-header">
               <h3>Galle Heritage Hotel</h3>
+              <div class="location" style="font-weight:600; margin-top: 6px;">
+                <span style="color:#f59e0b; display:inline-flex; gap:2px;">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                </span>
+                <span>4.0 (1)</span>
+              </div>
             </div>
             <p class="location">📍 Galle Fort</p>
             <p class="description">Historic colonial building within the UNESCO World Heritage Galle Fort</p>
@@ -250,6 +276,12 @@
           <div class="card-content">
             <div class="card-header">
               <h3>Sigiriya Garden House</h3>
+              <div class="location" style="font-weight:600; margin-top: 6px;">
+                <span style="color:#f59e0b; display:inline-flex; gap:2px;">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
+                </span>
+                <span>3.0 (1)</span>
+              </div>
             </div>
             <p class="location">📍 Near Sigiriya Rock</p>
             <p class="description">Comfortable guesthouse with garden views, perfect for exploring ancient sites</p>
@@ -280,6 +312,12 @@
           <div class="card-content">
             <div class="card-header">
               <h3>Colombo City Hotel</h3>
+              <div class="location" style="font-weight:600; margin-top: 6px;">
+                <span style="color:#f59e0b; display:inline-flex; gap:2px;">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                </span>
+                <span>4.0 (1)</span>
+              </div>
             </div>
             <p class="location">📍 Colombo City Center</p>
             <p class="description">Modern business hotel in the heart of Sri Lanka's commercial capital</p>
@@ -427,6 +465,23 @@
       const price = accommodation.price_per_night || 0;
       const priceRange = price > 45000 ? 'luxury' : price > 15000 ? 'mid' : 'budget';
       card.setAttribute('data-price', priceRange);
+
+      const ratingCount = parseInt(accommodation.rating_count || 0, 10) || 0;
+      const avgRatingValue = parseFloat(accommodation.avg_rating || 0);
+      const ratingStarsHtml = (() => {
+        let stars = '';
+        for (let index = 1; index <= 5; index++) {
+          if (avgRatingValue >= index) {
+            stars += '<i class="fas fa-star"></i>';
+          } else if (avgRatingValue >= index - 0.5) {
+            stars += '<i class="fas fa-star-half-alt"></i>';
+          } else {
+            stars += '<i class="far fa-star"></i>';
+          }
+        }
+        return stars;
+      })();
+      const ratingText = ratingCount > 0 ? `${avgRatingValue.toFixed(1)} (${ratingCount})` : 'Not yet rated';
       
       // Format property type for badge
       const propertyType = accommodation.property_type ? 
@@ -448,6 +503,10 @@
           <p class="location">
             <i class="fas fa-map-marker-alt"></i>
             ${escapeHtml(accommodation.location || 'Sri Lanka')}
+          </p>
+          <p class="location" style="font-weight:600;">
+            <span style="color:#f59e0b; display:inline-flex; gap:2px;">${ratingStarsHtml}</span>
+            <span>${escapeHtml(ratingText)}</span>
           </p>
           <p class="description">${escapeHtml(accommodation.description || 'No description available')}</p>
           <div class="card-features">

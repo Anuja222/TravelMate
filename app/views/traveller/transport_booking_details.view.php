@@ -16,11 +16,10 @@ $lastName = $_SESSION['user']['last_name'] ?? '';
 $email = $_SESSION['user']['email'] ?? '';
 $phone = $_SESSION['user']['phone'] ?? '';
 $maskedPhone = $phone ? substr($phone, 1) : '';
+$bookingId = $_GET['booking_id'] ?? '';
 
-// Get booking data from session
-$bookingData = $_SESSION['transport_booking_temp'] ?? null;
-if (!$bookingData) {
-    header('Location: /TravelMate/public/transport');
+if (!$bookingId) {
+    header('Location: /TravelMate/public/mytransportbookings');
     exit;
 }
 ?>
@@ -39,10 +38,10 @@ if (!$bookingData) {
     
     <div class="booking-details-container">
         <div class="booking-progress">
-            <div class="step done"><span>1</span> Your Selection</div>
-            <div class="step active"><span>2</span> Your Details</div>
-            <div class="step"><span>3</span> Payment Details</div>
-            <div class="step"><span>4</span> Finish Booking</div>
+            <div class="step active"><span>1</span> Personal Details</div>
+            <div class="step"><span>2</span> Payment Details</div>
+            <div class="step"><span>3</span> Finish / Review</div>
+            <div class="step"><span>4</span> Complete Booking</div>
         </div>
         
         <h2>Enter your details</h2>
@@ -111,13 +110,16 @@ if (!$bookingData) {
             
             <div class="form-group">
                 <label for="special_requests">Special Requests <span class="optional">(optional)</span></label>
-                <textarea id="special_requests" name="special_requests" rows="4" placeholder="Any special requirements or preferences?"><?php echo htmlspecialchars($bookingData['special_requirements'] ?? ''); ?></textarea>
+                <textarea id="special_requests" name="special_requests" rows="4" placeholder="Any special requirements or preferences?"></textarea>
             </div>
             
             <button type="submit" class="finish-booking-btn">Next: Payment Details</button>
         </form>
     </div>
 
+    <script>
+        window.transportPaymentBookingId = "<?php echo htmlspecialchars($bookingId, ENT_QUOTES, 'UTF-8'); ?>";
+    </script>
     <script src="/TravelMate/public/assets/js/transport_booking_details.js"></script>
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 </body>

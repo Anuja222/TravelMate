@@ -205,6 +205,32 @@
     color: #3b82f6;
 }
 
+.status-rejected {
+    background: rgba(239, 68, 68, 0.15);
+    color: #dc2626;
+}
+
+.status-awaiting-payment {
+    background: rgba(245, 158, 11, 0.2);
+    color: #b45309;
+}
+
+.booking-alert {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.btn-success {
+    background: #10b981;
+    color: #fff;
+}
+
+.btn-success:hover {
+    background: #059669;
+}
+
 .booking-body {
     padding: 20px;
 }

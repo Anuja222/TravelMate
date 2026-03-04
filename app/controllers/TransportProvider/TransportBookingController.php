@@ -34,6 +34,11 @@ class TransportBookingController
         exit;
     }
 
+    private function normalizeStatus($value)
+    {
+        return strtolower(trim((string)$value));
+    }
+
     // Helper to check authentication
     private function checkAuth()
     {
@@ -122,7 +127,7 @@ class TransportBookingController
                 'base_price' => $input['base_price'],
                 'service_charge' => $input['service_charge'],
                 'total_price' => $input['total_price'],
-                'booking_status' => 'confirmed',
+                'booking_status' => 'pending',
                 'payment_status' => 'pending',
                 'booking_date' => date('Y-m-d H:i:s')
             ];
@@ -135,7 +140,9 @@ class TransportBookingController
             if ($result) {
                 $this->sendResponse(true, [
                     'booking_id' => $bookingId,
-                    'message' => 'Transport booking created successfully'
+                    'booking_status' => 'pending',
+                    'payment_status' => 'pending',
+                    'message' => 'Booking request submitted and pending provider approval'
                 ]);
             } else {
                 error_log('ERROR: Failed to create booking in database');
@@ -412,6 +419,115 @@ class TransportBookingController
         }
     }
 
+    public function getProviderBookings()
+    {
+        try {
+            $providerId = $this->checkAuth();
+            $bookingModel = new TransportBooking();
+            $bookings = $bookingModel->getBookingsByProviderId($this->db, $providerId);
+
+            $this->sendResponse(true, ['bookings' => $bookings]);
+        } catch (Exception $e) {
+            error_log('Get provider transport bookings error: ' . $e->getMessage());
+            $this->sendResponse(false, [], ['general' => 'Failed to retrieve provider bookings']);
+        }
+    }
+
+    public function approveByProvider()
+    {
+        try {
+            $providerId = $this->checkAuth();
+            $input = json_decode(file_get_contents('php://input'), true);
+            $bookingId = $input['booking_id'] ?? null;
+
+            if (!$bookingId) {
+                $this->sendResponse(false, [], ['bookingId' => 'Booking ID is required']);
+            }
+
+            $bookingModel = new TransportBooking();
+            $result = $bookingModel->updateBookingStatusByProvider($this->db, $bookingId, $providerId, 'confirmed');
+
+            if ($result) {
+                $this->sendResponse(true, ['message' => 'Booking approved successfully']);
+                return;
+            }
+
+            $this->sendResponse(false, [], ['general' => 'Failed to approve booking']);
+        } catch (Exception $e) {
+            error_log('Approve provider transport booking error: ' . $e->getMessage());
+            $this->sendResponse(false, [], ['general' => 'An error occurred while approving the booking']);
+        }
+    }
+
+    public function rejectByProvider()
+    {
+        try {
+            $providerId = $this->checkAuth();
+            $input = json_decode(file_get_contents('php://input'), true);
+            $bookingId = $input['booking_id'] ?? null;
+
+            if (!$bookingId) {
+                $this->sendResponse(false, [], ['bookingId' => 'Booking ID is required']);
+            }
+
+            $bookingModel = new TransportBooking();
+            $result = $bookingModel->updateBookingStatusByProvider($this->db, $bookingId, $providerId, 'rejected');
+
+            if ($result) {
+                $this->sendResponse(true, ['message' => 'Booking rejected']);
+                return;
+            }
+
+            $this->sendResponse(false, [], ['general' => 'Failed to reject booking']);
+        } catch (Exception $e) {
+            error_log('Reject provider transport booking error: ' . $e->getMessage());
+            $this->sendResponse(false, [], ['general' => 'An error occurred while rejecting the booking']);
+        }
+    }
+
+    public function payBooking()
+    {
+        try {
+            $userId = $this->checkAuth();
+            $input = json_decode(file_get_contents('php://input'), true);
+            $bookingId = $input['booking_id'] ?? null;
+
+            if (!$bookingId) {
+                $this->sendResponse(false, [], ['bookingId' => 'Booking ID is required']);
+            }
+
+            $bookingModel = new TransportBooking();
+            $booking = $bookingModel->getBookingById($this->db, $bookingId, $userId);
+
+            if (!$booking) {
+                $this->sendResponse(false, [], ['general' => 'Booking not found']);
+            }
+
+            $bookingStatus = $this->normalizeStatus($booking['booking_status'] ?? '');
+            $paymentStatus = $this->normalizeStatus($booking['payment_status'] ?? '');
+
+            if ($bookingStatus !== 'confirmed') {
+                $this->sendResponse(false, [], ['general' => 'Booking must be approved before payment']);
+            }
+
+            if ($paymentStatus === 'paid') {
+                $this->sendResponse(false, [], ['general' => 'Payment is already completed']);
+            }
+
+            $result = $bookingModel->payApprovedBooking($this->db, $bookingId, $userId);
+
+            if ($result) {
+                $this->sendResponse(true, ['message' => 'Payment completed successfully']);
+                return;
+            }
+
+            $this->sendResponse(false, [], ['general' => 'Unable to complete payment']);
+        } catch (Exception $e) {
+            error_log('Pay transport booking error: ' . $e->getMessage());
+            $this->sendResponse(false, [], ['general' => 'An error occurred while processing payment']);
+        }
+    }
+
     // Initialize booking - Save booking data to session
     public function initBooking()
     {
@@ -482,8 +598,33 @@ class TransportBookingController
                 $this->sendResponse(false, [], ['general' => 'Invalid request data']);
             }
 
+            $bookingId = isset($input['booking_id']) ? trim((string)$input['booking_id']) : null;
+            if (!$bookingId) {
+                $this->sendResponse(false, [], ['bookingId' => 'Booking ID is required']);
+            }
+
+            $bookingModel = new TransportBooking();
+            $booking = $bookingModel->getBookingById($this->db, $bookingId, $userId);
+            if (!$booking) {
+                $this->sendResponse(false, [], ['general' => 'Booking not found']);
+            }
+
+            $bookingStatus = $this->normalizeStatus($booking['booking_status'] ?? '');
+            $paymentStatus = $this->normalizeStatus($booking['payment_status'] ?? '');
+
+            if ($bookingStatus !== 'confirmed') {
+                $this->sendResponse(false, [], ['general' => 'Booking must be approved before payment']);
+            }
+
+            if ($paymentStatus === 'paid') {
+                $this->sendResponse(false, [], ['general' => 'This booking is already paid']);
+            }
+
             // Save to session
-            $_SESSION['transport_personal_details'] = $input;
+            if (!isset($_SESSION['transport_personal_details']) || !is_array($_SESSION['transport_personal_details'])) {
+                $_SESSION['transport_personal_details'] = [];
+            }
+            $_SESSION['transport_personal_details'][$bookingId] = $input;
 
             $this->sendResponse(true, ['message' => 'Details saved']);
 
@@ -505,8 +646,33 @@ class TransportBookingController
                 $this->sendResponse(false, [], ['general' => 'Invalid request data']);
             }
 
+            $bookingId = isset($input['booking_id']) ? trim((string)$input['booking_id']) : null;
+            if (!$bookingId) {
+                $this->sendResponse(false, [], ['bookingId' => 'Booking ID is required']);
+            }
+
+            $bookingModel = new TransportBooking();
+            $booking = $bookingModel->getBookingById($this->db, $bookingId, $userId);
+            if (!$booking) {
+                $this->sendResponse(false, [], ['general' => 'Booking not found']);
+            }
+
+            $bookingStatus = $this->normalizeStatus($booking['booking_status'] ?? '');
+
+            if ($bookingStatus !== 'confirmed') {
+                $this->sendResponse(false, [], ['general' => 'Booking must be approved before payment']);
+            }
+
+            $personalDetails = $_SESSION['transport_personal_details'][$bookingId] ?? null;
+            if (!$personalDetails) {
+                $this->sendResponse(false, [], ['general' => 'Please complete personal details first']);
+            }
+
             // Save to session (already masked from frontend)
-            $_SESSION['transport_payment_details'] = $input;
+            if (!isset($_SESSION['transport_payment_details']) || !is_array($_SESSION['transport_payment_details'])) {
+                $_SESSION['transport_payment_details'] = [];
+            }
+            $_SESSION['transport_payment_details'][$bookingId] = $input;
 
             $this->sendResponse(true, ['message' => 'Payment details saved']);
 
@@ -584,6 +750,39 @@ class TransportBookingController
         } catch (Exception $e) {
             error_log('Complete transport booking error: ' . $e->getMessage());
             $this->sendResponse(false, [], ['general' => 'An error occurred: ' . $e->getMessage()]);
+        }
+    }
+
+    public function getReviewData()
+    {
+        try {
+            $userId = $this->checkAuth();
+            $bookingId = $_GET['id'] ?? null;
+
+            if (!$bookingId) {
+                $this->sendResponse(false, [], ['bookingId' => 'Booking ID is required']);
+            }
+
+            $bookingModel = new TransportBooking();
+            $booking = $bookingModel->getBookingById($this->db, $bookingId, $userId);
+
+            if (!$booking) {
+                $this->sendResponse(false, [], ['general' => 'Booking not found']);
+            }
+
+            $personalDetails = $_SESSION['transport_personal_details'][$bookingId] ?? null;
+            $paymentDetails = $_SESSION['transport_payment_details'][$bookingId] ?? null;
+
+            $this->sendResponse(true, [
+                'booking' => $booking,
+                'personal_details' => $personalDetails,
+                'payment_details' => $paymentDetails,
+                'has_personal_details' => (bool)$personalDetails,
+                'has_payment_details' => (bool)$paymentDetails
+            ]);
+        } catch (Exception $e) {
+            error_log('Get transport booking review data error: ' . $e->getMessage());
+            $this->sendResponse(false, [], ['general' => 'Failed to retrieve booking review data']);
         }
     }
 }

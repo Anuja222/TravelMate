@@ -111,13 +111,37 @@
   font-size: 1em;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
-.search-box input[type="text"] {
-  width: 120px;
-  height: 40px;
-}
+.search-box input[type="text"],
 .search-box input[type="date"],
 .search-box input[type="number"] {
-  width: 140px;
+  width: 210px;
+  height: 56px;
+  padding: 0 16px;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #6b7280;
+  font-size: 1.1rem;
+  font-weight: 500;
+  box-shadow: none;
+  border: 1px solid #e5e7eb;
+}
+
+.search-box input[type="date"],
+.search-box input[type="number"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+
+.search-box input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.search-box input[type="number"]::-webkit-outer-spin-button,
+.search-box input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 .hero-stats {
   display: flex;
@@ -588,5 +612,197 @@
   .footer-content {
     flex-direction: column;
     gap: 0.8em;
+  }
+}
+
+/* ===== Home Page Visual Refresh ===== */
+body {
+  background: #f4f7f5;
+  color: #1f2937;
+}
+
+.hero {
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+.hero > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.03);
+}
+
+.hero-overlay {
+  background: linear-gradient(135deg, rgba(12, 20, 16, 0.62), rgba(13, 66, 45, 0.48));
+}
+
+.hero-content {
+  max-width: 960px;
+  padding: 2rem;
+}
+
+.hero-content h1 {
+  font-size: clamp(2.2rem, 5vw, 4.3rem);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.hero-content p {
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.search-box {
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  flex-wrap: nowrap;
+  justify-content: center;
+  overflow-x: auto;
+}
+
+.search-box input {
+  min-height: 44px;
+  border: 1px solid #e5e7eb;
+  box-shadow: none;
+  width: 145px;
+  min-width: 145px;
+}
+
+.btn-search,
+.view-all,
+.btn {
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+.btn-search,
+.view-all {
+  background: linear-gradient(135deg, #1abc5b 0%, #169a49 100%);
+  color: #fff;
+}
+
+.btn-search:hover,
+.view-all:hover,
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(26, 188, 91, 0.25);
+}
+
+.destinations,
+.empower-business,
+.things-to-do,
+.transport,
+.why-choose-section {
+  margin: 2rem auto;
+  max-width: 1280px;
+  border-radius: 18px;
+  padding: 3rem 2rem;
+  box-shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
+}
+
+.destinations,
+.things-to-do {
+  background: #fff;
+}
+
+.empower-business,
+.transport,
+.why-choose-section {
+  background: linear-gradient(180deg, #f8fbf9 0%, #f1f7f4 100%);
+}
+
+.destination-cards,
+.business-features {
+  margin: 1.5rem 0;
+  gap: 1.5rem;
+}
+
+.card,
+.feature,
+.todo-card {
+  border-radius: 14px;
+  border: 1px solid #eef2f7;
+}
+
+.card {
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.card img {
+  height: 180px;
+}
+
+.card-info {
+  text-align: left;
+}
+
+.tag {
+  background: rgba(26, 188, 91, 0.92);
+  backdrop-filter: blur(2px);
+}
+
+.feature h4,
+.todo-card h4 {
+  color: #0f9f4a;
+}
+
+.transport-features {
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.transport-features div {
+  background: #ffffff;
+  border: 1px solid #e6efe9;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+}
+
+.empower-cta {
+  max-width: 900px;
+  padding: 1.8rem;
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 1px #d8ebe0;
+}
+
+.feature-image {
+  border-radius: 16px;
+}
+
+@media (max-width: 900px) {
+  .destinations,
+  .empower-business,
+  .things-to-do,
+  .transport,
+  .why-choose-section {
+    margin: 1rem;
+    padding: 2rem 1.1rem;
+    border-radius: 14px;
+  }
+
+  .hero-content {
+    padding: 1rem;
+  }
+
+  .search-box {
+    padding: 12px;
+    gap: 0.5em;
+    justify-content: flex-start;
+  }
+
+  .search-box input {
+    width: 130px;
+    min-width: 130px;
   }
 }

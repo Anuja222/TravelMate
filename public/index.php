@@ -524,6 +524,9 @@ elseif ($requestUri === '/api/booking/create' && $_SERVER['REQUEST_METHOD'] === 
 } elseif ($requestUri === '/api/booking/search' && $_SERVER['REQUEST_METHOD'] === 'GET') {
     $bookingController = new BookingController();
     $bookingController->searchBookings();
+} elseif ($requestUri === '/api/booking/rate' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $bookingController = new BookingController();
+    $bookingController->submitBookingRating();
 } 
 
 // Transport Booking API routes
@@ -562,6 +565,11 @@ elseif ($requestUri === '/api/transport-booking/init-booking' && $_SERVER['REQUE
     $transportBookingController = new App\Controllers\TransportBookingController();
     $transportBookingController->get();
     exit;
+} elseif ($requestUri === '/api/transport-booking/review' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    require_once __DIR__ . '/../app/controllers/TransportProvider/TransportBookingController.php';
+    $transportBookingController = new App\Controllers\TransportBookingController();
+    $transportBookingController->getReviewData();
+    exit;
 } elseif ($requestUri === '/api/transport-booking/update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once __DIR__ . '/../app/controllers/TransportProvider/TransportBookingController.php';
     $transportBookingController = new App\Controllers\TransportBookingController();
@@ -586,6 +594,26 @@ elseif ($requestUri === '/api/transport-booking/init-booking' && $_SERVER['REQUE
     require_once __DIR__ . '/../app/controllers/TransportProvider/TransportBookingController.php';
     $transportBookingController = new App\Controllers\TransportBookingController();
     $transportBookingController->getStats();
+    exit;
+} elseif ($requestUri === '/api/transport-booking/provider/all' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    require_once __DIR__ . '/../app/controllers/TransportProvider/TransportBookingController.php';
+    $transportBookingController = new App\Controllers\TransportBookingController();
+    $transportBookingController->getProviderBookings();
+    exit;
+} elseif ($requestUri === '/api/transport-booking/provider/approve' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/TransportProvider/TransportBookingController.php';
+    $transportBookingController = new App\Controllers\TransportBookingController();
+    $transportBookingController->approveByProvider();
+    exit;
+} elseif ($requestUri === '/api/transport-booking/provider/reject' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/TransportProvider/TransportBookingController.php';
+    $transportBookingController = new App\Controllers\TransportBookingController();
+    $transportBookingController->rejectByProvider();
+    exit;
+} elseif ($requestUri === '/api/transport-booking/pay' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/TransportProvider/TransportBookingController.php';
+    $transportBookingController = new App\Controllers\TransportBookingController();
+    $transportBookingController->payBooking();
     exit;
 }
 

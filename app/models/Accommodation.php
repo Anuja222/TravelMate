@@ -37,6 +37,30 @@ class Accommodation {
         }
     }
 
+    private static function hasBookingRatingsTable($conn) {
+        try {
+            $stmt = $conn->query("SHOW TABLES LIKE 'booking_ratings'");
+            return $stmt && $stmt->fetch(\PDO::FETCH_NUM);
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    private static function ratingSelectClause($alias = 'a') {
+        return "
+            COALESCE((
+                SELECT ROUND(AVG(br.rating), 1)
+                FROM booking_ratings br
+                WHERE br.accommodation_id = {$alias}.id
+            ), 0) AS avg_rating,
+            COALESCE((
+                SELECT COUNT(*)
+                FROM booking_ratings br
+                WHERE br.accommodation_id = {$alias}.id
+            ), 0) AS rating_count
+        ";
+    }
+
     public function create($conn) {
         $sql = "INSERT INTO accommodations (
             user_id, property_type, title, description, location, address,
@@ -91,6 +115,10 @@ class Accommodation {
     }
 
     public static function findByUser($conn, $userId) {
+        $ratingSelect = self::hasBookingRatingsTable($conn)
+            ? self::ratingSelectClause('a')
+            : "0 AS avg_rating, 0 AS rating_count";
+
         $sql = "SELECT 
                     a.*,
                     (
@@ -104,7 +132,8 @@ class Accommodation {
                         WHERE b.accommodation_id = a.id
                           AND b.booking_status IN ('confirmed', 'pending')
                           AND b.checkout_date >= CURDATE()
-                    ) AS booked_rooms
+                    ) AS booked_rooms,
+                    {$ratingSelect}
                 FROM accommodations a
                 WHERE a.user_id = ?
                 ORDER BY a.created_at DESC";
@@ -114,14 +143,22 @@ class Accommodation {
     }
 
     public static function findAll($conn) {
-        $sql = "SELECT * FROM accommodations WHERE status = 'active' ORDER BY created_at DESC";
+        $ratingSelect = self::hasBookingRatingsTable($conn)
+            ? self::ratingSelectClause('a')
+            : "0 AS avg_rating, 0 AS rating_count";
+
+        $sql = "SELECT a.*, {$ratingSelect} FROM accommodations a WHERE a.status = 'active' ORDER BY a.created_at DESC";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public static function findAllForAdmin($conn) {
-        $sql = "SELECT * FROM accommodations ORDER BY created_at DESC";
+        $ratingSelect = self::hasBookingRatingsTable($conn)
+            ? self::ratingSelectClause('a')
+            : "0 AS avg_rating, 0 AS rating_count";
+
+        $sql = "SELECT a.*, {$ratingSelect} FROM accommodations a ORDER BY a.created_at DESC";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);

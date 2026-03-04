@@ -101,7 +101,7 @@
           <div class="widget-header">
             <div class="price-display">
               <span class="price-amount" id="priceAmount">Rs.0</span>
-              <span class="price-period">/ day</span>
+              <span class="price-period">/ 1km</span>
             </div>
             <div class="price-note">Prices may vary by duration and destination</div>
           </div>
@@ -222,13 +222,13 @@
           <polyline points="22 4 12 14.01 9 11.01"></polyline>
         </svg>
       </div>
-      <h2>Booking Confirmed!</h2>
-      <p>Your transport booking has been successfully confirmed.</p>
+      <h2>Request Submitted!</h2>
+      <p>Your transport booking request is pending transporter approval.</p>
       <div class="booking-id-display">
         <span class="label">Booking ID:</span>
         <span class="booking-id" id="modalBookingId">TB12345678</span>
       </div>
-      <p class="confirmation-note">A confirmation email has been sent to your registered email address.</p>
+      <p class="confirmation-note">You’ll be notified once the transporter approves your request.</p>
       <div class="modal-actions">
         <button onclick="goToTransportBookings()" class="btn-view-bookings">
           <i class="fas fa-list"></i> View My Bookings
@@ -236,6 +236,23 @@
         <button onclick="closeBookingModal()" class="btn-close-modal">
           Close
         </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="dateUnavailableModal" class="booking-success-modal">
+    <div class="booking-success-content">
+      <div class="success-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
+      <h2>Dates Not Available</h2>
+      <p id="dateUnavailableMessage">Dates are not available. Please choose different pickup and return dates.</p>
+      <div class="modal-actions">
+        <button onclick="closeDateUnavailableModal()" class="btn-close-modal">OK</button>
       </div>
     </div>
   </div>
@@ -440,6 +457,22 @@
 
     function goToTransportBookings() {
       window.location.href = 'mytransportbookings';
+    }
+
+    function showDateUnavailableModal(message) {
+      const modal = document.getElementById('dateUnavailableModal');
+      const messageEl = document.getElementById('dateUnavailableMessage');
+      if (modal && messageEl) {
+        messageEl.textContent = message || 'Dates are not available. Please choose different pickup and return dates.';
+        modal.style.display = 'block';
+      }
+    }
+
+    function closeDateUnavailableModal() {
+      const modal = document.getElementById('dateUnavailableModal');
+      if (modal) {
+        modal.style.display = 'none';
+      }
     }
   </script>
 </body>

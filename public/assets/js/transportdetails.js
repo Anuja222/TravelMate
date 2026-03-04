@@ -458,7 +458,7 @@ async function confirmBooking() {
         confirmBtn.disabled = true;
         confirmBtn.textContent = 'Processing...';
 
-        const response = await fetch(`${baseUrl}/api/transport-booking/init-booking`, {
+        const response = await fetch(`${baseUrl}/api/transport-booking/create`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(calculatedBooking),
@@ -467,7 +467,13 @@ async function confirmBooking() {
 
         const result = await response.json();
         if (result.success) {
-            window.location.href = `${baseUrl}/transport-booking-details`;
+            const bookingId = result?.data?.booking_id || result?.data?.bookingId || 'Pending';
+            showBookingSuccessModal(bookingId);
+            return;
+        }
+
+        if (result.errors?.availability) {
+            showDateUnavailableModal('Dates are not available. Please choose different pickup and return dates.');
             return;
         }
 
