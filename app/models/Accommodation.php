@@ -7,15 +7,26 @@ class Accommodation {
     public $propertyType;
     public $title;
     public $description;
+    public $location;
+    public $address;
     public $rooms;
     public $bathrooms;
     public $maxGuests;
+    public $childrenAllowed;
     public $smoking;
     public $parties;
     public $pets;
     public $checkInStart;
     public $checkInEnd;
     public $checkOutTime;
+    public $contactName;
+    public $contactPhone;
+    public $contactEmail;
+    public $amenities;
+    public $pricePerNight;
+    public $pricePerGuest;
+    public $breakfast;
+    public $parking;
     public $status;
 
     public function __construct($data = []) {
@@ -28,12 +39,19 @@ class Accommodation {
 
     public function create($conn) {
         $sql = "INSERT INTO accommodations (
-            user_id, property_type, title, description,
-            rooms, bathrooms, max_guests,
+            user_id, property_type, title, description, location, address,
+            rooms, bathrooms, max_guests, children_allowed,
             smoking, parties, pets, check_in_start, check_in_end,
-            check_out_time, status, created_at
+            check_out_time, contact_name, contact_phone, contact_email,
+            amenities, price_per_night, price_per_guest,
+            breakfast, parking, status, created_at, updated_at
         ) VALUES (
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
+            ?, ?, ?, ?, ?, ?,
+            ?, ?, ?, ?,
+            ?, ?, ?, ?, ?, ?,
+            ?, ?, ?,
+            ?, ?, ?,
+            ?, ?, ?, NOW(), NOW()
         )";
         
         $stmt = $conn->prepare($sql);
@@ -42,15 +60,26 @@ class Accommodation {
             $this->propertyType,
             $this->title,
             $this->description,
+            $this->location,
+            $this->address,
             $this->rooms,
             $this->bathrooms,
             $this->maxGuests,
+            $this->childrenAllowed,
             $this->smoking,
             $this->parties,
             $this->pets,
             $this->checkInStart,
             $this->checkInEnd,
             $this->checkOutTime,
+            $this->contactName,
+            $this->contactPhone,
+            $this->contactEmail,
+            $this->amenities,
+            $this->pricePerNight,
+            $this->pricePerGuest,
+            $this->breakfast,
+            $this->parking,
             $this->status ?? 'pending'
         ]);
 
@@ -62,7 +91,23 @@ class Accommodation {
     }
 
     public static function findByUser($conn, $userId) {
-        $sql = "SELECT * FROM accommodations WHERE user_id = ? ORDER BY created_at DESC";
+        $sql = "SELECT 
+                    a.*,
+                    (
+                        SELECT COUNT(*)
+                        FROM bookings b
+                        WHERE b.accommodation_id = a.id
+                    ) AS bookings_received,
+                    (
+                        SELECT COALESCE(SUM(COALESCE(b.number_of_rooms, 1)), 0)
+                        FROM bookings b
+                        WHERE b.accommodation_id = a.id
+                          AND b.booking_status IN ('confirmed', 'pending')
+                          AND b.checkout_date >= CURDATE()
+                    ) AS booked_rooms
+                FROM accommodations a
+                WHERE a.user_id = ?
+                ORDER BY a.created_at DESC";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$userId]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -100,15 +145,26 @@ class Accommodation {
                 property_type = ?,
                 title = ?,
                 description = ?,
+                location = ?,
+                address = ?,
                 rooms = ?,
                 bathrooms = ?,
                 max_guests = ?,
+                children_allowed = ?,
                 smoking = ?,
                 parties = ?,
                 pets = ?,
                 check_in_start = ?,
                 check_in_end = ?,
                 check_out_time = ?,
+                contact_name = ?,
+                contact_phone = ?,
+                contact_email = ?,
+                amenities = ?,
+                price_per_night = ?,
+                price_per_guest = ?,
+                breakfast = ?,
+                parking = ?,
                 status = ?,
                 updated_at = NOW()
                 WHERE id = ? AND user_id = ?";
@@ -118,15 +174,26 @@ class Accommodation {
             $this->propertyType,
             $this->title,
             $this->description,
+            $this->location,
+            $this->address,
             $this->rooms,
             $this->bathrooms,
             $this->maxGuests,
+            $this->childrenAllowed,
             $this->smoking,
             $this->parties,
             $this->pets,
             $this->checkInStart,
             $this->checkInEnd,
             $this->checkOutTime,
+            $this->contactName,
+            $this->contactPhone,
+            $this->contactEmail,
+            $this->amenities,
+            $this->pricePerNight,
+            $this->pricePerGuest,
+            $this->breakfast,
+            $this->parking,
             $this->status,
             $this->id,
             $this->userId

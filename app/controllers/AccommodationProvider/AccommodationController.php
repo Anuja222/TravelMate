@@ -274,9 +274,12 @@ class AccommodationController {
                 'propertyType' => $_POST['property_type'] ?? $existing['property_type'],
                 'title' => $_POST['title'] ?? $existing['title'],
                 'description' => $_POST['description'] ?? $existing['description'],
+                'location' => $_POST['location'] ?? $existing['location'],
+                'address' => $_POST['address'] ?? $existing['address'],
                 'rooms' => $_POST['rooms'] ?? $existing['rooms'],
                 'bathrooms' => $_POST['bathrooms'] ?? $existing['bathrooms'],
                 'maxGuests' => $_POST['max_guests'] ?? $existing['max_guests'],
+                'childrenAllowed' => isset($_POST['children_allowed']) ? intval($_POST['children_allowed']) : $existing['children_allowed'],
                 // Accept explicit 0/1 values for checkboxes (form should send 0 when unchecked)
                 'smoking' => isset($_POST['smoking']) ? intval($_POST['smoking']) : $existing['smoking'],
                 'parties' => isset($_POST['parties']) ? intval($_POST['parties']) : $existing['parties'],
@@ -284,12 +287,38 @@ class AccommodationController {
                 'checkInStart' => $_POST['check_in_start'] ?? $existing['check_in_start'],
                 'checkInEnd' => $_POST['check_in_end'] ?? $existing['check_in_end'],
                 'checkOutTime' => $_POST['check_out_time'] ?? $existing['check_out_time'],
+                'contactName' => $_POST['contact_name'] ?? $existing['contact_name'],
+                'contactPhone' => $_POST['contact_phone'] ?? $existing['contact_phone'],
+                'contactEmail' => $_POST['contact_email'] ?? $existing['contact_email'],
+                'amenities' => isset($_POST['amenities']) && is_array($_POST['amenities'])
+                    ? json_encode($_POST['amenities'])
+                    : ($existing['amenities'] ?? json_encode([])),
+                'pricePerNight' => $_POST['price_per_night'] ?? $existing['price_per_night'],
+                'pricePerGuest' => $_POST['price_per_guest'] ?? $existing['price_per_guest'],
+                'breakfast' => isset($_POST['breakfast']) ? ($_POST['breakfast'] === 'yes' ? 'yes' : 'no') : $existing['breakfast'],
+                'parking' => isset($_POST['parking']) ? ($_POST['parking'] === 'yes' ? 'yes' : 'no') : $existing['parking'],
                 'status' => $_POST['status'] ?? $existing['status']
             ]);
             
             $pdo->beginTransaction();
             
             if ($accommodation->update($pdo)) {
+                if (isset($_POST['amenities']) && is_array($_POST['amenities'])) {
+                    $delAmenitiesStmt = $pdo->prepare("DELETE FROM accommodation_amenities WHERE accommodation_id = ?");
+                    $delAmenitiesStmt->execute([$id]);
+
+                    if (!empty($_POST['amenities'])) {
+                        $insertAmenity = $pdo->prepare("INSERT INTO accommodation_amenities (accommodation_id, amenity_name) VALUES (?, ?)");
+                        foreach ($_POST['amenities'] as $amenityName) {
+                            $amenityName = trim((string)$amenityName);
+                            if ($amenityName === '') {
+                                continue;
+                            }
+                            $insertAmenity->execute([$id, $amenityName]);
+                        }
+                    }
+                }
+
                 // Allow deletion of existing images (delete_images[])
                 if (!empty($_POST['delete_images'])) {
                     $delIds = is_array($_POST['delete_images']) ? $_POST['delete_images'] : explode(',', $_POST['delete_images']);
