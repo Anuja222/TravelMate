@@ -415,6 +415,74 @@ class BookingController
         $this->sendResponse(true, [], ['bookings' => $bookings]);
     }
 
+    public function submitBookingRating()
+    {
+        global $pdo;
+
+        if (!isset($_SESSION['user']['id'])) {
+            $this->sendResponse(false, ['auth' => 'Please login to submit a rating']);
+            return;
+        }
+
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        $bookingId = trim((string)($data['bookingId'] ?? ''));
+        $rating = intval($data['rating'] ?? 0);
+        $review = trim((string)($data['review'] ?? ''));
+
+        if ($bookingId === '') {
+            $this->sendResponse(false, ['general' => 'Booking ID is required']);
+            return;
+        }
+
+        if ($rating < 1 || $rating > 5) {
+            $this->sendResponse(false, ['general' => 'Rating must be between 1 and 5']);
+            return;
+        }
+
+        try {
+            $booking = new Booking();
+            $bookingData = $booking->getBookingById($pdo, $bookingId, $_SESSION['user']['id']);
+
+            if (!$bookingData) {
+                $this->sendResponse(false, ['general' => 'Booking not found']);
+                return;
+            }
+
+            $checkoutDate = strtotime((string)$bookingData['checkout_date']);
+            $todayStart = strtotime(date('Y-m-d'));
+
+            if ($checkoutDate >= $todayStart) {
+                $this->sendResponse(false, ['general' => 'You can rate only after the booking has expired']);
+                return;
+            }
+
+            if (strtolower((string)$bookingData['booking_status']) === 'cancelled') {
+                $this->sendResponse(false, ['general' => 'Cancelled bookings cannot be rated']);
+                return;
+            }
+
+            $saved = $booking->saveBookingRating(
+                $pdo,
+                $bookingId,
+                $_SESSION['user']['id'],
+                $bookingData['accommodation_id'] ?? null,
+                $rating,
+                $review !== '' ? $review : null
+            );
+
+            if ($saved) {
+                $this->sendResponse(true, [], ['message' => 'Rating saved successfully']);
+                return;
+            }
+
+            $this->sendResponse(false, ['general' => 'Failed to save rating']);
+        } catch (\Exception $e) {
+            error_log('submitBookingRating error: ' . $e->getMessage());
+            $this->sendResponse(false, ['general' => 'Failed to save rating']);
+        }
+    }
+
     private function sendResponse($success, $errors = [], $data = null)
     {
         header('Content-Type: application/json');

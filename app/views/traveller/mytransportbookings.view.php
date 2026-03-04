@@ -6,8 +6,9 @@
     <title>My Transport Bookings - TravelMate</title>
     <link rel="stylesheet" href="assets/css/Traveller/mybookings.css">
     <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="transport-bookings-page">
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
     <main class="bookings-layout">
@@ -51,6 +52,7 @@
         <!-- Filter Tabs -->
         <div class="filter-tabs">
             <div class="filter-tab active" data-filter="all">All Bookings</div>
+            <div class="filter-tab" data-filter="pending">Pending</div>
             <div class="filter-tab" data-filter="confirmed">Confirmed</div>
             <div class="filter-tab" data-filter="cancelled">Cancelled</div>
         </div>
@@ -73,21 +75,41 @@
         </div>
 
         <div class="bookings-container">
-            <!-- Transport Section -->
+            <!-- Pending Section -->
+            <div class="booking-section" data-category="pending">
+                <div class="section-header">
+                    <div class="section-icon"><i class="fas fa-hourglass-half" aria-hidden="true"></i></div>
+                    <h2 class="section-title">Pending Bookings</h2>
+                </div>
+
+                <!-- Pending bookings will be dynamically loaded here -->
+            </div>
+
+            <!-- Active Transport Section -->
             <div class="booking-section" data-category="transport">
                 <div class="section-header">
-                    <div class="section-icon">🚗</div>
+                    <div class="section-icon"><i class="fas fa-car-side" aria-hidden="true"></i></div>
                     <h2 class="section-title">Transport Bookings</h2>
                 </div>
                 
-                <!-- Bookings will be dynamically loaded here -->
+                <!-- Active transport bookings will be dynamically loaded here -->
+            </div>
+
+            <!-- History Section -->
+            <div class="booking-section" data-category="history">
+                <div class="section-header">
+                    <div class="section-icon"><i class="fas fa-clock-rotate-left" aria-hidden="true"></i></div>
+                    <h2 class="section-title">History</h2>
+                </div>
+
+                <!-- History bookings will be dynamically loaded here -->
             </div>
         </div>
 
         <!-- Summary Section -->
         <div class="booking-section" style="margin-top: 2em;">
             <div class="section-header">
-                <div class="section-icon">📊</div>
+                <div class="section-icon"><i class="fas fa-chart-simple" aria-hidden="true"></i></div>
                 <h2 class="section-title">Booking Summary</h2>
             </div>
             <div id="bookingStats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5em;">
@@ -118,7 +140,7 @@
     <div id="bookingDetailsModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6);">
         <div class="modal-content" style="background-color: #fefefe; margin: 5% auto; padding: 2.5em; border-radius: 20px; width: 90%; max-width: 650px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
             <span class="close" style="color: #aaa; float: right; font-size: 32px; font-weight: bold; cursor: pointer; line-height: 20px; transition: all 0.3s ease;">&times;</span>
-            <h2 style="margin-bottom: 1.5em; color: #1abc5b; font-size: 28px; font-weight: 700;">🚗 Transport Booking Details</h2>
+            <h2 style="margin-bottom: 1.5em; color: #1abc5b; font-size: 28px; font-weight: 700;"><i class="fas fa-car-side" aria-hidden="true"></i> Transport Booking Details</h2>
             <div id="modalContent" style="color: #333;"></div>
         </div>
     </div>

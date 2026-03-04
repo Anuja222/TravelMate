@@ -19,6 +19,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
     <title>Home - Travel Mate</title>
     <link rel="stylesheet" href="assets/css/Traveller/homet.css">
     <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
@@ -264,6 +265,22 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                         const price = acc.price_per_night || 0;
                         const formattedPrice = parseFloat(price).toLocaleString('en-US');
                         const description = acc.description || 'Experience comfort and luxury at this amazing property';
+                                                const ratingCount = parseInt(acc.rating_count || 0, 10) || 0;
+                                                const avgRatingValue = parseFloat(acc.avg_rating || 0);
+                                                const ratingStarsHtml = (() => {
+                                                    let stars = '';
+                                                    for (let index = 1; index <= 5; index++) {
+                                                        if (avgRatingValue >= index) {
+                                                            stars += '<i class="fas fa-star"></i>';
+                                                        } else if (avgRatingValue >= index - 0.5) {
+                                                            stars += '<i class="fas fa-star-half-alt"></i>';
+                                                        } else {
+                                                            stars += '<i class="far fa-star"></i>';
+                                                        }
+                                                    }
+                                                    return stars;
+                                                })();
+                                                const ratingText = ratingCount > 0 ? `${avgRatingValue.toFixed(1)} (${ratingCount})` : 'Not yet rated';
                         return `
             <div class="card" style="width: 100%; max-width: 100%;">
               <div class="card-image">
@@ -275,6 +292,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
               <div class="card-content">
                 <h3>${escapeHtml(acc.title)}</h3>
                 <p>${escapeHtml(description.substring(0, 120))}${description.length > 120 ? '...' : ''}</p>
+                                <p style="margin:0 0 8px 0; font-size:13px; color:#6b7280; font-weight:600; display:flex; align-items:center; gap:8px;"><span style="color:#f59e0b; display:inline-flex; gap:2px;">${ratingStarsHtml}</span> ${escapeHtml(ratingText)}</p>
                 <span class="price-tag">Rs.${formattedPrice}/night</span>
               </div>
             </div>

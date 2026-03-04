@@ -6,8 +6,9 @@
     <title>My Bookings - TravelMate</title>
     <link rel="stylesheet" href="assets/css/Traveller/mybookings.css">
     <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="accommodation-bookings-page">
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
     <main class="bookings-layout">
@@ -76,21 +77,30 @@
             <!-- Hotels Section -->
             <div class="booking-section" data-category="hotels">
                 <div class="section-header">
-                    <div class="section-icon">🏨</div>
+                    <div class="section-icon"><i class="fas fa-hotel" aria-hidden="true"></i></div>
                     <h2 class="section-title">Hotel Bookings</h2>
                 </div>
                 
                 <!-- Bookings will be dynamically loaded here -->
             </div>
 
+            <!-- Booking History Section -->
+            <div class="booking-section" data-category="history">
+                <div class="section-header">
+                    <div class="section-icon"><i class="fas fa-clock-rotate-left" aria-hidden="true"></i></div>
+                    <h2 class="section-title">Booking History</h2>
+                </div>
+                <p class="history-note">Expired bookings appear here. You can rate your completed stays.</p>
+            </div>
+
             <!-- Transport Section (Future Implementation) -->
             <div class="booking-section" data-category="transport" style="display: none;">
                 <div class="section-header">
-                    <div class="section-icon">✈️</div>
+                    <div class="section-icon"><i class="fas fa-plane-departure" aria-hidden="true"></i></div>
                     <h2 class="section-title">Transport Bookings</h2>
                 </div>
                 <div class="empty-state">
-                    <div class="empty-state-icon">🚗</div>
+                    <div class="empty-state-icon"><i class="fas fa-car-side" aria-hidden="true"></i></div>
                     <h3>No Transport Bookings</h3>
                     <p>You haven't booked any transportation yet.</p>
                 </div>
@@ -100,7 +110,7 @@
         <!-- Summary Section -->
         <div class="booking-section" style="margin-top: 2em;">
             <div class="section-header">
-                <div class="section-icon">📊</div>
+                <div class="section-icon"><i class="fas fa-chart-simple" aria-hidden="true"></i></div>
                 <h2 class="section-title">Booking Summary</h2>
             </div>
             <div id="bookingStats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5em;">

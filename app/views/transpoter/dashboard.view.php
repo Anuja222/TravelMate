@@ -81,6 +81,41 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
         </div>
       </section>
 
+      <!-- PERFORMANCE SUMMARY -->
+      <section class="activity-summary">
+        <h3>Performance Summary</h3>
+        <div class="summary-stats">
+          <div class="stat">
+            <div class="stat-icon">
+              <i class="fas fa-car"></i>
+            </div>
+            <div class="stat-num" id="listingCount">0</div>
+            <div class="stat-label">Listings</div>
+          </div>
+          <div class="stat">
+            <div class="stat-icon">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stat-num" id="bookedCount">0</div>
+            <div class="stat-label">Booked</div>
+          </div>
+          <div class="stat">
+            <div class="stat-icon">
+              <i class="fas fa-hand-holding-usd"></i>
+            </div>
+            <div class="stat-num" id="bookingsReceivedCount">0</div>
+            <div class="stat-label">Bookings Received</div>
+          </div>
+          <div class="stat">
+            <div class="stat-icon">
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="stat-num" id="averageRatingCount">0.0</div>
+            <div class="stat-label">Average Rating</div>
+          </div>
+        </div>
+      </section>
+
       <!-- VEHICLES -->
       <section class="favourites">
         <div class="section-header">
@@ -101,41 +136,6 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
         </div>
       </section>
 
-      <!-- PERFORMANCE SUMMARY -->
-      <section class="activity-summary">
-        <h3>Performance Summary</h3>
-        <div class="summary-stats">
-          <div class="stat">
-            <div class="stat-icon">
-              <i class="fas fa-car"></i>
-            </div>
-            <div class="stat-num">4</div>
-            <div class="stat-label">Listings</div>
-          </div>
-          <div class="stat">
-            <div class="stat-icon">
-              <i class="fas fa-calendar-check"></i>
-            </div>
-            <div class="stat-num">3</div>
-            <div class="stat-label">Booked</div>
-          </div>
-          <div class="stat">
-            <div class="stat-icon">
-              <i class="fas fa-hand-holding-usd"></i>
-            </div>
-            <div class="stat-num">6</div>
-            <div class="stat-label">Bookings Received</div>
-          </div>
-          <div class="stat">
-            <div class="stat-icon">
-              <i class="fas fa-star"></i>
-            </div>
-            <div class="stat-num">4.5</div>
-            <div class="stat-label">Average Rating</div>
-          </div>
-        </div>
-      </section>
-
     </div>
   </main>
 
@@ -144,30 +144,6 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
   <script src="../public/assets/js/vehicle.js"></script>
 
   <script>
-    // Performance stats animation
-    document.addEventListener('DOMContentLoaded', function () {
-      const stats = document.querySelectorAll('.stat-num');
-      stats.forEach(stat => {
-        const target = parseInt(stat.textContent);
-        let count = 0;
-        const duration = 2000; // in milliseconds
-        const frameDuration = 1000 / 60; // 60 fps
-        const totalFrames = Math.round(duration / frameDuration);
-        const easeOutQuad = t => t * (2 - t);
-
-        const counter = setInterval(() => {
-          const progress = easeOutQuad(++count / totalFrames);
-          const current = Math.round(target * progress);
-
-          if (parseInt(stat.textContent) !== target) {
-            stat.textContent = current;
-          } else {
-            clearInterval(counter);
-          }
-        }, frameDuration);
-      });
-    });
-
     // Card hover effects
     const cards = document.querySelectorAll('.fav-card');
     cards.forEach(card => {
@@ -182,6 +158,78 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
       });
     });
 
+    function setSummaryValues({ listings = 0, booked = 0, received = 0, avgRating = 0 }) {
+      const listingEl = document.getElementById('listingCount');
+      const bookedEl = document.getElementById('bookedCount');
+      const receivedEl = document.getElementById('bookingsReceivedCount');
+      const ratingEl = document.getElementById('averageRatingCount');
+
+      if (listingEl) listingEl.textContent = String(listings);
+      if (bookedEl) bookedEl.textContent = String(booked);
+      if (receivedEl) receivedEl.textContent = String(received);
+      if (ratingEl) ratingEl.textContent = Number(avgRating || 0).toFixed(1);
+    }
+
+    async function fetchProviderBookings() {
+      const response = await fetch('<?php echo '/TravelMate/public'; ?>/api/transport-booking/provider/all', {
+        credentials: 'same-origin'
+      });
+
+      const result = await response.json();
+      if (!result.success) {
+        throw new Error(result.errors?.general || 'Failed to load provider bookings');
+      }
+
+      return result.data?.bookings || [];
+    }
+
+    function calculateAverageRating(bookings) {
+      if (!Array.isArray(bookings) || bookings.length === 0) {
+        return 0;
+      }
+
+      const ratingFields = ['rating', 'provider_rating', 'booking_rating'];
+      const values = [];
+
+      bookings.forEach((booking) => {
+        ratingFields.forEach((field) => {
+          const value = Number(booking?.[field]);
+          if (Number.isFinite(value) && value > 0) {
+            values.push(value);
+          }
+        });
+      });
+
+      if (values.length === 0) {
+        return 0;
+      }
+
+      const total = values.reduce((sum, current) => sum + current, 0);
+      return total / values.length;
+    }
+
+    async function loadDashboardSummary() {
+      try {
+        const [vehicles, bookings] = await Promise.all([
+          loadUserVehicles(),
+          fetchProviderBookings()
+        ]);
+
+        const bookedCount = bookings.filter((booking) => String(booking.booking_status || '').toLowerCase() === 'confirmed').length;
+        const avgRating = calculateAverageRating(bookings);
+
+        setSummaryValues({
+          listings: vehicles.length,
+          booked: bookedCount,
+          received: bookings.length,
+          avgRating
+        });
+      } catch (error) {
+        console.error('Error loading dashboard summary:', error);
+        setSummaryValues({ listings: 0, booked: 0, received: 0, avgRating: 0 });
+      }
+    }
+
     // Fetch and display user vehicles
     async function loadUserVehicles() {
       try {
@@ -193,14 +241,17 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
 
         if (result.success && result.data && result.data.length > 0) {
           displayVehicles(result.data);
+          return result.data;
         } else {
           const container = document.querySelector('.vehicle-cards-grid');
           if (container) {
             container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;"><p>No vehicles found. <a href="vehicleType" style="color: #1abc5b;">Add your first vehicle</a></p></div>';
           }
+          return [];
         }
       } catch (error) {
         console.error('Error loading vehicles:', error);
+        return [];
       }
     }
 
@@ -313,9 +364,9 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
       return card;
     }
 
-    // Load vehicles when page loads
+    // Load summary + vehicles when page loads
     document.addEventListener('DOMContentLoaded', function () {
-      loadUserVehicles();
+      loadDashboardSummary();
     });
 
     async function toggleVehicleStatus(vehicleId, nextStatus) {

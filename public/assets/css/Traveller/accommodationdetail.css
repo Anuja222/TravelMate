@@ -1067,6 +1067,90 @@ input[type="date"] {
   object-fit: cover;
 }
 
+/* Map Modal */
+.map-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9998;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.map-modal.show {
+  display: flex;
+}
+
+.map-modal-content {
+  width: min(960px, 100%);
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+.map-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.map-modal-header h3 {
+  margin: 0;
+  font-size: 1.05em;
+  color: #111827;
+}
+
+.map-modal-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: #f3f4f6;
+  color: #374151;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.map-modal-close:hover {
+  background: #e5e7eb;
+}
+
+.map-modal-body {
+  height: min(70vh, 560px);
+}
+
+#mapFrame {
+  width: 100%;
+  height: calc(100% - 44px);
+  border: 0;
+}
+
+.map-modal-fallback {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.map-modal-fallback a {
+  color: #1abc5b;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.map-modal-fallback a:hover {
+  text-decoration: underline;
+}
+
 /* Validation Modal Styles */
 .validation-modal {
   display: none;

@@ -1,6 +1,30 @@
 // Transport Booking Payment Form Handler
 document.addEventListener('DOMContentLoaded', function() {
     const paymentForm = document.getElementById('paymentForm');
+    const bookingId = String(window.transportPaymentBookingId || new URLSearchParams(window.location.search).get('booking_id') || '').trim();
+    const submitBtn = paymentForm ? paymentForm.querySelector('.finish-booking-btn') : null;
+
+    if (!bookingId) {
+        alert('Booking reference is missing.');
+        window.location.href = '/TravelMate/public/mytransportbookings';
+        return;
+    }
+
+    if (!paymentForm || !submitBtn) {
+        return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = 'Validating...';
+
+    verifyPaymentStep(bookingId).then((isValid) => {
+        if (!isValid) {
+            return;
+        }
+
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Complete Payment';
+    });
     
     // Format card number input
     const cardNumberInput = document.getElementById('card_number');
@@ -70,12 +94,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         try {
             // Disable submit button
-            const submitBtn = paymentForm.querySelector('.finish-booking-btn');
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
             
-            // Save payment details to session (masked)
             const maskedData = {
+                booking_id: bookingId,
                 card_name: formData.card_name,
                 card_last4: formData.card_number.slice(-4),
                 billing_address: formData.billing_address,
@@ -83,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 billing_zip: formData.billing_zip,
                 billing_country: formData.billing_country
             };
-            
+
             const response = await fetch('/TravelMate/public/api/transport-booking/save-payment', {
                 method: 'POST',
                 headers: {
@@ -92,23 +115,86 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify(maskedData),
                 credentials: 'same-origin'
             });
+
+            if (!response.ok) {
+                throw new Error('Failed to save payment details');
+            }
             
             const result = await response.json();
             
             if (result.success) {
-                // Redirect to finish page
-                window.location.href = '/TravelMate/public/transport-booking-finish';
+                window.location.href = `/TravelMate/public/transport-booking-finish?booking_id=${encodeURIComponent(bookingId)}`;
             } else {
-                alert(result.errors?.general || 'Failed to save payment details. Please try again.');
+                alert(getApiErrorMessage(result.errors, 'Failed to save payment details. Please try again.'));
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = 'Next: Review & Confirm';
+                submitBtn.innerHTML = 'Complete Payment';
             }
         } catch (error) {
             console.error('Error saving payment details:', error);
             alert('An error occurred. Please try again.');
             const submitBtn = paymentForm.querySelector('.finish-booking-btn');
             submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Next: Review & Confirm';
+            submitBtn.innerHTML = 'Complete Payment';
         }
     });
 });
+
+async function verifyPaymentStep(bookingId) {
+    try {
+        const response = await fetch(`/TravelMate/public/api/transport-booking/review?id=${encodeURIComponent(bookingId)}`, {
+            method: 'GET',
+            credentials: 'same-origin'
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to verify booking step');
+        }
+
+        const result = await response.json();
+
+        if (!result.success || !result.data?.booking) {
+            alert(getApiErrorMessage(result.errors, 'Invalid booking'));
+            window.location.href = '/TravelMate/public/mytransportbookings';
+            return false;
+        }
+
+        const booking = result.data.booking;
+        if (String(booking.booking_status || '').toLowerCase() !== 'confirmed') {
+            alert('This booking is not approved for payment yet.');
+            window.location.href = '/TravelMate/public/mytransportbookings';
+            return false;
+        }
+
+        if (String(booking.payment_status || '').toLowerCase() === 'paid') {
+            alert('This booking is already paid.');
+            window.location.href = '/TravelMate/public/mytransportbookings';
+            return false;
+        }
+
+        if (!result.data.has_personal_details) {
+            alert('Please complete personal details first.');
+            window.location.href = `/TravelMate/public/transport-booking-details?booking_id=${encodeURIComponent(bookingId)}`;
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error(error);
+        alert('Unable to validate booking step.');
+        window.location.href = '/TravelMate/public/mytransportbookings';
+        return false;
+    }
+}
+
+function getApiErrorMessage(errors, fallbackMessage) {
+    if (!errors || typeof errors !== 'object') {
+        return fallbackMessage;
+    }
+
+    if (errors.general) {
+        return errors.general;
+    }
+
+    const firstError = Object.values(errors).find((value) => typeof value === 'string' && value.trim() !== '');
+    return firstError || fallbackMessage;
+}

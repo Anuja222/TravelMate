@@ -12,23 +12,12 @@ if (!$isLoggedIn) {
 }
 
 $userId = $_SESSION['user']['id'] ?? '';
+$bookingId = $_GET['booking_id'] ?? '';
 
-// Get booking data from session
-$bookingData = $_SESSION['transport_booking_temp'] ?? null;
-$personalDetails = $_SESSION['transport_personal_details'] ?? null;
-$paymentDetails = $_SESSION['transport_payment_details'] ?? null;
-
-if (!$bookingData || !$personalDetails || !$paymentDetails) {
-    header('Location: /TravelMate/public/transport');
+if (!$bookingId) {
+    header('Location: /TravelMate/public/mytransportbookings');
     exit;
 }
-
-// Calculate prices
-$basePrice = $bookingData['base_price'];
-$serviceCharge = $bookingData['service_charge'];
-$totalPrice = $bookingData['total_price'];
-$taxAmount = round($totalPrice * 0.12); // 12% tax
-$grandTotal = $totalPrice + $taxAmount;
 ?>
 
 <!DOCTYPE html>
@@ -41,10 +30,8 @@ $grandTotal = $totalPrice + $taxAmount;
     <link rel="stylesheet" href="/TravelMate/public/assets/css/main.css">
     
     <script>
-        const loggedInUserId = "<?php echo $userId; ?>";
-        const bookingData = <?php echo json_encode($bookingData); ?>;
-        const personalDetails = <?php echo json_encode($personalDetails); ?>;
-        const paymentDetails = <?php echo json_encode($paymentDetails); ?>;
+        window.loggedInUserId = "<?php echo htmlspecialchars((string)$userId, ENT_QUOTES, 'UTF-8'); ?>";
+        window.transportBookingId = "<?php echo htmlspecialchars($bookingId, ENT_QUOTES, 'UTF-8'); ?>";
     </script>
 </head>
 <body>
@@ -52,10 +39,10 @@ $grandTotal = $totalPrice + $taxAmount;
 
     <div class="booking-finish-container">
         <div class="booking-progress">
-            <div class="step done"><span>1</span> Your Selection</div>
-            <div class="step done"><span>2</span> Your Details</div>
-            <div class="step done"><span>3</span> Payment Details</div>
-            <div class="step active"><span>4</span> Finish Booking</div>
+            <div class="step done"><span>1</span> Personal Details</div>
+            <div class="step done"><span>2</span> Payment Details</div>
+            <div class="step active"><span>3</span> Finish / Review</div>
+            <div class="step"><span>4</span> Complete Booking</div>
         </div>
 
         <div class="booking-summary-section">
@@ -66,47 +53,79 @@ $grandTotal = $totalPrice + $taxAmount;
                     <h4>Transport Details</h4>
                     <div class="info-row">
                         <span>Service Type:</span>
-                        <span><?php echo htmlspecialchars(ucfirst($bookingData['service_type'])); ?></span>
+                        <span id="summaryServiceType">-</span>
                     </div>
                     <div class="info-row">
                         <span>Pickup:</span>
-                        <span><?php echo htmlspecialchars($bookingData['pickup_location']); ?> on <?php echo date('M d, Y', strtotime($bookingData['pickup_date'])); ?> at <?php echo date('h:i A', strtotime($bookingData['pickup_time'])); ?></span>
+                        <span id="summaryPickup">-</span>
                     </div>
                     <div class="info-row">
                         <span>Drop-off:</span>
-                        <span><?php echo htmlspecialchars($bookingData['dropoff_location']); ?> on <?php echo date('M d, Y', strtotime($bookingData['return_date'])); ?> at <?php echo date('h:i A', strtotime($bookingData['return_time'])); ?></span>
+                        <span id="summaryDropoff">-</span>
                     </div>
                     <div class="info-row">
                         <span>Passengers:</span>
-                        <span><?php echo $bookingData['passengers']; ?></span>
+                        <span id="summaryPassengers">-</span>
+                    </div>
+                </div>
+
+                <div class="booking-info" style="margin-top:16px;">
+                    <h4>Personal Details</h4>
+                    <div class="info-row">
+                        <span>Name:</span>
+                        <span id="summaryCustomerName">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Email:</span>
+                        <span id="summaryCustomerEmail">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Phone:</span>
+                        <span id="summaryCustomerPhone">-</span>
+                    </div>
+                </div>
+
+                <div class="booking-info" style="margin-top:16px;">
+                    <h4>Payment Details</h4>
+                    <div class="info-row">
+                        <span>Cardholder:</span>
+                        <span id="summaryCardholder">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Card:</span>
+                        <span id="summaryCard">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Billing City:</span>
+                        <span id="summaryBillingCity">-</span>
                     </div>
                 </div>
                 
                 <div class="summary-row">
                     <span>Base Price</span>
-                    <span id="basePrice">LKR <?php echo number_format($basePrice, 2); ?></span>
+                    <span id="basePrice">LKR 0.00</span>
                 </div>
                 <div class="summary-row">
                     <span>Service Charge (10%)</span>
-                    <span id="serviceCharge">LKR <?php echo number_format($serviceCharge, 2); ?></span>
+                    <span id="serviceCharge">LKR 0.00</span>
                 </div>
                 <div class="summary-row">
                     <span>Subtotal</span>
-                    <span id="subtotal">LKR <?php echo number_format($totalPrice, 2); ?></span>
+                    <span id="subtotal">LKR 0.00</span>
                 </div>
                 <div class="summary-row">
                     <span>Taxes & Fees (12%)</span>
-                    <span id="taxAmount">LKR <?php echo number_format($taxAmount, 2); ?></span>
+                    <span id="taxAmount">LKR 0.00</span>
                 </div>
                 <div class="summary-total">
                     <span>Total Amount</span>
-                    <span class="total-price" id="totalPrice">LKR <?php echo number_format($grandTotal, 2); ?></span>
+                    <span class="total-price" id="totalPrice">LKR 0.00</span>
                 </div>
             </div>
 
             <div class="payment-box">
                 <h3>Payment Information</h3>
-                <p>Your payment will be securely processed. Booking confirmation will be sent to <strong><?php echo htmlspecialchars($personalDetails['email']); ?></strong></p>
+                <p>Your payment will be securely processed. Booking confirmation will be available immediately after completion.</p>
 
                 <div class="marketing-checkbox">
                     <input type="checkbox" id="marketing" checked>
@@ -141,7 +160,7 @@ $grandTotal = $totalPrice + $taxAmount;
             <h2>Booking Confirmed!</h2>
             <p class="booking-id-label">Your Booking ID</p>
             <div class="booking-id-display" id="modalBookingId"></div>
-            <p class="confirmation-text">A confirmation email has been sent to <strong><?php echo htmlspecialchars($personalDetails['email']); ?></strong></p>
+            <p class="confirmation-text">Your transport payment has been completed successfully.</p>
             <button class="btn-view-bookings" onclick="window.location.href='/TravelMate/public/mytransportbookings'">View My Bookings</button>
         </div>
     </div>

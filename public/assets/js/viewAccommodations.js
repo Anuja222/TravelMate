@@ -113,6 +113,24 @@ function createAccommodationCard(accommodation, section = 'other') {
     const rooms = accommodation.rooms || 0;
     const bathrooms = accommodation.bathrooms || 0;
     const maxGuests = accommodation.max_guests || 0;
+    const ratingCount = parseInt(accommodation.rating_count || 0, 10) || 0;
+    const avgRatingValue = parseFloat(accommodation.avg_rating || 0);
+
+    const ratingStarsHtml = (() => {
+        let stars = '';
+        for (let index = 1; index <= 5; index++) {
+            if (avgRatingValue >= index) {
+                stars += '<i class="fas fa-star" style="color:#f59e0b;"></i>';
+            } else if (avgRatingValue >= index - 0.5) {
+                stars += '<i class="fas fa-star-half-alt" style="color:#f59e0b;"></i>';
+            } else {
+                stars += '<i class="far fa-star" style="color:#f59e0b;"></i>';
+            }
+        }
+        return stars;
+    })();
+
+    const ratingText = ratingCount > 0 ? `${avgRatingValue.toFixed(1)} (${ratingCount})` : 'Not yet rated';
     const description = accommodation.description || 'No description provided for this property.';
     const shortDescription = description.length > 120 ? `${description.substring(0, 120)}...` : description;
     
@@ -134,6 +152,10 @@ function createAccommodationCard(accommodation, section = 'other') {
                     <div class="meta-item">
                         <i class="fas fa-bed"></i>
                         <span>${rooms} Rooms • ${bathrooms} Baths • ${maxGuests} Guests</span>
+                    </div>
+                    <div class="meta-item">
+                        <span>${ratingStarsHtml}</span>
+                        <span>${ratingText}</span>
                     </div>
                 </div>
 

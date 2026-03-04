@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TravelMate - Bookings</title>
-  <link rel="stylesheet" href="assets/css/Transpoter/bookingnew.css">
   <link rel="stylesheet" href="assets/css/Transpoter/common.css">
+  <link rel="stylesheet" href="assets/css/Transpoter/bookingnew.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -29,25 +29,6 @@
         <p>Manage your booking requests and history</p>
       </div>
 
-      <!-- PERFORMANCE SUMMARY -->
-      <section class="activity-summary">
-        <h3>Booking Summary</h3>
-        <div class="summary-stats">
-          <div class="stat">
-            <div class="stat-num">4</div>
-            <div class="stat-label">Pending</div>
-          </div>
-          <div class="stat">
-            <div class="stat-num">3</div>
-            <div class="stat-label">Booked</div>
-          </div>
-          <div class="stat">
-            <div class="stat-num">45</div>
-            <div class="stat-label">Total Bookings</div>
-          </div>
-        </div>
-      </section>
-
       <section class="booking-requests">
         <h2>Booking Requests</h2>
         <div class="filter-bar">
@@ -62,66 +43,7 @@
         </div>
         
         <div class="booking-list">
-          <!-- Sample booking request -->
-          <div class="booking-card pending">
-            <div class="booking-header">
-              <h3>Booking #TR2024001</h3>
-              <span class="status-badge">Pending</span>
-            </div>
-            <div class="booking-details">
-              <p><strong>Customer:</strong> John Smith</p>
-              <p><strong>Pickup:</strong> Colombo International Airport</p>
-              <p><strong>Destination:</strong> Galle Face Hotel, Colombo</p>
-              <p><strong>Date & Time:</strong> 2024-06-15 at 14:30</p>
-              <p><strong>Passengers:</strong> 4</p>
-              <p><strong>Estimated Fare:</strong> LKR 2,500</p>
-            </div>
-            <div class="booking-actions">
-              <button class="accept-btn" onclick="updateBookingStatus('TR2024001', 'accepted')"><i class="fas fa-check"></i> Accept</button>
-              <button class="reject-btn" onclick="updateBookingStatus('TR2024001', 'rejected')"><i class="fas fa-times"></i> Reject</button>
-              <button class="details-btn" onclick="window.location.href='ViewDetailspending';"><i class="fas fa-eye"></i> View Details</button>
-            </div>
-          </div>
-
-          <!-- Additional booking requests would be dynamically generated from database -->
-          <div class="booking-card pending">
-            <div class="booking-header">
-              <h3>Booking #TR2024002</h3>
-              <span class="status-badge">Pending</span>
-            </div>
-            <div class="booking-details">
-              <p><strong>Customer:</strong> Sarah Johnson</p>
-              <p><strong>Pickup:</strong> Cinnamon Lakeside, Colombo</p>
-              <p><strong>Destination:</strong> Bentota Beach Resort</p>
-              <p><strong>Date & Time:</strong> 2024-06-17 at 09:00</p>
-              <p><strong>Passengers:</strong> 2</p>
-              <p><strong>Estimated Fare:</strong> LKR 8,000</p>
-            </div>
-            <div class="booking-actions">
-              <button class="accept-btn" onclick="updateBookingStatus('TR2024002', 'accepted')"><i class="fas fa-check"></i> Accept</button>
-              <button class="reject-btn" onclick="updateBookingStatus('TR2024002', 'rejected')"><i class="fas fa-times"></i> Reject</button>
-              <button class="details-btn" onclick="window.location.href='ViewDetailspending';"><i class="fas fa-eye"></i> View Details</button>
-            </div>
-          </div>
-
-          <div class="booking-card accepted">
-            <div class="booking-header">
-              <h3>Booking #TR2024003</h3>
-              <span class="status-badge">Accepted</span>
-            </div>
-            <div class="booking-details">
-              <p><strong>Customer:</strong> Robert Williams</p>
-              <p><strong>Pickup:</strong> Negombo Beach</p>
-              <p><strong>Destination:</strong> Kandy City Center</p>
-              <p><strong>Date & Time:</strong> 2024-06-20 at 11:00</p>
-              <p><strong>Passengers:</strong> 3</p>
-              <p><strong>Agreed Fare:</strong> LKR 12,500</p>
-            </div>
-            <div class="booking-actions">
-              <button class="details-btn" onclick="window.location.href='ViewDetailsAccepted';"><i class="fas fa-eye"></i> View Details</button>
-              <button class="cancel-btn" onclick="updateBookingStatus('TR2024003', 'cancelled')"><i class="fas fa-times"></i> Cancel</button>
-            </div>
-          </div>
+          <div id="providerBookingList"></div>
           
           <div class="booking-actions-footer">
             <button class="history-btn" onclick="window.location.href='bookingHistory';">
@@ -135,74 +57,287 @@
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
+  <div class="booking-modal" id="bookingDetailsModal" aria-hidden="true">
+    <div class="booking-modal-content">
+      <div class="booking-modal-header">
+        <h3>Booking Details</h3>
+        <button type="button" class="booking-modal-close" onclick="closeBookingDetailsModal()">&times;</button>
+      </div>
+      <div class="booking-modal-body" id="bookingModalBody"></div>
+      <div class="booking-modal-footer">
+        <button type="button" class="history-btn" onclick="closeBookingDetailsModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="booking-modal" id="bookingActionModal" aria-hidden="true">
+    <div class="booking-modal-content" style="max-width:520px;">
+      <div class="booking-modal-header">
+        <h3 id="bookingActionTitle">Confirm Action</h3>
+        <button type="button" class="booking-modal-close" onclick="closeBookingActionModal()">&times;</button>
+      </div>
+      <div class="booking-modal-body">
+        <p id="bookingActionMessage" style="margin:0;color:#334155;">Are you sure?</p>
+      </div>
+      <div class="booking-modal-footer" style="justify-content:flex-end;gap:10px;">
+        <button type="button" class="view-btn" onclick="closeBookingActionModal()">Cancel</button>
+        <button type="button" class="accept-btn" id="confirmBookingActionBtn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // Filter functionality
-    document.getElementById('applyFilter').addEventListener('click', function() {
+    const BASE_PATH = window.location.pathname.includes('/TravelMate/') ? '/TravelMate/public' : '';
+    let allProviderBookings = [];
+    let pendingModerationAction = null;
+
+    document.addEventListener('DOMContentLoaded', function() {
+      loadProviderBookings();
+      document.getElementById('applyFilter').addEventListener('click', renderFilteredBookings);
+    });
+
+    async function loadProviderBookings() {
+      try {
+        const response = await fetch(`${BASE_PATH}/api/transport-booking/provider/all`, {
+          method: 'GET',
+          credentials: 'same-origin'
+        });
+        const result = await response.json();
+
+        if (!result.success) {
+          alert(result.errors?.general || 'Failed to load bookings');
+          return;
+        }
+
+        allProviderBookings = result.data.bookings || [];
+        renderFilteredBookings();
+      } catch (error) {
+        console.error(error);
+        alert('Failed to load booking requests');
+      }
+    }
+
+    function renderFilteredBookings() {
       const searchTerm = document.getElementById('searchBox').value.toLowerCase();
       const filterValue = document.getElementById('categoryFilter').value;
-      const bookingCards = document.querySelectorAll('.booking-card');
-      
-      bookingCards.forEach(card => {
-        const cardText = card.textContent.toLowerCase();
-        const status = card.classList[1]; // pending, accepted, rejected
-        const matchesSearch = searchTerm === '' || cardText.includes(searchTerm);
-        const matchesFilter = filterValue === 'all' || filterValue === status;
-        
-        if (matchesSearch && matchesFilter) {
-          card.style.display = 'block';
-        } else {
-          card.style.display = 'none';
-        }
+      const container = document.getElementById('providerBookingList');
+
+      const filtered = allProviderBookings.filter(booking => {
+        const normalizedStatus = normalizeStatus(booking.booking_status);
+        const customerName = `${booking.first_name || ''} ${booking.last_name || ''}`.toLowerCase();
+        const textBlob = `${booking.booking_id} ${customerName} ${booking.pickup_location || ''} ${booking.dropoff_location || ''}`.toLowerCase();
+        const matchesSearch = !searchTerm || textBlob.includes(searchTerm);
+        const matchesFilter = filterValue === 'all' || filterValue === normalizedStatus;
+        return matchesSearch && matchesFilter;
       });
-    });
-    
-    // Booking status update function
-    function updateBookingStatus(bookingId, status) {
-      const statusText = status.charAt(0).toUpperCase() + status.slice(1);
-      
-      if (confirm(`Are you sure you want to ${status} booking ${bookingId}?`)) {
-        // In a real application, this would call an API to update the status
-        alert(`Booking ${bookingId} has been ${status}.`);
-        
-        // Update UI accordingly
-        const bookingCard = document.querySelector(`.booking-card:has(h3:contains('${bookingId}'))`);
-        if (bookingCard) {
-          bookingCard.classList.remove('pending', 'accepted', 'rejected');
-          bookingCard.classList.add(status);
-          
-          const statusBadge = bookingCard.querySelector('.status-badge');
-          statusBadge.textContent = statusText;
-          
-          // Update actions based on new status
-          const actionsDiv = bookingCard.querySelector('.booking-actions');
-          if (status === 'accepted') {
-            actionsDiv.innerHTML = `
-              <button class="details-btn" onclick="window.location.href='ViewDetailsAccepted';"><i class="fas fa-eye"></i> View Details</button>
-              <button class="cancel-btn" onclick="updateBookingStatus('${bookingId}', 'cancelled')"><i class="fas fa-times"></i> Cancel</button>
-            `;
-          } else if (status === 'rejected') {
-            actionsDiv.innerHTML = `
-              <button class="details-btn" onclick="window.location.href='ViewDetails';"><i class="fas fa-eye"></i> View Details</button>
-            `;
-          }
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<p style="padding:1rem;color:#666;">No bookings found.</p>';
+        return;
+      }
+
+      container.innerHTML = filtered.map(renderBookingCard).join('');
+    }
+
+    function normalizeStatus(status) {
+      const s = String(status || '').toLowerCase();
+      if (s === 'confirmed') return 'accepted';
+      return s;
+    }
+
+    function displayStatus(status) {
+      const s = String(status || '').toLowerCase();
+      if (s === 'confirmed') return 'Accepted';
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    function renderBookingCard(booking) {
+      const status = String(booking.booking_status || '').toLowerCase();
+      const cardClass = normalizeStatus(status);
+      const customer = `${booking.first_name || ''} ${booking.last_name || ''}`.trim() || 'Traveller';
+      const pickupDate = booking.pickup_date || '-';
+      const pickupTime = booking.pickup_time || '-';
+      const amount = Number(booking.total_price || 0).toLocaleString();
+
+      return `
+        <div class="booking-card ${cardClass}">
+          <div class="booking-header">
+            <h3>Booking #${booking.booking_id}</h3>
+            <span class="status-badge">${displayStatus(status)}</span>
+          </div>
+          <div class="booking-details">
+            <p><strong>Customer:</strong> ${customer}</p>
+            <p><strong>Pickup:</strong> ${booking.pickup_location || '-'}</p>
+            <p><strong>Destination:</strong> ${booking.dropoff_location || '-'}</p>
+            <p><strong>Date & Time:</strong> ${pickupDate} at ${pickupTime}</p>
+            <p><strong>Passengers:</strong> ${booking.passengers || 0}</p>
+            <p><strong>Estimated Fare:</strong> LKR ${amount}</p>
+            <p><strong>Payment:</strong> ${String(booking.payment_status || 'pending').toUpperCase()}</p>
+          </div>
+          <div class="booking-actions">
+            <button class="view-btn" onclick="openBookingDetailsModal('${booking.booking_id}')"><i class="fas fa-eye"></i> View</button>
+            ${status === 'pending' ? `<button class="accept-btn" onclick="openAcceptBookingModal('${booking.booking_id}')"><i class="fas fa-check"></i> Accept</button>
+              <button class="reject-btn" onclick="openRejectBookingModal('${booking.booking_id}')"><i class="fas fa-times"></i> Reject</button>` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    function openAcceptBookingModal(bookingId) {
+      pendingModerationAction = { bookingId, action: 'approve' };
+
+      const modal = document.getElementById('bookingActionModal');
+      const titleEl = document.getElementById('bookingActionTitle');
+      const msgEl = document.getElementById('bookingActionMessage');
+      const confirmBtn = document.getElementById('confirmBookingActionBtn');
+
+      if (!modal || !titleEl || !msgEl || !confirmBtn) {
+        return;
+      }
+
+      titleEl.textContent = 'Accept Booking';
+      msgEl.textContent = `Accept this booking request (${bookingId})?`;
+      confirmBtn.textContent = 'Accept Booking';
+        confirmBtn.className = 'accept-btn';
+      confirmBtn.onclick = confirmPendingModerationAction;
+
+      modal.classList.add('show');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('modal-open');
+    }
+
+      function openRejectBookingModal(bookingId) {
+        pendingModerationAction = { bookingId, action: 'reject' };
+
+        const modal = document.getElementById('bookingActionModal');
+        const titleEl = document.getElementById('bookingActionTitle');
+        const msgEl = document.getElementById('bookingActionMessage');
+        const confirmBtn = document.getElementById('confirmBookingActionBtn');
+
+        if (!modal || !titleEl || !msgEl || !confirmBtn) {
+          return;
+        }
+
+        titleEl.textContent = 'Reject Booking';
+        msgEl.textContent = `Reject this booking request (${bookingId})?`;
+        confirmBtn.textContent = 'Reject Booking';
+        confirmBtn.className = 'reject-btn';
+        confirmBtn.onclick = confirmPendingModerationAction;
+
+        modal.classList.add('show');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('modal-open');
+      }
+
+    function closeBookingActionModal() {
+      const modal = document.getElementById('bookingActionModal');
+      if (!modal) return;
+
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('modal-open');
+      pendingModerationAction = null;
+    }
+
+    async function confirmPendingModerationAction() {
+      if (!pendingModerationAction) {
+        closeBookingActionModal();
+        return;
+      }
+
+      const { bookingId, action } = pendingModerationAction;
+      closeBookingActionModal();
+      await moderateBooking(bookingId, action, false);
+    }
+
+    function openBookingDetailsModal(bookingId) {
+      const booking = allProviderBookings.find(item => String(item.booking_id) === String(bookingId));
+      if (!booking) {
+        alert('Booking details not found');
+        return;
+      }
+
+      const customer = `${booking.first_name || ''} ${booking.last_name || ''}`.trim() || 'Traveller';
+      const statusText = displayStatus(booking.booking_status || 'pending');
+      const paymentStatus = String(booking.payment_status || 'pending').toUpperCase();
+      const amount = Number(booking.total_price || 0).toLocaleString();
+      const luggage = booking.luggage ?? 0;
+      const serviceType = String(booking.service_type || '-').charAt(0).toUpperCase() + String(booking.service_type || '-').slice(1);
+      const special = booking.special_requirements && String(booking.special_requirements).trim()
+        ? booking.special_requirements
+        : 'No special requirements';
+
+      const body = document.getElementById('bookingModalBody');
+      body.innerHTML = `
+        <div class="modal-grid">
+          <p><strong>Booking ID:</strong> ${booking.booking_id || '-'}</p>
+          <p><strong>Status:</strong> ${statusText}</p>
+          <p><strong>Customer:</strong> ${customer}</p>
+          <p><strong>Email:</strong> ${booking.email || '-'}</p>
+          <p><strong>Service Type:</strong> ${serviceType}</p>
+          <p><strong>Payment:</strong> ${paymentStatus}</p>
+          <p><strong>Pickup Date:</strong> ${booking.pickup_date || '-'}</p>
+          <p><strong>Pickup Time:</strong> ${booking.pickup_time || '-'}</p>
+          <p><strong>Return Date:</strong> ${booking.return_date || '-'}</p>
+          <p><strong>Return Time:</strong> ${booking.return_time || '-'}</p>
+          <p><strong>Pickup:</strong> ${booking.pickup_location || '-'}</p>
+          <p><strong>Destination:</strong> ${booking.dropoff_location || '-'}</p>
+          <p><strong>Passengers:</strong> ${booking.passengers || 0}</p>
+          <p><strong>Luggage:</strong> ${luggage}</p>
+          <p><strong>Estimated Fare:</strong> LKR ${amount}</p>
+          <p><strong>Special Requirements:</strong> ${special}</p>
+        </div>
+      `;
+
+      const modal = document.getElementById('bookingDetailsModal');
+      modal.classList.add('show');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('modal-open');
+    }
+
+    function closeBookingDetailsModal() {
+      const modal = document.getElementById('bookingDetailsModal');
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('modal-open');
+    }
+
+    async function moderateBooking(bookingId, action, askConfirmation = true) {
+      if (askConfirmation) {
+        const label = action === 'approve' ? 'accept' : 'reject';
+        if (!confirm(`Are you sure you want to ${label} booking ${bookingId}?`)) {
+          return;
         }
       }
-    }
-    
-    // Responsive adjustments
-    function handleResize() {
-      const filterBar = document.querySelector('.filter-bar');
-      
-      if (window.innerWidth < 768) {
-        filterBar.style.flexDirection = 'column';
-      } else {
-        filterBar.style.flexDirection = 'row';
+
+      const endpoint = action === 'approve' ? 'approve' : 'reject';
+      try {
+        const response = await fetch(`${BASE_PATH}/api/transport-booking/provider/${endpoint}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ booking_id: bookingId }),
+          credentials: 'same-origin'
+        });
+        const result = await response.json();
+
+        if (!result.success) {
+          alert(result.errors?.general || 'Failed to update booking');
+          return;
+        }
+
+        await loadProviderBookings();
+      } catch (error) {
+        console.error(error);
+        alert('Failed to update booking status');
       }
     }
-    
-    // Initial call and event listener
-    handleResize();
-    window.addEventListener('resize', handleResize);
+
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        closeBookingDetailsModal();
+        closeBookingActionModal();
+      }
+    });
   </script>
 </body>
 </html>

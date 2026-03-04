@@ -9,11 +9,60 @@ let currentFilter = 'all';
 let bookingIdToCancel = null;
 let bookingIdToDelete = null;
 
+function normalizeValue(value) {
+    return String(value || '').trim().toLowerCase();
+}
+
+function buildVehicleImageUrl(imagePath) {
+    if (!imagePath) {
+        return '';
+    }
+
+    const value = String(imagePath).trim();
+    if (!value) {
+        return '';
+    }
+
+    if (/^https?:\/\//i.test(value)) {
+        return value;
+    }
+
+    if (value.startsWith('/')) {
+        return `${BASE_PATH}${value}`;
+    }
+
+    return `${BASE_PATH}/${value.replace(/^\/+/, '')}`;
+}
+
+function getVehicleImageFallbackByType(vehicleType) {
+    const type = normalizeValue(vehicleType);
+    const fallbackMap = {
+        car: `${BASE_PATH}/assets/trimages/car.png`,
+        van: `${BASE_PATH}/assets/trimages/van.jpg`,
+        bus: `${BASE_PATH}/assets/trimages/Bus.jpeg`,
+        jeep: `${BASE_PATH}/assets/trimages/jeepicon.webp`,
+        tuk: `${BASE_PATH}/assets/trimages/tukicon.jpg`
+    };
+
+    return fallbackMap[type] || `${BASE_PATH}/assets/trimages/car.png`;
+}
+
 // Load bookings on page load
 document.addEventListener('DOMContentLoaded', function() {
+    showQueryNotifications();
     loadBookings();
     setupFilterTabs();
 });
+
+function showQueryNotifications() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('booking') === 'requested') {
+        alert('Your transport booking request is pending transporter approval.');
+    }
+    if (params.get('payment') === 'success') {
+        alert('Payment completed. Your booking is now active in Transport Bookings.');
+    }
+}
 
 // Setup filter tabs
 function setupFilterTabs() {
@@ -31,7 +80,6 @@ function setupFilterTabs() {
 // Load all bookings
 async function loadBookings() {
     const loadingContainer = document.querySelector('.loading-container');
-    const transportSection = document.querySelector('[data-category="transport"]');
 
     if (loadingContainer) loadingContainer.style.display = 'block';
 
@@ -70,9 +118,20 @@ function filterBookings() {
     let filteredBookings = allBookings;
 
     if (currentFilter !== 'all') {
-        filteredBookings = allBookings.filter(booking => 
-            booking.booking_status === currentFilter
-        );
+        filteredBookings = allBookings.filter(booking => {
+            const status = normalizeValue(booking.booking_status);
+            const paymentStatus = normalizeValue(booking.payment_status);
+
+            if (currentFilter === 'pending') {
+                return status === 'pending' || (status === 'confirmed' && paymentStatus !== 'paid');
+            }
+
+            if (currentFilter === 'confirmed') {
+                return status === 'confirmed' && paymentStatus === 'paid';
+            }
+
+            return status === currentFilter;
+        });
     }
 
     displayBookings(filteredBookings);
@@ -80,35 +139,119 @@ function filterBookings() {
 
 // Display bookings
 function displayBookings(bookings) {
+    const pendingSection = document.querySelector('[data-category="pending"]');
     const transportSection = document.querySelector('[data-category="transport"]');
-    
-    if (!transportSection) {
-        console.error('Transport section not found');
+    const historySection = document.querySelector('[data-category="history"]');
+
+    if (!pendingSection || !transportSection || !historySection) {
+        console.error('One or more booking sections not found');
         return;
     }
-    
-    // Clear existing bookings
-    const existingItems = transportSection.querySelectorAll('.booking-item');
-    existingItems.forEach(item => item.remove());
 
-    if (bookings.length === 0) {
+    clearSectionBookings(pendingSection);
+    clearSectionBookings(transportSection);
+    clearSectionBookings(historySection);
+
+    const categorizedBookings = {
+        pending: [],
+        transport: [],
+        history: []
+    };
+
+    bookings.forEach(booking => {
+        const category = getBookingCategory(booking);
+        categorizedBookings[category].push(booking);
+    });
+
+    renderSectionBookings(pendingSection, categorizedBookings.pending, {
+        iconClass: 'fas fa-hourglass-half',
+        title: 'No Pending Bookings',
+        message: 'You have no pending transport bookings right now.'
+    });
+
+    renderSectionBookings(transportSection, categorizedBookings.transport, {
+        iconClass: 'fas fa-car-side',
+        title: 'No Active Transport Bookings',
+        message: 'You have no active transport bookings at the moment.'
+    });
+
+    renderSectionBookings(historySection, categorizedBookings.history, {
+        iconClass: 'fas fa-clock-rotate-left',
+        title: 'No Booking History',
+        message: 'Completed and cancelled transport bookings will appear here.'
+    });
+}
+
+function clearSectionBookings(sectionElement) {
+    const existingItems = sectionElement.querySelectorAll('.booking-item, .empty-state');
+    existingItems.forEach(item => item.remove());
+}
+
+function getBookingCategory(booking) {
+    const status = normalizeValue(booking.booking_status);
+    const paymentStatus = normalizeValue(booking.payment_status);
+
+    if (status === 'pending' || (status === 'confirmed' && paymentStatus !== 'paid')) {
+        return 'pending';
+    }
+
+    if (status === 'cancelled' || status === 'completed' || status === 'rejected') {
+        return 'history';
+    }
+
+    if (status === 'confirmed' && paymentStatus === 'paid') {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const returnDate = booking.return_date ? new Date(booking.return_date) : null;
+        if (returnDate && !Number.isNaN(returnDate.getTime())) {
+            returnDate.setHours(0, 0, 0, 0);
+            if (returnDate < today) {
+                return 'history';
+            }
+        }
+
+        return 'transport';
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const returnDate = booking.return_date ? new Date(booking.return_date) : null;
+    if (returnDate && !Number.isNaN(returnDate.getTime())) {
+        returnDate.setHours(0, 0, 0, 0);
+        if (returnDate < today) {
+            return 'history';
+        }
+    }
+
+    return 'transport';
+}
+
+function renderSectionBookings(sectionElement, bookings, emptyConfig) {
+    if (!bookings || bookings.length === 0) {
         const emptyState = document.createElement('div');
         emptyState.className = 'empty-state';
         emptyState.style.textAlign = 'center';
         emptyState.style.padding = '3em';
         emptyState.innerHTML = `
-            <div style="font-size: 4em; margin-bottom: 0.5em;">🚗</div>
-            <h3>No Transport Bookings</h3>
-            <p>You haven't booked any transportation yet.</p>
+            <div style="font-size: 4em; margin-bottom: 0.5em;"><i class="${emptyConfig.iconClass}" aria-hidden="true"></i></div>
+            <h3>${emptyConfig.title}</h3>
+            <p>${emptyConfig.message}</p>
         `;
-        transportSection.appendChild(emptyState);
+        sectionElement.appendChild(emptyState);
         return;
     }
 
+    const cardsGrid = document.createElement('div');
+    cardsGrid.className = 'booking-cards-grid';
+
     bookings.forEach(booking => {
         const bookingElement = createBookingElement(booking);
-        transportSection.appendChild(bookingElement);
+        cardsGrid.appendChild(bookingElement);
     });
+
+    sectionElement.appendChild(cardsGrid);
 }
 
 // Create booking element HTML
@@ -128,46 +271,44 @@ function createBookingElement(booking) {
 
     const vehicleName = booking.vehicle_model || 'Transport Vehicle';
     const serviceType = formatServiceType(booking.service_type);
+    const status = normalizeValue(booking.booking_status);
+    const paymentStatus = normalizeValue(booking.payment_status);
+
+    const canPayNow = status === 'confirmed' && paymentStatus !== 'paid';
+    const showRejectNotice = status === 'rejected';
+    const statusLabel = canPayNow ? 'Approved - Awaiting Payment' : capitalizeFirst(status);
+    const statusClass = canPayNow ? 'status-awaiting-payment' : `status-${booking.booking_status}`;
+    const manageButton = booking.booking_status !== 'cancelled'
+        ? `<button class="action-btn btn-secondary" onclick="cancelBooking('${booking.booking_id}')">Cancel</button>`
+        : `<button class="action-btn btn-danger" onclick="deleteBooking('${booking.booking_id}')">Delete</button>`;
+
+    const vehicleImage = buildVehicleImageUrl(booking.vehicle_photo || booking.main_image) || getVehicleImageFallbackByType(booking.vehicle_type);
+    const imageFallback = getVehicleImageFallbackByType(booking.vehicle_type);
 
     bookingDiv.innerHTML = `
         <div class="booking-image">
-            <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=300&h=200&fit=crop" alt="${vehicleName}">
+            <img src="${vehicleImage}" alt="${vehicleName}" onerror="this.onerror=null;this.src='${imageFallback}';">
         </div>
         <div class="booking-details">
             <h3 class="booking-title">${vehicleName}</h3>
+            <div class="info-item"><i class="fas fa-car-side info-icon" aria-hidden="true"></i><span>${serviceType}</span></div>
+            <div class="info-item"><i class="fas fa-location-dot info-icon" aria-hidden="true"></i><span>${booking.pickup_location} → ${booking.dropoff_location}</span></div>
             <div class="booking-info">
-                <div class="info-item">
-                    <span class="info-icon">🚗</span>
-                    <span>${serviceType}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-icon">📅</span>
-                    <span>Pickup: ${pickupDate}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-icon">📅</span>
-                    <span>Return: ${returnDate}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-icon">📍</span>
-                    <span>${booking.pickup_location} → ${booking.dropoff_location}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-icon">👥</span>
-                    <span>${booking.passengers} Passenger${booking.passengers > 1 ? 's' : ''}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-icon">💰</span>
-                    <span class="booking-price">LKR ${parseFloat(booking.total_price).toLocaleString()}</span>
-                </div>
+                <div class="info-item"><i class="fas fa-calendar-days info-icon" aria-hidden="true"></i><span>${pickupDate}</span></div>
+                <div class="info-item"><i class="fas fa-calendar-days info-icon" aria-hidden="true"></i><span>${returnDate}</span></div>
+                <div class="info-item"><i class="fas fa-users info-icon" aria-hidden="true"></i><span>${booking.passengers} Passenger${booking.passengers > 1 ? 's' : ''}</span></div>
+                <div class="info-item"><i class="fas fa-sack-dollar info-icon" aria-hidden="true"></i><span class="booking-price">LKR ${parseFloat(booking.total_price).toLocaleString()}</span></div>
             </div>
             <div class="booking-status">
-                <span class="status-badge status-${booking.booking_status}">${capitalizeFirst(booking.booking_status)}</span>
-                <div class="booking-actions">
+                <span class="status-badge ${statusClass}">${statusLabel}</span>
+                ${showRejectNotice ? '<div class="booking-alert">This booking was rejected by the transporter.</div>' : ''}
+            </div>
+            <div class="booking-actions">
+                <div class="action-row">
                     <button class="action-btn btn-primary" onclick="viewBookingDetails('${booking.booking_id}')">View Details</button>
-                    ${booking.booking_status !== 'cancelled' ? `<button class="action-btn btn-secondary" onclick="cancelBooking('${booking.booking_id}')">Cancel</button>` : ''}
-                    ${booking.booking_status === 'cancelled' ? `<button class="action-btn btn-danger" onclick="deleteBooking('${booking.booking_id}')">Delete</button>` : ''}
+                    ${manageButton}
                 </div>
+                ${canPayNow ? `<div class="action-row single"><button class="action-btn btn-success" onclick="proceedToPayment('${booking.booking_id}')">Complete Payment</button></div>` : ''}
             </div>
         </div>
     `;
@@ -193,31 +334,18 @@ function capitalizeFirst(str) {
 
 // Show empty state
 function showEmptyState() {
-    const transportSection = document.querySelector('[data-category="transport"]');
-    if (!transportSection) return;
-
-    const existingItems = transportSection.querySelectorAll('.booking-item');
-    existingItems.forEach(item => item.remove());
-
-    const emptyState = document.createElement('div');
-    emptyState.className = 'empty-state';
-    emptyState.style.textAlign = 'center';
-    emptyState.style.padding = '3em';
-    emptyState.innerHTML = `
-        <div style="font-size: 4em; margin-bottom: 0.5em;">🚗</div>
-        <h3>No Transport Bookings</h3>
-        <p>You haven't booked any transportation yet.</p>
-    `;
-    transportSection.appendChild(emptyState);
+    displayBookings([]);
 }
 
 // Update booking statistics
 function updateBookingStats() {
     const stats = allBookings.reduce((acc, booking) => {
         acc.total++;
-        if (booking.booking_status === 'confirmed') acc.confirmed++;
+        if (booking.booking_status === 'confirmed' && String(booking.payment_status || '').toLowerCase() === 'paid') acc.confirmed++;
         if (booking.booking_status === 'pending') acc.pending++;
-        acc.totalSpent += parseFloat(booking.total_price || 0);
+        if (String(booking.payment_status || '').toLowerCase() === 'paid') {
+            acc.totalSpent += parseFloat(booking.total_price || 0);
+        }
         return acc;
     }, { total: 0, confirmed: 0, pending: 0, totalSpent: 0 });
 
@@ -242,6 +370,10 @@ function updateBookingStats() {
             </div>
         `;
     }
+}
+
+function proceedToPayment(bookingId) {
+    window.location.href = `${BASE_PATH}/transport-booking-details?booking_id=${encodeURIComponent(bookingId)}`;
 }
 // View booking details
 function viewBookingDetails(bookingId) {
