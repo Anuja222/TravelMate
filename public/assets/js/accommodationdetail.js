@@ -84,6 +84,8 @@ async function loadAccommodationData(accommodationId) {
             name: accommodation.title,
             location: accommodation.location || 'Sri Lanka',
             basePrice: parseFloat(accommodation.price_per_night) || 0,
+            avgRating: parseFloat(accommodation.avg_rating || 0),
+            ratingCount: parseInt(accommodation.rating_count || 0, 10) || 0,
             description: accommodation.description || 'No description available',
             images: (() => {
                 // Use images array from API if available
@@ -112,6 +114,7 @@ async function loadAccommodationData(accommodationId) {
         populateAccommodationDetails();
         populateThumbnails();
         updateMainImage();
+        populateReviewSummary();
         loadRoomAvailability();
         
         console.log('Page populated successfully');
@@ -321,6 +324,85 @@ function loadHotelData() {
 function loadReviews() {
     const reviewsList = document.getElementById('reviewsList');
     reviewsList.innerHTML = '<p style="text-align: center; color: #666;">No reviews yet. Be the first to review!</p>';
+}
+
+function getRatingLabel(avg) {
+    if (avg >= 4.5) return 'Excellent';
+    if (avg >= 4.0) return 'Very Good';
+    if (avg >= 3.0) return 'Good';
+    if (avg > 0) return 'Fair';
+    return 'Not yet rated';
+}
+
+function getRatingStarsHtml(avg) {
+    let stars = '';
+    for (let index = 1; index <= 5; index++) {
+        if (avg >= index) {
+            stars += '<i class="fas fa-star"></i>';
+        } else if (avg >= index - 0.5) {
+            stars += '<i class="fas fa-star-half-alt"></i>';
+        } else {
+            stars += '<i class="far fa-star"></i>';
+        }
+    }
+    return stars;
+}
+
+function populateReviewSummary() {
+    if (!accommodationData) return;
+
+    const overallRatingEl = document.getElementById('overallRating');
+    const ratingLabelEl = document.querySelector('.overall-rating .rating-label');
+    const ratingBreakdownEl = document.getElementById('ratingBreakdown');
+    const reviewsListEl = document.getElementById('reviewsList');
+
+    if (!overallRatingEl || !ratingLabelEl || !ratingBreakdownEl || !reviewsListEl) {
+        return;
+    }
+
+    const ratingCount = accommodationData.ratingCount || 0;
+    const avgRating = accommodationData.avgRating || 0;
+
+    if (ratingCount > 0) {
+        overallRatingEl.textContent = avgRating.toFixed(1);
+        ratingLabelEl.textContent = getRatingLabel(avgRating);
+
+        ratingBreakdownEl.innerHTML = `
+            <div class="rating-item">
+                <span class="rating-category">Overall</span>
+                <span class="review-stars">${getRatingStarsHtml(avgRating)}</span>
+                <span class="rating-value">${ratingCount}</span>
+            </div>
+        `;
+
+        reviewsListEl.innerHTML = `
+            <div class="review-item">
+                <div class="review-header">
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar"><i class="fas fa-users"></i></div>
+                        <div class="reviewer-details">
+                            <h4>Traveler Ratings</h4>
+                            <p>${ratingCount} review${ratingCount > 1 ? 's' : ''}</p>
+                        </div>
+                    </div>
+                    <div class="review-rating">
+                        <span class="review-stars">${getRatingStarsHtml(avgRating)}</span>
+                    </div>
+                </div>
+                <p class="review-text">Average guest rating is ${avgRating.toFixed(1)} out of 5 based on ${ratingCount} submitted review${ratingCount > 1 ? 's' : ''}.</p>
+            </div>
+        `;
+    } else {
+        overallRatingEl.textContent = '-';
+        ratingLabelEl.textContent = 'Not yet rated';
+        ratingBreakdownEl.innerHTML = `
+            <div class="rating-item">
+                <span class="rating-category">Rating</span>
+                <span class="rating-value">Not yet rated</span>
+            </div>
+        `;
+        reviewsListEl.innerHTML = '<p style="text-align: center; color: #666;">No ratings yet for this accommodation.</p>';
+    }
 }
 
 // Initialize date pickers with minimum date as today
@@ -592,6 +674,63 @@ function showSuccessModal(message) {
 
 // Show map (placeholder function)
 function showMap() {
-    // You can integrate with Google Maps or other map service
-    alert('Map feature coming soon!');
+    const locationText = (accommodationData && accommodationData.location)
+        ? String(accommodationData.location).trim()
+        : '';
+
+    if (!locationText) {
+        showValidationModal('Location is not available for this accommodation.');
+        return;
+    }
+
+    const mapModal = document.getElementById('mapModal');
+    const mapFrame = document.getElementById('mapFrame');
+    const mapTitle = document.getElementById('mapModalTitle');
+    const mapExternalLink = document.getElementById('mapExternalLink');
+
+    if (!mapModal || !mapFrame || !mapTitle) {
+        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationText)}`;
+        window.open(mapsUrl, '_blank', 'noopener,noreferrer');
+        return;
+    }
+
+    mapTitle.textContent = `Location: ${locationText}`;
+    const externalUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationText)}`;
+    mapFrame.src = `https://maps.google.com/maps?q=${encodeURIComponent(locationText)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+    if (mapExternalLink) {
+        mapExternalLink.href = externalUrl;
+    }
+    mapModal.classList.add('show');
+    document.body.style.overflow = 'hidden';
 }
+
+function closeMapModal() {
+    const mapModal = document.getElementById('mapModal');
+    const mapFrame = document.getElementById('mapFrame');
+
+    if (mapModal) {
+        mapModal.classList.remove('show');
+    }
+    if (mapFrame) {
+        mapFrame.src = '';
+    }
+
+    document.body.style.overflow = '';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const mapModal = document.getElementById('mapModal');
+    if (!mapModal) return;
+
+    mapModal.addEventListener('click', function(event) {
+        if (event.target === mapModal) {
+            closeMapModal();
+        }
+    });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && mapModal.classList.contains('show')) {
+            closeMapModal();
+        }
+    });
+});

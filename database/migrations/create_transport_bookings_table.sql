@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `transport_bookings` (
   `base_price` decimal(10,2) NOT NULL DEFAULT 0.00,
   `service_charge` decimal(10,2) NOT NULL DEFAULT 0.00,
   `total_price` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `booking_status` enum('pending','confirmed','completed','cancelled') NOT NULL DEFAULT 'confirmed',
+  `booking_status` enum('pending','confirmed','rejected','completed','cancelled') NOT NULL DEFAULT 'pending',
   `payment_status` enum('pending','paid','refunded') NOT NULL DEFAULT 'pending',
   `booking_date` datetime NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),

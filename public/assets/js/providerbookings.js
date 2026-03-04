@@ -29,10 +29,16 @@ function calculateNights(checkin, checkout) {
 
 // Load bookings from API
 async function loadBookings() {
-    const container = document.querySelector('.bookings-grid');
+    const currentContainer = document.getElementById('currentBookingsGrid') || document.querySelector('.bookings-grid');
+    const expiredContainer = document.getElementById('expiredBookingsGrid');
     
     // Show loading state
-    container.innerHTML = '<div class="loading-message"><i class="fas fa-spinner fa-spin"></i><p>Loading bookings...</p></div>';
+    if (currentContainer) {
+        currentContainer.innerHTML = '<div class="loading-message"><i class="fas fa-spinner fa-spin"></i><p>Loading bookings...</p></div>';
+    }
+    if (expiredContainer) {
+        expiredContainer.innerHTML = '<div class="loading-message"><i class="fas fa-spinner fa-spin"></i><p>Loading bookings...</p></div>';
+    }
     
     try {
         const response = await fetch(`${getBaseUrl()}/api/accommodation/providerBookings`);
@@ -56,11 +62,21 @@ async function loadBookings() {
             displayBookings(result.data.bookings);
         } else {
             const message = result.errors && result.errors.length > 0 ? result.errors[0] : 'No bookings found.';
-            container.innerHTML = `<div class="empty-state"><i class="fas fa-calendar-times"></i><p>${message}</p></div>`;
+            if (currentContainer) {
+                currentContainer.innerHTML = `<div class="empty-state"><i class="fas fa-calendar-times"></i><p>${message}</p></div>`;
+            }
+            if (expiredContainer) {
+                expiredContainer.innerHTML = '<div class="empty-state"><i class="fas fa-history"></i><p>No expired bookings found.</p></div>';
+            }
         }
     } catch (error) {
         console.error('Error loading bookings:', error);
-        container.innerHTML = '<div class="error-state"><i class="fas fa-exclamation-circle"></i><p>Error loading bookings. Please make sure you are logged in as an accommodation provider.</p></div>';
+        if (currentContainer) {
+            currentContainer.innerHTML = '<div class="error-state"><i class="fas fa-exclamation-circle"></i><p>Error loading bookings. Please make sure you are logged in as an accommodation provider.</p></div>';
+        }
+        if (expiredContainer) {
+            expiredContainer.innerHTML = '';
+        }
     }
 }
 
@@ -120,13 +136,53 @@ function dismissNotification() {
 
 // Display bookings in the container
 function displayBookings(bookings) {
-    const container = document.querySelector('.bookings-grid');
+    const currentContainer = document.getElementById('currentBookingsGrid') || document.querySelector('.bookings-grid');
+    const expiredContainer = document.getElementById('expiredBookingsGrid');
     
     // Store bookings data
     bookingsData = bookings;
+
+    const currentBookings = [];
+    const expiredBookings = [];
+
+    bookings.forEach(booking => {
+        if (isExpiredBooking(booking)) {
+            expiredBookings.push(booking);
+        } else {
+            currentBookings.push(booking);
+        }
+    });
     
-    if (bookings.length === 0) {
-        container.innerHTML = '<div class="empty-state"><i class="fas fa-calendar-times"></i><p>No bookings found.</p></div>';
+    if (!currentContainer) {
+        return;
+    }
+
+    renderBookingsInto(currentContainer, currentBookings, '<div class="empty-state"><i class="fas fa-calendar-times"></i><p>No current bookings found.</p></div>');
+
+    if (expiredContainer) {
+        renderBookingsInto(expiredContainer, expiredBookings, '<div class="empty-state"><i class="fas fa-history"></i><p>No expired bookings found.</p></div>');
+    }
+}
+
+function isExpiredBooking(booking) {
+    if (!booking || !booking.checkout_date) {
+        return false;
+    }
+
+    const checkoutDate = new Date(booking.checkout_date);
+    checkoutDate.setHours(0, 0, 0, 0);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return checkoutDate < today;
+}
+
+function renderBookingsInto(container, bookings, emptyHtml) {
+    if (!container) return;
+
+    if (!Array.isArray(bookings) || bookings.length === 0) {
+        container.innerHTML = emptyHtml;
         return;
     }
     

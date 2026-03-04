@@ -46,9 +46,23 @@
                     <h1><i class="fas fa-calendar-check"></i> Bookings</h1>
                     <p>Manage all your property bookings in one place</p>
                 </div>
-                
-                <div class="bookings-grid">
-                    <!-- Bookings will be dynamically loaded here -->
+
+                <div class="bookings-section">
+                    <div class="bookings-section-header">
+                        <h2><i class="fas fa-calendar-day"></i> Current Bookings</h2>
+                    </div>
+                    <div class="bookings-grid" id="currentBookingsGrid">
+                        <!-- Current bookings will be dynamically loaded here -->
+                    </div>
+                </div>
+
+                <div class="bookings-section bookings-section-expired">
+                    <div class="bookings-section-header">
+                        <h2><i class="fas fa-history"></i> Expired Bookings</h2>
+                    </div>
+                    <div class="bookings-grid" id="expiredBookingsGrid">
+                        <!-- Expired bookings will be dynamically loaded here -->
+                    </div>
                 </div>
             </div>
         </section>

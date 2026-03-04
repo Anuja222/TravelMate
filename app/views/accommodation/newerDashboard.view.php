@@ -123,6 +123,28 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
       color: #1abc5b;
       font-size: 16px;
     }
+
+    .property-card-location .fa-star {
+      color: #f59e0b;
+    }
+
+    .property-card-rating {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #666;
+      font-size: 13px;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .property-card-rating .rating-stars {
+      display: inline-flex;
+      gap: 2px;
+      color: #f59e0b;
+      font-size: 14px;
+      line-height: 1;
+    }
     
     .property-card-description {
       font-size: 14px;
@@ -221,6 +243,13 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
       color: #fff;
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
+    }
+
+    .stat-note {
+      font-size: 12px;
+      color: #666;
+      margin-top: -2px;
+      min-height: 16px;
     }
     
     .property-card-btn-toggle {
@@ -697,6 +726,11 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
           <div class="stat">
             <span class="stat-num" id="summaryBookingsReceived">0</span>
             <span class="stat-label">Bookings Received</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num" id="summaryOverallRating">-</span>
+            <span class="stat-label">Overall Rating</span>
+            <span class="stat-note" id="summaryOverallRatingNote">Not yet rated</span>
           </div>
         </div>
       </div>

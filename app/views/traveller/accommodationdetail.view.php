@@ -6,6 +6,7 @@
   <title>TravelMate - Hotel Details</title>
   <link rel="stylesheet" href="assets/css/Traveller/accommodationdetail.css">
   <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
@@ -254,6 +255,21 @@
   </div>  -->
 
   <!-- Validation Error Modal -->
+  <div id="mapModal" class="map-modal">
+    <div class="map-modal-content">
+      <div class="map-modal-header">
+        <h3 id="mapModalTitle">Accommodation Location</h3>
+        <button type="button" class="map-modal-close" onclick="closeMapModal()">&times;</button>
+      </div>
+      <div class="map-modal-body">
+        <iframe id="mapFrame" title="Accommodation Location Map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <div class="map-modal-fallback">
+          <a id="mapExternalLink" href="#" target="_blank" rel="noopener noreferrer">Open in Google Maps</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="validationModal" class="validation-modal">
     <div class="validation-modal-content">
       <div class="validation-icon">
