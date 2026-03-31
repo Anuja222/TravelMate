@@ -615,6 +615,11 @@ elseif ($requestUri === '/api/transport-booking/init-booking' && $_SERVER['REQUE
     $transportBookingController = new App\Controllers\TransportBookingController();
     $transportBookingController->payBooking();
     exit;
+} elseif ($requestUri === '/api/transport-booking/rate' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../app/controllers/TransportProvider/TransportBookingController.php';
+    $transportBookingController = new App\Controllers\TransportBookingController();
+    $transportBookingController->submitBookingRating();
+    exit;
 }
 
 elseif ($requestUri === '/preference/save' && $_SERVER['REQUEST_METHOD'] === 'POST') {

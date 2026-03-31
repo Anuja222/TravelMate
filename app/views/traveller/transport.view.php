@@ -6,6 +6,7 @@
   <title>TravelMate - Transportation</title>
   <link rel="stylesheet" href="assets/css/Traveller/transport.css">
   <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     /* Fix grid layout for single items */
     .transportation-grid {
@@ -111,6 +112,24 @@
       margin: 0;
       min-height: 20px;
       color: #666;
+    }
+
+    .transport-card .card-rating {
+      margin: 0;
+      min-height: 22px;
+      font-size: 13px;
+      color: #6b7280;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .transport-card .card-rating .rating-stars {
+      color: #f59e0b;
+      display: inline-flex;
+      gap: 2px;
+      line-height: 1;
     }
 
     .transport-card .card-features {
@@ -637,6 +656,22 @@
       const statusLabel = status === 'inactive' ? 'Inactive' : status === 'pending' ? 'Pending' : 'Active';
       const costPerKm = Number(vehicle.cost_per_km || 0);
       const formattedCost = costPerKm > 0 ? costPerKm.toFixed(2) : '0.00';
+      const ratingCount = parseInt(vehicle.rating_count || 0, 10) || 0;
+      const avgRatingValue = parseFloat(vehicle.avg_rating || 0);
+      const ratingStarsHtml = (() => {
+        let stars = '';
+        for (let index = 1; index <= 5; index++) {
+          if (avgRatingValue >= index) {
+            stars += '<i class="fa-solid fa-star"></i>';
+          } else if (avgRatingValue >= index - 0.5) {
+            stars += '<i class="fa-solid fa-star-half-stroke"></i>';
+          } else {
+            stars += '<i class="fa-regular fa-star"></i>';
+          }
+        }
+        return stars;
+      })();
+      const ratingText = ratingCount > 0 ? `${avgRatingValue.toFixed(1)} (${ratingCount})` : 'Not yet rated';
       
       card.innerHTML = `
         <div class="card-image">
@@ -653,6 +688,7 @@
           </div>
           <p class="route">📍 ${escapeHtml(vehicle.working_district || 'Sri Lanka')}</p>
           <p class="description">${vehicle.vehicle_year ? vehicle.vehicle_year + ' Model' : ''} ${vehicle.vehicle_color ? '• ' + vehicle.vehicle_color : ''}</p>
+          <p class="card-rating"><span class="rating-stars">${ratingStarsHtml}</span><span>${escapeHtml(ratingText)}</span></p>
           <div class="card-features">
             <span class="feature">👥 ${vehicle.passenger_count || 0} Passengers</span>
             ${acBadge ? '<span class="feature">' + acBadge + '</span>' : ''}

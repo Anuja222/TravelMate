@@ -89,67 +89,8 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                 </div>
                 <a href="transport" class="see-all-btn">See All Transport</a>
             </div>
-            <div class="transport-grid">
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/van.png" alt="Van Rental">
-                        <div class="card-overlay">
-                            <button class="explore-btn">Search Vans</button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Van Rental</h3>
-                        <div class="rating">⭐⭐⭐⭐⭐ 4.7 (3,421 reviews)</div>
-                        <p>Spacious vans perfect for families or small groups. Available in economy and premium models for any journey.</p>
-                        <span class="price-tag">Best Deals</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/car.png" alt="Car Rental">
-                        <div class="card-overlay">
-                            <button class="explore-btn">Rent Car</button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Car Rental</h3>
-                        <div class="rating">⭐⭐⭐⭐ 4.5 (1,876 reviews)</div>
-                        <p>Wide selection of vehicles from economy to luxury. Pick up at airports or city locations
-                            worldwide.</p>
-                        <span class="price-tag">From $25/day</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/wheel.png" alt="Wheel Rental">
-                        <div class="card-overlay">
-                            <button class="explore-btn">Book Wheel</button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Wheel Rental</h3>
-                        <div class="rating">⭐⭐⭐⭐ 4.4 (982 reviews)</div>
-                        <p>Easy and affordable rides for city exploration. Choose from scooters or bikes for quick and flexible travel.</p>
-                        <span class="price-tag">From $45</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/bus.png" alt="Bus Travel">
-                        <div class="card-overlay">
-                            <button class="explore-btn">Book Bus</button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Bus Rental</h3>
-                        <div class="rating">⭐⭐⭐⭐ 4.2 (654 reviews)</div>
-                        <p>Comfortable buses for group travel. Ideal for tours, events, and airport transfers with professional drivers.</p>
-                        <span class="price-tag">From $15</span>
-                    </div>
-                </div>
+            <div class="transport-grid" id="transportOptions">
+                <p>Loading transport options...</p>
             </div>
         </section>
     </main>
@@ -302,6 +243,129 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                     console.error(err);
                     accommodationContainer.innerHTML = '<p>Error loading accommodations</p>';
                 });
+
+                        // Load Transports
+                        const transportContainer = document.getElementById('transportOptions');
+
+                        fetch(baseApi + '/api/vehicle/listAll', { credentials: 'same-origin' })
+                                .then(r => r.json())
+                                .then(resp => {
+                                        if (!resp.success) {
+                                                transportContainer.innerHTML = '<p>Failed to load transport options</p>';
+                                                return;
+                                        }
+
+                                        const vehicles = (resp.data || []).filter(v => (v.status || '').toLowerCase() === 'active');
+                                        if (vehicles.length === 0) {
+                                                transportContainer.innerHTML = `
+                        <div class="card" style="width: 100%; max-width: 100%;">
+                            <div class="card-image">
+                                <img src="assets/images/default-vehicle.jpg" alt="Transport option">
+                            </div>
+                            <div class="card-content">
+                                <h3>More Transport Options Soon</h3>
+                                <p>New trusted transport partners will appear here shortly.</p>
+                                <span class="price-tag">Coming Soon</span>
+                            </div>
+                        </div>
+                        <div class="card" style="width: 100%; max-width: 100%;">
+                            <div class="card-image">
+                                <img src="assets/images/default-vehicle.jpg" alt="Transport option">
+                            </div>
+                            <div class="card-content">
+                                <h3>More Transport Options Soon</h3>
+                                <p>New trusted transport partners will appear here shortly.</p>
+                                <span class="price-tag">Coming Soon</span>
+                            </div>
+                        </div>
+                        <div class="card" style="width: 100%; max-width: 100%;">
+                            <div class="card-image">
+                                <img src="assets/images/default-vehicle.jpg" alt="Transport option">
+                            </div>
+                            <div class="card-content">
+                                <h3>More Transport Options Soon</h3>
+                                <p>New trusted transport partners will appear here shortly.</p>
+                                <span class="price-tag">Coming Soon</span>
+                            </div>
+                        </div>
+                        <div class="card" style="width: 100%; max-width: 100%;">
+                            <div class="card-image">
+                                <img src="assets/images/default-vehicle.jpg" alt="Transport option">
+                            </div>
+                            <div class="card-content">
+                                <h3>More Transport Options Soon</h3>
+                                <p>New trusted transport partners will appear here shortly.</p>
+                                <span class="price-tag">Coming Soon</span>
+                            </div>
+                        </div>`;
+                                                return;
+                                        }
+
+                                        const transportCards = vehicles.slice(0, 4).map(v => {
+                                                const baseUrl = window.location.origin + '/TravelMate/public';
+                                                const img = v.main_image ? (baseUrl + v.main_image) : 'assets/images/default-vehicle.jpg';
+                                                const model = v.vehicle_model || 'Vehicle';
+                                                const type = v.vehicle_type || 'Transport';
+                                                const district = v.working_district || 'Sri Lanka';
+                                                const seats = parseInt(v.passenger_count || 0, 10) || 0;
+                                                const acType = (v.ac_type || 'non-ac').toUpperCase();
+                                                const costPerKm = parseFloat(v.cost_per_km || 0);
+                                                const priceTag = costPerKm > 0 ? `LKR ${costPerKm.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / 1km` : 'Price on request';
+                                                const ratingCount = parseInt(v.rating_count || 0, 10) || 0;
+                                                const avgRatingValue = parseFloat(v.avg_rating || 0);
+                                                const ratingStarsHtml = (() => {
+                                                    let stars = '';
+                                                    for (let index = 1; index <= 5; index++) {
+                                                        if (avgRatingValue >= index) {
+                                                            stars += '<i class="fa-solid fa-star"></i>';
+                                                        } else if (avgRatingValue >= index - 0.5) {
+                                                            stars += '<i class="fa-solid fa-star-half-stroke"></i>';
+                                                        } else {
+                                                            stars += '<i class="fa-regular fa-star"></i>';
+                                                        }
+                                                    }
+                                                    return stars;
+                                                })();
+                                                const ratingText = ratingCount > 0 ? `${avgRatingValue.toFixed(1)} (${ratingCount})` : 'Not yet rated';
+
+                                                return `
+                        <div class="card" style="width: 100%; max-width: 100%;">
+                            <div class="card-image">
+                                <img src="${img}" alt="${escapeHtml(model)}" onerror="this.src='assets/images/default-vehicle.jpg'">
+                                <div class="card-overlay">
+                                    <a href="transportdetails?id=${v.id}" class="explore-btn">Book Now</a>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <h3>${escapeHtml(model)}</h3>
+                                <p>${escapeHtml(type)} • ${escapeHtml(district)} • ${seats} Seats • ${escapeHtml(acType)}</p>
+                                <p style="margin:0 0 8px 0; font-size:13px; color:#6b7280; font-weight:600; display:flex; align-items:center; gap:8px;"><span style="color:#f59e0b; display:inline-flex; gap:2px;">${ratingStarsHtml}</span> ${escapeHtml(ratingText)}</p>
+                                <span class="price-tag">${escapeHtml(priceTag)}</span>
+                            </div>
+                        </div>
+                    `;
+                                        }).join('');
+
+                                        const placeholdersNeeded = Math.max(0, 4 - Math.min(vehicles.length, 4));
+                                        const placeholderCards = Array.from({ length: placeholdersNeeded }).map(() => `
+                        <div class="card" style="width: 100%; max-width: 100%;">
+                            <div class="card-image">
+                                <img src="assets/images/default-vehicle.jpg" alt="Transport option">
+                            </div>
+                            <div class="card-content">
+                                <h3>More Transport Options Soon</h3>
+                                <p>New trusted transport partners will appear here shortly.</p>
+                                <span class="price-tag">Coming Soon</span>
+                            </div>
+                        </div>
+                    `).join('');
+
+                                        transportContainer.innerHTML = transportCards + placeholderCards;
+                                })
+                                .catch(err => {
+                                        console.error(err);
+                                        transportContainer.innerHTML = '<p>Error loading transport options</p>';
+                                });
 
             function escapeHtml(text) {
                 if (!text) return '';

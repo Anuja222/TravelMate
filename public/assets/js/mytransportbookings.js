@@ -8,6 +8,7 @@ let allBookings = [];
 let currentFilter = 'all';
 let bookingIdToCancel = null;
 let bookingIdToDelete = null;
+const selectedTransportRatings = {};
 
 function normalizeValue(value) {
     return String(value || '').trim().toLowerCase();
@@ -273,6 +274,12 @@ function createBookingElement(booking) {
     const serviceType = formatServiceType(booking.service_type);
     const status = normalizeValue(booking.booking_status);
     const paymentStatus = normalizeValue(booking.payment_status);
+    const existingRating = parseInt(booking.user_rating || 0, 10);
+    const ratingBookingId = String(booking.booking_id || '');
+
+    if (existingRating > 0 && !selectedTransportRatings[ratingBookingId]) {
+        selectedTransportRatings[ratingBookingId] = existingRating;
+    }
 
     const canPayNow = status === 'confirmed' && paymentStatus !== 'paid';
     const showRejectNotice = status === 'rejected';
@@ -284,6 +291,42 @@ function createBookingElement(booking) {
 
     const vehicleImage = buildVehicleImageUrl(booking.vehicle_photo || booking.main_image) || getVehicleImageFallbackByType(booking.vehicle_type);
     const imageFallback = getVehicleImageFallbackByType(booking.vehicle_type);
+
+    const canRateTrip =
+        getBookingCategory(booking) === 'history' &&
+        !['cancelled', 'rejected'].includes(status) &&
+        paymentStatus === 'paid';
+
+    const editableStars = [1, 2, 3, 4, 5].map(value => `
+        <button type="button" class="star-btn ${(selectedTransportRatings[ratingBookingId] || existingRating) >= value ? 'active' : ''}" onclick="setSelectedTransportRating('${ratingBookingId}', ${value})">★</button>
+    `).join('');
+
+    const readonlyStars = [1, 2, 3, 4, 5].map(value => `
+        <span class="star-btn ${(existingRating) >= value ? 'active' : ''}" style="cursor: default;">★</span>
+    `).join('');
+
+    let ratingSection = '';
+    if (canRateTrip) {
+        if (existingRating > 0) {
+            ratingSection = `
+                <div class="booking-rating-box">
+                    <div class="booking-rating-title">Your Transport Rating</div>
+                    <div class="star-row">${readonlyStars}</div>
+                    <div class="rating-meta">Rated ${existingRating}/5</div>
+                    ${booking.user_review ? `<div class="rating-meta" style="margin-top:8px;">${booking.user_review}</div>` : ''}
+                </div>
+            `;
+        } else {
+            ratingSection = `
+                <div class="booking-rating-box">
+                    <div class="booking-rating-title">Rate this trip</div>
+                    <div class="star-row" id="transport-stars-${ratingBookingId}">${editableStars}</div>
+                    <textarea id="transport-review-${ratingBookingId}" class="rating-input" placeholder="Share your transport experience (optional)"></textarea>
+                    <button class="rating-save" onclick="submitTransportBookingRating('${ratingBookingId}')">Submit Rating</button>
+                </div>
+            `;
+        }
+    }
 
     bookingDiv.innerHTML = `
         <div class="booking-image">
@@ -310,10 +353,65 @@ function createBookingElement(booking) {
                 </div>
                 ${canPayNow ? `<div class="action-row single"><button class="action-btn btn-success" onclick="proceedToPayment('${booking.booking_id}')">Complete Payment</button></div>` : ''}
             </div>
+            ${ratingSection}
         </div>
     `;
 
     return bookingDiv;
+}
+
+function setSelectedTransportRating(bookingId, rating) {
+    selectedTransportRatings[bookingId] = rating;
+    const starsWrap = document.getElementById(`transport-stars-${bookingId}`);
+    if (!starsWrap) return;
+
+    const stars = starsWrap.querySelectorAll('.star-btn');
+    stars.forEach((starBtn, index) => {
+        if (index < rating) {
+            starBtn.classList.add('active');
+        } else {
+            starBtn.classList.remove('active');
+        }
+    });
+}
+
+async function submitTransportBookingRating(bookingId) {
+    const rating = parseInt(selectedTransportRatings[bookingId] || 0, 10);
+    const reviewEl = document.getElementById(`transport-review-${bookingId}`);
+    const review = reviewEl ? reviewEl.value.trim() : '';
+
+    if (rating < 1 || rating > 5) {
+        showErrorModal('Please select a rating between 1 and 5');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${BASE_PATH}/api/transport-booking/rate`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                bookingId,
+                rating,
+                review
+            }),
+            credentials: 'same-origin'
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            loadBookings();
+            return;
+        }
+
+        const errorMsg = result.errors?.general || 'Failed to save rating';
+        showErrorModal(errorMsg);
+    } catch (error) {
+        console.error('submitTransportBookingRating error:', error);
+        showErrorModal('Failed to save rating. Please try again.');
+    }
 }
 
 // Format service type
