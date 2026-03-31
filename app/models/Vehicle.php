@@ -99,7 +99,19 @@ class Vehicle
 
     public static function findByUser($conn, $userId)
     {
-        $sql = "SELECT * FROM vehicles WHERE user_id = ? ORDER BY created_at DESC";
+        if (self::hasTransportRatingsTable($conn)) {
+            $sql = "SELECT v.*, 
+                    COALESCE((SELECT ROUND(AVG(tbr.rating), 1) FROM transport_booking_ratings tbr WHERE tbr.vehicle_id = v.id), 0) AS avg_rating,
+                    COALESCE((SELECT COUNT(*) FROM transport_booking_ratings tbr WHERE tbr.vehicle_id = v.id), 0) AS rating_count
+                    FROM vehicles v
+                    WHERE v.user_id = ?
+                    ORDER BY v.created_at DESC";
+        } else {
+            $sql = "SELECT v.*, 0 AS avg_rating, 0 AS rating_count
+                    FROM vehicles v
+                    WHERE v.user_id = ?
+                    ORDER BY v.created_at DESC";
+        }
         $stmt = $conn->prepare($sql);
         $stmt->execute([$userId]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -107,7 +119,19 @@ class Vehicle
 
     public static function findAll($conn)
     {
-        $sql = "SELECT * FROM vehicles WHERE status = 'active' ORDER BY created_at DESC";
+        if (self::hasTransportRatingsTable($conn)) {
+            $sql = "SELECT v.*, 
+                    COALESCE((SELECT ROUND(AVG(tbr.rating), 1) FROM transport_booking_ratings tbr WHERE tbr.vehicle_id = v.id), 0) AS avg_rating,
+                    COALESCE((SELECT COUNT(*) FROM transport_booking_ratings tbr WHERE tbr.vehicle_id = v.id), 0) AS rating_count
+                    FROM vehicles v
+                    WHERE v.status = 'active'
+                    ORDER BY v.created_at DESC";
+        } else {
+            $sql = "SELECT v.*, 0 AS avg_rating, 0 AS rating_count
+                    FROM vehicles v
+                    WHERE v.status = 'active'
+                    ORDER BY v.created_at DESC";
+        }
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -115,7 +139,17 @@ class Vehicle
 
     public static function findAllForAdmin($conn)
     {
-        $sql = "SELECT * FROM vehicles ORDER BY created_at DESC";
+        if (self::hasTransportRatingsTable($conn)) {
+            $sql = "SELECT v.*, 
+                    COALESCE((SELECT ROUND(AVG(tbr.rating), 1) FROM transport_booking_ratings tbr WHERE tbr.vehicle_id = v.id), 0) AS avg_rating,
+                    COALESCE((SELECT COUNT(*) FROM transport_booking_ratings tbr WHERE tbr.vehicle_id = v.id), 0) AS rating_count
+                    FROM vehicles v
+                    ORDER BY v.created_at DESC";
+        } else {
+            $sql = "SELECT v.*, 0 AS avg_rating, 0 AS rating_count
+                    FROM vehicles v
+                    ORDER BY v.created_at DESC";
+        }
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -157,5 +191,15 @@ class Vehicle
         $sql = "DELETE FROM vehicle_documents WHERE id = ?";
         $stmt = $conn->prepare($sql);
         return $stmt->execute([$id]);
+    }
+
+    private static function hasTransportRatingsTable($conn)
+    {
+        try {
+            $tableCheck = $conn->query("SHOW TABLES LIKE 'transport_booking_ratings'");
+            return $tableCheck && $tableCheck->fetch(\PDO::FETCH_NUM);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }

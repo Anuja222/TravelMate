@@ -117,14 +117,32 @@ class TransportBooking {
     // Get all transport bookings by user
     public function getBookingsByUserId($conn, $userId) {
         try {
+            $hasRatingsTable = $this->hasTransportRatingsTable($conn);
+
+            $ratingFieldsSql = $hasRatingsTable
+                ? ", tbr.rating AS user_rating, tbr.review AS user_review, tbr.created_at AS rating_created_at"
+                : ", NULL AS user_rating, NULL AS user_review, NULL AS rating_created_at";
+
+            $ratingJoinSql = $hasRatingsTable
+                ? " LEFT JOIN transport_booking_ratings tbr
+                    ON BINARY tbr.booking_id = BINARY tb.booking_id
+                    AND tbr.user_id = tb.user_id
+                    AND (
+                        (tbr.vehicle_id IS NULL AND tb.vehicle_id IS NULL)
+                        OR tbr.vehicle_id = tb.vehicle_id
+                    )"
+                : "";
+
                     $sql = "SELECT tb.*, v.vehicle_model, v.vehicle_type, v.vehicle_number, v.ac_type, v.passenger_count,
                            (SELECT vd.file_path
                             FROM vehicle_documents vd
                             WHERE vd.vehicle_id = v.id AND vd.doc_type = 'vehicle_photos'
                             ORDER BY vd.id DESC
                             LIMIT 1) AS vehicle_photo
+                            {$ratingFieldsSql}
                     FROM transport_bookings tb
                     LEFT JOIN vehicles v ON tb.vehicle_id = v.id
+                    {$ratingJoinSql}
                     WHERE tb.user_id = ? 
                     ORDER BY tb.created_at DESC";
             $stmt = $conn->prepare($sql);
@@ -431,5 +449,38 @@ class TransportBooking {
             error_log('Stack trace: ' . $e->getTraceAsString());
             return false;
         }
+    }
+
+    private function hasTransportRatingsTable($conn)
+    {
+        try {
+            $tableCheck = $conn->query("SHOW TABLES LIKE 'transport_booking_ratings'");
+            return $tableCheck && $tableCheck->fetch(PDO::FETCH_NUM);
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    public function saveTransportBookingRating($conn, $bookingId, $userId, $vehicleId, $rating, $review = null)
+    {
+        if (!$this->hasTransportRatingsTable($conn)) {
+            return false;
+        }
+
+        $sql = "INSERT INTO transport_booking_ratings (booking_id, user_id, vehicle_id, rating, review, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, NOW(), NOW())
+                ON DUPLICATE KEY UPDATE
+                    rating = VALUES(rating),
+                    review = VALUES(review),
+                    updated_at = NOW()";
+
+        $stmt = $conn->prepare($sql);
+        return $stmt->execute([
+            $bookingId,
+            $userId,
+            $vehicleId,
+            $rating,
+            $review
+        ]);
     }
 }

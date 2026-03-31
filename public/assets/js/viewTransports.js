@@ -1,6 +1,7 @@
 // Global variables
 let allTransports = [];
 let filteredTransports = [];
+let pendingActionResolve = null;
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
@@ -11,6 +12,98 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('searchInput').addEventListener('keyup', function(e) {
         if (e.key === 'Enter') {
             applyFilters();
+        }
+    });
+
+    const confirmProceedBtn = document.getElementById('actionConfirmProceed');
+    const confirmCancelBtn = document.getElementById('actionConfirmCancel');
+    const successOkBtn = document.getElementById('actionSuccessOk');
+    const confirmModal = document.getElementById('actionConfirmModal');
+    const successModal = document.getElementById('actionSuccessModal');
+
+    if (confirmProceedBtn) {
+        confirmProceedBtn.addEventListener('click', function() {
+            closeActionConfirmModal(true);
+        });
+    }
+
+    if (confirmCancelBtn) {
+        confirmCancelBtn.addEventListener('click', function() {
+            closeActionConfirmModal(false);
+        });
+    }
+
+    if (successOkBtn) {
+        successOkBtn.addEventListener('click', function() {
+            closeActionSuccessModal();
+        });
+    }
+
+    if (confirmModal) {
+        confirmModal.addEventListener('click', function(event) {
+            if (event.target === confirmModal) {
+                closeActionConfirmModal(false);
+            }
+        });
+    }
+
+    if (successModal) {
+        successModal.addEventListener('click', function(event) {
+            if (event.target === successModal) {
+                closeActionSuccessModal();
+            }
+        });
+    }
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key !== 'Escape') {
+            return;
+        }
+
+        if (successModal && successModal.style.display === 'flex') {
+            closeActionSuccessModal();
+            return;
+        }
+
+        if (confirmModal && confirmModal.style.display === 'flex') {
+            closeActionConfirmModal(false);
+        }
+    });
+
+    document.addEventListener('click', function(event) {
+        const actionButton = event.target.closest('.btn-view, .btn-approve, .btn-reject');
+        if (actionButton) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const id = Number(actionButton.getAttribute('data-vehicle-id'));
+            if (!id) {
+                return;
+            }
+
+            const action = actionButton.getAttribute('data-action');
+            if (action === 'view') {
+                viewTransport(id);
+                return;
+            }
+
+            if (action === 'approve') {
+                moderateVehicle(id, 'approve');
+                return;
+            }
+
+            if (action === 'reject') {
+                moderateVehicle(id, 'reject');
+            }
+            return;
+        }
+
+        const card = event.target.closest('.transport-card');
+        if (card) {
+            const cardId = Number(card.getAttribute('data-vehicle-id'));
+            if (cardId) {
+                viewTransport(cardId);
+            }
         }
     });
 });
@@ -38,9 +131,10 @@ function loadTransports() {
     .then(data => {
         if (data.success) {
             allTransports = data.data || [];
-            filteredTransports = allTransports.filter(v => v.status !== 'pending');
+            filteredTransports = allTransports.filter(v => v.status === 'active');
             updateStatistics();
             displayPendingTransports();
+            displayRejectedTransports();
             displayTransports(filteredTransports);
         } else {
             console.error('Failed to load transports:', data.errors);
@@ -57,12 +151,15 @@ function loadTransports() {
 function updateStatistics() {
     const active = allTransports.filter(v => v.status === 'active').length;
     const pending = allTransports.filter(v => v.status === 'pending').length;
-    const inactive = allTransports.filter(v => v.status === 'inactive').length;
+    const rejected = allTransports.filter(v => v.status === 'inactive').length;
     const total = allTransports.length;
     
     document.getElementById('activeCount').textContent = active;
     document.getElementById('pendingCount').textContent = pending;
-    document.getElementById('inactiveCount').textContent = inactive;
+    const rejectedCountEl = document.getElementById('rejectedCount') || document.getElementById('inactiveCount');
+    if (rejectedCountEl) {
+        rejectedCountEl.textContent = rejected;
+    }
     document.getElementById('totalCount').textContent = total;
 }
 
@@ -104,18 +201,46 @@ function displayPendingTransports() {
     grid.innerHTML = pendingTransports.map(transport => createTransportCard(transport)).join('');
 }
 
+function displayRejectedTransports() {
+    const grid = document.getElementById('rejectedTransportsGrid');
+    const emptyState = document.getElementById('rejectedEmptyState');
+
+    if (!grid || !emptyState) {
+        return;
+    }
+
+    const rejectedTransports = allTransports.filter(v => v.status === 'inactive');
+
+    if (rejectedTransports.length === 0) {
+        grid.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+    }
+
+    grid.style.display = 'grid';
+    emptyState.style.display = 'none';
+    grid.innerHTML = rejectedTransports.map(transport => createTransportCard(transport)).join('');
+}
+
 // Show empty state
 function showEmptyState() {
     const grid = document.getElementById('transportsGrid');
     const emptyState = document.getElementById('emptyState');
     const pendingGrid = document.getElementById('pendingTransportsGrid');
     const pendingEmptyState = document.getElementById('pendingEmptyState');
+    const rejectedGrid = document.getElementById('rejectedTransportsGrid');
+    const rejectedEmptyState = document.getElementById('rejectedEmptyState');
     grid.style.display = 'none';
     emptyState.style.display = 'block';
 
     if (pendingGrid && pendingEmptyState) {
         pendingGrid.style.display = 'none';
         pendingEmptyState.style.display = 'block';
+    }
+
+    if (rejectedGrid && rejectedEmptyState) {
+        rejectedGrid.style.display = 'none';
+        rejectedEmptyState.style.display = 'block';
     }
 }
 
@@ -126,8 +251,9 @@ function createTransportCard(transport) {
         ? `${baseUrl}${transport.main_image}` 
         : 'assets/images/default-vehicle.jpg';
     
-    const statusClass = `badge-${transport.status || 'active'}`;
-    const statusText = (transport.status || 'active').toUpperCase();
+    const rawStatus = transport.status || 'active';
+    const statusClass = rawStatus === 'inactive' ? 'badge-rejected' : `badge-${rawStatus}`;
+    const statusText = rawStatus === 'inactive' ? 'REJECTED' : rawStatus.toUpperCase();
     
     const vehicleType = transport.vehicle_type || 'Vehicle';
     const model = transport.vehicle_model || 'Model not specified';
@@ -139,7 +265,7 @@ function createTransportCard(transport) {
     const color = transport.vehicle_color || 'Not specified';
     
     return `
-        <div class="transport-card" onclick="viewTransport(${transport.id})">
+        <div class="transport-card" data-vehicle-id="${transport.id}">
             <div class="transport-image">
                 <img src="${image}" alt="${escapeHtml(model)}" onerror="this.src='assets/images/default-vehicle.jpg'">
                 <span class="transport-badge ${statusClass}">${statusText}</span>
@@ -167,7 +293,7 @@ function createTransportCard(transport) {
                         <div class="price-label">Vehicle No.</div>
                     </div>
                     <div class="card-actions">
-                        <button class="btn-view" onclick="event.stopPropagation(); viewTransport(${transport.id})">
+                        <button type="button" class="btn-view" data-vehicle-id="${transport.id}" data-action="view">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                 <circle cx="12" cy="12" r="3"></circle>
@@ -175,13 +301,13 @@ function createTransportCard(transport) {
                             View Full
                         </button>
                         ${transport.status === 'pending' ? `
-                            <button class="btn-approve" onclick="event.stopPropagation(); moderateVehicle(${transport.id}, 'approve')">
+                            <button type="button" class="btn-approve" data-vehicle-id="${transport.id}" data-action="approve">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <polyline points="20 6 9 17 4 12"></polyline>
                                 </svg>
                                 Approve
                             </button>
-                            <button class="btn-reject" onclick="event.stopPropagation(); moderateVehicle(${transport.id}, 'reject')">
+                            <button type="button" class="btn-reject" data-vehicle-id="${transport.id}" data-action="reject">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <line x1="18" y1="6" x2="6" y2="18"></line>
                                     <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -197,13 +323,27 @@ function createTransportCard(transport) {
 }
 
 function moderateVehicle(id, action) {
+    const isApprove = action === 'approve';
+
+    openActionConfirmModal({
+        title: isApprove ? 'Approve Vehicle' : 'Reject Vehicle',
+        message: isApprove
+            ? 'Are you sure you want to approve this vehicle listing? It will become active immediately.'
+            : 'Are you sure you want to reject this vehicle listing? It will be moved to inactive status.',
+        confirmText: isApprove ? 'Approve' : 'Reject',
+        actionType: action
+    }).then(confirmed => {
+        if (!confirmed) {
+            return;
+        }
+
+        runVehicleModeration(id, action);
+    });
+}
+
+function runVehicleModeration(id, action) {
     const endpoint = action === 'approve' ? 'approve' : 'reject';
     const label = action === 'approve' ? 'approve' : 'reject';
-
-    if (!confirm(`Are you sure you want to ${label} this vehicle?`)) {
-        return;
-    }
-
     const baseUrl = getBaseUrl();
     fetch(`${baseUrl}/api/vehicle/${endpoint}`, {
         method: 'POST',
@@ -227,12 +367,116 @@ function moderateVehicle(id, action) {
 
         updateStatistics();
         displayPendingTransports();
+        displayRejectedTransports();
         applyFilters();
+
+        if (action === 'approve') {
+            openActionSuccessModal({
+                title: 'Approved Successfully',
+                message: 'Vehicle has been approved and is now active.',
+                actionType: 'approve'
+            });
+        } else {
+            openActionSuccessModal({
+                title: 'Rejected Successfully',
+                message: 'Vehicle has been rejected and moved to the rejected section.',
+                actionType: 'reject'
+            });
+        }
     })
     .catch(error => {
         console.error(`Error trying to ${label} vehicle:`, error);
         alert(`Failed to ${label} vehicle`);
     });
+}
+
+function openActionConfirmModal({ title, message, confirmText, actionType }) {
+    const modal = document.getElementById('actionConfirmModal');
+    const titleEl = document.getElementById('actionConfirmTitle');
+    const messageEl = document.getElementById('actionConfirmMessage');
+    const iconEl = document.getElementById('actionConfirmIcon');
+    const confirmBtn = document.getElementById('actionConfirmProceed');
+    const cancelBtn = document.getElementById('actionConfirmCancel');
+
+    if (!modal || !titleEl || !messageEl || !confirmBtn || !cancelBtn) {
+        return Promise.resolve(confirm(message));
+    }
+
+    titleEl.textContent = title || 'Are you sure?';
+    messageEl.textContent = message || 'Please confirm this action.';
+    confirmBtn.textContent = confirmText || 'Confirm';
+
+    const isReject = actionType === 'reject';
+    confirmBtn.style.background = isReject
+        ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
+        : 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+
+    if (iconEl) {
+        iconEl.innerHTML = isReject
+            ? '<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>'
+            : '<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="9 12 11 14 15 10"></polyline></svg>';
+    }
+
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    return new Promise(resolve => {
+        pendingActionResolve = resolve;
+    });
+}
+
+function closeActionConfirmModal(confirmed) {
+    const modal = document.getElementById('actionConfirmModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    document.body.style.overflow = 'auto';
+
+    if (pendingActionResolve) {
+        pendingActionResolve(Boolean(confirmed));
+        pendingActionResolve = null;
+    }
+}
+
+function openActionSuccessModal({ title, message, actionType }) {
+    const modal = document.getElementById('actionSuccessModal');
+    const titleEl = document.getElementById('actionSuccessTitle');
+    const messageEl = document.getElementById('actionSuccessMessage');
+    const iconWrap = document.getElementById('actionSuccessIcon');
+    const okBtn = document.getElementById('actionSuccessOk');
+
+    if (!modal || !titleEl || !messageEl) {
+        alert(message || 'Action completed successfully.');
+        return;
+    }
+
+    const isReject = actionType === 'reject';
+
+    if (iconWrap) {
+        iconWrap.style.background = isReject ? '#fee2e2' : '#d1fae5';
+        iconWrap.innerHTML = isReject
+            ? '<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>'
+            : '<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="9 12 11 14 15 10"></polyline></svg>';
+    }
+
+    if (okBtn) {
+        okBtn.style.background = isReject
+            ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
+            : 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+    }
+
+    titleEl.textContent = title || 'Success';
+    messageEl.textContent = message || 'Action completed successfully.';
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeActionSuccessModal() {
+    const modal = document.getElementById('actionSuccessModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    document.body.style.overflow = 'auto';
 }
 
 // Apply filters
@@ -242,7 +486,7 @@ function applyFilters() {
     const typeFilter = document.getElementById('typeFilter').value.toLowerCase();
     const acFilter = document.getElementById('acFilter').value.toLowerCase();
     
-    const nonPendingTransports = allTransports.filter(v => v.status !== 'pending');
+    const nonPendingTransports = allTransports.filter(v => v.status === 'active');
 
     filteredTransports = nonPendingTransports.filter(transport => {
         const matchesSearch = !searchTerm || 

@@ -528,6 +528,75 @@ class TransportBookingController
         }
     }
 
+    public function submitBookingRating()
+    {
+        try {
+            $userId = $this->checkAuth();
+
+            $input = json_decode(file_get_contents('php://input'), true);
+
+            $bookingId = trim((string)($input['bookingId'] ?? ''));
+            $rating = intval($input['rating'] ?? 0);
+            $review = trim((string)($input['review'] ?? ''));
+
+            if ($bookingId === '') {
+                $this->sendResponse(false, [], ['general' => 'Booking ID is required']);
+            }
+
+            if ($rating < 1 || $rating > 5) {
+                $this->sendResponse(false, [], ['general' => 'Rating must be between 1 and 5']);
+            }
+
+            $bookingModel = new TransportBooking();
+            $booking = $bookingModel->getBookingById($this->db, $bookingId, $userId);
+
+            if (!$booking) {
+                $this->sendResponse(false, [], ['general' => 'Booking not found']);
+            }
+
+            $returnDate = strtotime((string)($booking['return_date'] ?? ''));
+            $todayStart = strtotime(date('Y-m-d'));
+
+            if (!$returnDate || $returnDate >= $todayStart) {
+                $this->sendResponse(false, [], ['general' => 'You can rate only after the trip has ended']);
+            }
+
+            $bookingStatus = $this->normalizeStatus($booking['booking_status'] ?? '');
+            $paymentStatus = $this->normalizeStatus($booking['payment_status'] ?? '');
+
+            if (in_array($bookingStatus, ['cancelled', 'rejected'], true)) {
+                $this->sendResponse(false, [], ['general' => 'This booking cannot be rated']);
+            }
+
+            if (!in_array($bookingStatus, ['confirmed', 'completed'], true)) {
+                $this->sendResponse(false, [], ['general' => 'Only completed trips can be rated']);
+            }
+
+            if ($paymentStatus !== 'paid') {
+                $this->sendResponse(false, [], ['general' => 'Only paid trips can be rated']);
+            }
+
+            $saved = $bookingModel->saveTransportBookingRating(
+                $this->db,
+                $bookingId,
+                $userId,
+                $booking['vehicle_id'] ?? null,
+                $rating,
+                $review !== '' ? $review : null
+            );
+
+            if ($saved) {
+                $this->sendResponse(true, ['message' => 'Rating saved successfully']);
+                return;
+            }
+
+            $this->sendResponse(false, [], ['general' => 'Failed to save rating']);
+        } catch (Exception $e) {
+            error_log('submit transport booking rating error: ' . $e->getMessage());
+            $this->sendResponse(false, [], ['general' => 'Failed to save rating']);
+        }
+    }
+
     // Initialize booking - Save booking data to session
     public function initBooking()
     {

@@ -61,8 +61,8 @@
             <i class="fas fa-times-circle"></i>
           </div>
           <div class="stat-info">
-            <div class="stat-number" id="inactiveCount">0</div>
-            <div class="stat-label">Inactive</div>
+            <div class="stat-number" id="rejectedCount">0</div>
+            <div class="stat-label">Rejected</div>
           </div>
         </div>
         <div class="stat-card">
@@ -83,7 +83,7 @@
           <option value="">All Status</option>
           <option value="active">Active</option>
           <option value="pending">Pending</option>
-          <option value="inactive">Inactive</option>
+          <option value="inactive">Rejected</option>
         </select>
         <select id="typeFilter">
           <option value="">All Types</option>
@@ -126,10 +126,32 @@
         </div>
       </div>
 
+      <!-- Rejected Vehicles Section -->
+      <div class="section-block">
+        <div class="section-title-row" style="margin-top: 10px;">
+          <h2>Rejected Vehicles</h2>
+          <p>Vehicles rejected by admin are listed here.</p>
+        </div>
+        <div id="rejectedTransportsGrid" class="transports-grid">
+          <div class="loading-state">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading rejected vehicles...</p>
+          </div>
+        </div>
+
+        <div id="rejectedEmptyState" class="empty-state" style="display: none; margin-bottom: 20px;">
+          <div class="empty-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <h3>No Rejected Vehicles</h3>
+          <p>No vehicles have been rejected yet.</p>
+        </div>
+      </div>
+
       <!-- Transports Grid -->
       <div class="section-title-row" style="margin-top: 10px;">
-        <h2>All Other Vehicles</h2>
-        <p>Browse approved and inactive vehicles.</p>
+        <h2>Approved Vehicles</h2>
+        <p>Browse approved vehicles.</p>
       </div>
       <div id="transportsGrid" class="transports-grid">
         <!-- Loading state -->
@@ -266,6 +288,39 @@
       <div class="view-modal-footer">
         <button class="btn-secondary" onclick="closeViewModal()">Close</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Action Confirm Modal -->
+  <div id="actionConfirmModal" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 450px; text-align: center;">
+      <div class="confirm-modal-icon" id="actionConfirmIcon">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="9 12 11 14 15 10"></polyline>
+        </svg>
+      </div>
+      <h2 id="actionConfirmTitle" style="margin: 20px 0 10px 0; color: #1f2937; font-size: 22px;">Are you sure?</h2>
+      <p id="actionConfirmMessage" style="margin: 0 0 30px 0; color: #6b7280; font-size: 15px; line-height: 1.6;">Do you want to approve this vehicle?</p>
+      <div style="display: flex; gap: 12px; justify-content: center;">
+        <button id="actionConfirmCancel" style="padding: 12px 32px; background: #f3f4f6; border: none; border-radius: 8px; font-size: 15px; cursor: pointer; color: #374151; font-weight: 600;">Cancel</button>
+        <button id="actionConfirmProceed" style="padding: 12px 32px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; border-radius: 8px; font-size: 15px; cursor: pointer; color: white; font-weight: 600;">Approve</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Success Modal -->
+  <div id="actionSuccessModal" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+      <div class="success-icon" id="actionSuccessIcon">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="9 12 11 14 15 10"></polyline>
+        </svg>
+      </div>
+      <h2 id="actionSuccessTitle" style="margin: 20px 0 10px 0; color: #1f2937; font-size: 22px;">Approved Successfully</h2>
+      <p id="actionSuccessMessage" style="margin: 0 0 30px 0; color: #6b7280; font-size: 15px;">Vehicle has been approved and is now active.</p>
+      <button id="actionSuccessOk" style="padding: 12px 32px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; border-radius: 8px; font-size: 15px; cursor: pointer; color: white; font-weight: 600;">Continue</button>
     </div>
   </div>
 
