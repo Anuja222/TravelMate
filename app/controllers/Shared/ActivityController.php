@@ -149,6 +149,10 @@ class ActivityController
         $activityId = $_POST['activity_id'] ?? null;
         $title = trim($_POST['title'] ?? '');
         $description = trim($_POST['description'] ?? '');
+        
+        $location = trim($_POST['location'] ?? '');
+        $best_time = trim($_POST['best_time'] ?? '');
+
         if (!$activityId || !$title) $this->sendResponse(false, ['error'=>'Missing data']);
 
         $slug = trim($_POST['slug'] ?? '');
@@ -159,7 +163,7 @@ class ActivityController
             $imagePath = $this->saveFile($_FILES['image']['tmp_name'], $_FILES['image']['name']);
         }
 
-        $id = Activity::createPlace($pdo, $activityId, $title, $slug, $description, $imagePath);
+        $id = Activity::createPlace($pdo, $activityId, $title, $slug, $description, $imagePath, $location, $best_time);
         if ($id) $this->sendResponse(true, [], ['id' => $id]);
         $this->sendResponse(false, ['error'=>'Failed to create place']);
     }
@@ -192,6 +196,9 @@ class ActivityController
         if (empty($slug)) $slug = strtolower(preg_replace('/[^a-z0-9]+/','-', $title));
 
         $description = trim($_POST['description'] ?? $existing['description']);
+        
+        $location = trim($_POST['location'] ?? ($existing['location'] ?? ''));
+        $best_time = trim($_POST['best_time'] ?? ($existing['best_time'] ?? ''));
 
         $imagePath = $existing['image'] ?? null;
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
@@ -199,7 +206,7 @@ class ActivityController
             if ($saved) $imagePath = $saved;
         }
 
-        $ok = Activity::updatePlace($pdo, $id, $title, $slug, $description, $imagePath);
+        $ok = Activity::updatePlace($pdo, $id, $title, $slug, $description, $imagePath, $location, $best_time);
         $this->sendResponse((bool)$ok, $ok ? [] : ['error'=>'Update failed'], $ok ? ['id' => $id] : null);
     }
 }

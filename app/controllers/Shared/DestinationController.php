@@ -153,6 +153,10 @@ class DestinationController
         $destinationId = $_POST['destination_id'] ?? null;
         $title = trim($_POST['title'] ?? '');
         $description = trim($_POST['description'] ?? '');
+        
+        $location = trim($_POST['location'] ?? '');
+        $best_time = trim($_POST['best_time'] ?? '');
+        
         if (!$destinationId || !$title) $this->sendResponse(false, ['error'=>'Missing data']);
 
         $slug = trim($_POST['slug'] ?? '');
@@ -163,7 +167,7 @@ class DestinationController
             $imagePath = $this->saveFile($_FILES['image']['tmp_name'], $_FILES['image']['name']);
         }
 
-        $id = Destination::createPlace($pdo, $destinationId, $title, $slug, $description, $imagePath);
+        $id = Destination::createPlace($pdo, $destinationId, $title, $slug, $description, $imagePath, $location, $best_time);
         if ($id) $this->sendResponse(true, [], ['id' => $id]);
         $this->sendResponse(false, ['error'=>'Failed to create place']);
     }
@@ -197,13 +201,16 @@ class DestinationController
 
         $description = trim($_POST['description'] ?? $existing['description']);
 
+        $location = trim($_POST['location'] ?? ($existing['location'] ?? ''));
+        $best_time = trim($_POST['best_time'] ?? ($existing['best_time'] ?? ''));
+
         $imagePath = $existing['image'] ?? null;
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
             $saved = $this->saveFile($_FILES['image']['tmp_name'], $_FILES['image']['name']);
             if ($saved) $imagePath = $saved;
         }
 
-        $ok = Destination::updatePlace($pdo, $id, $title, $slug, $description, $imagePath);
+        $ok = Destination::updatePlace($pdo, $id, $title, $slug, $description, $imagePath, $location, $best_time);
         $this->sendResponse((bool)$ok, $ok ? [] : ['error'=>'Update failed'], $ok ? ['id' => $id] : null);
     }
 }
