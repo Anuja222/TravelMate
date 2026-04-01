@@ -1,6 +1,6 @@
   <aside class="sidebar">
-  <link rel="stylesheet" href="common.css">
-  
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css">
+
   <ul class="sidebar-menu">
     <!-- Main Section -->
     <li class="menu-item">

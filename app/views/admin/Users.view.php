@@ -2,8 +2,8 @@
 <html>
 <head>
   <title>Users Management - TravelMate</title>
-  <link rel="stylesheet" href="assets/css/Admin/Users.css">
-  <link rel="stylesheet" href="assets/css/Admin/common.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/Users.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css">
 </head>
 <body>
 
@@ -62,9 +62,9 @@
               <div class="user-card-header">
                 <div class="profile-pic-large">
                   <?php if (!empty($user->profile_picture)): ?>
-                    <img src="<?php echo htmlspecialchars($user->profile_picture); ?>" alt="<?php echo htmlspecialchars($user->first_name ?? 'User'); ?>">
+                    <img src="<?= ROOT ?>/<?php echo htmlspecialchars($user->profile_picture); ?>" alt="<?php echo htmlspecialchars($user->first_name ?? 'User'); ?>">
                   <?php else: ?>
-                    <img src="assets/images/profile.jpg" alt="User">
+                    <img src="<?= ROOT ?>/assets/images/profile.jpg" alt="User">
                   <?php endif; ?>
                 </div>
               </div>
@@ -200,7 +200,7 @@
       <div class="modal-body" style="max-height: none; overflow-y: auto; flex: 1;">
         <div style="text-align: center; margin-bottom: 20px;">
           <div style="width: 100px; height: 100px; border-radius: 50%; overflow: hidden; margin: 0 auto 15px; border: 3px solid #1abc5b;">
-            <img id="viewUserImage" src="assets/images/profile.jpg" alt="User" style="width: 100%; height: 100%; object-fit: cover;">
+            <img id="viewUserImage" src="<?= ROOT ?>/assets/images/profile.jpg" alt="User" style="width: 100%; height: 100%; object-fit: cover;">
           </div>
           <h2 id="viewUserFullName" style="margin: 0 0 8px 0; color: #2c3e50; font-size: 1.5em;"></h2>
         </div>
@@ -317,7 +317,7 @@
 
     function viewUserDetails(user) {
       // Populate modal with user data
-      document.getElementById('viewUserImage').src = user.profile_picture || 'assets/images/profile.jpg';
+      document.getElementById('viewUserImage').src = user.profile_picture ? ('<?= ROOT ?>/' + user.profile_picture) : '<?= ROOT ?>/assets/images/profile.jpg';
       document.getElementById('viewUserFullName').textContent = (user.first_name || '') + ' ' + (user.last_name || '');
       document.getElementById('viewUserFirstName').textContent = user.first_name || 'N/A';
       document.getElementById('viewUserLastName').textContent = user.last_name || 'N/A';

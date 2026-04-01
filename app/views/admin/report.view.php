@@ -2,8 +2,10 @@
 <html>
 <head>
   <title>Admin Dashboard - System Reports</title>
-  <link rel="stylesheet" href="assets/css/Admin/common.css">
-  <link rel="stylesheet" href="assets/css/Admin/report.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/report.css">
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
@@ -49,7 +51,7 @@
               <div class="stat-value">2,847</div>
               <div class="stat-label">Total Users</div>
             </div>
-            <div class="stat-icon icon-users">👥</div>
+            <div class="stat-icon icon-users"><i class="fas fa-users"></i></div>
           </div>
           <div class="stat-change change-positive">
             <span>↑ 12.5%</span>
@@ -63,7 +65,7 @@
               <div class="stat-value">156</div>
               <div class="stat-label">Active Listings</div>
             </div>
-            <div class="stat-icon icon-listings">🏨</div>
+            <div class="stat-icon icon-listings"><i class="fas fa-hotel"></i></div>
           </div>
           <div class="stat-change change-positive">
             <span>↑ 5.2%</span>
@@ -77,7 +79,7 @@
               <div class="stat-value">324</div>
               <div class="stat-label">Total Bookings</div>
             </div>
-            <div class="stat-icon icon-bookings">📅</div>
+            <div class="stat-icon icon-bookings"><i class="fas fa-calendar-check"></i></div>
           </div>
           <div class="stat-change change-positive">
             <span>↑ 8.7%</span>
@@ -88,13 +90,13 @@
         <div class="stat-card">
           <div class="stat-header">
             <div>
-              <div class="stat-value">$24,580</div>
+              <div class="stat-value">Rs. 0.00</div>
               <div class="stat-label">Total Revenue</div>
             </div>
-            <div class="stat-icon icon-revenue">💰</div>
+            <div class="stat-icon icon-revenue"><i class="fas fa-money-bill-wave"></i></div>
           </div>
           <div class="stat-change change-positive">
-            <span>↑ 15.3%</span>
+            <span>0%</span>
             <span>from last week</span>
           </div>
         </div>
@@ -112,7 +114,7 @@
             </div>
           </div>
           <div class="chart-placeholder">
-            📈 Booking Trends Chart Visualization
+            <i class="fas fa-chart-line" style="font-size: 2rem; margin-right: 10px; color: #3498db;"></i> Booking Trends Chart Visualization
           </div>
         </div>
 
@@ -125,7 +127,7 @@
             </div>
           </div>
           <div class="chart-placeholder">
-            🥧 User Distribution Pie Chart
+            <i class="fas fa-chart-pie" style="font-size: 2rem; margin-right: 10px; color: #1abc5b;"></i> User Distribution Pie Chart
           </div>
         </div>
       </div>
@@ -247,27 +249,27 @@
         <h3 style="margin: 0 0 20px 0; color: #222;">Quick Actions</h3>
         <div class="actions-grid">
           <div class="action-btn" onclick="window.location.href='Users'">
-            <div class="action-icon">👥</div>
+            <div class="action-icon"><i class="fas fa-users-cog"></i></div>
             <div class="action-label">Manage Users</div>
           </div>
           <div class="action-btn" onclick="window.location.href='content'">
-            <div class="action-icon">📝</div>
+            <div class="action-icon"><i class="fas fa-clipboard-check"></i></div>
             <div class="action-label">Content Moderation</div>
           </div>
           <div class="action-btn" onclick="window.location.href='ViewListing'">
-            <div class="action-icon">🏨</div>
+            <div class="action-icon"><i class="fas fa-hotel"></i></div>
             <div class="action-label">View Listings</div>
           </div>
           <div class="action-btn" onclick="generateReport()">
-            <div class="action-icon">📊</div>
+            <div class="action-icon"><i class="fas fa-file-invoice"></i></div>
             <div class="action-label">Generate Report</div>
           </div>
           <div class="action-btn" onclick="systemSettings()">
-            <div class="action-icon">⚙️</div>
+            <div class="action-icon"><i class="fas fa-cog"></i></div>
             <div class="action-label">System Settings</div>
           </div>
           <div class="action-btn" onclick="backupSystem()">
-            <div class="action-icon">💾</div>
+            <div class="action-icon"><i class="fas fa-database"></i></div>
             <div class="action-label">Backup System</div>
           </div>
         </div>
@@ -282,22 +284,92 @@
     });
 
     function updateDashboardData(period) {
-      // In a real application, this would fetch new data from the server
-      console.log('Updating dashboard data for period:', period);
+      console.log('Fetching dashboard data for period:', period);
       // Show loading state
       const stats = document.querySelectorAll('.stat-value');
-      stats.forEach(stat => {
-        stat.textContent = '...';
-      });
+      const changes = document.querySelectorAll('.stat-change span:first-child');
+      stats.forEach(stat => stat.textContent = '...');
+      changes.forEach(change => change.textContent = '...');
       
-      // Simulate API call delay
-      setTimeout(() => {
-        // Update with new data (mock)
-        document.querySelector('.stat-card:nth-child(1) .stat-value').textContent = '2,847';
-        document.querySelector('.stat-card:nth-child(2) .stat-value').textContent = '156';
-        document.querySelector('.stat-card:nth-child(3) .stat-value').textContent = '324';
-        document.querySelector('.stat-card:nth-child(4) .stat-value').textContent = '$24,580';
-      }, 1000);
+      fetch('<?= ROOT ?>/report_stats?period=' + period)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error(data.error);
+                return;
+            }
+            
+            // Update stats
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards[0].querySelector('.stat-value').textContent = data.stats.users.value;
+            statCards[0].querySelector('.stat-change span:first-child').textContent = data.stats.users.change;
+            
+            statCards[1].querySelector('.stat-value').textContent = data.stats.listings.value;
+            statCards[1].querySelector('.stat-change span:first-child').textContent = data.stats.listings.change;
+            
+            statCards[2].querySelector('.stat-value').textContent = data.stats.bookings.value;
+            statCards[2].querySelector('.stat-change span:first-child').textContent = data.stats.bookings.change;
+            
+            statCards[3].querySelector('.stat-value').textContent = data.stats.revenue.value;
+            statCards[3].querySelector('.stat-change span:first-child').textContent = data.stats.revenue.change;
+            
+            // Format stat changes colors depending on +/-
+            document.querySelectorAll('.stat-change').forEach(el => {
+                const changeText = el.querySelector('span:first-child').textContent;
+                if (changeText.includes('-')) {
+                    el.style.color = '#e74c3c';
+                } else if (changeText !== '0%') {
+                    el.style.color = '#1abc5b';
+                } else {
+                    el.style.color = '#7f8c8d';
+                }
+            });
+
+            // Update recent users table
+            const usersTbody = document.querySelector('.data-card:nth-child(1) .data-table tbody');
+            usersTbody.innerHTML = '';
+            if (data.lists.recentUsers.length > 0) {
+                data.lists.recentUsers.forEach(user => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                      <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                          <img src="<?= ROOT ?>/assets/images/profile.jpg" alt="User" class="user-avatar" onerror="this.src='<?= ROOT ?>/assets/images/default.jpg'">
+                          <span>${user.first_name || ''} ${user.last_name || ''}</span>
+                        </div>
+                      </td>
+                      <td>${user.role ? (user.role.charAt(0).toUpperCase() + user.role.slice(1)) : 'Unknown'}</td>
+                      <td>${new Date(user.created_at).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'})}</td>
+                      <td><span class="status-badge status-active">Active</span></td>
+                    `;
+                    usersTbody.appendChild(tr);
+                });
+            } else {
+                usersTbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No recent users</td></tr>';
+            }
+
+            // Update pending approvals table
+            const pendingTbody = document.querySelector('.data-card:nth-child(2) .data-table tbody');
+            pendingTbody.innerHTML = '';
+            if (data.lists.pending.length > 0) {
+                data.lists.pending.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                      <td>${item.content || 'N/A'}</td>
+                      <td>${item.type || 'N/A'}</td>
+                      <td>${new Date(item.created_at).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'})}</td>
+                      <td>
+                        <button style="background: #1abc5b; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; cursor: pointer;">Approve</button>
+                        <button style="background: #e74c3c; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; cursor: pointer;">Reject</button>
+                      </td>
+                    `;
+                    pendingTbody.appendChild(tr);
+                });
+            } else {
+                pendingTbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No pending approvals</td></tr>';
+            }
+        })
+        .catch(error => console.error('Error fetching dashboard data:', error));
     }
 
     // Chart period buttons

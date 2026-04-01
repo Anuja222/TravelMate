@@ -858,14 +858,13 @@ elseif ($page === 'ac_dashboard') {
 //admin pages
 elseif ($page === 'ad_dashboard') {
     include '../app/views/admin/dashboard.view.php';
-}elseif ($page === 'ViewListing') {
-    include '../app/views/admin/ViewListing.view.php';
+}elseif ($page === 'ViewListing') {      require_once '../app/core/init.php';    include '../app/views/admin/ViewListing.view.php';
 }elseif ($page === 'viewHotel') {
     include '../app/views/admin/viewHotel.view.php';
 }elseif ($page === 'viewVehicle') {
     include '../app/views/admin/viewVehicle.view.php';
 }elseif ($page === 'Users') {
-    require_once '../app/core/Controller.php';
+      require_once '../app/core/init.php';
     require_once '../app/controllers/Admin/Users.php';
     $controller = new Users();
     $controller->index();
@@ -876,7 +875,16 @@ elseif ($page === 'ad_dashboard') {
 }elseif ($page === 'announcement') {
     include '../app/views/admin/announcement.view.php';
 }elseif ($page === 'report') {
-    include '../app/views/admin/report.view.php';
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Admin/Report.php';
+    $reportController = new Report();
+    $reportController->index();
+}elseif ($requestUri === '/api/report/stats' || $page === 'report_stats') {
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Admin/Report.php';
+    $reportController = new Report();
+    $reportController->get_stats();
+    exit;
 }elseif ($page === 'ad_setting') {
     include '../app/views/admin/setting.view.php';
 }elseif ($page === 'destinations') {
@@ -886,10 +894,13 @@ elseif ($page === 'ad_dashboard') {
 } elseif ($page === 'editDestination') {
     include '../app/views/admin/editDestination.view.php';
 } elseif ($page === 'ViewActivities') {
-    include '../app/views/admin/ViewActivities.view.php';
-} elseif ($page === 'accommodations') {
-    include '../app/views/admin/ViewAccommodations.view.php';
-} elseif ($page === 'transports') {
+      require_once '../app/core/init.php';
+      include '../app/views/admin/ViewActivities.view.php';
+  } elseif ($page === 'accommodations') {
+      require_once '../app/core/init.php';
+      include '../app/views/admin/ViewAccommodations.view.php';
+  } elseif ($page === 'transports') {
+      require_once '../app/core/init.php';
     include '../app/views/admin/ViewTransports.view.php';
 } elseif ($page === 'createActivity') {
     include '../app/views/admin/createActivity.view.php';
