@@ -901,6 +901,8 @@ elseif ($page === 'ad_dashboard') {
     include '../app/views/admin/viewtraveller.view.php';
 } elseif ($page === 'viewblog') {
     include '../app/views/admin/viewblog.view.php';
+} elseif ($page === 'ad_bookings') {
+    include '../app/views/admin/bookings.view.php';
 }
 
 // Default - 404
