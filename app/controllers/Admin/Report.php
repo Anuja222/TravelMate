@@ -68,19 +68,19 @@ class Report extends Controller {
         $prevListings = $this->query("SELECT (SELECT COUNT(*) FROM accommodations WHERE $prevCond) + (SELECT COUNT(*) FROM vehicles WHERE $prevCond) as count") ?: [(object)["count"=>0]];
         
         $bookingsAcc = $this->query("SELECT COUNT(*) as count FROM bookings WHERE $dateCond") ?: [(object)["count"=>0]];
-        $bookingsTrans = $this->query("SELECT COUNT(*) as count FROM transport_bookings WHERE status = \"confirmed\" AND $dateCond") ?: [(object)["count"=>0]];
+        $bookingsTrans = $this->query("SELECT COUNT(*) as count FROM transport_bookings WHERE booking_status = \"confirmed\" AND $dateCond") ?: [(object)["count"=>0]];
         $bookings = $bookingsAcc[0]->count + $bookingsTrans[0]->count;
         
         $prevBookingsAcc = $this->query("SELECT COUNT(*) as count FROM bookings WHERE $prevCond") ?: [(object)["count"=>0]];
-        $prevBookingsTrans = $this->query("SELECT COUNT(*) as count FROM transport_bookings WHERE status = \"confirmed\" AND $prevCond") ?: [(object)["count"=>0]];
+        $prevBookingsTrans = $this->query("SELECT COUNT(*) as count FROM transport_bookings WHERE booking_status = \"confirmed\" AND $prevCond") ?: [(object)["count"=>0]];
         $prevBookings = $prevBookingsAcc[0]->count + $prevBookingsTrans[0]->count;
         
         $revenueAcc = $this->query("SELECT SUM(total_price) as sum FROM bookings WHERE booking_status = \"confirmed\" AND $dateCond") ?: [(object)["sum"=>0]];
-        $revenueTrans = $this->query("SELECT SUM(total_price) as sum FROM transport_bookings WHERE status = \"confirmed\" AND $dateCond") ?: [(object)["sum"=>0]];
+        $revenueTrans = $this->query("SELECT SUM(total_price) as sum FROM transport_bookings WHERE booking_status = \"confirmed\" AND $dateCond") ?: [(object)["sum"=>0]];
         $revenue = ($revenueAcc[0]->sum ?: 0) + ($revenueTrans[0]->sum ?: 0);
         
         $prevRevAcc = $this->query("SELECT SUM(total_price) as sum FROM bookings WHERE booking_status = \"confirmed\" AND $prevCond") ?: [(object)["sum"=>0]];
-        $prevRevTrans = $this->query("SELECT SUM(total_price) as sum FROM transport_bookings WHERE status = \"confirmed\" AND $prevCond") ?: [(object)["sum"=>0]];
+        $prevRevTrans = $this->query("SELECT SUM(total_price) as sum FROM transport_bookings WHERE booking_status = \"confirmed\" AND $prevCond") ?: [(object)["sum"=>0]];
         $prevRevenue = ($prevRevAcc[0]->sum ?: 0) + ($prevRevTrans[0]->sum ?: 0);
         
         // Calc percentage change
@@ -94,9 +94,9 @@ class Report extends Controller {
         $recentUsers = $this->query("SELECT first_name, last_name, role, created_at, \"Active\" as status FROM users ORDER BY created_at DESC LIMIT 4") ?: [];
         // Pending approvals (fake content logic from accommodations and vehicles, just taking a few properties)
         $pendingApprovals = $this->query("
-            (SELECT name as content, \"Accommodation\" as type, created_at FROM accommodations ORDER BY created_at DESC LIMIT 2)
+            (SELECT title as content, \"Accommodation\" as type, created_at FROM accommodations ORDER BY created_at DESC LIMIT 2)
             UNION
-            (SELECT CONCAT(make, \" \", model) as content, \"Vehicle\" as type, created_at FROM vehicles ORDER BY created_at DESC LIMIT 1)
+            (SELECT vehicle_model as content, \"Vehicle\" as type, created_at FROM vehicles ORDER BY created_at DESC LIMIT 1)
             ORDER BY created_at DESC LIMIT 3
         ") ?: [];
 
@@ -115,7 +115,7 @@ class Report extends Controller {
                     "change" => $calcChange($bookings, $prevBookings)
                 ],
                 "revenue" => [
-                    "value" => "$" . number_format($revenue, 2),
+                    "value" => "Rs. " . number_format($revenue, 2),
                     "change" => $calcChange($revenue, $prevRevenue)
                 ]
             ],
