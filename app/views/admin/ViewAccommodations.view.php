@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Accommodations - TravelMate Admin</title>
-  <link rel="stylesheet" href="assets/css/Admin/ViewAccommodations.css">
-  <link rel="stylesheet" href="assets/css/Admin/common.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/ViewAccommodations.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -283,7 +283,7 @@
     </div>
   </div>
 
-  <script src="assets/js/viewAccommodations.js?v=<?php echo time(); ?>"></script>
+  <script src="<?= ROOT ?>/assets/js/viewAccommodations.js?v=<?php echo time(); ?>"></script>
 
 </body>
 </html>
