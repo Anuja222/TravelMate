@@ -112,6 +112,16 @@
             <label class="form-label">Description</label>
             <textarea name="description" id="place_description" class="form-textarea" rows="4"></textarea>
           </div>
+
+          <div class="form-group">
+            <label class="form-label">Location</label>
+            <input type="text" name="location" id="place_location" class="form-input">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Best Time to Visit</label>
+            <input type="text" name="best_time" id="place_best_time" class="form-input">
+          </div>
           
           <div class="form-group">
             <label class="form-label">Image</label>
@@ -226,6 +236,8 @@
         fd.append('title', document.getElementById('place_title').value);
         fd.append('slug', document.getElementById('place_slug').value);
         fd.append('description', document.getElementById('place_description').value);
+        fd.append('location', document.getElementById('place_location').value);
+        fd.append('best_time', document.getElementById('place_best_time').value);
         const img = document.getElementById('place_image').files[0];
         if (img) fd.append('image', img);
 
@@ -283,12 +295,16 @@
           const title = escapeHtml(p.title);
           const desc = escapeHtml(p.description || '');
           const slug = escapeHtml(p.slug || '');
+          const location = escapeHtml(p.location || '');
+          const bestTime = escapeHtml(p.best_time || '');
           const imgAttr = p.image ? p.image : '';
           return `
           <div class="place-item" data-id="${p.id}"
                data-title="${title}"
                data-slug="${slug}"
                data-description="${desc}"
+               data-location="${location}"
+               data-best-time="${bestTime}"
                data-image="${imgAttr}">
             ${imgHtml}
             <div class="place-info">
@@ -329,6 +345,8 @@
             document.getElementById('place_title').value = item.dataset.title || '';
             document.getElementById('place_slug').value = item.dataset.slug || '';
             document.getElementById('place_description').value = item.dataset.description || '';
+            document.getElementById('place_location').value = item.dataset.location || '';
+            document.getElementById('place_best_time').value = item.dataset.bestTime || '';
             addPlaceBtn.textContent = 'Update Location';
             const heading = document.getElementById('addPlaceHeading');
             if (heading) heading.textContent = 'Update Location';
@@ -353,6 +371,8 @@
         document.getElementById('place_title').value = '';
         document.getElementById('place_slug').value = '';
         document.getElementById('place_description').value = '';
+        document.getElementById('place_location').value = '';
+        document.getElementById('place_best_time').value = '';
         document.getElementById('place_image').value = '';
         document.getElementById('place_image-name').textContent = 'No file chosen';
         addPlaceBtn.textContent = 'Add Location';
