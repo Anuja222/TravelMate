@@ -284,6 +284,7 @@ main {
   font-size: 2.1em;
   font-weight: bold;
   margin-bottom: 0.15em;
+  padding-top: 1em;
 }
 .profile-email {
   color: #888;

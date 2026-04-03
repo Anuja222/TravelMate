@@ -23,9 +23,17 @@ class Dashboard extends Controller{
         // Count accommodation and transport bookings
         $accBookingsCount = 0;
         $transBookingsCount = 0;
-        
+        $userBio = '';
+
         try {
             $db = new class { use Database; };
+            
+            // Get user bio
+            $userResult = $db->query("SELECT bio FROM users WHERE id = :id", ['id' => $userId]);
+            if ($userResult && count($userResult) > 0) {
+                $userBio = $userResult[0]->bio;
+            }
+
             $accResult = $db->query("SELECT COUNT(*) as cnt FROM bookings WHERE user_id = :id", ['id' => $userId]);
             if ($accResult && count($accResult) > 0) {
                 $accBookingsCount = $accResult[0]->cnt;
@@ -43,7 +51,8 @@ class Dashboard extends Controller{
         $data = [
             'posts' => $userPosts ? $userPosts : [],
             'accBookingsCount' => $accBookingsCount,
-            'transBookingsCount' => $transBookingsCount
+            'transBookingsCount' => $transBookingsCount,
+            'userBio' => $userBio
         ];
         
         $this->view('Traveller/dashboard', $data);
