@@ -2,31 +2,24 @@
 namespace App\Controllers;
 
 require_once __DIR__ . '/../models/Vehicle.php';
+require_once __DIR__ . '/../models/TransportBooking.php';
 require_once __DIR__ . '/../../config/database.php';
-require_once __DIR__ . '/../helpers/SessionHelper.php';
 
 use App\Models\Vehicle;
+use App\Models\TransportBooking;
 
 class VehicleController
 {
     private $uploadDir;
-    private $pdo;
-
-    // Upload constraints
-    private const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
-    private const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'pdf'];
-    private const ALLOWED_MIME_TYPES = [
-        'image/jpeg', 'image/png', 'application/pdf'
-    ];
+    private $db;
 
     public function __construct()
     {
-        \SessionHelper::start();
-
-        // Store PDO reference from config instead of using global everywhere
         global $pdo;
-        $this->pdo = $pdo;
-
+        $this->db = $pdo;
+        
+        if (session_status() === PHP_SESSION_NONE)
+            session_start();
         $this->uploadDir = __DIR__ . '/../../public/uploads/vehicles';
         if (!is_dir($this->uploadDir)) {
             mkdir($this->uploadDir, 0755, true);
@@ -40,54 +33,299 @@ class VehicleController
         exit;
     }
 
-    /**
-     * Sanitize a string input - trim, limit length, strip tags
-     */
-    private function sanitizeInput(string $value, int $maxLength = 255): string
+    private function checkAuth()
     {
-        return substr(trim(strip_tags($value)), 0, $maxLength);
+        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'transport') {
+            $this->sendResponse(false, ['auth' => 'Unauthorized access']);
+        }
+        return $_SESSION['user']['id'];
+    }
+
+    private function checkTravellerAuth()
+    {
+        if (!isset($_SESSION['user'])) {
+            $this->sendResponse(false, ['auth' => 'Please login to continue']);
+        }
+        return $_SESSION['user']['id'];
     }
 
     /**
-     * Validate an integer input within range
+     * Get upcoming confirmed bookings for a vehicle
      */
-    private function sanitizeInt($value, int $min = 0, int $max = PHP_INT_MAX): int
+    private function getUpcomingConfirmedBookings($vehicleId)
     {
-        $val = (int)$value;
-        return max($min, min($max, $val));
+        try {
+            $sql = "SELECT COUNT(*) as count 
+                    FROM transport_bookings 
+                    WHERE vehicle_id = ? 
+                    AND booking_status = 'confirmed'
+                    AND pickup_date >= CURDATE()";
+            
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$vehicleId]);
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            
+            return intval($result['count'] ?? 0);
+        } catch (\Exception $e) {
+            error_log('Error getting upcoming bookings: ' . $e->getMessage());
+            return 0;
+        }
     }
 
-    // ─── Create Vehicle ──────────────────────────────────────────────
+    /**
+     * Get upcoming bookings details for a vehicle
+     */
+    private function getUpcomingBookingsDetails($vehicleId)
+    {
+        try {
+            $sql = "SELECT b.*, u.first_name, u.last_name, u.email, u.phone
+                    FROM transport_bookings b
+                    INNER JOIN users u ON b.user_id = u.id
+                    WHERE b.vehicle_id = ? 
+                    AND b.booking_status = 'confirmed'
+                    AND b.pickup_date >= CURDATE()
+                    ORDER BY b.pickup_date ASC";
+            
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$vehicleId]);
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\Exception $e) {
+            error_log('Error getting upcoming bookings details: ' . $e->getMessage());
+            return [];
+        }
+    }
 
+    // ============================================
+    // VEHICLE DEACTIVATION METHODS
+    // ============================================
+
+    /**
+     * Deactivate vehicle
+     */
+    public function deactivateVehicle()
+    {
+        try {
+            $userId = $this->checkAuth();
+            
+            $vehicleId = $_POST['vehicle_id'] ?? null;
+            $reason = isset($_POST['deactivation_reason']) ? trim($_POST['deactivation_reason']) : '';
+            $feedback = isset($_POST['deactivation_feedback']) ? trim($_POST['deactivation_feedback']) : '';
+            
+            if (!$vehicleId) {
+                $this->sendResponse(false, ['error' => 'Vehicle ID required']);
+            }
+
+            // Verify vehicle ownership and get current status
+            $vehicle = Vehicle::findById($this->db, $vehicleId, $userId);
+            if (!$vehicle) {
+                $this->sendResponse(false, ['error' => 'Vehicle not found or unauthorized']);
+            }
+
+            if ($vehicle['status'] === 'deactivated') {
+                $this->sendResponse(false, ['error' => 'Vehicle is already deactivated']);
+            }
+
+            // Get upcoming confirmed bookings count (for informational purposes)
+            $upcomingCount = $this->getUpcomingConfirmedBookings($vehicleId);
+            $upcomingBookings = $this->getUpcomingBookingsDetails($vehicleId);
+
+            // Start transaction
+            $this->db->beginTransaction();
+
+            // Update vehicle status to deactivated
+            $updateSql = "UPDATE vehicles SET 
+                          status = 'deactivated',
+                          deactivated_at = NOW(),
+                          deactivation_reason = ?,
+                          deactivation_feedback = ?
+                          WHERE id = ? AND user_id = ?";
+            
+            $updateStmt = $this->db->prepare($updateSql);
+            $updateStmt->execute([$reason, $feedback, $vehicleId, $userId]);
+
+            // Log deactivation in history
+            $logSql = "INSERT INTO vehicle_deactivation_history 
+                       (vehicle_id, previous_status, new_status, reason, feedback, 
+                        has_upcoming_bookings, changed_by, changed_at, ip_address, user_agent) 
+                       VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?)";
+            
+            $logStmt = $this->db->prepare($logSql);
+            $logStmt->execute([
+                $vehicleId,
+                $vehicle['status'],
+                'deactivated',
+                $reason,
+                $feedback,
+                $upcomingCount > 0 ? 1 : 0,
+                $userId,
+                $_SERVER['REMOTE_ADDR'] ?? null,
+                $_SERVER['HTTP_USER_AGENT'] ?? null
+            ]);
+
+            $this->db->commit();
+
+            // Build response message
+            $message = 'Vehicle deactivated successfully. It will no longer appear in traveller searches.';
+            if ($upcomingCount > 0) {
+                $message .= ' Note: This vehicle has ' . $upcomingCount . ' upcoming booking(s) that must still be fulfilled.';
+            }
+
+            $this->sendResponse(true, [
+                'message' => $message,
+                'upcoming_bookings' => $upcomingCount,
+                'upcoming_bookings_details' => $upcomingBookings
+            ]);
+
+        } catch (\Exception $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            error_log('Vehicle deactivation error: ' . $e->getMessage());
+            $this->sendResponse(false, ['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Reactivate vehicle
+     */
+    public function reactivateVehicle()
+    {
+        try {
+            $userId = $this->checkAuth();
+            
+            $vehicleId = $_POST['vehicle_id'] ?? null;
+            
+            if (!$vehicleId) {
+                $this->sendResponse(false, ['error' => 'Vehicle ID required']);
+            }
+
+            // Verify vehicle ownership
+            $vehicle = Vehicle::findById($this->db, $vehicleId, $userId);
+            if (!$vehicle) {
+                $this->sendResponse(false, ['error' => 'Vehicle not found or unauthorized']);
+            }
+
+            if ($vehicle['status'] !== 'deactivated') {
+                $this->sendResponse(false, ['error' => 'Vehicle is not deactivated']);
+            }
+
+            // Update vehicle status
+            $updateSql = "UPDATE vehicles SET 
+                          status = 'active',
+                          deactivated_at = NULL,
+                          deactivation_reason = NULL,
+                          deactivation_feedback = NULL
+                          WHERE id = ? AND user_id = ?";
+            
+            $updateStmt = $this->db->prepare($updateSql);
+            $updateStmt->execute([$vehicleId, $userId]);
+
+            $this->sendResponse(true, [
+                'message' => 'Vehicle reactivated successfully. It will now appear in traveller searches.'
+            ]);
+
+        } catch (\Exception $e) {
+            error_log('Vehicle reactivation error: ' . $e->getMessage());
+            $this->sendResponse(false, ['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Get vehicle deactivation status
+     */
+    public function getVehicleDeactivationStatus()
+    {
+        try {
+            $userId = $this->checkAuth();
+            
+            $vehicleId = $_GET['vehicle_id'] ?? null;
+            
+            if (!$vehicleId) {
+                $this->sendResponse(false, ['error' => 'Vehicle ID required']);
+            }
+
+            $vehicle = Vehicle::findById($this->db, $vehicleId, $userId);
+            if (!$vehicle) {
+                $this->sendResponse(false, ['error' => 'Vehicle not found']);
+            }
+
+            $upcomingCount = $this->getUpcomingConfirmedBookings($vehicleId);
+            $upcomingBookings = $this->getUpcomingBookingsDetails($vehicleId);
+
+            $this->sendResponse(true, [
+                'vehicle' => $vehicle,
+                'upcoming_bookings' => $upcomingCount,
+                'upcoming_bookings_details' => $upcomingBookings,
+                'is_deactivated' => $vehicle['status'] === 'deactivated'
+            ]);
+
+        } catch (\Exception $e) {
+            error_log('Error getting deactivation status: ' . $e->getMessage());
+            $this->sendResponse(false, ['error' => $e->getMessage()]);
+        }
+    }
+
+    // ============================================
+    // VEHICLE LISTING METHODS
+    // ============================================
+
+    /**
+     * Create vehicle - FIXED with fresh account status check
+     */
     public function create()
     {
+        global $pdo;
+
+        error_log("=== Vehicle Create Called ===");
+        error_log("POST Data: " . print_r($_POST, true));
+        error_log("FILES Data: " . print_r($_FILES, true));
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->sendResponse(false, ['error' => 'Invalid method']);
         }
 
-        if (!\SessionHelper::requireAuthApi()) return;
+        if (!isset($_SESSION['user'])) {
+            $this->sendResponse(false, ['error' => 'Unauthorized - Please login']);
+        }
 
-        $userId = \SessionHelper::getUserId();
+        $userId = $_SESSION['user']['id'];
+        
+        // CRITICAL FIX: Always check fresh account status from database
+        $userCheck = $this->db->prepare("SELECT id, account_status FROM users WHERE id = ?");
+        $userCheck->execute([$userId]);
+        $user = $userCheck->fetch(\PDO::FETCH_ASSOC);
+        
+        if (!$user) {
+            $this->sendResponse(false, ['error' => 'User not found']);
+        }
+        
+        // Get account status (deactivated users CAN still register vehicles, just won't be visible)
+        $accountStatus = $user['account_status'] ?? 'active';
+        if (empty($accountStatus)) {
+            $accountStatus = 'active';
+        }
 
-        // Sanitize all inputs
-        $vehicleType = $this->sanitizeInput($_POST['vehicle_type'] ?? '', 50);
-        $workingDistrict = $this->sanitizeInput($_POST['working_district'] ?? '', 100);
-        $passengerCount = $this->sanitizeInt($_POST['passenger_count'] ?? 2, 1, 60);
-        $acType = $this->sanitizeInput($_POST['ac_type'] ?? $_POST['ac-type'] ?? 'non-ac', 20);
-        $model = $this->sanitizeInput($_POST['vehicle_model'] ?? '', 100);
-        $year = $this->sanitizeInt($_POST['vehicle_year'] ?? date('Y'), 1900, (int)date('Y') + 2);
-        $color = $this->sanitizeInput($_POST['vehicle_color'] ?? '', 50);
-        $number = $this->sanitizeInput($_POST['vehicle_number'] ?? '', 20);
-        $status = 'active'; // Force active on creation
+        // Also update session with latest status
+        $_SESSION['user']['account_status'] = $accountStatus;
+
+        error_log("User ID: " . $userId);
+        error_log("Account Status: " . $accountStatus);
+
+        $vehicleType = $_POST['vehicle_type'] ?? '';
+        $workingDistrict = $_POST['working_district'] ?? '';
+        $passengerCount = $_POST['passenger_count'] ?? 2;
+        $acType = $_POST['ac_type'] ?? $_POST['ac-type'] ?? 'non-ac';
+        $model = $_POST['vehicle_model'] ?? '';
+        $year = $_POST['vehicle_year'] ?? '';
+        $color = $_POST['vehicle_color'] ?? '';
+        $number = $_POST['vehicle_number'] ?? '';
+        $status = $_POST['status'] ?? 'active';
+
+        error_log("Parsed Data - Type: $vehicleType, District: $workingDistrict, Model: $model");
 
         // Validate required fields
         if (empty($vehicleType)) {
             $this->sendResponse(false, ['error' => 'Vehicle type is required']);
-        }
-
-        // Validate AC type
-        if (!in_array($acType, ['ac', 'non-ac'])) {
-            $acType = 'non-ac';
         }
 
         $vehicle = new Vehicle([
@@ -104,22 +342,70 @@ class VehicleController
         ]);
 
         try {
-            if (!$this->pdo) {
+            if (!$pdo) {
                 throw new \Exception('Database connection failed');
             }
 
-            $this->pdo->beginTransaction();
+            $pdo->beginTransaction();
+            error_log("Transaction started");
 
-            $vehicleId = $vehicle->create($this->pdo);
+            $vehicleId = $vehicle->create($pdo);
+            error_log("Vehicle created with ID: " . $vehicleId);
 
             if (!$vehicleId) { 
-                throw new \Exception('Failed to create vehicle');
+                throw new \Exception('Failed to create vehicle - no ID returned');
             }
 
             // Handle file uploads
-            $uploadedFiles = $this->processFileUploads($vehicleId);
+            $fileFields = [
+                'revenue_license',
+                'insurance',
+                'registration',
+                'vehicle_photos',
+                'profile_photo',
+                'license_front',
+                'license_rear',
+                'nic_front',
+                'nic_rear',
+                'owner_nic_front',
+                'owner_nic_rear',
+                'vehicle_photo'
+            ];
 
-            $this->pdo->commit();
+            $uploadedFiles = 0;
+            foreach ($fileFields as $field) {
+                if (isset($_FILES[$field]) && $_FILES[$field]['error'] !== UPLOAD_ERR_NO_FILE) {
+                    if (is_array($_FILES[$field]['name'])) {
+                        // Multiple files
+                        foreach ($_FILES[$field]['tmp_name'] as $idx => $tmp) {
+                            if ($_FILES[$field]['error'][$idx] === UPLOAD_ERR_OK) {
+                                $orig = $_FILES[$field]['name'][$idx];
+                                $path = $this->saveFile($tmp, $orig);
+                                if ($path) {
+                                    Vehicle::addDocument($pdo, $vehicleId, $field, $path);
+                                    $uploadedFiles++;
+                                    error_log("Uploaded file: $field - $path");
+                                }
+                            }
+                        }
+                    } else {
+                        // Single file
+                        if ($_FILES[$field]['error'] === UPLOAD_ERR_OK) {
+                            $path = $this->saveFile($_FILES[$field]['tmp_name'], $_FILES[$field]['name']);
+                            if ($path) {
+                                Vehicle::addDocument($pdo, $vehicleId, $field, $path);
+                                $uploadedFiles++;
+                                error_log("Uploaded file: $field - $path");
+                            }
+                        }
+                    }
+                }
+            }
+
+            error_log("Total files uploaded: $uploadedFiles");
+
+            $pdo->commit();
+            error_log("Transaction committed successfully");
 
             $this->sendResponse(true, [], [
                 'vehicleId' => $vehicleId,
@@ -128,175 +414,128 @@ class VehicleController
             ]);
 
         } catch (\PDOException $e) {
-            if ($this->pdo->inTransaction()) {
-                $this->pdo->rollBack();
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
             }
-            error_log("Vehicle create PDO Error: " . $e->getMessage());
-            $this->sendResponse(false, ['error' => 'A database error occurred. Please try again.']);
+            error_log("PDO Error: " . $e->getMessage());
+            error_log("SQL Error Info: " . print_r($pdo->errorInfo(), true));
+            $this->sendResponse(false, ['error' => 'Database error: ' . $e->getMessage()]);
         } catch (\Exception $e) {
-            if ($this->pdo->inTransaction()) {
-                $this->pdo->rollBack();
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
             }
-            error_log("Vehicle create Error: " . $e->getMessage());
-            $this->sendResponse(false, ['error' => 'Failed to save vehicle. Please try again.']);
+            error_log("General Error: " . $e->getMessage());
+            $this->sendResponse(false, ['error' => 'Failed to save vehicle: ' . $e->getMessage()]);
         }
-    }
-
-    // ─── File Handling ───────────────────────────────────────────────
-
-    /**
-     * Process all file uploads for a vehicle
-     */
-    private function processFileUploads(int $vehicleId): int
-    {
-        $fileFields = [
-            'revenue_license', 'insurance', 'registration',
-            'vehicle_photos', 'profile_photo', 'license_front',
-            'license_rear', 'nic_front', 'nic_rear',
-            'owner_nic_front', 'owner_nic_rear', 'vehicle_photo'
-        ];
-
-        $uploadedFiles = 0;
-        foreach ($fileFields as $field) {
-            if (!isset($_FILES[$field]) || $_FILES[$field]['error'] === UPLOAD_ERR_NO_FILE) {
-                continue;
-            }
-
-            if (is_array($_FILES[$field]['name'])) {
-                foreach ($_FILES[$field]['tmp_name'] as $idx => $tmp) {
-                    if ($_FILES[$field]['error'][$idx] === UPLOAD_ERR_OK) {
-                        $size = $_FILES[$field]['size'][$idx] ?? 0;
-                        $path = $this->saveFile($tmp, $_FILES[$field]['name'][$idx], $size);
-                        if ($path) {
-                            Vehicle::addDocument($this->pdo, $vehicleId, $field, $path);
-                            $uploadedFiles++;
-                        }
-                    }
-                }
-            } else {
-                if ($_FILES[$field]['error'] === UPLOAD_ERR_OK) {
-                    $size = $_FILES[$field]['size'] ?? 0;
-                    $path = $this->saveFile($_FILES[$field]['tmp_name'], $_FILES[$field]['name'], $size);
-                    if ($path) {
-                        Vehicle::addDocument($this->pdo, $vehicleId, $field, $path);
-                        $uploadedFiles++;
-                    }
-                }
-            }
-        }
-
-        return $uploadedFiles;
     }
 
     /**
-     * Save a single uploaded file with full validation
+     * List vehicles for the logged-in transporter - FIXED with fresh account status
      */
-    private function saveFile($tmpPath, $originalName, $fileSize = 0)
-    {
-        try {
-            if (!file_exists($tmpPath)) {
-                error_log("File does not exist at temp path: $tmpPath");
-                return null;
-            }
-
-            // Validate file size
-            if ($fileSize > self::MAX_FILE_SIZE) {
-                error_log("File too large: " . round($fileSize / 1024 / 1024, 2) . "MB");
-                return null;
-            }
-
-            // Validate extension
-            $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
-            if (!in_array($ext, self::ALLOWED_EXTENSIONS)) {
-                error_log("Invalid file extension: $ext");
-                return null;
-            }
-
-            // Validate MIME type using finfo (not trusting client headers)
-            $finfo = new \finfo(FILEINFO_MIME_TYPE);
-            $mimeType = $finfo->file($tmpPath);
-            if (!in_array($mimeType, self::ALLOWED_MIME_TYPES)) {
-                error_log("Invalid MIME type: $mimeType for file: $originalName");
-                return null;
-            }
-
-            // For images, verify it's actually a valid image
-            if (in_array($ext, ['jpg', 'jpeg', 'png'])) {
-                $imageInfo = @getimagesize($tmpPath);
-                if ($imageInfo === false) {
-                    error_log("File is not a valid image: $originalName");
-                    return null;
-                }
-            }
-
-            $fileName = uniqid('veh_', true) . '.' . $ext;
-            $dest = $this->uploadDir . '/' . $fileName;
-
-            if (move_uploaded_file($tmpPath, $dest)) {
-                return '/uploads/vehicles/' . $fileName;
-            } else {
-                error_log("Failed to move uploaded file");
-                return null;
-            }
-        } catch (\Exception $e) {
-            error_log("Error saving file: " . $e->getMessage());
-            return null;
-        }
-    }
-
-    // ─── Static Helper ───────────────────────────────────────────────
-
-    public static function getVehicleMainImage($conn, $vehicleId)
-    {
-        $sql = "SELECT file_path FROM vehicle_documents 
-            WHERE vehicle_id = ? AND doc_type = 'vehicle_photos' 
-            LIMIT 1";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([(int)$vehicleId]);
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return $result ? $result['file_path'] : null;
-    }
-
-    // ─── List Vehicles by User ───────────────────────────────────────
-
     public function listByUser()
     {
+        global $pdo;
+
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             $this->sendResponse(false, ['error' => 'Invalid method']);
         }
 
-        if (!\SessionHelper::requireAuthApi()) return;
+        if (!isset($_SESSION['user'])) {
+            $this->sendResponse(false, ['error' => 'Unauthorized']);
+        }
 
         try {
-            $userId = \SessionHelper::getUserId();
-            $vehicles = Vehicle::findByUser($this->pdo, $userId);
+            $userId = $_SESSION['user']['id'];
+            
+            // CRITICAL FIX: Get fresh account status from database
+            $userCheck = $pdo->prepare("SELECT account_status FROM users WHERE id = ?");
+            $userCheck->execute([$userId]);
+            $user = $userCheck->fetch(\PDO::FETCH_ASSOC);
+            
+            // Ensure account_status is never NULL or empty - default to 'active'
+            $accountStatus = $user['account_status'] ?? 'active';
+            if (empty($accountStatus)) {
+                $accountStatus = 'active';
+            }
+            $isDeactivated = ($accountStatus === 'deactivated');
+            
+            // Update session with latest status
+            $_SESSION['user']['account_status'] = $accountStatus;
+            
+            $vehicles = Vehicle::findByUser($pdo, $userId);
 
+            // Add main image to each vehicle
             foreach ($vehicles as &$vehicle) {
-                $vehicle['main_image'] = self::getVehicleMainImage($this->pdo, $vehicle['id']);
-                $vehicle['documents'] = Vehicle::getDocuments($this->pdo, $vehicle['id']);
+                $mainImage = self::getVehicleMainImage($pdo, $vehicle['id']);
+                $vehicle['main_image'] = $mainImage;
+
+                // Get all documents for this vehicle
+                $docs = Vehicle::getDocuments($pdo, $vehicle['id']);
+                $vehicle['documents'] = $docs;
+                
+                // Get upcoming bookings count
+                $vehicle['upcoming_bookings'] = $this->getUpcomingConfirmedBookings($vehicle['id']);
             }
 
-            $this->sendResponse(true, [], $vehicles);
+            $this->sendResponse(true, [], [
+                'vehicles' => $vehicles,
+                'account_deactivated' => $isDeactivated,
+                'account_status' => $accountStatus,
+                'message' => $isDeactivated ? 'Your account is deactivated. Vehicles are hidden from travellers.' : null
+            ]);
+
         } catch (\Exception $e) {
             error_log("Error listing vehicles: " . $e->getMessage());
             $this->sendResponse(false, ['error' => 'Failed to load vehicles']);
         }
     }
 
-    // ─── List All Active Vehicles ────────────────────────────────────
-
-    public function listAll()
+    /**
+     * List all active vehicles for travellers (filtered by vehicle status AND user account status)
+     */
+    public function listAllForTravellers()
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-            $this->sendResponse(false, ['error' => 'Invalid method']);
-        }
+        global $pdo;
+
+        error_log("=== listAllForTravellers() called ===");
 
         try {
-            $vehicles = Vehicle::findAll($this->pdo);
+            // Modified query to only show vehicles from active accounts
+            $sql = "SELECT v.*, 
+                           u.first_name, 
+                           u.last_name, 
+                           u.email,
+                           u.phone,
+                           u.profile_image,
+                           u.account_status,
+                           u.created_at as transporter_since
+                    FROM vehicles v
+                    INNER JOIN users u ON v.user_id = u.id
+                    WHERE v.status = 'active' 
+                    AND u.account_status = 'active'
+                    ORDER BY v.created_at DESC";
+            
+            error_log("SQL Query: " . $sql);
+            
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute();
+            $vehicles = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            
+            error_log("Found " . count($vehicles) . " vehicles");
 
+            // Add main image to each vehicle
             foreach ($vehicles as &$vehicle) {
-                $vehicle['main_image'] = self::getVehicleMainImage($this->pdo, $vehicle['id']);
-                $vehicle['documents'] = Vehicle::getDocuments($this->pdo, $vehicle['id']);
+                $mainImage = self::getVehicleMainImage($pdo, $vehicle['id']);
+                $vehicle['main_image'] = $mainImage;
+                error_log("Vehicle ID: " . $vehicle['id'] . ", Main Image: " . ($mainImage ?? 'none'));
+
+                // Get all documents for this vehicle (but don't send sensitive docs)
+                $docs = Vehicle::getDocuments($pdo, $vehicle['id']);
+                // Filter to only show photos, not license/nic docs
+                $vehicle['photos'] = array_filter($docs, function($doc) {
+                    return strpos($doc['doc_type'], 'photo') !== false || $doc['doc_type'] === 'vehicle_photos';
+                });
+                $vehicle['photos'] = array_values($vehicle['photos']); // Re-index
             }
 
             $this->sendResponse(true, [], $vehicles);
@@ -306,29 +545,184 @@ class VehicleController
         }
     }
 
-    // ─── Get Single Vehicle ──────────────────────────────────────────
+    /**
+     * Search vehicles for travellers with filters
+     */
+    public function searchVehicles()
+    {
+        global $pdo;
+        
+        try {
+            $searchTerm = $_GET['search'] ?? '';
+            $vehicleType = $_GET['type'] ?? '';
+            $district = $_GET['district'] ?? '';
+            $minPassengers = $_GET['min_passengers'] ?? 0;
+            $acType = $_GET['ac_type'] ?? '';
+            
+            $sql = "SELECT v.*, 
+                           u.first_name, 
+                           u.last_name, 
+                           u.email,
+                           u.phone,
+                           u.profile_image,
+                           u.account_status
+                    FROM vehicles v
+                    INNER JOIN users u ON v.user_id = u.id
+                    WHERE v.status = 'active' 
+                    AND u.account_status = 'active'";
+            
+            $params = [];
+            
+            if (!empty($searchTerm)) {
+                $sql .= " AND (v.vehicle_model LIKE ? OR v.vehicle_number LIKE ? OR v.working_district LIKE ?)";
+                $params[] = "%$searchTerm%";
+                $params[] = "%$searchTerm%";
+                $params[] = "%$searchTerm%";
+            }
+            
+            if (!empty($vehicleType)) {
+                $sql .= " AND v.vehicle_type = ?";
+                $params[] = $vehicleType;
+            }
+            
+            if (!empty($district)) {
+                $sql .= " AND v.working_district = ?";
+                $params[] = $district;
+            }
+            
+            if (!empty($minPassengers) && $minPassengers > 0) {
+                $sql .= " AND v.passenger_count >= ?";
+                $params[] = $minPassengers;
+            }
+            
+            if (!empty($acType)) {
+                $sql .= " AND v.ac_type = ?";
+                $params[] = $acType;
+            }
+            
+            $sql .= " ORDER BY v.created_at DESC";
+            
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params);
+            $vehicles = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            
+            // Add images
+            foreach ($vehicles as &$vehicle) {
+                $mainImage = self::getVehicleMainImage($pdo, $vehicle['id']);
+                $vehicle['main_image'] = $mainImage;
+            }
+            
+            $this->sendResponse(true, [], $vehicles);
+            
+        } catch (\Exception $e) {
+            error_log("Error searching vehicles: " . $e->getMessage());
+            $this->sendResponse(false, ['error' => 'Failed to search vehicles']);
+        }
+    }
 
+    /**
+     * Get single vehicle for traveller view
+     */
+    public function getVehicleForTraveller($vehicleId)
+    {
+        global $pdo;
+        
+        try {
+            $sql = "SELECT v.*, 
+                           u.first_name, 
+                           u.last_name, 
+                           u.email,
+                           u.phone,
+                           u.profile_image,
+                           u.account_status,
+                           u.created_at as member_since
+                    FROM vehicles v
+                    INNER JOIN users u ON v.user_id = u.id
+                    WHERE v.id = ? 
+                    AND v.status = 'active'
+                    AND u.account_status = 'active'";
+            
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$vehicleId]);
+            $vehicle = $stmt->fetch(\PDO::FETCH_ASSOC);
+            
+            if (!$vehicle) {
+                $this->sendResponse(false, ['error' => 'Vehicle not found or unavailable']);
+            }
+            
+            // Get vehicle images (only photos)
+            $docs = Vehicle::getDocuments($pdo, $vehicleId);
+            $vehicle['photos'] = array_filter($docs, function($doc) {
+                return strpos($doc['doc_type'], 'photo') !== false || $doc['doc_type'] === 'vehicle_photos';
+            });
+            $vehicle['photos'] = array_values($vehicle['photos']); // Re-index
+            
+            // Get transporter's other active vehicles
+            $otherSql = "SELECT id, vehicle_model, vehicle_type, vehicle_number, working_district, 
+                                passenger_count, ac_type
+                         FROM vehicles 
+                         WHERE user_id = ? 
+                         AND status = 'active'
+                         AND id != ?
+                         LIMIT 3";
+            $otherStmt = $pdo->prepare($otherSql);
+            $otherStmt->execute([$vehicle['user_id'], $vehicleId]);
+            $vehicle['other_vehicles'] = $otherStmt->fetchAll(\PDO::FETCH_ASSOC);
+            
+            // Get transporter stats
+            $statsSql = "SELECT 
+                            COUNT(*) as total_vehicles,
+                            AVG(rating) as avg_rating
+                         FROM vehicles v
+                         LEFT JOIN transport_bookings b ON v.id = b.vehicle_id
+                         WHERE v.user_id = ? AND v.status = 'active'";
+            $statsStmt = $pdo->prepare($statsSql);
+            $statsStmt->execute([$vehicle['user_id']]);
+            $stats = $statsStmt->fetch(\PDO::FETCH_ASSOC);
+            
+            $vehicle['transporter_stats'] = [
+                'total_vehicles' => intval($stats['total_vehicles'] ?? 0),
+                'avg_rating' => round(floatval($stats['avg_rating'] ?? 0), 1)
+            ];
+            
+            $this->sendResponse(true, [], $vehicle);
+            
+        } catch (\Exception $e) {
+            error_log("Error getting vehicle: " . $e->getMessage());
+            $this->sendResponse(false, ['error' => 'Failed to load vehicle details']);
+        }
+    }
+
+    /**
+     * Get single vehicle for transporter (includes all data)
+     */
     public function get()
     {
+        global $pdo;
+
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             $this->sendResponse(false, ['error' => 'Invalid method']);
         }
 
-        if (!\SessionHelper::requireAuthApi()) return;
+        if (!isset($_SESSION['user'])) {
+            $this->sendResponse(false, ['error' => 'Unauthorized']);
+        }
 
-        $id = (int)($_GET['id'] ?? 0);
+        $id = $_GET['id'] ?? null;
         if (!$id) {
             $this->sendResponse(false, ['error' => 'Missing vehicle ID']);
         }
 
         try {
-            $userId = \SessionHelper::getUserId();
-            $vehicle = Vehicle::findById($this->pdo, $id, $userId);
+            $vehicle = Vehicle::findById($pdo, $id, $_SESSION['user']['id']);
             if (!$vehicle) {
                 $this->sendResponse(false, ['error' => 'Vehicle not found']);
             }
 
-            $vehicle['documents'] = Vehicle::getDocuments($this->pdo, $id);
+            $docs = Vehicle::getDocuments($pdo, $id);
+            $vehicle['documents'] = $docs;
+            
+            $vehicle['upcoming_bookings'] = $this->getUpcomingConfirmedBookings($id);
 
             $this->sendResponse(true, [], $vehicle);
         } catch (\Exception $e) {
@@ -337,49 +731,49 @@ class VehicleController
         }
     }
 
-    // ─── Update Vehicle ──────────────────────────────────────────────
-
+    /**
+     * Update vehicle
+     */
     public function update()
     {
+        global $pdo;
+
+        error_log("=== Vehicle Update Called ===");
+        error_log("POST Data: " . print_r($_POST, true));
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->sendResponse(false, ['error' => 'Invalid method']);
         }
 
-        if (!\SessionHelper::requireAuthApi()) return;
+        if (!isset($_SESSION['user'])) {
+            $this->sendResponse(false, ['error' => 'Unauthorized']);
+        }
 
-        $userId = \SessionHelper::getUserId();
-        $id = (int)($_POST['id'] ?? 0);
+        $userId = $_SESSION['user']['id'];
+        $id = $_POST['id'] ?? null;
 
         if (!$id) {
             $this->sendResponse(false, ['error' => 'Missing vehicle ID']);
         }
 
-        // Verify ownership
-        $existingVehicle = Vehicle::findById($this->pdo, $id, $userId);
+        // Get existing vehicle to verify ownership
+        $existingVehicle = Vehicle::findById($pdo, $id, $userId);
         if (!$existingVehicle) {
             $this->sendResponse(false, ['error' => 'Vehicle not found or unauthorized']);
         }
 
-        // Sanitize inputs with fallback to existing data
-        $vehicleType = $this->sanitizeInput($_POST['vehicle_type'] ?? $existingVehicle['vehicle_type'], 50);
-        $workingDistrict = $this->sanitizeInput($_POST['working_district'] ?? $existingVehicle['working_district'], 100);
-        $passengerCount = $this->sanitizeInt($_POST['passenger_count'] ?? $existingVehicle['passenger_count'], 1, 60);
-        $acType = $this->sanitizeInput($_POST['ac_type'] ?? $_POST['ac-type'] ?? $existingVehicle['ac_type'], 20);
-        $model = $this->sanitizeInput($_POST['vehicle_model'] ?? $existingVehicle['vehicle_model'], 100);
-        $year = $this->sanitizeInt($_POST['vehicle_year'] ?? $existingVehicle['vehicle_year'], 1900, (int)date('Y') + 2);
-        $color = $this->sanitizeInput($_POST['vehicle_color'] ?? $existingVehicle['vehicle_color'], 50);
-        $number = $this->sanitizeInput($_POST['vehicle_number'] ?? $existingVehicle['vehicle_number'], 20);
-        $status = $this->sanitizeInput($_POST['status'] ?? $existingVehicle['status'], 20);
+        // Get form data with fallback to existing data
+        $vehicleType = $_POST['vehicle_type'] ?? $existingVehicle['vehicle_type'];
+        $workingDistrict = $_POST['working_district'] ?? $existingVehicle['working_district'];
+        $passengerCount = $_POST['passenger_count'] ?? $existingVehicle['passenger_count'];
+        $acType = $_POST['ac_type'] ?? $_POST['ac-type'] ?? $existingVehicle['ac_type'];
+        $model = $_POST['vehicle_model'] ?? $existingVehicle['vehicle_model'];
+        $year = $_POST['vehicle_year'] ?? $existingVehicle['vehicle_year'];
+        $color = $_POST['vehicle_color'] ?? $existingVehicle['vehicle_color'];
+        $number = $_POST['vehicle_number'] ?? $existingVehicle['vehicle_number'];
+        $status = $_POST['status'] ?? $existingVehicle['status'];
 
-        // Validate status
-        if (!in_array($status, ['active', 'inactive', 'maintenance'])) {
-            $status = $existingVehicle['status'];
-        }
-
-        // Validate AC type
-        if (!in_array($acType, ['ac', 'non-ac'])) {
-            $acType = 'non-ac';
-        }
+        error_log("Update Data - Type: $vehicleType, Model: $model, Year: $year, Color: $color, Number: $number");
 
         $vehicle = new Vehicle([
             'id' => $id,
@@ -396,51 +790,200 @@ class VehicleController
         ]);
 
         try {
-            $this->pdo->beginTransaction();
+            $pdo->beginTransaction();
 
-            $ok = $vehicle->update($this->pdo);
+            $ok = $vehicle->update($pdo);
+            error_log("Update result: " . ($ok ? 'success' : 'failed'));
 
-            // Handle new file uploads
-            $uploadedFiles = $this->processFileUploads($id);
+            // Handle new file uploads if any
+            $fileFields = [
+                'revenue_license',
+                'insurance',
+                'registration',
+                'vehicle_photos',
+                'profile_photo',
+                'vehicle_photo'
+            ];
 
-            $this->pdo->commit();
+            $uploadedFiles = 0;
+            foreach ($fileFields as $field) {
+                if (isset($_FILES[$field]) && $_FILES[$field]['error'] !== UPLOAD_ERR_NO_FILE) {
+                    if (is_array($_FILES[$field]['name'])) {
+                        foreach ($_FILES[$field]['tmp_name'] as $idx => $tmp) {
+                            if ($_FILES[$field]['error'][$idx] === UPLOAD_ERR_OK) {
+                                $orig = $_FILES[$field]['name'][$idx];
+                                $path = $this->saveFile($tmp, $orig);
+                                if ($path) {
+                                    Vehicle::addDocument($pdo, $id, $field, $path);
+                                    $uploadedFiles++;
+                                }
+                            }
+                        }
+                    } else {
+                        if ($_FILES[$field]['error'] === UPLOAD_ERR_OK) {
+                            $path = $this->saveFile($_FILES[$field]['tmp_name'], $_FILES[$field]['name']);
+                            if ($path) {
+                                Vehicle::addDocument($pdo, $id, $field, $path);
+                                $uploadedFiles++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            error_log("Files uploaded: $uploadedFiles");
+
+            $pdo->commit();
             $this->sendResponse(true, [], [
                 'updated' => (bool) $ok,
                 'message' => 'Vehicle updated successfully',
                 'filesUploaded' => $uploadedFiles
             ]);
         } catch (\Exception $e) {
-            if ($this->pdo->inTransaction()) {
-                $this->pdo->rollBack();
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
             }
-            error_log("Vehicle update error: " . $e->getMessage());
-            $this->sendResponse(false, ['error' => 'Update failed. Please try again.']);
+            error_log("Update error: " . $e->getMessage());
+            $this->sendResponse(false, ['error' => 'Update failed: ' . $e->getMessage()]);
         }
     }
 
-    // ─── Delete Vehicle ──────────────────────────────────────────────
-
+    /**
+     * Delete vehicle
+     */
     public function delete()
     {
+        global $pdo;
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->sendResponse(false, ['error' => 'Invalid method']);
         }
 
-        if (!\SessionHelper::requireAuthApi()) return;
+        if (!isset($_SESSION['user'])) {
+            $this->sendResponse(false, ['error' => 'Unauthorized']);
+        }
 
-        $userId = \SessionHelper::getUserId();
-        $id = (int)($_POST['id'] ?? 0);
+        $userId = $_SESSION['user']['id'];
+        $id = $_POST['id'] ?? null;
 
         if (!$id) {
             $this->sendResponse(false, ['error' => 'Missing vehicle ID']);
         }
 
         try {
-            $ok = Vehicle::deleteById($this->pdo, $id, $userId);
+            $ok = Vehicle::deleteById($pdo, $id, $userId);
             $this->sendResponse((bool) $ok, $ok ? [] : ['error' => 'Delete failed']);
         } catch (\Exception $e) {
-            error_log("Vehicle delete error: " . $e->getMessage());
-            $this->sendResponse(false, ['error' => 'Delete failed. Please try again.']);
+            error_log("Delete error: " . $e->getMessage());
+            $this->sendResponse(false, ['error' => 'Delete failed']);
+        }
+    }
+
+    // ============================================
+    // HELPER METHODS
+    // ============================================
+
+    private function saveFile($tmpPath, $originalName)
+    {
+        try {
+            if (!file_exists($tmpPath)) {
+                error_log("File does not exist at temp path: $tmpPath");
+                return null;
+            }
+
+            $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+            $allowedExts = ['jpg', 'jpeg', 'png', 'pdf'];
+
+            if (!in_array($ext, $allowedExts)) {
+                error_log("Invalid file extension: $ext");
+                return null;
+            }
+
+            $fileName = uniqid('veh_', true) . '.' . $ext;
+            $dest = $this->uploadDir . '/' . $fileName;
+
+            if (move_uploaded_file($tmpPath, $dest)) {
+                error_log("File saved successfully: $dest");
+                return '/uploads/vehicles/' . $fileName;
+            } else {
+                error_log("Failed to move uploaded file from $tmpPath to $dest");
+                return null;
+            }
+        } catch (\Exception $e) {
+            error_log("Error saving file: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    public static function getVehicleMainImage($conn, $vehicleId)
+    {
+        $sql = "SELECT file_path FROM vehicle_documents 
+                WHERE vehicle_id = ? AND doc_type = 'vehicle_photos' 
+                LIMIT 1";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$vehicleId]);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result ? $result['file_path'] : null;
+    }
+
+    /**
+     * Get active vehicles for dropdown (for emergency plans)
+     */
+    public function getActiveVehicles()
+    {
+        try {
+            $userId = $this->checkAuth();
+            
+            $sql = "SELECT id, vehicle_model, vehicle_number, vehicle_type, passenger_count 
+                    FROM vehicles 
+                    WHERE user_id = ? AND status = 'active'
+                    ORDER BY vehicle_model ASC";
+            
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$userId]);
+            $vehicles = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            
+            $this->sendResponse(true, [], $vehicles);
+            
+        } catch (\Exception $e) {
+            error_log("Error getting active vehicles: " . $e->getMessage());
+            $this->sendResponse(false, ['error' => 'Failed to load vehicles']);
+        }
+    }
+
+    /**
+     * Get vehicle deactivation history
+     */
+    public function getDeactivationHistory()
+    {
+        try {
+            $userId = $this->checkAuth();
+            
+            $vehicleId = $_GET['vehicle_id'] ?? null;
+            
+            $sql = "SELECT h.*, v.vehicle_model, v.vehicle_number
+                    FROM vehicle_deactivation_history h
+                    INNER JOIN vehicles v ON h.vehicle_id = v.id
+                    WHERE v.user_id = ?";
+            
+            $params = [$userId];
+            
+            if ($vehicleId) {
+                $sql .= " AND h.vehicle_id = ?";
+                $params[] = $vehicleId;
+            }
+            
+            $sql .= " ORDER BY h.changed_at DESC LIMIT 50";
+            
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($params);
+            $history = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            
+            $this->sendResponse(true, [], $history);
+            
+        } catch (\Exception $e) {
+            error_log("Error getting deactivation history: " . $e->getMessage());
+            $this->sendResponse(false, ['error' => 'Failed to load history']);
         }
     }
 }

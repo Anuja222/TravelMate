@@ -30,13 +30,18 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
   <!-- MAIN CONTENT -->
   <main>
     <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <ul>
-        <li><a href="tr_dashboard" class="active"><i ></i> Dashboard</a></li>
-        <li><a href="bookingnew"><i></i> Bookings</a></li>
-        <li><a href="setting"><i></i> Setting</a></li>
-      </ul>
+   <aside class="sidebar">
+        <div class="sidebar-inner">
+          <div class="sidebar-menu">
+            <a href="/TravelMate/public/tr_dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="/TravelMate/public/bookingnew"><i class="fas fa-calendar-alt"></i> Bookings</a>
+            <a href="/TravelMate/public/payment-history"><i class="fas fa-credit-card"></i> Payment History</a>
+            <a href="/TravelMate/public/statistics"><i class="fas fa-chart-line"></i> Statistics</a>
+            <a href="/TravelMate/public/setting"><i class="fas fa-cog"></i> Settings</a>
+          </div>
+        </div>
     </aside>
+
 
     <div class="dashboard-content">
 
@@ -69,7 +74,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
       <section class="favourites">
         <div class="section-header">
           <h3>My Vehicles</h3>
-          <button class="btn-list-vehicle" onclick="window.location.href='vehicleType';">
+          <button class="btn-list-vehicle" onclick="window.location.href='/TravelMate/public/vehicleType';">
             <i class="fas fa-plus"></i> List Your Vehicle
           </button>
         </div>
@@ -125,7 +130,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-  <script src="../public/assets/js/vehicle.js"></script>
+    <script src="../public/assets/js/vehicle.js"></script>
 
   <script>
     // Performance stats animation
@@ -174,17 +179,43 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
         });
 
         const result = await response.json();
+        console.log('Vehicle list response:', result); // Debug log
 
-        if (result.success && result.data && result.data.length > 0) {
-          displayVehicles(result.data);
-        } else {
-          const container = document.querySelector('.vehicle-cards-grid');
-          if (container) {
-            container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;"><p>No vehicles found. <a href="vehicleType" style="color: #1abc5b;">Add your first vehicle</a></p></div>';
+        // FIX: Check the correct response structure
+        if (result.success) {
+          // FIX: Access vehicles from data.vehicles (not data)
+          const vehicles = result.data?.vehicles || [];
+          
+          if (vehicles.length > 0) {
+            displayVehicles(vehicles);
+          } else {
+            const container = document.querySelector('.vehicle-cards-grid');
+            if (container) {
+              container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;"><p>No vehicles found. <a href="vehicleType" style="color: #1abc5b;">Add your first vehicle</a></p></div>';
+            }
           }
+          
+          // Show account status message if account is deactivated
+          if (result.data?.account_deactivated) {
+            showAccountStatusMessage(result.data.message);
+          }
+        } else {
+          console.error('Failed to load vehicles:', result.errors);
         }
       } catch (error) {
         console.error('Error loading vehicles:', error);
+      }
+    }
+
+    function showAccountStatusMessage(message) {
+      // Create and show a toast or banner message
+      const container = document.querySelector('.vehicle-cards-grid');
+      if (container && message) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'account-status-message';
+        messageDiv.style.cssText = 'grid-column: 1/-1; background: #fff3cd; color: #856404; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ffeeba;';
+        messageDiv.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+        container.parentNode.insertBefore(messageDiv, container);
       }
     }
 
