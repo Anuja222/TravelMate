@@ -87,6 +87,9 @@ if ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) {
         <div>
           <h2 class="profile-name"><?php echo htmlspecialchars($firstName); ?> <?php echo htmlspecialchars($lastName); ?></h2>
           <span class="profile-email"><?php echo htmlspecialchars($_SESSION['user']['email']); ?></span>
+          <?php if (!empty($userBio)): ?>
+          <p class="profile-bio" style="margin-top: 10px; color: #555; font-size: 14px; max-width: 600px;"><?php echo nl2br(htmlspecialchars($userBio)); ?></p>
+          <?php endif; ?>
         </div>
       </div>
 
