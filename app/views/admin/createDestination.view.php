@@ -2,12 +2,11 @@
 <html>
 <head>
   <title>Create Destination</title>
-  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/createDestination.css?v=<?= time() ?>">
-  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css?v=<?= time() ?>">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/Admin/createDestination.css">
+  <link rel="stylesheet" href="assets/css/Admin/common.css">
 </head>
 <body>
-  <?php include __DIR__ . '/admin_header.view.php'; ?>
+  <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
   <div class="page-containerr">
     <div class="content">
