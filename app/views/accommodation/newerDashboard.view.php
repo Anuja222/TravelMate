@@ -690,13 +690,10 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
   <main>
-    <aside class="sidebar">
-      <ul>
-        <li><a href="ac_dashboard">Dashboard</a></li>
-        <li><a href="ac_bookings">Bookings</a></li>
-        <li><a href="acc_setting">Settings</a></li>
-      </ul>
-    </aside>
+    <?php 
+    $active_page = 'dashboard';
+    include __DIR__ . '/sidebar.view.php'; 
+    ?>
     <section class="dashboard-content">
       <!-- Cover -->
       <div class="cover">

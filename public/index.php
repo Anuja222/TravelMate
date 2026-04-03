@@ -833,12 +833,24 @@ elseif ($page === 'ac_dashboard') {
     require_once '../app/controllers/AccommodationProvider/Setting.php';
     $accSettingController = new Setting();
     $accSettingController->index();
+} elseif ($page === 'acc_revenue') {
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/AccommodationProvider/Revenue.php';
+    $accRevenueController = new Revenue();
+    $accRevenueController->index();
 } elseif ($requestUri === '/acc_setting/update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once '../app/core/Database.php';
     require_once '../app/core/Controller.php';
     require_once '../app/controllers/AccommodationProvider/Setting.php';
     $accSettingController = new Setting();
     $accSettingController->update();
+} elseif ($requestUri === '/acc_setting/updatePassword' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/AccommodationProvider/Setting.php';
+    $accSettingController = new Setting();
+    $accSettingController->updatePassword();
 } elseif ($page === 'editListing') {
     include '../app/views/accommodation/editListing.view.php';
 } else if ($page === 'propertyListingStart') {
