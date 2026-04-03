@@ -88,4 +88,50 @@ class Setting extends Controller {
             }
         }
     }
+
+    public function updatePassword() {
+        if (!isset($_SESSION['user']['id'])) {
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            exit;
+        }
+
+        require_once __DIR__ . '/../../core/config.php';
+        $dsn = "mysql:host=" . DBHOST . ";dbname=" . DBNAME . ";charset=utf8mb4";
+        $conn = new PDO($dsn, DBUSER, DBPASS);
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $userId = $_SESSION['user']['id'];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $currentPassword = $_POST['current_password'] ?? '';
+            $newPassword = $_POST['new_password'] ?? '';
+            
+            if (empty($currentPassword) || empty($newPassword)) {
+                echo json_encode(['success' => false, 'message' => 'Passwords cannot be empty']);
+                exit;
+            }
+
+            try {
+                // Get current password hash
+                $stmt = $conn->prepare("SELECT password FROM users WHERE id = ?");
+                $stmt->execute([$userId]);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($user && password_verify($currentPassword, $user['password'])) {
+                    // Update to new password
+                    $newHash = password_hash($newPassword, PASSWORD_DEFAULT);
+                    $updateStmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+                    $updateStmt->execute([$newHash, $userId]);
+                    
+                    echo json_encode(['success' => true, 'message' => 'Password updated successfully!']);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Incorrect current password']);
+                }
+                exit;
+            } catch (PDOException $e) {
+                echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+                exit;
+            }
+        }
+    }
 }
