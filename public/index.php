@@ -828,7 +828,17 @@ elseif ($page === 'ac_dashboard') {
 } elseif ($page === 'bookingDetailsAcc') {
     include '../app/views/accommodation/bookingDetailsAcc.view.php';
 } elseif ($page === 'acc_setting') {
-    include '../app/views/accommodation/setting.view.php';
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/AccommodationProvider/Setting.php';
+    $accSettingController = new Setting();
+    $accSettingController->index();
+} elseif ($requestUri === '/acc_setting/update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/AccommodationProvider/Setting.php';
+    $accSettingController = new Setting();
+    $accSettingController->update();
 } elseif ($page === 'editListing') {
     include '../app/views/accommodation/editListing.view.php';
 } else if ($page === 'propertyListingStart') {
