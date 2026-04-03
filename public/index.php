@@ -387,6 +387,19 @@ elseif ($requestUri === '/blog/delete' && $_SERVER['REQUEST_METHOD'] === 'POST')
     exit;
 }
 
+// Blog post vote route
+elseif ($requestUri === '/blog/vote' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once '../app/core/config.php';
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Model.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/models/Post.php';
+    require_once '../app/controllers/Shared/Blog.php';
+    $blogController = new Blog();
+    $blogController->vote();
+    exit;
+}
+
 // Content management routes (Admin)
 elseif ($requestUri === '/content/approve' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once '../app/core/Controller.php';
