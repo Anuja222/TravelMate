@@ -6,9 +6,34 @@
     <title>TravelMate - Feed</title>
     <link rel="stylesheet" href="assets/css/Traveller/feed.css">
     <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
+    <style>
+      .vote-btn.upvote.active { color: #1abc5b !important; }
+      .vote-btn.upvote.active svg { stroke: #1abc5b !important; }
+      .vote-btn.downvote.active { color: #e74c3c !important; }
+      .vote-btn.downvote.active svg { stroke: #e74c3c !important; }
+      
+      /* Active category style */
+      .category-list li.active-category a {
+          color: #1abc5b;
+          font-weight: 600;
+          background-color: rgba(26, 188, 91, 0.1);
+          border-radius: 6px;
+          padding: 5px 10px;
+          display: inline-block;
+          width: 100%;
+          box-sizing: border-box;
+      }
+    </style>
 </head>
 <body>
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
+
+  <!-- Output Base URL for JS safely -->
+  <script>
+     window.AppConfig = {
+         baseUrl: '<?php echo defined("ROOT") ? ROOT : "http://localhost/TravelMate/public"; ?>'
+     };
+  </script>
 
   <!-- Main Feed Container -->
   <div class="feed-wrapper">
@@ -27,11 +52,13 @@
       <div class="sidebar-section">
         <h3>Categories</h3>
         <ul class="category-list">
-          <li><a href="#">Beaches</a></li>
-          <li><a href="#">Mountains</a></li>
-          <li><a href="#">Historical</a></li>
-          <li><a href="#">Food & Culture</a></li>
-          <li><a href="#">Adventure</a></li>
+          <li class="<?php echo !isset($_GET['category']) ? 'active-category' : ''; ?>"><a href="feed">All Posts</a></li>
+          <li class="<?php echo (isset($_GET['category']) && $_GET['category'] === 'Destination') ? 'active-category' : ''; ?>"><a href="feed?category=Destination">Destination</a></li>
+          <li class="<?php echo (isset($_GET['category']) && $_GET['category'] === 'Adventure') ? 'active-category' : ''; ?>"><a href="feed?category=Adventure">Adventure</a></li>
+          <li class="<?php echo (isset($_GET['category']) && $_GET['category'] === 'Food & Culture') ? 'active-category' : ''; ?>"><a href="feed?category=Food & Culture">Food & Culture</a></li>
+          <li class="<?php echo (isset($_GET['category']) && $_GET['category'] === 'Travel Tips') ? 'active-category' : ''; ?>"><a href="feed?category=Travel Tips">Travel Tips</a></li>
+          <li class="<?php echo (isset($_GET['category']) && $_GET['category'] === 'Accommodation') ? 'active-category' : ''; ?>"><a href="feed?category=Accommodation">Accommodation</a></li>
+          <li class="<?php echo (isset($_GET['category']) && $_GET['category'] === 'Transportation') ? 'active-category' : ''; ?>"><a href="feed?category=Transportation">Transportation</a></li>
         </ul>
       </div>
     </aside>
@@ -59,28 +86,6 @@
             <span class="action-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></span>
             Location
           </a>
-        </div>
-      </div>
-
-      <!-- Filter Tabs -->
-      <div class="filter-tabs-container">
-        <div class="filter-tabs">
-          <button class="tab-btn active" data-filter="all">
-            <span class="tab-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg></span>
-            All Posts
-          </button>
-          <button class="tab-btn" data-filter="destinations">
-            <span class="tab-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg></span>
-            Destinations
-          </button>
-          <button class="tab-btn" data-filter="adventures">
-            <span class="tab-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="7" width="14" height="12" rx="2" ry="2"></rect><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path></svg></span>
-            Adventures
-          </button>
-          <button class="tab-btn" data-filter="tips">
-            <span class="tab-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8c0-3.31-2.69-6-6-6S6 4.69 6 8c0 1.45.5 2.5 1.5 3.5.76.76 1.23 1.52 1.41 2.5"></path></svg></span>
-            Tips & Guides
-          </button>
         </div>
       </div>
 
@@ -125,25 +130,22 @@
               </div>
               <?php endif; ?>
 
-              <div class="post-stats">
-                <div class="stats-left">
-                  <span class="reaction-count">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="red" stroke="red" stroke-width="2" style="display: inline; vertical-align: middle;">
-                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                    </svg> 0
-                  </span>
-                  <span class="comment-count">0 comments</span>
-                </div>
-              </div>
-
               <div class="post-actions">
-                <button class="action-btn like-btn">
+                <button class="action-btn vote-btn upvote <?php echo (isset($post->user_vote) && $post->user_vote === 'upvote') ? 'active' : ''; ?>" data-id="<?php echo $post->id; ?>" data-type="upvote">
                   <span class="action-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                      <polyline points="18 15 12 9 6 15"></polyline>
                     </svg>
                   </span>
-                  <span class="action-text">Like</span>
+                  <span class="action-text count"><?php echo $post->upvotes ?? 0; ?></span>
+                </button>
+                <button class="action-btn vote-btn downvote <?php echo (isset($post->user_vote) && $post->user_vote === 'downvote') ? 'active' : ''; ?>" data-id="<?php echo $post->id; ?>" data-type="downvote">
+                  <span class="action-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </span>
+                  <span class="action-text count"><?php echo $post->downvotes ?? 0; ?></span>
                 </button>
               </div>
             </article>
@@ -168,9 +170,6 @@
         <div class="trending-list">
           <?php if (isset($destinations) && is_array($destinations) && count($destinations) > 0): ?>
             <?php foreach ($destinations as $destination): ?>
-              <?php 
-                $postCount = isset($destinationPostCounts[$destination->id]) ? $destinationPostCounts[$destination->id] : 0;
-              ?>
               <a href="destinationview?id=<?php echo $destination->id; ?>" class="trending-item">
                 <?php 
                   $imagePath = $destination->image ?? 'assets/images/contact.jpg';
@@ -182,7 +181,6 @@
                 <img src="<?php echo htmlspecialchars($imagePath); ?>" alt="<?php echo htmlspecialchars($destination->title); ?>" class="trending-img">
                 <div class="trending-info">
                   <h5><?php echo htmlspecialchars($destination->title); ?></h5>
-                  <p><?php echo $postCount; ?> post<?php echo $postCount != 1 ? 's' : ''; ?></p>
                 </div>
               </a>
             <?php endforeach; ?>
@@ -192,36 +190,6 @@
               <div class="trending-info">
                 <h5>Explore Sri Lanka</h5>
                 <p>Start your journey</p>
-              </div>
-            </div>
-          <?php endif; ?>
-        </div>
-      </div>
-
-      <div class="sidebar-section">
-        <h3>Suggested Travelers</h3>
-        <div class="suggestions-list">
-          <?php if (isset($suggestedTravelers) && is_array($suggestedTravelers) && count($suggestedTravelers) > 0): ?>
-            <?php foreach ($suggestedTravelers as $traveler): ?>
-              <div class="suggestion-item">
-                <a href="profile?username=<?php echo urlencode($traveler->email); ?>" style="text-decoration: none;">
-                  <img src="assets/images/profile.jpg" alt="<?php echo htmlspecialchars($traveler->first_name . ' ' . $traveler->last_name); ?>" class="suggestion-avatar">
-                </a>
-                <div class="suggestion-info">
-                  <a href="profile?username=<?php echo urlencode($traveler->email); ?>" style="text-decoration: none; color: inherit;">
-                    <h5><?php echo htmlspecialchars($traveler->first_name . ' ' . $traveler->last_name); ?></h5>
-                  </a>
-                  <p><?php echo isset($travelerFollowerCounts[$traveler->id]) ? $travelerFollowerCounts[$traveler->id] : 0; ?> followers</p>
-                </div>
-                <button class="follow-btn">Follow</button>
-              </div>
-            <?php endforeach; ?>
-          <?php else: ?>
-            <div class="suggestion-item">
-              <img src="assets/images/profile.jpg" alt="User" class="suggestion-avatar">
-              <div class="suggestion-info">
-                <h5>No travelers yet</h5>
-                <p>Be the first!</p>
               </div>
             </div>
           <?php endif; ?>
@@ -252,6 +220,6 @@
     </aside>
   </div>
 
-  <script src="assets/js/feed.js"></script>
+  <script src="assets/js/feed.js?v=<?php echo time(); ?>"></script>
   </body>
 </html>
