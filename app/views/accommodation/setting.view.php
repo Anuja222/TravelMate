@@ -40,13 +40,10 @@ $currentProfileImage = (!empty($userData['profile_image'])) ? $rootUrl . '/' . $
   <!-- MAIN CONTENT -->
   <main>
     <!-- SIDEBAR -->
-    <aside class="sidebar">
-       <ul>
-        <li><a href="ac_dashboard"><i ></i> Dashboard</a></li>
-        <li><a href="accommodationbookings"><i ></i> Bookings</a></li>
-        <li><a href="acc_setting" class="active"><i></i> Settings</a></li>
-      </ul>
-    </aside>
+    <?php 
+    $active_page = 'settings';
+    include __DIR__ . '/sidebar.view.php'; 
+    ?>
 
     <div class="content">
         <div class="page-title">
@@ -192,55 +189,6 @@ $currentProfileImage = (!empty($userData['profile_image'])) ? $rootUrl . '/' . $
                 <button type="reset" class="cancel-btn"><i class="fas fa-times"></i> Cancel</button>
             </div>
         </form>
-      </section>
-    
-      <!-- Payment History -->
-        <section class="settings-section">
-          <div class="section-header">
-            <i class="fas fa-history"></i>
-            <h2>Payment History</h2>
-          </div>
-          <div class="action-buttons">
-              <button class="save-btn" onclick="window.location.href='paymentHistory';">
-                View All Payments
-              </button>
-              <button class="save-btn" onclick="window.location.href='accommodationbookings';">
-                View Booking History
-              </button>
-          </div>
-                    
-          <div style="margin-top: 20px;">
-            <h3>Quick Stats</h3>
-            <div style="display: flex; gap: 15px; margin-top: 10px;">
-              <div style="background: #f0f5ff; padding: 10px; border-radius: 8px; text-align: center; flex: 1;">
-                <div style="font-weight: bold; color: #4361ee;">15</div>
-                <div style="font-size: 0.8rem;">Bookings</div>
-              </div>
-              <div style="background: #fff0f6; padding: 10px; border-radius: 8px; text-align: center; flex: 1;">
-                <div style="font-weight: bold; color: #f72585;">Rs.250000</div>
-                <div style="font-size: 0.8rem;">Income</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-      <!-- Account Statistics -->
-      <section class="settings-section">
-        <div class="section-header">
-          <i class="fas fa-chart-line"></i>
-          <h2>Account Statistics</h2>
-        </div>
-        <div class="stats-container">
-          <div class="stat-card">
-            <div class="stat-value">12</div>
-            <div class="stat-label">Total Bookings</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value">5</div>
-            <div class="stat-label">Upcoming Bookings</div>
-          </div>
-        </div>
-        <p class="note" style="margin-top: 15px;">Your account activity and statistics overview.</p>
       </section>
 
     </div>
@@ -404,20 +352,32 @@ function handleSecuritySubmit(e) {
     submitBtn.disabled = true;
     spinner.style.display = 'inline-block';
     
-    // Simulate API call
-    setTimeout(() => {
-      // Hide loading state
+    const formData = new FormData(document.getElementById('securityForm'));
+
+    fetch('/TravelMate/public/acc_setting/updatePassword', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
       submitBtn.disabled = false;
       spinner.style.display = 'none';
-      
-      // Show success message
-      showToast('Password updated successfully!', 'success');
-      
-      // Reset form
-      securityForm.reset();
-      passwordStrength.className = 'password-strength';
-      passwordStrengthText.textContent = '';
-    }, 1500);
+
+      if(data.success) {
+        showToast(data.message, 'success');
+        securityForm.reset();
+        passwordStrength.className = 'password-strength';
+        passwordStrengthText.textContent = '';
+      } else {
+        showToast(data.message, 'error');
+      }
+    })
+    .catch(error => {
+      submitBtn.disabled = false;
+      spinner.style.display = 'none';
+      showToast('An error occurred. Please try again.', 'error');
+      console.error('Error:', error);
+    });
   }
 }
 
