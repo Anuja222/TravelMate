@@ -68,7 +68,11 @@
       <!-- Create Post Section -->
       <div class="create-post-card">
         <div class="create-post-header">
-          <img src="assets/images/profile.jpg" alt="Your Profile" class="user-avatar">
+          <?php 
+          $rootUrl = defined('ROOT') ? ROOT : '/TravelMate/public';
+          $currentUserProfileImg = !empty($_SESSION['user']['profile_image']) ? $rootUrl . '/' . $_SESSION['user']['profile_image'] : 'assets/images/profile.jpg';
+          ?>
+          <img src="<?php echo htmlspecialchars($currentUserProfileImg); ?>" alt="Your Profile" class="user-avatar" onerror="this.src='assets/images/profile.jpg'">
           <a href="blog" class="create-post-input">
             <span class="placeholder-text">Share your travel story...</span>
           </a>
@@ -96,7 +100,11 @@
             <article class="post-card" data-category="<?php echo htmlspecialchars($post->category ?? ''); ?>">
               <div class="post-header">
                 <a href="profile?username=<?php echo urlencode($post->email ?? ''); ?>" style="text-decoration: none;">
-                  <img src="assets/images/profile.jpg" alt="<?php echo htmlspecialchars(($post->first_name ?? '') . ' ' . ($post->last_name ?? '')); ?>" class="user-avatar">
+                  <?php 
+                  $rootUrl = defined('ROOT') ? ROOT : '/TravelMate/public';
+                  $authorProfileImg = !empty($post->profile_image) ? $rootUrl . '/' . $post->profile_image : 'assets/images/profile.jpg';
+                  ?>
+                  <img src="<?php echo htmlspecialchars($authorProfileImg); ?>" alt="<?php echo htmlspecialchars(($post->first_name ?? '') . ' ' . ($post->last_name ?? '')); ?>" class="user-avatar" onerror="this.src='assets/images/profile.jpg'">
                 </a>
                 <div class="user-info">
                   <a href="profile?username=<?php echo urlencode($post->email ?? ''); ?>" style="text-decoration: none; color: inherit;">

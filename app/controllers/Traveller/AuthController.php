@@ -68,6 +68,29 @@ class AuthController
             return;
         }
 
+        // Handle profile picture upload
+        $profileImagePath = null;
+        if (isset($_FILES['profilePhoto']) && $_FILES['profilePhoto']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = __DIR__ . '/../../../public/uploads/profile_images/';
+            
+            // Create directory if it doesn't exist
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            
+            $fileExtension = strtolower(pathinfo($_FILES['profilePhoto']['name'], PATHINFO_EXTENSION));
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+            
+            if (in_array($fileExtension, $allowedExtensions)) {
+                $fileName = uniqid('profile_') . '.' . $fileExtension;
+                $destination = $uploadDir . $fileName;
+                
+                if (move_uploaded_file($_FILES['profilePhoto']['tmp_name'], $destination)) {
+                    $profileImagePath = 'uploads/profile_images/' . $fileName;
+                }
+            }
+        }
+
         // Create user
         $user = new User(
             $data['firstName'],
@@ -76,7 +99,8 @@ class AuthController
             $data['phone'],
             $data['dateOfBirth'],
             $data['gender'],
-            $data['password']
+            $data['password'],
+            $profileImagePath
         );
         $role = $data['role'] ?? 'traveller';
         $user->role = $role;
@@ -118,6 +142,7 @@ class AuthController
             'gender' => $userData['gender'] ?? '',
             'dateOfBirth' => $userData['date_of_birth'] ?? '',
             'role' => $userData['role'],
+            'profile_image' => $userData['profile_image'] ?? 'assets/images/profile.jpg',
             'logged_in' => true,
             'login_time' => time()
         ];

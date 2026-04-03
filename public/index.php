@@ -721,7 +721,11 @@ elseif ($page === 'home' || $requestUri === '/') {
     $contentController = new Content();
     $contentController->index();
 } elseif ($page === 'profile_setting') {
-    include '../app/views/traveller/profilesetting.view.php';
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/Traveller/Profilesetting.php';
+    $profileController = new Profilesetting();
+    $profileController->index();
 } elseif ($page === 'detailsProperty') {
     include '../app/views/accommodation/detailsProperty.view.php';
 } elseif ($page === 'updateProperty') {

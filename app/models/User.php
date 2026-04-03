@@ -10,8 +10,9 @@ class User
     public $dateOfBirth;
     public $gender;
     public $password;
+    public $profile_image;
 
-    public function __construct($firstName, $lastName, $email, $phone, $dateOfBirth, $gender, $password)
+    public function __construct($firstName, $lastName, $email, $phone, $dateOfBirth, $gender, $password, $profile_image = null)
     {
         $this->firstName = $firstName;
         $this->lastName = $lastName;
@@ -20,13 +21,14 @@ class User
         $this->dateOfBirth = $dateOfBirth;
         $this->gender = $gender;
         $this->password = $password;
+        $this->profile_image = $profile_image;
     }
 
     public function createUser($conn)
     {
         try {
-            $sql = "INSERT INTO users (first_name, last_name, email, phone, date_of_birth, gender, password, role) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO users (first_name, last_name, email, phone, date_of_birth, gender, password, role, profile_image) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
             $hashedPassword = password_hash($this->password, PASSWORD_DEFAULT);
             $stmt->execute([
@@ -37,7 +39,8 @@ class User
                 $this->dateOfBirth,
                 $this->gender,
                 $hashedPassword,
-                $this->role ?? 'traveller'
+                $this->role ?? 'traveller',
+                $this->profile_image
             ]);
             return $conn->lastInsertId(); // Return the new user's ID
         } catch (\PDOException $e) {
@@ -68,7 +71,7 @@ class User
             $updates = [];
             $params = [];
             
-            $allowedFields = ['first_name', 'last_name', 'email', 'phone', 'date_of_birth', 'gender', 'bio', 'country', 'city', 'timezone', 'travel_style', 'budget', 'interests'];
+            $allowedFields = ['first_name', 'last_name', 'email', 'phone', 'date_of_birth', 'gender', 'bio', 'country', 'city', 'timezone', 'travel_style', 'budget', 'interests', 'profile_image'];
             
             foreach ($data as $key => $value) {
                 if (in_array($key, $allowedFields)) {
