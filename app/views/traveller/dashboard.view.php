@@ -8,6 +8,19 @@ if (session_status() === PHP_SESSION_NONE) {
 $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
 $firstName = $isLoggedIn ? $_SESSION['user']['first_name'] : '';
 $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
+$profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) 
+    ? 'assets/' . $_SESSION['user']['profile_image'] 
+    : 'assets/images/profile.jpg';
+
+// In case the path already starts with assets or uploads
+if ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) {
+    $img = $_SESSION['user']['profile_image'];
+    $profileImage = (strpos($img, 'http') === 0 || strpos($img, '/') === 0) ? $img : $img;
+    // ensure relative path works from public
+    if (strpos($profileImage, 'uploads/') === 0) {
+        $profileImage = $profileImage; // relative from public
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -66,7 +79,11 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
       </div>
       <!-- Profile -->
       <div class="profile-section">
-        <img src="assets/images/profile.jpg" alt="User" class="profile-pic">
+        <?php 
+        $rootUrl = defined('ROOT') ? ROOT : '/TravelMate/public';
+        $profileImg = !empty($_SESSION['user']['profile_image']) ? $rootUrl . '/' . $_SESSION['user']['profile_image'] : 'assets/images/profile.jpg';
+        ?>
+        <img src="<?php echo htmlspecialchars($profileImg); ?>" alt="User" class="profile-pic">
         <div>
           <h2 class="profile-name"><?php echo htmlspecialchars($firstName); ?> <?php echo htmlspecialchars($lastName); ?></h2>
           <span class="profile-email"><?php echo htmlspecialchars($_SESSION['user']['email']); ?></span>

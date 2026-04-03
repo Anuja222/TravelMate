@@ -50,6 +50,7 @@ class Post {
                     u.first_name,
                     u.last_name,
                     u.email,
+                    u.profile_image,
                     COALESCE(p.upvotes, 0) as upvotes,
                     COALESCE(p.downvotes, 0) as downvotes,
                     (SELECT vote_type FROM post_votes WHERE post_id = p.id AND user_id = :current_user_id LIMIT 1) as user_vote

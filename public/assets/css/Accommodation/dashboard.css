@@ -108,6 +108,8 @@ main {
   margin-top: 1em;
   max-width: 10em;
   height: 14em;
+  position: sticky;
+  top: 100px;
 }
 .sidebar ul {
   list-style-type: none;
