@@ -100,15 +100,15 @@ class Vehicle
     public static function findByUser($conn, $userId)
     {
         if (self::hasTransportRatingsTable($conn)) {
-            $sql = "SELECT v.*, 
+            $sql = "SELECT v.*, u.first_name, u.last_name, u.email, u.phone, u.profile_image, 
                     COALESCE((SELECT ROUND(AVG(tbr.rating), 1) FROM transport_booking_ratings tbr WHERE tbr.vehicle_id = v.id), 0) AS avg_rating,
                     COALESCE((SELECT COUNT(*) FROM transport_booking_ratings tbr WHERE tbr.vehicle_id = v.id), 0) AS rating_count
-                    FROM vehicles v
+                    FROM vehicles v LEFT JOIN users u ON v.user_id = u.id
                     WHERE v.user_id = ?
                     ORDER BY v.created_at DESC";
         } else {
-            $sql = "SELECT v.*, 0 AS avg_rating, 0 AS rating_count
-                    FROM vehicles v
+            $sql = "SELECT v.*, u.first_name, u.last_name, u.email, u.phone, u.profile_image, 0 AS avg_rating, 0 AS rating_count
+                    FROM vehicles v LEFT JOIN users u ON v.user_id = u.id
                     WHERE v.user_id = ?
                     ORDER BY v.created_at DESC";
         }
@@ -120,15 +120,15 @@ class Vehicle
     public static function findAll($conn)
     {
         if (self::hasTransportRatingsTable($conn)) {
-            $sql = "SELECT v.*, 
+            $sql = "SELECT v.*, u.first_name, u.last_name, u.email, u.phone, u.profile_image, 
                     COALESCE((SELECT ROUND(AVG(tbr.rating), 1) FROM transport_booking_ratings tbr WHERE tbr.vehicle_id = v.id), 0) AS avg_rating,
                     COALESCE((SELECT COUNT(*) FROM transport_booking_ratings tbr WHERE tbr.vehicle_id = v.id), 0) AS rating_count
-                    FROM vehicles v
+                    FROM vehicles v LEFT JOIN users u ON v.user_id = u.id
                     WHERE v.status = 'active'
                     ORDER BY v.created_at DESC";
         } else {
-            $sql = "SELECT v.*, 0 AS avg_rating, 0 AS rating_count
-                    FROM vehicles v
+            $sql = "SELECT v.*, u.first_name, u.last_name, u.email, u.phone, u.profile_image, 0 AS avg_rating, 0 AS rating_count
+                    FROM vehicles v LEFT JOIN users u ON v.user_id = u.id
                     WHERE v.status = 'active'
                     ORDER BY v.created_at DESC";
         }
@@ -140,14 +140,14 @@ class Vehicle
     public static function findAllForAdmin($conn)
     {
         if (self::hasTransportRatingsTable($conn)) {
-            $sql = "SELECT v.*, 
+            $sql = "SELECT v.*, u.first_name, u.last_name, u.email, u.phone, u.profile_image, 
                     COALESCE((SELECT ROUND(AVG(tbr.rating), 1) FROM transport_booking_ratings tbr WHERE tbr.vehicle_id = v.id), 0) AS avg_rating,
                     COALESCE((SELECT COUNT(*) FROM transport_booking_ratings tbr WHERE tbr.vehicle_id = v.id), 0) AS rating_count
-                    FROM vehicles v
+                    FROM vehicles v LEFT JOIN users u ON v.user_id = u.id
                     ORDER BY v.created_at DESC";
         } else {
-            $sql = "SELECT v.*, 0 AS avg_rating, 0 AS rating_count
-                    FROM vehicles v
+            $sql = "SELECT v.*, u.first_name, u.last_name, u.email, u.phone, u.profile_image, 0 AS avg_rating, 0 AS rating_count
+                    FROM vehicles v LEFT JOIN users u ON v.user_id = u.id
                     ORDER BY v.created_at DESC";
         }
         $stmt = $conn->prepare($sql);

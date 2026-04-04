@@ -205,11 +205,27 @@
               <p>✓ Fuel & tolls included</p>
               <p>✓ 24/7 customer support</p>
             </div>
-          </form>
+                        </div>
+            </form>
+          </div>
+
+          <!-- Provider Profile Widget -->
+          <div class="booking-widget" style="margin-top: 20px;">
+            <div class="widget-header">
+              <h3 style="margin:0; font-size: 1.2rem;">Transport Provider</h3>
+            </div>
+            <div class="provider-profile" style="padding: 15px; display: flex; align-items: center; gap: 15px;">
+              <img id="providerImage" src="assets/images/default-profile.png" alt="Provider" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+              <div style="flex: 1; min-width: 0;">
+                <h4 id="providerName" style="margin: 0 0 5px 0;">Loading...</h4>
+                <p id="providerPhone" style="margin: 0; font-size: 0.9rem; color: #666; word-break: break-all;">Loading...</p>
+                <p id="providerEmail" style="margin: 5px 0 0; font-size: 0.9rem; color: #666; word-break: break-all;">Loading...</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 

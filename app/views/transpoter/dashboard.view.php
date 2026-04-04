@@ -24,6 +24,7 @@ if (!$isLoggedIn || $role !== 'transport') {
 
 $firstName = $isLoggedIn ? $_SESSION['user']['first_name'] : '';
 $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
+$profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['profile_image'] : 'assets/trimages/profile.jpg';
 ?>
 
 <!DOCTYPE html>
@@ -319,13 +320,10 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
   <!-- MAIN CONTENT -->
   <main>
     <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <ul>
-        <li><a href="tr_dashboard" class="active"><i ></i> Dashboard</a></li>
-        <li><a href="bookingnew"><i></i> Bookings</a></li>
-        <li><a href="setting"><i></i> Setting</a></li>
-      </ul>
-    </aside>
+    <?php 
+      $active_page = 'dashboard';
+      include __DIR__ . '/sidebar.view.php'; 
+    ?>
 
     <div class="dashboard-content">
 
@@ -337,7 +335,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
       <!-- PROFILE -->
       <section class="profile-section">
         <div class="profile-image-container">
-          <img src="assets/trimages/profile.jpg" alt="profile" class="profile-pic">
+          <img src="<?php echo htmlspecialchars($profileImage); ?>" alt="profile" class="profile-pic" onerror="this.onerror=null; this.src='assets/trimages/profile.jpg';">
           <span class="online-status"></span>
         </div>
         <div>

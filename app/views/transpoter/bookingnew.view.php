@@ -38,13 +38,10 @@
   <!-- MAIN CONTENT -->
   <main>
     <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <ul>
-        <li><a href="tr_dashboard"><i ></i> Dashboard</a></li>
-        <li><a href="bookingnew" class="active"><i ></i> Bookings</a></li>
-        <li><a href="setting"><i ></i> Setting</a></li>
-      </ul>
-    </aside>
+    <?php 
+      $active_page = 'bookings';
+      include __DIR__ . '/sidebar.view.php'; 
+    ?>
 
     <div class="content">
       <div class="page-title">  

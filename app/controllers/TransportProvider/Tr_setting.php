@@ -1,6 +1,6 @@
 <?php
 
-class Setting extends Controller {
+class Tr_setting extends Controller {
     public function index() {
         if (!isset($_SESSION['user']['id'])) {
             header('Location: login');

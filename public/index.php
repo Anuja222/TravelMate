@@ -801,9 +801,29 @@ elseif ($page === 'tr_dashboard') {
 } elseif ($page === 'ViewDetailspending') {
     include '../app/views/transpoter/ViewDetailspending.view.php';
 } elseif ($page === 'bookingHistory') {
-    include '../app/views/transpoter/bookingHistory.view.php';
-} elseif ($page === 'setting') {
-    include '../app/views/transpoter/setting.view.php';
+    include '../app/views/transpoter/bookingHistory.view.php';  } elseif ($page === 'tr_revenue' || strpos($requestUri, '/tr_revenue') === 0) {
+      require_once '../app/core/Database.php';
+      require_once '../app/core/Controller.php';
+      require_once '../app/controllers/TransportProvider/Revenue.php';
+      $revenueController = new Revenue();
+      $revenueController->index();} elseif ($page === 'tr_setting' || $page === 'setting') {
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/TransportProvider/Tr_setting.php';
+    $trSettingController = new Tr_setting();
+    $trSettingController->index();
+} elseif (($requestUri === '/Tr_setting/update' || $requestUri === '/setting/update') && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/TransportProvider/Tr_setting.php';
+    $trSettingController = new Tr_setting();
+    $trSettingController->update();
+} elseif (($requestUri === '/Tr_setting/updatePassword' || $requestUri === '/setting/updatePassword') && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/TransportProvider/Tr_setting.php';
+    $trSettingController = new Tr_setting();
+    $trSettingController->updatePassword();
 } elseif ($page === 'tripDetails') {
     include '../app/views/transpoter/tripDetails.view.php';
 } elseif ($page === 'ViewDetailsAccepted') {

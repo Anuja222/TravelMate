@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="assets/css/Transpoter/setting.css">
   <link rel="stylesheet" href="assets/css/Transpoter/common.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -19,13 +18,10 @@
   <!-- MAIN CONTENT -->
   <main>
     <!-- SIDEBAR -->
-    <aside class="sidebar">
-       <ul>
-        <li><a href="tr_dashboard"><i ></i> Dashboard</a></li>
-        <li><a href="bookingnew"><i ></i> Bookings</a></li>
-        <li><a href="setting" class="active"><i></i> Settings</a></li>
-      </ul>
-    </aside>
+    <?php 
+      $active_page = 'settings';
+      include __DIR__ . '/sidebar.view.php'; 
+    ?>
 
     <div class="content">
         <div class="page-title">
@@ -46,16 +42,20 @@
               <label>Profile Photo</label>
               <div class="profile-photo-upload">
                 <div class="photo-preview" id="photoPreview">
-                  <svg class="default-avatar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                  </svg>
+                  <?php if (!empty($user['profile_image'])): ?>
+                    <img src="<?= ROOT ?>/<?= htmlspecialchars($user['profile_image']) ?>" alt="Profile Photo">
+                  <?php else: ?>
+                    <svg class="default-avatar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  <?php endif; ?>
                 </div>
                 <div class="photo-upload-controls">
                   <label for="profilePhoto" class="btn-upload">
                     <i class="fas fa-upload"></i> Change photo
                   </label>
-                  <button type="button" class="btn-remove" id="removePhoto" style="display: none;">
+                  <button type="button" class="btn-remove" id="removePhoto" <?= empty($user['profile_image']) ? 'style="display: none;"' : '' ?>>
                     <i class="fas fa-trash"></i> Remove
                   </button>
                 </div>
@@ -68,25 +68,25 @@
             <div class="form-row">
               <div class="form-group" id="firstNameGroup">
                 <label for="firstName">First Name</label>
-                <input type="text" id="firstName" name="firstName" placeholder="Enter your first name" required>
+                <input type="text" id="firstName" name="firstName" value="<?= htmlspecialchars($user['first_name'] ?? '') ?>" placeholder="Enter your first name" required>
                 <div class="error-message" id="firstNameError"></div>
               </div>
               <div class="form-group" id="lastNameGroup">
                 <label for="lastName">Last Name</label>
-                <input type="text" id="lastName" name="lastName" placeholder="Enter your last name" required>
+                <input type="text" id="lastName" name="lastName" value="<?= htmlspecialchars($user['last_name'] ?? '') ?>" placeholder="Enter your last name" required>
                 <div class="error-message" id="lastNameError"></div>
               </div>
             </div>
 
             <div class="form-group" id="emailGroup">
               <label for="email">Email Address</label>
-              <input type="email" id="email" name="email" placeholder="Enter your email" required>
+              <input type="email" id="email" name="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>" placeholder="Enter your email" required>
               <div class="error-message" id="emailError"></div>
             </div>
 
             <div class="form-group" id="phoneGroup">
               <label for="phone">Phone Number</label>
-              <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+              <input type="tel" id="phone" name="phone" value="<?= htmlspecialchars($user['phone'] ?? '') ?>" placeholder="Enter your phone number" required>
               <div class="error-message" id="phoneError"></div>
             </div>
 
@@ -94,17 +94,17 @@
             <div class="form-row">
               <div class="form-group" id="dobGroup">
                 <label for="dateOfBirth">Date of Birth</label>
-                <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+                <input type="date" id="dateOfBirth" name="dateOfBirth" value="<?= htmlspecialchars($user['date_of_birth'] ?? '') ?>" required>
                 <div class="error-message" id="dobError"></div>
               </div>
               <div class="form-group" id="genderGroup">
                 <label for="gender">Gender</label>
                 <select id="gender" name="gender" required>
-                  <option value="">Select Gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                  <option value="prefer-not-to-say">Prefer not to say</option>
+                  <option value="" <?= empty($user['gender']) ? 'selected' : '' ?>>Select Gender</option>
+                  <option value="male" <?= (isset($user['gender']) && $user['gender'] == 'male') ? 'selected' : '' ?>>Male</option>
+                  <option value="female" <?= (isset($user['gender']) && $user['gender'] == 'female') ? 'selected' : '' ?>>Female</option>
+                  <option value="other" <?= (isset($user['gender']) && $user['gender'] == 'other') ? 'selected' : '' ?>>Other</option>
+                  <option value="prefer-not-to-say" <?= (isset($user['gender']) && $user['gender'] == 'prefer-not-to-say') ? 'selected' : '' ?>>Prefer not to say</option>
                 </select>
                 <div class="error-message" id="genderError"></div>
               </div>
@@ -184,28 +184,7 @@ removePhotoBtn.addEventListener('click', removeProfilePhoto);
 newPasswordInput.addEventListener('input', checkPasswordStrength);
 
 // Initialize the application
-function initApp() {
-  // Load saved settings if any
-  loadSavedSettings();
-}
-
-// Load saved settings from localStorage
-function loadSavedSettings() {
-  // Profile settings
-  const savedProfile = JSON.parse(localStorage.getItem('profileSettings')) || {};
-  if (savedProfile.firstName) document.getElementById('firstName').value = savedProfile.firstName;
-  if (savedProfile.lastName) document.getElementById('lastName').value = savedProfile.lastName;
-  if (savedProfile.email) document.getElementById('email').value = savedProfile.email;
-  if (savedProfile.phone) document.getElementById('phone').value = savedProfile.phone;
-  if (savedProfile.dateOfBirth) document.getElementById('dateOfBirth').value = savedProfile.dateOfBirth;
-  if (savedProfile.gender) document.getElementById('gender').value = savedProfile.gender;  
-  // Profile photo
-  const savedPhoto = localStorage.getItem('profilePhoto');
-  if (savedPhoto) {
-    photoPreview.innerHTML = `<img src="${savedPhoto}" alt="Profile Photo">`;
-    removePhotoBtn.style.display = 'block';
-  }
-}
+function initApp() {}
 
 // Handle profile form submission
 function handleProfileSubmit(e) {
@@ -219,27 +198,28 @@ function handleProfileSubmit(e) {
     submitBtn.disabled = true;
     spinner.style.display = 'inline-block';
     
-    // Simulate API call
-    setTimeout(() => {
-      // Save to localStorage
-      const formData = {
-        firstName: document.getElementById('firstName').value,
-        lastName: document.getElementById('lastName').value,
-        email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value,
-        dateOfBirth: document.getElementById('dateOfBirth').value,
-        gender: document.getElementById('gender').value
-      };
-      
-      localStorage.setItem('profileSettings', JSON.stringify(formData));
-      
-      // Hide loading state
-      submitBtn.disabled = false;
-      spinner.style.display = 'none';
-      
-      // Show success message
-      showToast('Profile updated successfully!', 'success');
-    }, 1500);
+    const formData = new FormData(document.getElementById('profileForm'));
+
+    fetch('<?= ROOT ?>/Tr_setting/update', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        submitBtn.disabled = false;
+        spinner.style.display = 'none';
+        
+        if (data.success) {
+            showToast(data.message || 'Profile updated successfully!', 'success');
+        } else {
+            showToast(data.message || 'Failed to update profile.', 'error');
+        }
+    })
+    .catch(error => {
+        submitBtn.disabled = false;
+        spinner.style.display = 'none';
+        showToast('An error occurred while updating profile.', 'error');
+    });
   }
 }
 
@@ -280,7 +260,7 @@ function validateProfileForm() {
     showError('phoneGroup', 'Phone number is required');
     isValid = false;
   } else if (!isValidPhone(phone)) {
-    showError('phoneGroup', 'Please enter a valid phone number');
+    showError('phoneGroup', 'Please enter a valid 10-digit phone number (e.g. 0705697391)');
     isValid = false;
   }
   
@@ -322,20 +302,31 @@ function handleSecuritySubmit(e) {
     submitBtn.disabled = true;
     spinner.style.display = 'inline-block';
     
-    // Simulate API call
-    setTimeout(() => {
-      // Hide loading state
-      submitBtn.disabled = false;
-      spinner.style.display = 'none';
-      
-      // Show success message
-      showToast('Password updated successfully!', 'success');
-      
-      // Reset form
-      securityForm.reset();
-      passwordStrength.className = 'password-strength';
-      passwordStrengthText.textContent = '';
-    }, 1500);
+    const formData = new FormData(document.getElementById('securityForm'));
+
+    fetch('<?= ROOT ?>/Tr_setting/updatePassword', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        submitBtn.disabled = false;
+        spinner.style.display = 'none';
+        
+        if (data.success) {
+            showToast(data.message || 'Password updated successfully!', 'success');
+            document.getElementById('securityForm').reset();
+            passwordStrength.className = 'password-strength';
+            passwordStrengthText.textContent = '';
+        } else {
+            showToast(data.message || 'Failed to update password.', 'error');
+        }
+    })
+    .catch(error => {
+        submitBtn.disabled = false;
+        spinner.style.display = 'none';
+        showToast('An error occurred while updating password.', 'error');
+    });
   }
 }
 
@@ -379,36 +370,6 @@ function validateSecurityForm() {
   return isValid;
 }
 
-// Handle notification form submission
-
-// Show delete account confirmation modal
-}
-
-// Hide delete account confirmation modal
-
-// Handle account deletion
-
-// Validate delete account form
-  
-  // Validate feedback if "other" is selected
-  if (selectedReason && selectedReason.value === 'other') {
-    const feedback = document.getElementById('feedback').value.trim();
-    if (!feedback) {
-      showError('feedbackGroup', 'Please provide feedback');
-      isValid = false;
-    }
-  }
-  
-  // Validate confirmation text
-  const confirmText = document.getElementById('confirmDelete').value;
-  if (confirmText !== 'DELETE') {
-    showError('confirmDeleteGroup', 'Please type DELETE to confirm');
-    isValid = false;
-  }
-  
-  return isValid;
-}
-
 // Handle profile photo upload
 function handleProfilePhotoUpload(e) {
   const file = e.target.files[0];
@@ -433,8 +394,6 @@ function handleProfilePhotoUpload(e) {
     
     // Save to localStorage
     localStorage.setItem('profilePhoto', e.target.result);
-    
-    showToast('Profile photo updated successfully!', 'success');
   };
   reader.readAsDataURL(file);
 }
@@ -501,12 +460,6 @@ function checkPasswordStrength() {
   }
 }
 
-// Toggle feedback field based on selected reason
- else {
-    feedbackGroup.style.display = 'none';
-  }
-}
-
 // Show error message
 function showError(elementId, message) {
   const element = document.getElementById(elementId);
@@ -562,7 +515,7 @@ function isValidEmail(email) {
 }
 
 function isValidPhone(phone) {
-  const re = /^[\+]?[1-9][\d]{0,15}$/;
+  const re = /^0\d{9}$/;
   return re.test(phone.replace(/[\s\-\(\)]/g, ''));
 }
 </script>
