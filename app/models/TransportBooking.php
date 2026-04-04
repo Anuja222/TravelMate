@@ -157,7 +157,12 @@ class TransportBooking {
     public function getBookingsByProviderId($conn, $providerId) {
         try {
             $sql = "SELECT tb.*, v.vehicle_model, v.vehicle_type, v.vehicle_number,
-                           u.first_name, u.last_name, u.email
+                           u.first_name, u.last_name, u.email, u.phone,
+                           (SELECT vd.file_path
+                            FROM vehicle_documents vd
+                            WHERE vd.vehicle_id = v.id AND vd.doc_type = 'vehicle_photos'
+                            ORDER BY vd.id ASC
+                            LIMIT 1) AS vehicle_image
                     FROM transport_bookings tb
                     INNER JOIN vehicles v ON tb.vehicle_id = v.id
                     LEFT JOIN users u ON tb.user_id = u.id

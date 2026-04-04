@@ -29,6 +29,14 @@ $currentProfileImage = (!empty($userData['profile_image'])) ? $rootUrl . '/' . $
   <link rel="stylesheet" href="assets/css/accommodation/common.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+      /* Sidebar Active State */
+      .sidebar ul li a.active {
+          background: #e9f6ee !important;
+          color: #1abc5b !important;
+          font-weight: 600 !important;
+      }
+  </style>
 </head>
 <body>
 
