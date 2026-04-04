@@ -58,7 +58,12 @@
       <div class="users-grid">
         <?php if (isset($users) && count($users) > 0): ?>
           <?php foreach ($users as $user): ?>
-            <div class="user-card">
+            <div class="user-card"
+                 data-name="<?php echo htmlspecialchars(strtolower(($user->first_name ?? '') . ' ' . ($user->last_name ?? '')), ENT_QUOTES); ?>"
+                 data-email="<?php echo htmlspecialchars(strtolower($user->email ?? ''), ENT_QUOTES); ?>"
+                 data-phone="<?php echo htmlspecialchars(strtolower($user->phone ?? ''), ENT_QUOTES); ?>"
+                 data-role="<?php echo htmlspecialchars(strtolower($user->role ?? ''), ENT_QUOTES); ?>"
+                 data-status="<?php echo htmlspecialchars(strtolower($user->status ?? 'active'), ENT_QUOTES); ?>">
               <div class="user-card-header">
                 <div class="profile-pic-large">
                   <?php if (!empty($user->profile_picture)): ?>
@@ -108,6 +113,14 @@
                   View
                 </button>
                 
+                <?php if($user->status === 'suspended'): ?>
+                <button class="btn-suspend" style="background:#52c41a" onclick="unsuspendUser(<?php echo $user->id; ?>, '<?php echo htmlspecialchars(($user->first_name ?? '') . ' ' . ($user->last_name ?? ''), ENT_QUOTES); ?>')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 4v6h6M22 20v-6h-6M20.49 9A9 9 0 0 0 5.64 5.64L1 10M3.51 15A9 9 0 0 0 18.36 18.36L23 14" />
+                  </svg>
+                  Unsuspend
+                </button>
+                <?php else: ?>
                 <button class="btn-suspend" onclick="suspendUser(<?php echo $user->id; ?>, '<?php echo htmlspecialchars(($user->first_name ?? '') . ' ' . ($user->last_name ?? ''), ENT_QUOTES); ?>')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="10"></circle>
@@ -116,6 +129,7 @@
                   </svg>
                   Suspend
                 </button>
+                <?php endif; ?>
                 
                 <button class="btn-delete" onclick="deleteUser(<?php echo $user->id; ?>, '<?php echo htmlspecialchars(($user->first_name ?? '') . ' ' . ($user->last_name ?? ''), ENT_QUOTES); ?>')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -186,6 +200,23 @@
       <div class="modal-footer">
         <button class="btn-secondary" onclick="closeSuspendModal()">Cancel</button>
         <button class="btn-warning" onclick="confirmSuspend()">Suspend User</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Unsuspend Confirmation Modal -->
+  <div id="unsuspendModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Unsuspend User Account</h3>
+        <span class="close" onclick="closeUnsuspendModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to unsuspend user "<span id="unsuspendUserName"></span>"?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeUnsuspendModal()">Cancel</button>
+        <button class="btn-suspend" style="background:#52c41a; margin: 0; display: inline-block; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; color: white" onclick="confirmUnsuspend()">Unsuspend User</button>
       </div>
     </div>
   </div>
@@ -267,6 +298,10 @@
               <strong style="color: #666; font-size: 0.85em;">Status</strong>
               <p id="viewUserStatus" style="margin: 4px 0 0 0; color: #2c3e50;"></p>
             </div>
+            <div id="viewUserSuspendReasonContainer" style="display: none;">
+              <strong style="color: #666; font-size: 0.85em;">Suspend Reason</strong>
+              <p id="viewUserSuspendReason" style="margin: 4px 0 0 0; color: #e74c3c; font-weight:bold;"></p>
+            </div>
             <div>
               <strong style="color: #666; font-size: 0.85em;">Member Since</strong>
               <p id="viewUserJoined" style="margin: 4px 0 0 0; color: #2c3e50;"></p>
@@ -290,9 +325,26 @@
     </div>
   </div>
 
+  <!-- Success Modal -->
+  <div id="successModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Success</h3>
+        <span class="close" onclick="closeSuccessModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p id="successMessage">Operation completed successfully.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeSuccessModal()">OK</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     let userToDelete = null;
     let userToSuspend = null;
+    let userToUnsuspend = null;
     let selectedUsers = [];
 
     function toggleSelectAll() {
@@ -327,8 +379,15 @@
       document.getElementById('viewUserGender').textContent = user.gender ? (user.gender.charAt(0).toUpperCase() + user.gender.slice(1)) : 'N/A';
       document.getElementById('viewUserId').textContent = '#' + (user.id || 'N/A');
       document.getElementById('viewUserRole').textContent = user.role ? (user.role.charAt(0).toUpperCase() + user.role.slice(1)) : 'N/A';
-      document.getElementById('viewUserStatus').textContent = user.status ? (user.status.charAt(0).toUpperCase() + user.status.slice(1)) : 'N/A';
+      document.getElementById('viewUserStatus').textContent = user.status ? (user.status.charAt(0).toUpperCase() + user.status.slice(1)) : 'Active';
       
+      if (user.status === 'suspended' && user.suspend_reason) {
+          document.getElementById('viewUserSuspendReason').textContent = user.suspend_reason;
+          document.getElementById('viewUserSuspendReasonContainer').style.display = 'block';
+      } else {
+          document.getElementById('viewUserSuspendReasonContainer').style.display = 'none';
+      }
+
       // Format date
       if (user.created_at) {
         const date = new Date(user.created_at);
@@ -370,12 +429,74 @@
       document.getElementById('viewUserModal').style.display = 'none';
     }
 
-    // Add event listeners to checkboxes
+    // Add event listeners to checkboxes and filters
     document.addEventListener('DOMContentLoaded', function() {
       const checkboxes = document.querySelectorAll('.user-checkbox');
       checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', updateSelectedUsers);
       });
+
+      // Filter functionality
+      const applyBtn = document.getElementById('applyFilter');
+      const searchBox = document.getElementById('searchBox');
+      const typeFilter = document.getElementById('userTypeFilter');
+      const statusFilter = document.getElementById('statusFilter');
+
+      function filterUsers() {
+        const searchTerm = searchBox ? searchBox.value.toLowerCase().trim() : '';
+        const selectedType = typeFilter ? typeFilter.value.toLowerCase() : 'all';
+        const selectedStatus = statusFilter ? statusFilter.value.toLowerCase() : 'all';
+        
+        const userCards = document.querySelectorAll('.user-card');
+        let visibleCount = 0;
+        
+        userCards.forEach(card => {
+          const name = card.getAttribute('data-name') || '';
+          const email = card.getAttribute('data-email') || '';
+          const phone = card.getAttribute('data-phone') || '';
+          const role = card.getAttribute('data-role') || '';
+          let status = card.getAttribute('data-status') || 'active';
+          
+          const matchesSearch = name.includes(searchTerm) || email.includes(searchTerm) || phone.includes(searchTerm);
+          const matchesType = (selectedType === 'all') || (role === selectedType);
+          const matchesStatus = (selectedStatus === 'all') || (status === selectedStatus);
+          
+          if (matchesSearch && matchesType && matchesStatus) {
+            card.style.display = ''; // Revert to stylesheet default
+            visibleCount++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+        
+        // Handle "No users found" state dynamically when filtering zero results
+        let noUsersMsg = document.querySelector('.no-users-dynamic');
+        if (visibleCount === 0 && userCards.length > 0) {
+          if (!noUsersMsg) {
+             const grid = document.querySelector('.users-grid');
+             grid.insertAdjacentHTML('beforeend', `
+               <div class="no-users no-users-dynamic" style="width:100%; grid-column: 1 / -1; margin-top:20px; text-align:center;">
+                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:48px;height:48px;color:#a0aec0;margin-bottom:15px;display:inline-block;">
+                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                   <circle cx="12" cy="7" r="4"></circle>
+                 </svg>
+                 <h3>No matching users found</h3>
+                 <p style="color:#718096; margin-top:5px;">Try adjusting your search or filters.</p>
+               </div>
+             `);
+          } else {
+             noUsersMsg.style.display = 'block';
+          }
+        } else if (noUsersMsg) {
+          noUsersMsg.style.display = 'none';
+        }
+      }
+
+      if (applyBtn) applyBtn.addEventListener('click', filterUsers);
+      // Optional: Filter in real-time immediately when typing or selecting dropdowns
+      if (searchBox) searchBox.addEventListener('input', filterUsers);
+      if (typeFilter) typeFilter.addEventListener('change', filterUsers);
+      if (statusFilter) statusFilter.addEventListener('change', filterUsers);
     });
 
     function viewUser(id) {
@@ -413,6 +534,11 @@
       document.getElementById('suspendReason').value = '';
     }
 
+    function closeSuccessModal() {
+      document.getElementById('successModal').style.display = 'none';
+      window.location.reload();
+    }
+
     function confirmDelete() {
       if (userToDelete) {
         alert('Deleted user ID: ' + userToDelete);
@@ -421,12 +547,70 @@
       }
     }
 
+    function unsuspendUser(id, name) {
+      userToUnsuspend = id;
+      document.getElementById('unsuspendUserName').textContent = name;
+      document.getElementById('unsuspendModal').style.display = 'block';
+    }
+
+    function closeUnsuspendModal() {
+      document.getElementById('unsuspendModal').style.display = 'none';
+      userToUnsuspend = null;
+    }
+
+    function confirmUnsuspend() {
+      if (userToUnsuspend) {
+        const formData = new FormData();
+        formData.append('id', userToUnsuspend);
+        
+        fetch('<?= ROOT ?>/admin_unsuspend_user', {
+          method: 'POST',
+          body: formData
+        }).then(response => response.json())
+          .then(data => {
+            if(data.success) {
+              closeUnsuspendModal();
+              document.getElementById('successMessage').textContent = 'This user has been unsuspended.';
+              document.getElementById('successModal').style.display = 'block';
+            } else {
+              alert('Failed to unsuspend user: ' + (data.error || 'Unknown error'));
+            }
+          }).catch(e => {
+            console.error('Error:', e);
+            alert('A network error occurred.');
+          });
+      }
+    }
+
     function confirmSuspend() {
       if (userToSuspend) {
         const reason = document.getElementById('suspendReason').value;
-        alert(`Suspended user ID: ${userToSuspend}\nReason: ${reason}`);
-        // Implement actual suspend functionality
-        closeSuspendModal();
+        if (!reason.trim()) {
+           alert("Please enter a reason for suspension.");
+           return;
+        }
+        
+        const formData = new FormData();
+        formData.append('id', userToSuspend);
+        formData.append('reason', reason);
+
+        fetch('<?= ROOT ?>/admin_suspend_user', {
+          method: 'POST',
+          body: formData
+        }).then(response => response.json())
+          .then(data => {
+            if(data.success) {
+              closeSuspendModal();
+              document.getElementById('successMessage').textContent = 'This user is suspended.';
+              document.getElementById('successModal').style.display = 'block';
+            } else {
+              alert('Failed to suspend user: ' + (data.error || 'Unknown error'));
+            }
+          }).catch(e => {
+            console.error('Error:', e);
+            alert('A network error occurred.');
+          });
+          
       }
     }
 
@@ -456,7 +640,9 @@
     window.onclick = function(event) {
       const deleteModal = document.getElementById('deleteModal');
       const suspendModal = document.getElementById('suspendModal');
+      const unsuspendModal = document.getElementById('unsuspendModal');
       const viewUserModal = document.getElementById('viewUserModal');
+      const successModal = document.getElementById('successModal');
       
       if (event.target === deleteModal) {
         closeModal();
@@ -464,8 +650,14 @@
       if (event.target === suspendModal) {
         closeSuspendModal();
       }
+      if (event.target === unsuspendModal) {
+        closeUnsuspendModal();
+      }
       if (event.target === viewUserModal) {
         closeViewUserModal();
+      }
+      if (event.target === successModal) {
+        closeSuccessModal();
       }
     }
   </script>

@@ -27,7 +27,9 @@ class Users extends Controller {
                     created_at,
                     bio,
                     country,
-                    city
+                    city,
+                    status,
+                    suspend_reason
                 FROM users 
                 ORDER BY created_at DESC
             ");
@@ -37,7 +39,7 @@ class Users extends Controller {
             
             // Add default status to each user if not in database
             foreach ($users as $user) {
-                $user->status = 'active'; // Default status
+
                 // Map profile_image to profile_picture for view compatibility
                 $user->profile_picture = $user->profile_image ?? null;
             }
@@ -55,5 +57,45 @@ class Users extends Controller {
         ];
         
         $this->view('admin/Users', $data);
+    }
+
+
+    public function suspend() {
+        global $pdo;
+        if (!isset($pdo)) { require_once __DIR__ . '/../../../config/database.php'; }
+        $id = $_POST['id'] ?? 0;
+        $reason = $_POST['reason'] ?? '';
+        if($id) {
+            try {
+                $stmt = $pdo->prepare("UPDATE users SET status='suspended', suspend_reason=? WHERE id=?");
+                $stmt->execute([$reason, $id]);
+                echo json_encode(['success' => true]);
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+            }
+            exit;
+        } else {
+            echo json_encode(['success' => false, 'error' => 'No ID provided']);
+            exit;
+        }
+    }
+
+    public function unsuspend() {
+        global $pdo;
+        if (!isset($pdo)) { require_once __DIR__ . '/../../../config/database.php'; }
+        $id = $_POST['id'] ?? 0;
+        if($id) {
+            try {
+                $stmt = $pdo->prepare("UPDATE users SET status='active', suspend_reason=NULL WHERE id=?");
+                $stmt->execute([$id]);
+                echo json_encode(['success' => true]);
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+            }
+            exit;
+        } else {
+            echo json_encode(['success' => false, 'error' => 'No ID provided']);
+            exit;
+        }
     }
 }

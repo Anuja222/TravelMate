@@ -132,6 +132,12 @@ class AuthController
             return;
         }
 
+        if (isset($userData['status']) && $userData['status'] === 'suspended') {
+            $reason = !empty($userData['suspend_reason']) ? $userData['suspend_reason'] : 'Violation of terms';
+            $this->sendResponse(false, ['general' => 'Your account has been suspended by Admin. Reason: ' . htmlspecialchars($reason)]);
+            return;
+        }
+
         // Set session with user data
         $_SESSION['user'] = [
             'id' => $userData['id'],
