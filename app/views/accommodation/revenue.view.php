@@ -13,8 +13,12 @@ if (session_status() === PHP_SESSION_NONE) {
   <link rel="stylesheet" href="assets/css/accommodation/setting.css">
   <link rel="stylesheet" href="assets/css/accommodation/common.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    .filter-container {
+  <style>      /* Sidebar Active State */
+      .sidebar ul li a.active {
+          background: #e9f6ee;
+          color: #1abc5b;
+          font-weight: 600;
+      }    .filter-container {
       margin-top: 20px;
       margin-bottom: 20px;
       display: flex;
