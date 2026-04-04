@@ -107,6 +107,9 @@ if (session_status() === PHP_SESSION_NONE) {
     .property-table tr:hover {
       background-color: #f8fafc;
     }
+    .property-table tr {
+      page-break-inside: avoid;
+    }
   </style>
 </head>
 <body>
@@ -122,12 +125,38 @@ if (session_status() === PHP_SESSION_NONE) {
     ?>
 
     <div class="content">
+        <!-- Hidden PDF Header (Only visible in PDF) -->
+        <div id="pdfHeader" style="display: none; padding: 20px; border-bottom: 2px solid #1abc5b; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <img src="<?= ROOT ?? '' ?>/assets/images/logo.jpg" onerror="this.src='assets/images/logo.jpg'" alt="TravelMate Logo" style="height: 50px; object-fit: contain;">
+                    <div>
+                        <h2 style="margin: 0; color: #0f172a; font-size: 26px; font-weight: 800;">TravelMate</h2>
+                        <p style="margin: 3px 0 0 0; color: #1abc5b; font-size: 14px; font-weight: 600;">Your Trusted Travel Partner</p>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <h3 style="margin: 0; color: #0f172a; font-size: 18px;">Revenue Report</h3>
+                    <p style="margin: 5px 0 0 0; color: #64748b; font-size: 14px;"><strong>Date:</strong> <?php echo date('F j, Y'); ?></p>
+                    <p style="margin: 5px 0 0 0; color: #64748b; font-size: 14px;"><strong>Provider:</strong> <?php echo htmlspecialchars($_SESSION['USER']->name ?? $_SESSION['user_name'] ?? 'Transport Provider'); ?></p>
+                </div>
+            </div>
+            <div style="margin-top: 20px; padding: 12px 15px; background: #f8fafc; border-radius: 6px; border-left: 4px solid #1abc5b;">
+                <p style="margin: 0; color: #334155; font-size: 14px; line-height: 1.5;">
+                    <strong>Dashboard Activity Summary:</strong> Official documented revenue, booking activity, and statistics for your verified vehicles on the TravelMate platform for the period of <strong><?php echo htmlspecialchars($period_label ?? 'Current Period'); ?></strong>.
+                </p>
+            </div>
+        </div>
+
       <div class="page-title">
         <h1><i class="fas fa-chart-line"></i> Revenue Dashboard</h1>
         <p>Monitor your earnings and vehicle performance</p>
       </div>
 
-      <div class="filter-container">
+      <div class="filter-container" style="display: flex; justify-content: space-between; align-items: center;">
+        <button onclick="downloadPDF()" class="btn-download" style="padding: 10px 20px; background: #e74c3c; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 1rem;">
+            <i class="fas fa-file-pdf"></i> Download PDF
+        </button>
         <form class="filter-form" method="GET" action="tr_revenue" id="filterForm">
           <select name="filter" onchange="document.getElementById('filterForm').submit()">
             <option value="week" <?= isset($filter) && $filter == 'week' ? 'selected' : '' ?>>This Week</option>
@@ -207,6 +236,35 @@ if (session_status() === PHP_SESSION_NONE) {
   </main>
 
 <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
+
+<!-- html2pdf Library for PDF Generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+function downloadPDF() {
+    const element = document.querySelector('.content');
+    const filterContainer = document.querySelector('.filter-container');
+    const pdfHeader = document.getElementById('pdfHeader');
+    
+    // Temporarily edit UI elements for the PDF
+    if(filterContainer) filterContainer.style.display = 'none';
+    if(pdfHeader) pdfHeader.style.display = 'block';
+    
+    const opt = {
+        margin:       [0.5, 0.5, 0.5, 0.5],
+        filename:     'TravelMate_Transport_Revenue_<?php echo date('Y-m-d'); ?>.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
+        pagebreak:    { mode: ['css', 'legacy'] }
+    };
+
+    // Generate PDF and then restore hidden elements
+    html2pdf().set(opt).from(element).save().then(() => {
+        if(filterContainer) filterContainer.style.display = 'flex';
+        if(pdfHeader) pdfHeader.style.display = 'none';
+    });
+}
+</script>
 
 </body>
 </html>
