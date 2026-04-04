@@ -53,21 +53,17 @@
       </div>
 
       <section class="bookings-container" style="margin-top: 20px;">
-        <div class="filter-bar" style="margin-bottom: 2em; display:flex; gap:10px; align-items:center;">
-          <input type="text" id="searchBox" placeholder="🔍 Search accepted, rejected and pending requests" style="flex:1;">
-          <select id="categoryFilter" style="padding:10px; border-radius:8px; border:1px solid #ccc;">
-            <option value="all">All Categories</option>
-            <option value="accepted">Accepted</option>
-            <option value="rejected">Rejected</option>
-            <option value="pending">Pending</option>
-          </select>
-          <button id="applyFilter" class="btn-primary" style="padding:10px 20px; border-radius:8px; border:none; background:#1abc5b; color:white; cursor:pointer;">Search</button>
-          <button class="history-btn" onclick="window.location.href='bookingHistory';" style="padding:10px 20px; border-radius:8px; border:none; background:#3498db; color:white; cursor:pointer; margin-left:10px;">
-            <i class="fas fa-history"></i> View History
-          </button>
-        </div>
         
         <div class="bookings-section">
+            <div class="bookings-section-header">
+                <h2><i class="fas fa-clock"></i> Pending Requests</h2>
+            </div>
+            <div class="bookings-grid" id="pendingBookingsGrid">
+                <!-- Pending bookings will load here -->
+            </div>
+        </div>
+
+        <div class="bookings-section" style="margin-top: 30px;">
             <div class="bookings-section-header">
                 <h2><i class="fas fa-calendar-day"></i> Current Bookings</h2>
             </div>
@@ -100,6 +96,16 @@
     </div>
   </div>
 
+  <div id="contactModal" class="modal">
+      <div class="modal-content contact-modal-content">
+          <span class="modal-close" onclick="closeContactModal()">&times;</span>
+          <h2 class="modal-title">Contact Traveller</h2>
+          <div class="modal-body" id="contactModalBody">
+              <!-- Contact options will be loaded here -->
+          </div>
+      </div>
+  </div>
+
   <div class="modal" id="bookingActionModal">
     <div class="modal-content contact-modal-content">
       <span class="modal-close" onclick="closeBookingActionModal()">&times;</span>
@@ -121,7 +127,6 @@
 
     document.addEventListener('DOMContentLoaded', function() {
       loadProviderBookings();
-      document.getElementById('applyFilter').addEventListener('click', renderFilteredBookings);
     });
 
     async function loadProviderBookings() {
@@ -155,8 +160,9 @@
     }
 
     function renderFilteredBookings() {
-      const searchTerm = document.getElementById('searchBox').value.toLowerCase();
-      const filterValue = document.getElementById('categoryFilter').value;
+      const searchTerm = '';
+      const filterValue = 'all';
+      const pendingContainer = document.getElementById('pendingBookingsGrid');
       const currentContainer = document.getElementById('currentBookingsGrid');
       const expiredContainer = document.getElementById('expiredBookingsGrid');
 
@@ -169,17 +175,23 @@
         return matchesSearch && matchesFilter;
       });
 
+      const pendingBookings = [];
       const currentBookings = [];
       const expiredBookings = [];
 
       filtered.forEach(booking => {
           if (isExpiredBooking(booking)) {
               expiredBookings.push(booking);
+          } else if (normalizeStatus(booking.booking_status) === 'pending') {
+              pendingBookings.push(booking);
           } else {
               currentBookings.push(booking);
           }
       });
 
+      if (pendingContainer) {
+          pendingContainer.innerHTML = pendingBookings.length ? pendingBookings.map(renderBookingCard).join('') : '<div class="empty-state" style="grid-column: 1/-1; text-align:center; padding: 30px;"><i class="fas fa-clock" style="font-size: 30px; color:#ccc;"></i><p>No pending requests found.</p></div>';
+      }
       if (currentContainer) {
           currentContainer.innerHTML = currentBookings.length ? currentBookings.map(renderBookingCard).join('') : '<div class="empty-state" style="grid-column: 1/-1; text-align:center; padding: 30px;"><i class="fas fa-calendar-times" style="font-size: 30px; color:#ccc;"></i><p>No current bookings found.</p></div>';
       }
@@ -216,8 +228,9 @@
       const amount = Number(booking.total_price || 0).toLocaleString();
       const vehicleModel = booking.vehicle_model || 'Vehicle';
       
-      const vehicleImage = (booking.vehicle_image || booking.main_image) 
-            ? `${BASE_PATH}${booking.vehicle_image || booking.main_image}` 
+      const photoPath = booking.vehicle_image || booking.main_image;
+      const vehicleImage = photoPath 
+            ? `${BASE_PATH}${photoPath.startsWith('/') ? '' : '/'}${photoPath}` 
             : `${BASE_PATH}/assets/trimages/car.png`;
 
       return `
@@ -243,6 +256,33 @@
                     </div>
                 </div>
 
+                ${statusClass === 'pending' ? `
+                <div class="booking-footer" style="padding-top: 15px; margin-top: 15px; border-top: 1px solid #edf2f7; display:flex; flex-direction: column; gap: 15px;">
+                    <div class="booking-price">
+                        <div class="price-amount" style="font-size: 1.1em; font-weight: bold; color: #2c3e50;">
+                            <span class="currency">LKR</span>
+                            <span>${amount}</span>
+                        </div>
+                        <span class="price-label" style="font-size: 0.8em; color: #7f8c8d;">Estimated Fare</span>
+                    </div>
+                    <div class="booking-actions-primary" style="display:flex; gap:10px; width:100%;">
+                        <button class="booking-btn booking-btn-accept" style="flex:1; padding: 10px; border-radius: 6px; cursor:pointer; border:none; font-weight:600;" onclick="openAcceptBookingModal('${booking.booking_id}')" title="Accept">
+                            <i class="fas fa-check"></i> Accept
+                        </button>
+                        <button class="booking-btn booking-btn-reject" style="flex:1; padding: 10px; border-radius: 6px; cursor:pointer; border:none; font-weight:600;" onclick="openRejectBookingModal('${booking.booking_id}')" title="Reject">
+                            <i class="fas fa-times"></i> Reject
+                        </button>
+                    </div>
+                    <div class="booking-actions-secondary" style="display:flex; gap:8px; justify-content: flex-end;">
+                        <button class="booking-btn booking-btn-contact" style="padding: 8px 12px; border-radius: 6px; font-weight:600; cursor:pointer;" onclick="openContactModal('${booking.phone || ''}', '${booking.email || ''}', '${customer}')">
+                            Contact
+                        </button>
+                        <button class="booking-btn booking-btn-details" style="padding: 8px 12px; border-radius: 6px; font-weight:600; cursor:pointer;" onclick="openBookingDetailsModal('${booking.booking_id}')">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </div>
+                </div>
+                ` : `
                 <div class="booking-footer" style="padding-top: 15px; margin-top: 15px; border-top: 1px solid #edf2f7; display:flex; justify-content: space-between; align-items:center;">
                     <div class="booking-price">
                         <div class="price-amount" style="font-size: 1.1em; font-weight: bold; color: #2c3e50;">
@@ -252,19 +292,15 @@
                         <span class="price-label" style="font-size: 0.8em; color: #7f8c8d;">Estimated Fare</span>
                     </div>
                     <div class="booking-actions" style="display:flex; gap:8px;">
+                        <button class="booking-btn booking-btn-contact" style="padding: 8px 12px; border-radius: 6px; font-weight:600; cursor:pointer;" onclick="openContactModal('${booking.phone || ''}', '${booking.email || ''}', '${customer}')">
+                            Contact
+                        </button>
                         <button class="booking-btn booking-btn-details" style="padding: 8px 12px; border-radius: 6px; font-weight:600; cursor:pointer;" onclick="openBookingDetailsModal('${booking.booking_id}')">
                             <i class="fas fa-eye"></i> View
                         </button>
-                        ${statusClass === 'pending' ? `
-                            <button class="booking-btn booking-btn-accept" style="padding: 8px; border-radius: 6px; cursor:pointer; border:none;" onclick="openAcceptBookingModal('${booking.booking_id}')" title="Accept">
-                                <i class="fas fa-check"></i>
-                            </button>
-                            <button class="booking-btn booking-btn-reject" style="padding: 8px; border-radius: 6px; cursor:pointer; border:none;" onclick="openRejectBookingModal('${booking.booking_id}')" title="Reject">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        ` : ''}
                     </div>
                 </div>
+                `}
             </div>
         </div>
       `;
@@ -324,6 +360,90 @@
       modal.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('modal-open');
       pendingModerationAction = null;
+    }
+
+    function openContactModal(phone, email, guestName) {
+        const contactModalBody = document.getElementById('contactModalBody');
+        
+        let contactOptions = `
+            <div class="contact-info-section" style="margin-bottom: 20px; text-align: center;">
+                <div class="contact-guest-name" style="font-size: 1.2em; font-weight: bold; margin-bottom: 10px;">
+                    <i class="fas fa-user-circle"></i>
+                    <span>${guestName || 'Traveller'}</span>
+                </div>
+                <p class="contact-description" style="color: #64748b;">Traveller contact information:</p>
+            </div>
+            <div class="contact-methods" style="display: flex; flex-direction: column; gap: 15px;">
+        `;
+
+        if (phone && phone !== '') {
+            contactOptions += `
+                <div class="contact-method-card" style="display: flex; align-items: center; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc;">
+                    <div class="contact-method-icon phone" style="font-size: 1.5em; color: #3b82f6; width: 40px; text-align: center;">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div class="contact-method-info" style="margin-left: 15px;">
+                        <h3 style="margin: 0; font-size: 1em; color: #1e293b;">Phone</h3>
+                        <p style="margin: 5px 0 0; color: #475569;">${phone}</p>
+                    </div>
+                </div>
+                <div class="contact-method-card" style="display: flex; align-items: center; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc;">
+                    <div class="contact-method-icon whatsapp" style="font-size: 1.5em; color: #25d366; width: 40px; text-align: center;">
+                        <i class="fab fa-whatsapp"></i>
+                    </div>
+                    <div class="contact-method-info" style="margin-left: 15px;">
+                        <h3 style="margin: 0; font-size: 1em; color: #1e293b;">WhatsApp</h3>
+                        <p style="margin: 5px 0 0; color: #475569;">${phone}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        if (email && email !== '') {
+            contactOptions += `
+                <div class="contact-method-card" style="display: flex; align-items: center; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc;">
+                    <div class="contact-method-icon email" style="font-size: 1.5em; color: #ef4444; width: 40px; text-align: center;">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="contact-method-info" style="margin-left: 15px;">
+                        <h3 style="margin: 0; font-size: 1em; color: #1e293b;">Email</h3>
+                        <p style="margin: 5px 0 0; color: #475569;">${email}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        if ((!phone || phone === '') && (!email || email === '')) {
+            contactOptions += `
+                <div class="no-contact-info" style="text-align: center; padding: 20px; color: #64748b;">
+                    <i class="fas fa-exclamation-circle" style="font-size: 2em; margin-bottom: 10px;"></i>
+                    <p>No contact information available for this traveller.</p>
+                </div>
+            `;
+        }
+
+        contactOptions += `
+            </div>
+            <div class="modal-actions" style="margin-top: 20px; text-align: right;">
+                <button class="modal-btn modal-btn-close" style="padding: 8px 16px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; cursor: pointer;" onclick="closeContactModal()">
+                    Close
+                </button>
+            </div>
+        `;
+
+        contactModalBody.innerHTML = contactOptions;
+
+        const modal = document.getElementById('contactModal');
+        modal.style.display = 'block';
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('modal-open');
+    }
+
+    function closeContactModal() {
+        const modal = document.getElementById('contactModal');
+        modal.style.display = 'none';
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('modal-open');
     }
 
     async function confirmPendingModerationAction() {
@@ -419,10 +539,21 @@
       }
     }
 
+    // Modal background click to close
+    window.onclick = function(event) {
+        const contactModal = document.getElementById('contactModal');
+        const detailsModal = document.getElementById('bookingDetailsModal');
+        const actionModal = document.getElementById('bookingActionModal');
+        
+        if (event.target == contactModal) closeContactModal();
+        if (event.target == detailsModal) closeBookingDetailsModal();
+    };
+
     document.addEventListener('keydown', function(event) {
       if (event.key === 'Escape') {
         closeBookingDetailsModal();
         closeBookingActionModal();
+        closeContactModal();
       }
     });
   </script>
