@@ -76,33 +76,6 @@
         </div>
       </div>
 
-      <!-- Filter Bar -->
-      <div class="filter-bar">
-        <input type="text" id="searchInput" placeholder="Search vehicles..." />
-        <select id="statusFilter">
-          <option value="">All Status</option>
-          <option value="active">Active</option>
-          <option value="pending">Pending</option>
-          <option value="inactive">Rejected</option>
-        </select>
-        <select id="typeFilter">
-          <option value="">All Types</option>
-          <option value="car">Car</option>
-          <option value="van">Van</option>
-          <option value="bus">Bus</option>
-          <option value="suv">SUV</option>
-          <option value="mini-van">Mini Van</option>
-        </select>
-        <select id="acFilter">
-          <option value="">All AC Types</option>
-          <option value="ac">AC</option>
-          <option value="non-ac">Non-AC</option>
-        </select>
-        <button id="btnApplyFilter">
-          <i class="fas fa-filter"></i> Apply Filters
-        </button>
-      </div>
-
       <!-- Pending Vehicles Section -->
       <div class="section-block">
         <div class="section-title-row">

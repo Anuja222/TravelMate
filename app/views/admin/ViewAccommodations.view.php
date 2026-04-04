@@ -73,28 +73,6 @@
         </div>
       </div>
 
-      <!-- Filter Bar -->
-      <div class="filter-bar">
-        <input type="text" id="searchInput" placeholder="Search accommodations..." />
-        <select id="statusFilter">
-          <option value="">All Status</option>
-          <option value="active">Active</option>
-          <option value="pending">Pending</option>
-          <option value="inactive">Inactive</option>
-        </select>
-        <select id="typeFilter">
-          <option value="">All Types</option>
-          <option value="hotel">Hotel</option>
-          <option value="villa">Villa</option>
-          <option value="apartment">Apartment</option>
-          <option value="guesthouse">Guesthouse</option>
-          <option value="resort">Resort</option>
-        </select>
-        <button id="btnApplyFilter">
-          <i class="fas fa-filter"></i> Apply Filters
-        </button>
-      </div>
-
       <!-- Pending Accommodations Section -->
       <div class="section-block">
         <div class="section-title-row">

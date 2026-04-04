@@ -926,8 +926,16 @@ elseif ($page === 'ad_dashboard') {
       require_once '../app/core/init.php';
     require_once '../app/controllers/Admin/Users.php';
     $controller = new Users();
-    $controller->index();
-}elseif ($page === 'content') {
+    $controller->index();}elseif ($page === 'admin_suspend_user') {
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Admin/Users.php';
+    $controller = new Users();
+    $controller->suspend();
+}elseif ($page === 'admin_unsuspend_user') {
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Admin/Users.php';
+    $controller = new Users();
+    $controller->unsuspend();}elseif ($page === 'content') {
     include '../app/views/admin/content.view.php';
 }elseif ($page === 'notifications') {
     include '../app/views/admin/notifications.view.php';
