@@ -13,108 +13,7 @@ if (session_status() === PHP_SESSION_NONE) {
   <link rel="stylesheet" href="assets/css/accommodation/setting.css">
   <link rel="stylesheet" href="assets/css/accommodation/common.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>      /* Sidebar Active State */
-      .sidebar ul li a.active {
-          background: #e9f6ee;
-          color: #1abc5b;
-          font-weight: 600;
-      }    .filter-container {
-      margin-top: 20px;
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: flex-end;
-    }
-    .filter-form select {
-      padding: 8px 16px;
-      width: 9em;
-      border: 1px solid #e1e8f0;
-      border-radius: 6px;
-      margin-right: 10px;
-      font-size: 1rem;
-      color: #334155;
-      cursor: pointer;
-    }
-    .revenue-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-      margin-top: 20px;
-    }
-    .revenue-card {
-      background-color: white;
-      border-radius: 8px;
-      padding: 24px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-      border: 1px solid #e1e8f0;
-      text-align: center;
-    }
-    .revenue-card h3 {
-      font-size: 1.2rem;
-      color: #64748b;
-      margin-bottom: 15px;
-    }
-    .revenue-amount {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: #0f172a;
-      margin-bottom: 10px;
-    }
-    .improvement {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-weight: 500;
-      padding: 5px 10px;
-      border-radius: 20px;
-      font-size: 0.9rem;
-    }
-    .improvement.positive {
-      color: #10b981;
-      background-color: #ecfdf5;
-    }
-    .improvement.negative {
-      color: #ef4444;
-      background-color: #fef2f2;
-    }
-    .improvement.neutral {
-      color: #64748b;
-      background-color: #f1f5f9;
-    }
-    .property-list {
-      margin-top: 40px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-      border: 1px solid #e1e8f0;
-      overflow: hidden;
-    }
-    .property-list h2 {
-      padding: 20px;
-      border-bottom: 1px solid #e1e8f0;
-      font-size: 1.2rem;
-      color: #0f172a;
-    }
-    .property-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .property-table th, .property-table td {
-      padding: 15px 20px;
-      text-align: left;
-      border-bottom: 1px solid #e1e8f0;
-    }
-    .property-table th {
-      background-color: #f8fafc;
-      color: #64748b;
-      font-weight: 600;
-    }
-    .property-table tr {
-      page-break-inside: avoid;
-    }
-    .property-table tr:last-child td {
-      border-bottom: none;
-    }
-  </style>
+  <link rel="stylesheet" href="<?= ROOT ?? '' ?>/assets/css/accommodation/revenue.css">
 </head>
 <body>
 
@@ -267,33 +166,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 <!-- html2pdf Library for PDF Generation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script>
-function downloadPDF() {
-    const element = document.querySelector('.content');
-    const filterContainer = document.querySelector('.filter-container');
-    const pdfHeader = document.getElementById('pdfHeader');
-    const sidebar = document.querySelector('.sidebar');
-    
-    // Temporarily edit UI elements for the PDF
-    if(filterContainer) filterContainer.style.display = 'none';
-    if(pdfHeader) pdfHeader.style.display = 'block';
-    
-    const opt = {
-        margin:       [0.5, 0.5, 0.5, 0.5],
-        filename:     'TravelMate_Revenue_Report_<?php echo date('Y-m-d'); ?>.pdf',
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true },
-        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
-        pagebreak:    { mode: ['css', 'legacy'] }
-    };
-
-    // Generate PDF and then restore hidden elements
-    html2pdf().set(opt).from(element).save().then(() => {
-        if(filterContainer) filterContainer.style.display = 'flex';
-        if(pdfHeader) pdfHeader.style.display = 'none';
-    });
-}
-</script>
+<script src="<?= ROOT ?? '' ?>/assets/js/accommodation/revenue.js"></script>
 
 </body>
 </html>
