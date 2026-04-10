@@ -11,7 +11,7 @@ if (session_status() === PHP_SESSION_NONE) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TravelMate - Revenue</title>
   <link rel="stylesheet" href="assets/css/Transpoter/setting.css">
-  <link rel="stylesheet" href="assets/css/Transpoter/common.css">
+  <link rel="stylesheet" href="assets/css/Transpoter/common.css?v=2">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     .filter-container {
