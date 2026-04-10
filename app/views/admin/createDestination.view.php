@@ -3,8 +3,8 @@
 
 <head>
   <title>Create Destination</title>
-  <link rel="stylesheet" href="assets/css/Admin/createDestination.css">
-  <link rel="stylesheet" href="assets/css/Admin/common.css">
+  <link rel="stylesheet" href="<?= defined('ROOT') ? ROOT : '/TravelMate/public' ?>/assets/css/Admin/createDestination.css">
+  <link rel="stylesheet" href="<?= defined('ROOT') ? ROOT : '/TravelMate/public' ?>/assets/css/Admin/common.css">
 </head>
 
 <body>
