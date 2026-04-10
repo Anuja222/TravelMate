@@ -10,10 +10,11 @@ if (session_status() === PHP_SESSION_NONE) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TravelMate - Revenue</title>
-  <link rel="stylesheet" href="assets/css/accommodation/setting.css">
-  <link rel="stylesheet" href="assets/css/accommodation/common.css">
+  <link rel="stylesheet" href="<?= defined('ROOT') ? ROOT : '/TravelMate/public' ?>/assets/css/Accommodation/dashboard.css">
+  <link rel="stylesheet" href="<?= defined('ROOT') ? ROOT : '/TravelMate/public' ?>/assets/css/Accommodation/setting.css">
+  <link rel="stylesheet" href="<?= defined('ROOT') ? ROOT : '/TravelMate/public' ?>/assets/css/Accommodation/common.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="<?= ROOT ?? '' ?>/assets/css/accommodation/revenue.css">
+  <link rel="stylesheet" href="<?= defined('ROOT') ? ROOT : '/TravelMate/public' ?>/assets/css/Accommodation/revenue.css">
 </head>
 <body>
 
@@ -27,7 +28,7 @@ if (session_status() === PHP_SESSION_NONE) {
     include __DIR__ . '/sidebar.view.php'; 
     ?>
 
-    <div class="content">
+    <div class="content dashboard-content">
         <!-- Hidden PDF Header (Only visible in PDF) -->
         <div id="pdfHeader" style="display: none; padding: 20px; border-bottom: 2px solid #1abc5b; margin-bottom: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -84,8 +85,8 @@ if (session_status() === PHP_SESSION_NONE) {
             </div>
         </div>
 
-        <div class="page-title">
-          <h1>Revenue Analytics</h1>
+        <div class="page-header">
+          <h1><i class="fas fa-chart-line"></i> Revenue Analytics</h1>
           <p>Track your earnings and business performance over time</p>
         </div>
 
@@ -166,7 +167,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 <!-- html2pdf Library for PDF Generation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="<?= ROOT ?? '' ?>/assets/js/accommodation/revenue.js"></script>
+<script src="<?= defined('ROOT') ? ROOT : '/TravelMate/public' ?>/assets/js/Accommodation/revenue.js"></script>
 
 </body>
 </html>
