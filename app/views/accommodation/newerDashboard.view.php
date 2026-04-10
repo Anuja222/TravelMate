@@ -24,6 +24,8 @@ if (!$isLoggedIn || $role !== 'accommodation') {
 
 $firstName = $isLoggedIn ? $_SESSION['user']['first_name'] : '';
 $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
+$rootUrl = defined('ROOT') ? ROOT : '/TravelMate/public';
+$profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $rootUrl . '/' . $_SESSION['user']['profile_image'] : $rootUrl . '/assets/images/profile.jpg';
 ?>
 
 <!DOCTYPE html>
@@ -702,7 +704,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
       </div>
       <!-- Profile -->
       <div class="profile-section">
-  <img src="/TravelMate/public/assets/images/profile.jpg" alt="User" class="profile-pic">
+  <img src="<?php echo htmlspecialchars($profileImage); ?>" alt="User" class="profile-pic" onerror="this.src='/TravelMate/public/assets/images/profile.jpg'">
         <div>
           <h2><?php echo htmlspecialchars($firstName); ?> <?php echo htmlspecialchars($lastName); ?></h2>
           <span class="profile-email"><?php echo htmlspecialchars($_SESSION['user']['email']); ?></span>
