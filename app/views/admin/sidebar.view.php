@@ -1,5 +1,5 @@
   <aside class="sidebar">
-  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css">
+  <link rel="stylesheet" href="<?= defined('ROOT') ? ROOT : '/TravelMate/public' ?>/assets/css/Admin/common.css">
 
   <ul class="sidebar-menu">
     <!-- Main Section -->
@@ -127,6 +127,19 @@
         <span>Settings</span>
       </a>
     </li> -->
+
+    <li class="menu-separator"></li>
+    
+    <li class="menu-item">
+      <a href="<?= defined('ROOT') ? ROOT : '/TravelMate/public' ?>/logout.php" style="color: #e74c3c;">
+        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="stroke: #e74c3c;">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        <span>Logout</span>
+      </a>
+    </li>
   </ul>
   
   <script>
