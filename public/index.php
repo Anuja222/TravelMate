@@ -1012,3 +1012,4 @@ else {
         'error' => '404 - Route not found: ' . $requestUri
     ]);
 }
+
