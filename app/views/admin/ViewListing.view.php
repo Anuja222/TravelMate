@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Popular Destinations - TravelMate Admin</title>
-  <link rel="stylesheet" href="assets/css/Admin/ViewListing.css">
-  <link rel="stylesheet" href="assets/css/Admin/common.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/ViewListing.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -192,7 +192,7 @@
     </div>
   </div>
 
-  <script src="../public/assets/js/destinations.js"></script>
+  <script src="<?= ROOT ?>/assets/js/destinations.js"></script>
   
   <script>
     // Success Modal Functions
@@ -226,14 +226,14 @@
             document.getElementById('viewDestTitle').textContent = dest.title || '';
             document.getElementById('viewDestDescription').textContent = dest.description || 'No description available';
             
-            const imgSrc = dest.image ? baseUrl + dest.image : 'assets/images/default-dest.png';
+            const imgSrc = dest.image ? baseUrl + dest.image : '<?= ROOT ?>/assets/images/default-dest.png';
             document.getElementById('viewDestImage').src = imgSrc;
             
             // Display places
             const placesList = document.getElementById('viewPlacesList');
             if (dest.places && dest.places.length > 0) {
               placesList.innerHTML = dest.places.map(place => {
-                const placeImg = place.image ? baseUrl + place.image : 'assets/images/default-place.png';
+                const placeImg = place.image ? baseUrl + place.image : '<?= ROOT ?>/assets/images/default-place.png';
                 return `
                   <div class="view-place-card">
                     <div class="view-place-image">

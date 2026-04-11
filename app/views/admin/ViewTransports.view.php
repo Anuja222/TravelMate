@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Transports - TravelMate Admin</title>
-  <link rel="stylesheet" href="assets/css/Admin/ViewTransports.css">
-  <link rel="stylesheet" href="assets/css/Admin/common.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/ViewTransports.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -74,33 +74,6 @@
             <div class="stat-label">Total</div>
           </div>
         </div>
-      </div>
-
-      <!-- Filter Bar -->
-      <div class="filter-bar">
-        <input type="text" id="searchInput" placeholder="Search vehicles..." />
-        <select id="statusFilter">
-          <option value="">All Status</option>
-          <option value="active">Active</option>
-          <option value="pending">Pending</option>
-          <option value="inactive">Rejected</option>
-        </select>
-        <select id="typeFilter">
-          <option value="">All Types</option>
-          <option value="car">Car</option>
-          <option value="van">Van</option>
-          <option value="bus">Bus</option>
-          <option value="suv">SUV</option>
-          <option value="mini-van">Mini Van</option>
-        </select>
-        <select id="acFilter">
-          <option value="">All AC Types</option>
-          <option value="ac">AC</option>
-          <option value="non-ac">Non-AC</option>
-        </select>
-        <button id="btnApplyFilter">
-          <i class="fas fa-filter"></i> Apply Filters
-        </button>
       </div>
 
       <!-- Pending Vehicles Section -->
@@ -324,7 +297,7 @@
     </div>
   </div>
 
-  <script src="assets/js/viewTransports.js?v=<?php echo time(); ?>"></script>
+  <script src="<?= ROOT ?>/assets/js/viewTransports.js?v=<?php echo time(); ?>"></script>
 
 </body>
 </html>

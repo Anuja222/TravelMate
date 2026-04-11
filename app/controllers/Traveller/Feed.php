@@ -11,9 +11,12 @@ class Feed extends Controller{
         
         global $pdo;
         
+        $category = $_GET['category'] ?? null;
+        
         // Get posts from database
         $post = new Post();
-        $posts = $post->getAllWithUserInfo();
+        $currentUserId = $_SESSION['user']['id'] ?? 0;
+        $posts = $post->getAllWithUserInfo($currentUserId, $category);
         
         // Get trending destinations (top 3 destinations from database)
         $stmt = $pdo->prepare("SELECT id, title, slug, image FROM destinations ORDER BY created_at DESC LIMIT 3");
@@ -29,7 +32,7 @@ class Feed extends Controller{
         }
         
         // Get suggested travelers (random 3 travelers excluding current user)
-        $currentUserId = $_SESSION['user_id'] ?? 0;
+        $currentUserId = $_SESSION['user']['id'] ?? 0;
         $stmt = $pdo->prepare("SELECT id, first_name, last_name, email, created_at FROM users WHERE id != ? AND role = 'traveller' ORDER BY RAND() LIMIT 3");
         $stmt->execute([$currentUserId]);
         $suggestedTravelers = $stmt->fetchAll(PDO::FETCH_OBJ);

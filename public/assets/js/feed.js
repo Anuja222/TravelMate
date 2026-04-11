@@ -28,21 +28,58 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Like Button Functionality
-    const likeBtns = document.querySelectorAll('.like-btn');
-    likeBtns.forEach(btn => {
+    // Vote Button Functionality
+    const voteBtns = document.querySelectorAll('.vote-btn');
+    voteBtns.forEach(btn => {
         btn.addEventListener('click', function() {
-            this.classList.toggle('liked');
-            const svg = this.querySelector('.action-icon svg');
-            if (this.classList.contains('liked')) {
-                this.style.color = '#e74c3c';
-                svg.setAttribute('fill', '#e74c3c');
-                svg.setAttribute('stroke', '#e74c3c');
-            } else {
-                this.style.color = '#65676b';
-                svg.setAttribute('fill', 'none');
-                svg.setAttribute('stroke', 'currentColor');
-            }
+            const postId = this.dataset.id;
+            const type = this.dataset.type; // 'upvote' or 'downvote'
+            const postActions = this.closest('.post-actions');
+            
+            // Send AJAX request to update database
+            const formData = new FormData();
+            formData.append('post_id', postId);
+            formData.append('type', type);
+            
+            // Get base URL to ensure proper endpoint mapping safely provided by PHP
+            const baseUrl = window.AppConfig && window.AppConfig.baseUrl ? window.AppConfig.baseUrl : '';
+            
+            fetch(baseUrl + '/blog/vote', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Update UI counters
+                    postActions.querySelector('.upvote .count').textContent = data.upvotes;
+                    postActions.querySelector('.downvote .count').textContent = data.downvotes;
+                    
+                    // Toggle active state classes
+                    const isCurrentlyActive = this.classList.contains('active');
+                    
+                    // Reset both buttons
+                    postActions.querySelectorAll('.vote-btn').forEach(b => {
+                        b.classList.remove('active');
+                        b.style.removeProperty('color');
+                    });
+                    
+                    // Re-apply to clicked if it wasn't just toggled off
+                    if (!isCurrentlyActive) {
+                        this.classList.add('active');
+                    }
+                } else {
+                    console.error('Vote failed:', data.message);
+                    alert("Failed to record vote: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Network error. Please try again.");
+            });
         });
     });
 

@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Accommodations - TravelMate Admin</title>
-  <link rel="stylesheet" href="assets/css/Admin/ViewAccommodations.css">
-  <link rel="stylesheet" href="assets/css/Admin/common.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/ViewAccommodations.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -71,28 +71,6 @@
             <div class="stat-label">Total</div>
           </div>
         </div>
-      </div>
-
-      <!-- Filter Bar -->
-      <div class="filter-bar">
-        <input type="text" id="searchInput" placeholder="Search accommodations..." />
-        <select id="statusFilter">
-          <option value="">All Status</option>
-          <option value="active">Active</option>
-          <option value="pending">Pending</option>
-          <option value="inactive">Inactive</option>
-        </select>
-        <select id="typeFilter">
-          <option value="">All Types</option>
-          <option value="hotel">Hotel</option>
-          <option value="villa">Villa</option>
-          <option value="apartment">Apartment</option>
-          <option value="guesthouse">Guesthouse</option>
-          <option value="resort">Resort</option>
-        </select>
-        <button id="btnApplyFilter">
-          <i class="fas fa-filter"></i> Apply Filters
-        </button>
       </div>
 
       <!-- Pending Accommodations Section -->
@@ -283,7 +261,7 @@
     </div>
   </div>
 
-  <script src="assets/js/viewAccommodations.js?v=<?php echo time(); ?>"></script>
+  <script src="<?= ROOT ?>/assets/js/viewAccommodations.js?v=<?php echo time(); ?>"></script>
 
 </body>
 </html>
