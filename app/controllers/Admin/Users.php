@@ -80,6 +80,39 @@ class Users extends Controller {
         }
     }
 
+
+    public function delete() {
+        global $pdo;
+        if (!isset($pdo)) { require_once __DIR__ . '/../../../config/database.php'; }
+        $id = $_POST['id'] ?? 0;
+        if($id) {
+            try {
+                $pdo->beginTransaction();
+                
+                // Disable foreign key checks to prevent constraint violations
+                $pdo->exec("SET FOREIGN_KEY_CHECKS=0");
+                
+                $stmt = $pdo->prepare("DELETE FROM users WHERE id=?");
+                $stmt->execute([$id]);
+                
+                // Re-enable foreign key checks
+                $pdo->exec("SET FOREIGN_KEY_CHECKS=1");
+                
+                $pdo->commit();
+                echo json_encode(['success' => true]);
+            } catch (Exception $e) {
+                if ($pdo->inTransaction()) {
+                    $pdo->rollBack();
+                }
+                echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+            }
+            exit;
+        } else {
+            echo json_encode(['success' => false, 'error' => 'No ID provided']);
+            exit;
+        }
+    }
+
     public function unsuspend() {
         global $pdo;
         if (!isset($pdo)) { require_once __DIR__ . '/../../../config/database.php'; }

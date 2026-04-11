@@ -110,6 +110,14 @@ elseif ($requestUri === '/api/vehicle/delete' && $_SERVER['REQUEST_METHOD'] === 
     $vehicleController->delete();
     exit;
 }
+// Add deleteByAdmin endpoint
+elseif ($requestUri === '/api/vehicle/deleteByAdmin' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log(">>> Routing to Vehicle Delete by Admin");
+    require_once __DIR__ . '/../app/controllers/TransportProvider/VehicleController.php';
+    $vehicleController = new App\Controllers\VehicleController();
+    $vehicleController->deleteByAdmin();
+    exit;
+}
 
 elseif ($requestUri === '/api/vehicle/approve' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     error_log(">>> Routing to Vehicle Approve by Admin");
@@ -413,6 +421,13 @@ elseif ($requestUri === '/content/reject' && $_SERVER['REQUEST_METHOD'] === 'POS
     require_once '../app/controllers/Admin/Content.php';
     $contentController = new Content();
     $contentController->reject();
+    exit;
+}
+elseif ($requestUri === '/content/delete' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/Admin/Content.php';
+    $contentController = new Content();
+    $contentController->delete();
     exit;
 }
 
@@ -935,7 +950,12 @@ elseif ($page === 'ad_dashboard') {
     require_once '../app/core/init.php';
     require_once '../app/controllers/Admin/Users.php';
     $controller = new Users();
-    $controller->unsuspend();}elseif ($page === 'content') {
+    $controller->unsuspend();}elseif ($page === 'admin_delete_user') {
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Admin/Users.php';
+    $controller = new Users();
+    $controller->delete();
+}elseif ($page === 'content') {
     include '../app/views/admin/content.view.php';
 }elseif ($page === 'notifications') {
     include '../app/views/admin/notifications.view.php';

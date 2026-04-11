@@ -1,10 +1,10 @@
 <?php
-// Start session if not already started
+// start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is logged in
+// check if user is logged in
 $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
 $firstName = $isLoggedIn ? $_SESSION['user']['first_name'] : '';
 $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
@@ -125,15 +125,19 @@ if ($role === 'traveller') {
                         <li><a href="homet" class="<?php echo $currentRoute === 'homet' ? 'active' : ''; ?>">Home</a></li>
                     <?php elseif ($role === 'transport'): ?>
                         <li><a href="tr_dashboard" class="<?php echo $currentRoute === 'tr_dashboard' ? 'active' : ''; ?>">Home</a></li>
+                        <li><a href="vehicleType" class="<?php echo $currentRoute === 'vehicleType' ? 'active' : ''; ?>">List Your Vehicle</a></li>
                     <?php elseif ($role === 'accommodation'): ?>
                         <li><a href="ac_dashboard" class="<?php echo $currentRoute === 'ac_dashboard' ? 'active' : ''; ?>">Home</a></li>
+                        <li><a href="propertyListingStep1" class="<?php echo $currentRoute === 'propertyListingStep1' ? 'active' : ''; ?>">List Your Property</a></li>
                     <?php endif; ?>
                 <?php endif; ?>
+                <?php if ($role === 'traveller'): ?>
+                    <li><a href="feed" class="<?php echo $currentRoute === 'feed' ? 'active' : ''; ?>">Blog</a></li>
+                <?php endif; ?>
+            <?php endif; ?>
+            <?php if (!$isLoggedIn): ?>
                 <li><a href="about" class="<?php echo $currentRoute === 'about' ? 'active' : ''; ?>">About Us</a></li>
                 <li><a href="contact" class="<?php echo $currentRoute === 'contact' ? 'active' : ''; ?>">Contact Us</a></li>
-                <?php if ($role === 'traveller'): ?>
-                    <li><a href="feed" class="<?php echo $currentRoute === 'feed' ? 'active' : ''; ?>">Vlog</a></li>
-                <?php endif; ?>
             <?php endif; ?>
         </ul>
 

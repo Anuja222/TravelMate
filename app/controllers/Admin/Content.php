@@ -57,6 +57,7 @@ class Content extends Controller{
             }
             
             global $pdo;
+            if (!isset($pdo)) { require_once __DIR__ . '/../../../config/database.php'; }
             
             $postId = intval($_POST['post_id']);
             $stmt = $pdo->prepare("UPDATE posts SET status = 'approved' WHERE id = ?");
@@ -69,7 +70,7 @@ class Content extends Controller{
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to approve post']);
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             ob_end_clean();
             echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
         }
@@ -97,6 +98,7 @@ class Content extends Controller{
             }
             
             global $pdo;
+            if (!isset($pdo)) { require_once __DIR__ . '/../../../config/database.php'; }
             
             $postId = intval($_POST['post_id']);
             $stmt = $pdo->prepare("UPDATE posts SET status = 'rejected' WHERE id = ?");
@@ -109,7 +111,7 @@ class Content extends Controller{
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to reject post']);
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             ob_end_clean();
             echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
         }
@@ -136,6 +138,7 @@ class Content extends Controller{
             }
 
             global $pdo;
+            if (!isset($pdo)) { require_once __DIR__ . '/../../../config/database.php'; }
 
             $postId = intval($_POST['post_id']);
 
@@ -161,7 +164,7 @@ class Content extends Controller{
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to delete post']);
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             ob_end_clean();
             echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
         }
