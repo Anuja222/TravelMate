@@ -585,4 +585,37 @@ class VehicleController
             $this->sendResponse(false, ['error' => 'Delete failed']);
         }
     }
+    public function deleteDocument()
+    {
+        global $pdo;
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->sendResponse(false, ['error' => 'Invalid method']);
+        }
+
+        if (!isset($_SESSION['user'])) {
+            $this->sendResponse(false, ['error' => 'Unauthorized']);
+        }
+
+        $userId = $_SESSION['user']['id'];
+        $docId = $_POST['doc_id'] ?? null;
+        $vehicleId = $_POST['vehicle_id'] ?? null;
+
+        if (!$docId || !$vehicleId) {
+            $this->sendResponse(false, ['error' => 'Missing document or vehicle ID']);
+        }
+
+        try {
+            // Verify ownership
+            $vehicle = Vehicle::findById($pdo, $vehicleId, $userId);
+            if (!$vehicle || !$docId) {
+                $this->sendResponse(false, ['error' => 'Vehicle not found or unauthorized']);
+            }
+
+            $ok = Vehicle::deleteDocument($pdo, $docId);
+            $this->sendResponse((bool) $ok, $ok ? [] : ['error' => 'Delete failed']);
+        } catch (\Exception $e) {
+            $this->sendResponse(false, ['error' => 'Delete failed: ' . $e->getMessage()]);
+        }
+    }
 }
