@@ -19,7 +19,7 @@
       <h1 class="page-title">Edit Vehicle Details</h1>
       <p class="page-subtitle">Update your vehicle information</p>
 
-      <form id="edit-vehicle-form">
+      <form id="edit-vehicle-form" enctype="multipart/form-data">
         <input type="hidden" id="vehicle-id" name="id">
 
         <div class="section">
@@ -101,6 +101,14 @@
               <label for="vehicle-number">Vehicle Number <span class="required-asterisk">*</span></label>
               <input type="text" id="vehicle-number" name="vehicle_number" placeholder="e.g., CAB-1234" required>
               <div class="error-message" id="vehicle-number-error"></div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cost-per-km">Cost per 1Km (Rs) <span class="required-asterisk">*</span></label>
+              <input type="number" id="cost-per-km" name="cost_per_km" placeholder="e.g., 150" min="1" step="0.01" required>
+              <div class="error-message" id="cost-per-km-error"></div>
             </div>
           </div>
         </div>
@@ -419,6 +427,7 @@
         if (vehicle.vehicle_year) document.getElementById('vehicle-year').value = vehicle.vehicle_year;
         if (vehicle.vehicle_color) document.getElementById('vehicle-color').value = vehicle.vehicle_color;
         if (vehicle.vehicle_number) document.getElementById('vehicle-number').value = vehicle.vehicle_number;
+        if (vehicle.cost_per_km) document.getElementById('cost-per-km').value = vehicle.cost_per_km;
         if (vehicle.passenger_count) document.getElementById('passenger-count').value = vehicle.passenger_count;
         if (vehicle.status) document.getElementById('vehicle-status').value = vehicle.status;
         
