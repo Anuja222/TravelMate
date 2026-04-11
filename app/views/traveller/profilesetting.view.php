@@ -54,7 +54,11 @@ $interests = $userData['interests'] ?? '';
             <div class="settings-section">
                 <h2 class="section-title">Profile Photo</h2>
                 <div class="profile-photo-section">
-                    <img src="assets/images/profile.jpg" class="current-photo" id="profilePhoto">
+                    <?php 
+                    $rootUrl = defined('ROOT') ? ROOT : '/TravelMate/public';
+                    $currentProfileImage = (!empty($userData['profile_image'])) ? $rootUrl . '/' . $userData['profile_image'] : (!empty($_SESSION['user']['profile_image']) ? $rootUrl . '/' . $_SESSION['user']['profile_image'] : 'assets/images/profile.jpg');
+                    ?>
+                    <img src="<?php echo htmlspecialchars($currentProfileImage); ?>" class="current-photo" id="profilePhoto" onerror="this.src='assets/images/profile.jpg'">
                     <div class="photo-actions">
                         <div class="photo-upload">
                             <input type="file" id="photoInput" accept="image/*" style="display:none"
@@ -200,39 +204,6 @@ $interests = $userData['interests'] ?? '';
                 </div>
             </div>
 
-            <!-- Privacy Settings -->
-            <div class="settings-section">
-                <h2 class="section-title">Privacy Settings</h2>
-                <div class="privacy-option">
-                    <div class="privacy-info">
-                        <h4>Profile Visibility</h4>
-                        <p>Make your profile visible to other Travel Mate users</p>
-                    </div>
-                    <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
-                </div>
-                <div class="privacy-option">
-                    <div class="privacy-info">
-                        <h4>Show Travel History</h4>
-                        <p>Display your past trips on your profile</p>
-                    </div>
-                    <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
-                </div>
-                <div class="privacy-option">
-                    <div class="privacy-info">
-                        <h4>Allow Friend Requests</h4>
-                        <p>Let other users send you friend requests</p>
-                    </div>
-                    <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
-                </div>
-                <div class="privacy-option">
-                    <div class="privacy-info">
-                        <h4>Email Notifications</h4>
-                        <p>Receive travel recommendations and updates via email</p>
-                    </div>
-                    <div class="toggle-switch" onclick="toggleSetting(this)"></div>
-                </div>
-            </div>
-
             <!-- Action Buttons -->
             <div class="action-buttons">
                 <button type="button" class="cancel-btn" onclick="cancelChanges()">Cancel</button>
@@ -258,7 +229,7 @@ $interests = $userData['interests'] ?? '';
         </div>
     </div>
 
-    <script src="assets/js/profilesetting.js"></script>
+    <script src="assets/js/profilesetting.js?v=<?php echo time(); ?>"></script>
     
     <style>
         /* Success Modal Styles */

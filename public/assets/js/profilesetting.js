@@ -9,7 +9,7 @@ function previewPhoto(input) {
 }
 
         function removePhoto() {
-            document.getElementById('profilePhoto').src = '../../images/default-avatar.png';
+            document.getElementById('profilePhoto').src = 'assets/images/profile.jpg';
             document.getElementById('photoInput').value = '';
         }
 
@@ -32,6 +32,17 @@ function previewPhoto(input) {
             formData.append('budget', document.getElementById('budget').value);
             formData.append('interests', document.getElementById('interests').value);
             
+            // Add profile photo if uploaded
+            const photoInput = document.getElementById('photoInput');
+            if(photoInput.files && photoInput.files.length > 0) {
+                formData.append('profilePhoto', photoInput.files[0]);
+            }
+            
+            // Add flag to handle remove photo
+            if (document.getElementById('profilePhoto').src.includes('assets/images/profile.jpg')) {
+                formData.append('removePhoto', 'true');
+            }
+            
             // Show loading state
             const saveBtn = document.querySelector('.save-btn');
             const originalText = saveBtn.textContent;
@@ -41,7 +52,10 @@ function previewPhoto(input) {
             console.log('Sending profile update...');
             
             // Send data to server
-            fetch('profile_setting/update', {
+            // Determine the base path so fetch works from any URL nesting
+            const basePath = window.location.pathname.split('/').slice(0, window.location.pathname.split('/').indexOf('public') + 1).join('/');
+            
+            fetch(basePath + '/profile_setting/update', {
                 method: 'POST',
                 body: formData
             })

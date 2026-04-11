@@ -10,7 +10,7 @@ class Profilesetting extends Controller{
         }
         
         // Load database config and create connection
-        require_once __DIR__ . '/../../../config/database.php';
+        require_once __DIR__ . '/../../core/config.php';
         
         $dsn = "mysql:host=" . DBHOST . ";dbname=" . DBNAME . ";charset=utf8mb4";
         $conn = new PDO($dsn, DBUSER, DBPASS);
@@ -80,8 +80,7 @@ class Profilesetting extends Controller{
             exit;
         }
         
-        // Update user in database
-        $result = \App\Models\User::updateUser($userId, [
+        $updateData = [
             'first_name' => $firstName,
             'last_name' => $lastName,
             'email' => $email,
@@ -95,7 +94,32 @@ class Profilesetting extends Controller{
             'travel_style' => $travelStyle,
             'budget' => $budget,
             'interests' => $interests
-        ]);
+        ];
+
+        // Handle profile photo upload or removal
+        if (isset($_POST['removePhoto']) && $_POST['removePhoto'] === 'true') {
+            $updateData['profile_image'] = '';
+        } elseif (isset($_FILES['profilePhoto']) && $_FILES['profilePhoto']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = __DIR__ . '/../../../public/uploads/profile_images/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            
+            $fileExtension = strtolower(pathinfo($_FILES['profilePhoto']['name'], PATHINFO_EXTENSION));
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+            
+            if (in_array($fileExtension, $allowedExtensions)) {
+                $newFileName = 'profile_' . $userId . '_' . time() . '.' . $fileExtension;
+                $destination = $uploadDir . $newFileName;
+                
+                if (move_uploaded_file($_FILES['profilePhoto']['tmp_name'], $destination)) {
+                    $updateData['profile_image'] = 'uploads/profile_images/' . $newFileName;
+                }
+            }
+        }
+        
+        // Update user in database
+        $result = \App\Models\User::updateUser($userId, $updateData);
         
         if ($result) {
             // Update session data
@@ -105,6 +129,10 @@ class Profilesetting extends Controller{
             $_SESSION['user']['phone'] = $phone;
             $_SESSION['user']['dateOfBirth'] = $dateOfBirth;
             $_SESSION['user']['gender'] = $gender;
+            
+            if (isset($updateData['profile_image'])) {
+                $_SESSION['user']['profile_image'] = $updateData['profile_image'];
+            }
             
             ob_end_clean();
             header('Content-Type: application/json');

@@ -387,6 +387,19 @@ elseif ($requestUri === '/blog/delete' && $_SERVER['REQUEST_METHOD'] === 'POST')
     exit;
 }
 
+// Blog post vote route
+elseif ($requestUri === '/blog/vote' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once '../app/core/config.php';
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Model.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/models/Post.php';
+    require_once '../app/controllers/Shared/Blog.php';
+    $blogController = new Blog();
+    $blogController->vote();
+    exit;
+}
+
 // Content management routes (Admin)
 elseif ($requestUri === '/content/approve' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once '../app/core/Controller.php';
@@ -708,7 +721,11 @@ elseif ($page === 'home' || $requestUri === '/') {
     $contentController = new Content();
     $contentController->index();
 } elseif ($page === 'profile_setting') {
-    include '../app/views/traveller/profilesetting.view.php';
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/Traveller/Profilesetting.php';
+    $profileController = new Profilesetting();
+    $profileController->index();
 } elseif ($page === 'detailsProperty') {
     include '../app/views/accommodation/detailsProperty.view.php';
 } elseif ($page === 'updateProperty') {
@@ -784,9 +801,29 @@ elseif ($page === 'tr_dashboard') {
 } elseif ($page === 'ViewDetailspending') {
     include '../app/views/transpoter/ViewDetailspending.view.php';
 } elseif ($page === 'bookingHistory') {
-    include '../app/views/transpoter/bookingHistory.view.php';
-} elseif ($page === 'setting') {
-    include '../app/views/transpoter/setting.view.php';
+    include '../app/views/transpoter/bookingHistory.view.php';  } elseif ($page === 'tr_revenue' || strpos($requestUri, '/tr_revenue') === 0) {
+      require_once '../app/core/Database.php';
+      require_once '../app/core/Controller.php';
+      require_once '../app/controllers/TransportProvider/Revenue.php';
+      $revenueController = new Revenue();
+      $revenueController->index();} elseif ($page === 'tr_setting' || $page === 'setting') {
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/TransportProvider/Tr_setting.php';
+    $trSettingController = new Tr_setting();
+    $trSettingController->index();
+} elseif (($requestUri === '/Tr_setting/update' || $requestUri === '/setting/update') && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/TransportProvider/Tr_setting.php';
+    $trSettingController = new Tr_setting();
+    $trSettingController->update();
+} elseif (($requestUri === '/Tr_setting/updatePassword' || $requestUri === '/setting/updatePassword') && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/TransportProvider/Tr_setting.php';
+    $trSettingController = new Tr_setting();
+    $trSettingController->updatePassword();
 } elseif ($page === 'tripDetails') {
     include '../app/views/transpoter/tripDetails.view.php';
 } elseif ($page === 'ViewDetailsAccepted') {
@@ -811,7 +848,29 @@ elseif ($page === 'ac_dashboard') {
 } elseif ($page === 'bookingDetailsAcc') {
     include '../app/views/accommodation/bookingDetailsAcc.view.php';
 } elseif ($page === 'acc_setting') {
-    include '../app/views/accommodation/setting.view.php';
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/AccommodationProvider/Setting.php';
+    $accSettingController = new Setting();
+    $accSettingController->index();
+} elseif ($page === 'acc_revenue') {
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/AccommodationProvider/Revenue.php';
+    $accRevenueController = new Revenue();
+    $accRevenueController->index();
+} elseif ($requestUri === '/acc_setting/update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/AccommodationProvider/Setting.php';
+    $accSettingController = new Setting();
+    $accSettingController->update();
+} elseif ($requestUri === '/acc_setting/updatePassword' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once '../app/core/Database.php';
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/AccommodationProvider/Setting.php';
+    $accSettingController = new Setting();
+    $accSettingController->updatePassword();
 } elseif ($page === 'editListing') {
     include '../app/views/accommodation/editListing.view.php';
 } else if ($page === 'propertyListingStart') {
@@ -858,25 +917,41 @@ elseif ($page === 'ac_dashboard') {
 //admin pages
 elseif ($page === 'ad_dashboard') {
     include '../app/views/admin/dashboard.view.php';
-}elseif ($page === 'ViewListing') {
-    include '../app/views/admin/ViewListing.view.php';
+}elseif ($page === 'ViewListing') {      require_once '../app/core/init.php';    include '../app/views/admin/ViewListing.view.php';
 }elseif ($page === 'viewHotel') {
     include '../app/views/admin/viewHotel.view.php';
 }elseif ($page === 'viewVehicle') {
     include '../app/views/admin/viewVehicle.view.php';
 }elseif ($page === 'Users') {
-    require_once '../app/core/Controller.php';
+      require_once '../app/core/init.php';
     require_once '../app/controllers/Admin/Users.php';
     $controller = new Users();
-    $controller->index();
-}elseif ($page === 'content') {
+    $controller->index();}elseif ($page === 'admin_suspend_user') {
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Admin/Users.php';
+    $controller = new Users();
+    $controller->suspend();
+}elseif ($page === 'admin_unsuspend_user') {
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Admin/Users.php';
+    $controller = new Users();
+    $controller->unsuspend();}elseif ($page === 'content') {
     include '../app/views/admin/content.view.php';
 }elseif ($page === 'notifications') {
     include '../app/views/admin/notifications.view.php';
 }elseif ($page === 'announcement') {
     include '../app/views/admin/announcement.view.php';
 }elseif ($page === 'report') {
-    include '../app/views/admin/report.view.php';
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Admin/Report.php';
+    $reportController = new Report();
+    $reportController->index();
+}elseif ($requestUri === '/api/report/stats' || $page === 'report_stats') {
+    require_once '../app/core/init.php';
+    require_once '../app/controllers/Admin/Report.php';
+    $reportController = new Report();
+    $reportController->get_stats();
+    exit;
 }elseif ($page === 'ad_setting') {
     include '../app/views/admin/setting.view.php';
 }elseif ($page === 'destinations') {
@@ -886,10 +961,13 @@ elseif ($page === 'ad_dashboard') {
 } elseif ($page === 'editDestination') {
     include '../app/views/admin/editDestination.view.php';
 } elseif ($page === 'ViewActivities') {
-    include '../app/views/admin/ViewActivities.view.php';
-} elseif ($page === 'accommodations') {
-    include '../app/views/admin/ViewAccommodations.view.php';
-} elseif ($page === 'transports') {
+      require_once '../app/core/init.php';
+      include '../app/views/admin/ViewActivities.view.php';
+  } elseif ($page === 'accommodations') {
+      require_once '../app/core/init.php';
+      include '../app/views/admin/ViewAccommodations.view.php';
+  } elseif ($page === 'transports') {
+      require_once '../app/core/init.php';
     include '../app/views/admin/ViewTransports.view.php';
 } elseif ($page === 'createActivity') {
     include '../app/views/admin/createActivity.view.php';

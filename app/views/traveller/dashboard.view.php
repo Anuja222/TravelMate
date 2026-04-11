@@ -8,6 +8,19 @@ if (session_status() === PHP_SESSION_NONE) {
 $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
 $firstName = $isLoggedIn ? $_SESSION['user']['first_name'] : '';
 $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
+$profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) 
+    ? 'assets/' . $_SESSION['user']['profile_image'] 
+    : 'assets/images/profile.jpg';
+
+// In case the path already starts with assets or uploads
+if ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) {
+    $img = $_SESSION['user']['profile_image'];
+    $profileImage = (strpos($img, 'http') === 0 || strpos($img, '/') === 0) ? $img : $img;
+    // ensure relative path works from public
+    if (strpos($profileImage, 'uploads/') === 0) {
+        $profileImage = $profileImage; // relative from public
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -66,10 +79,36 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
       </div>
       <!-- Profile -->
       <div class="profile-section">
-        <img src="assets/images/profile.jpg" alt="User" class="profile-pic">
+        <?php 
+        $rootUrl = defined('ROOT') ? ROOT : '/TravelMate/public';
+        $profileImg = !empty($_SESSION['user']['profile_image']) ? $rootUrl . '/' . $_SESSION['user']['profile_image'] : 'assets/images/profile.jpg';
+        ?>
+        <img src="<?php echo htmlspecialchars($profileImg); ?>" alt="User" class="profile-pic">
         <div>
           <h2 class="profile-name"><?php echo htmlspecialchars($firstName); ?> <?php echo htmlspecialchars($lastName); ?></h2>
           <span class="profile-email"><?php echo htmlspecialchars($_SESSION['user']['email']); ?></span>
+          <?php if (!empty($userBio)): ?>
+          <p class="profile-bio" style="margin-top: 10px; color: #555; font-size: 14px; max-width: 600px;"><?php echo nl2br(htmlspecialchars($userBio)); ?></p>
+          <?php endif; ?>
+        </div>
+      </div>
+
+      <!-- Activity Summary -->
+      <div class="activity-summary" style="margin-top: 30px;">
+        <h3>Activity Summary</h3>
+        <div class="summary-stats">
+          <div class="stat">
+            <span class="stat-num"><?php echo isset($accBookingsCount) ? $accBookingsCount : 0; ?></span>
+            <span class="stat-label">Accommodation Bookings</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num"><?php echo isset($transBookingsCount) ? $transBookingsCount : 0; ?></span>
+            <span class="stat-label">Transport Bookings</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num"><?php echo isset($posts) ? count($posts) : 0; ?></span>
+            <span class="stat-label">Posts Shared</span>
+          </div>
         </div>
       </div>
 
@@ -136,73 +175,6 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
             <a href="blog" style="display: inline-block; padding: 12px 30px; background: #28a745; color: white; text-decoration: none; border-radius: 8px; font-weight: 500;">Create Your First Post</a>
           </div>
         <?php endif; ?>
-      </div>
-
-      <!-- Favourites -->
-      <div class="favourites">
-        <h2>Favourite Destinations</h2>
-        <div class="fav-cards">
-          <div class="fav-card">
-            <img src="assets/egypt.jpg" alt="Egypt" class="fav-img">
-            <div class="fav-info">
-              <h3>Galle</h3>
-              <!-- <div class="fav-rating">
-                <span>★★★★★</span>
-                <span>(13 reviews)</span>
-              </div>
-              <div class="fav-details">
-                <span>6 Nights, 6 days</span>
-                <span>From: $1500</span>
-              </div> -->
-            </div>
-          </div>
-          <div class="fav-card">
-            <img src="assets/usa.jpg" alt="USA" class="fav-img">
-            <div class="fav-info">
-              <h3>Anuradhapura</h3>
-              <!-- <div class="fav-rating">
-                <span>★★★★★</span>
-                <span>(8 reviews)</span>
-              </div>
-              <div class="fav-details">
-                <span>7 Nights, 8 days</span>
-                <span>From: $2200</span>
-              </div> -->
-            </div>
-          </div>
-          <div class="fav-card">
-            <img src="assets/spain.jpg" alt="Spain" class="fav-img">
-            <div class="fav-info">
-              <h3>Nuwaraeliya</h3>
-              <div class="fav-rating">
-                <!-- <span>★★★★☆</span>
-                <span>(9 reviews)</span>
-              </div>
-              <div class="fav-details">
-                <span>6 Nights, 6 days</span>
-                <span>From: $900</span>
-              </div> -->
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Activity Summary -->
-      <div class="activity-summary">
-        <h3>Activity Summary</h3>
-        <div class="summary-stats">
-          <div class="stat">
-            <span class="stat-num">4</span>
-            <span class="stat-label">Number of bookings made</span>
-          </div>
-          <div class="stat">
-            <span class="stat-num">3</span>
-            <span class="stat-label">Trips Planned</span>
-          </div>
-          <div class="stat">
-            <span class="stat-num"><?php echo isset($posts) ? count($posts) : 0; ?></span>
-            <span class="stat-label">Posts Shared</span>
-          </div>
-        </div>
       </div>
     </section>
   </main>

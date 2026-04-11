@@ -95,7 +95,7 @@ main {
   display: flex;
   gap: 2em;
   max-width: 1300px;
-  margin: -6em auto 0 auto;
+  margin: -4em auto 3em auto;
   padding: 12em 0 0 0;
 }
 .sidebar {
@@ -284,6 +284,7 @@ main {
   font-size: 2.1em;
   font-weight: bold;
   margin-bottom: 0.15em;
+  padding-top: 1em;
 }
 .profile-email {
   color: #888;

@@ -161,7 +161,11 @@ if ($role === 'traveller') {
                 </div>
 
                 <div class="user-menu">
-                    <img src="assets/images/profile.jpg" class="user-icon" alt="User Icon" id="userMenuBtn">
+                    <?php 
+                    $rootUrl = defined('ROOT') ? ROOT : '/TravelMate/public';
+                    $profileImgHeader = !empty($_SESSION['user']['profile_image']) ? $rootUrl . '/' . $_SESSION['user']['profile_image'] : 'assets/images/profile.jpg';
+                    ?>
+                    <img src="<?php echo htmlspecialchars($profileImgHeader); ?>" class="user-icon" alt="User Icon" id="userMenuBtn">
                     <div class="user-dropdown" id="userDropdown">
                         <div class="user-info">
                             <strong><?php echo htmlspecialchars($firstName); ?>

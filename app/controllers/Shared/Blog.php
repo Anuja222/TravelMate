@@ -131,4 +131,94 @@ class Blog extends Controller{
         
         exit;
     }
+    
+    public function vote() {
+        ob_start();
+        try {
+            header('Content-Type: application/json');
+            
+            if (!isset($_SESSION['user']['id'])) {
+                ob_end_clean();
+                error_log("VOTE ERROR: User not logged in. Session info: " . print_r($_SESSION, true));
+                echo json_encode(['success' => false, 'message' => 'User not logged in']);
+                exit;
+            }
+            
+            if (!isset($_POST['post_id']) || !isset($_POST['type'])) {
+                ob_end_clean();
+                echo json_encode(['success' => false, 'message' => 'Post ID and type are required']);
+                exit;
+            }
+            
+            $postId = intval($_POST['post_id']);
+            $userId = $_SESSION['user']['id'];
+            $type = $_POST['type']; // 'upvote' or 'downvote'
+            
+            if (!in_array($type, ['upvote', 'downvote'])) {
+                ob_end_clean();
+                echo json_encode(['success' => false, 'message' => 'Invalid vote type']);
+                exit;
+            }
+
+            require_once __DIR__ . '/../../core/config.php';
+            
+            // Connect directly to setup table schema if not exists
+            $pdo = new PDO("mysql:host=" . DBHOST . ";dbname=" . DBNAME, DBUSER, DBPASS);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            
+            // Create post_votes table if not exists (quick migration)
+            $pdo->exec("CREATE TABLE IF NOT EXISTS post_votes (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                post_id INT NOT NULL,
+                user_id INT NOT NULL,
+                vote_type ENUM('upvote', 'downvote') NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE KEY unique_user_post (post_id, user_id)
+            )");
+            
+            // Add columns to posts table if missing
+            try { $pdo->exec("ALTER TABLE posts ADD COLUMN upvotes INT DEFAULT 0"); } catch (PDOException $e) {}
+            try { $pdo->exec("ALTER TABLE posts ADD COLUMN downvotes INT DEFAULT 0"); } catch (PDOException $e) {}
+            
+            // Check if user already voted
+            $stmt = $pdo->prepare("SELECT vote_type FROM post_votes WHERE post_id = ? AND user_id = ?");
+            $stmt->execute([$postId, $userId]);
+            $existingVote = $stmt->fetch(PDO::FETCH_OBJ);
+            
+            if ($existingVote) {
+                if ($existingVote->vote_type === $type) {
+                    // Remove vote if clicking the same button
+                    $pdo->prepare("DELETE FROM post_votes WHERE post_id = ? AND user_id = ?")->execute([$postId, $userId]);
+                    $pdo->prepare("UPDATE posts SET {$type}s = GREATEST({$type}s - 1, 0) WHERE id = ?")->execute([$postId]);
+                } else {
+                    // Update vote type
+                    $pdo->prepare("UPDATE post_votes SET vote_type = ? WHERE post_id = ? AND user_id = ?")->execute([$type, $postId, $userId]);
+                    $oldType = $existingVote->vote_type;
+                    $pdo->prepare("UPDATE posts SET {$type}s = {$type}s + 1, {$oldType}s = GREATEST({$oldType}s - 1, 0) WHERE id = ?")->execute([$postId]);
+                }
+            } else {
+                // Insert new vote
+                $pdo->prepare("INSERT INTO post_votes (post_id, user_id, vote_type) VALUES (?, ?, ?)")->execute([$postId, $userId, $type]);
+                $pdo->prepare("UPDATE posts SET {$type}s = {$type}s + 1 WHERE id = ?")->execute([$postId]);
+            }
+            
+            // Get updated counts
+            $stmt = $pdo->prepare("SELECT upvotes, downvotes FROM posts WHERE id = ?");
+            $stmt->execute([$postId]);
+            $updatedPost = $stmt->fetch(PDO::FETCH_OBJ);
+            
+            ob_end_clean();
+            echo json_encode([
+                'success' => true,
+                'upvotes' => $updatedPost->upvotes ?? 0,
+                'downvotes' => $updatedPost->downvotes ?? 0
+            ]);
+            
+        } catch (Exception $e) {
+            ob_end_clean();
+            echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+        }
+        
+        exit;
+    }
 }

@@ -17,13 +17,10 @@
     
     <main>
         <!-- Sidebar -->
-        <aside class="sidebar">
-            <ul>
-                <li><a href="ac_dashboard">Dashboard</a></li>
-                <li><a href="ac_bookings" class="active">Bookings</a></li>
-                <li><a href="acc_setting">Settings</a></li>
-            </ul>
-        </aside>
+        <?php 
+        $active_page = 'bookings';
+        include __DIR__ . '/sidebar.view.php'; 
+        ?>
         
         <!-- Main Content -->
         <section class="dashboard-content">

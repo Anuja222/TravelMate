@@ -134,6 +134,38 @@ function renderBasicDetails() {
     const badgesContainer = document.getElementById('transportBadges');
     const category = getTransportCategory(type);
     badgesContainer.innerHTML = `<span class="badge ${category}">${type}</span>`;
+
+    // Provider Details
+    const providerName = currentVehicle.first_name ? `${currentVehicle.first_name} ${currentVehicle.last_name || ''}`.trim() : 'N/A';
+    const providerPhone = currentVehicle.phone || 'N/A';
+    const providerEmail = currentVehicle.email || 'N/A';
+    let providerImage = currentVehicle.profile_image || 'assets/images/default-profile.png';
+    
+    // Ensure correct path if it doesn't start with http or /
+    if (providerImage && providerImage !== 'assets/images/default-profile.png' && !providerImage.startsWith('http') && !providerImage.startsWith('/')) {
+        const base = window.location.pathname.substring(0, window.location.pathname.indexOf('/TransportDetails'));
+        providerImage = base + '/' + providerImage;
+    }
+
+    const nameEl = document.getElementById('providerName');
+    if (nameEl) nameEl.textContent = providerName;
+    
+    const phoneEl = document.getElementById('providerPhone');
+    if (phoneEl) {
+         phoneEl.innerHTML = `<i class="fas fa-phone"></i> ${providerPhone}`;
+    }
+    
+    const emailEl = document.getElementById('providerEmail');
+    if (emailEl) {
+         emailEl.innerHTML = `<i class="fas fa-envelope"></i> ${providerEmail}`;
+    }
+
+    const imgEl = document.getElementById('providerImage');
+    if (imgEl && currentVehicle.profile_image) {
+         const base = getBaseUrl();
+         imgEl.src = base + '/' + currentVehicle.profile_image;
+         imgEl.onerror = function() { this.src = 'assets/images/default-profile.png'; };
+    }
 }
 
 function renderGallery() {

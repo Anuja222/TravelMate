@@ -44,18 +44,30 @@ class Post {
         return false;
     }
     
-    public function getAllWithUserInfo() {
+    public function getAllWithUserInfo($currentUserId = 0, $category = null) {
         $query = "SELECT 
                     p.*,
                     u.first_name,
                     u.last_name,
-                    u.email
+                    u.email,
+                    u.profile_image,
+                    COALESCE(p.upvotes, 0) as upvotes,
+                    COALESCE(p.downvotes, 0) as downvotes,
+                    (SELECT vote_type FROM post_votes WHERE post_id = p.id AND user_id = :current_user_id LIMIT 1) as user_vote
                 FROM {$this->table} p
                 LEFT JOIN users u ON p.user_id = u.id
-                WHERE p.status = 'approved'
-                ORDER BY p.created_at DESC";
+                WHERE p.status = 'approved'";
+                
+        $params = ['current_user_id' => $currentUserId];
         
-        return $this->query($query);
+        if (!empty($category)) {
+            $query .= " AND p.category = :category";
+            $params['category'] = $category;
+        }
+        
+        $query .= " ORDER BY p.created_at DESC";
+        
+        return $this->query($query, $params);
     }
     
     public function getUserPosts($userId) {
