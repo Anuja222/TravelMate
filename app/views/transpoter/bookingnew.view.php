@@ -45,7 +45,7 @@
 
     <div class="content">
       <div class="page-title">  
-        <h1>Booking Management</h1>
+        <h1><i class="fas fa-calendar-check" style="color: #10b981; margin-right: 8px;"></i> Booking Management</h1>
         <p>Manage your booking requests and history</p>
       </div>
 
@@ -71,7 +71,7 @@
 
         <div class="bookings-section bookings-section-expired">
             <div class="bookings-section-header">
-                <h2><i class="fas fa-history"></i> Expired Bookings</h2>
+                <h2><i class="fas fa-history"></i> History</h2>
             </div>
             <div class="bookings-grid" id="expiredBookingsGrid">
                 <!-- Expired bookings will load here -->

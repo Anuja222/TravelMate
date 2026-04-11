@@ -6,13 +6,20 @@ let filteredAccommodations = [];
 document.addEventListener('DOMContentLoaded', function() {
     loadAccommodations();
     
-    // Add event listeners
-    document.getElementById('btnApplyFilter').addEventListener('click', applyFilters);
-    document.getElementById('searchInput').addEventListener('keyup', function(e) {
-        if (e.key === 'Enter') {
-            applyFilters();
-        }
-    });
+    // Add event listeners (check if elements exist first)
+    const btnApplyFilter = document.getElementById('btnApplyFilter');
+    if (btnApplyFilter) {
+        btnApplyFilter.addEventListener('click', applyFilters);
+    }
+    
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                applyFilters();
+            }
+        });
+    }
 });
 
 // Load all accommodations
@@ -204,37 +211,75 @@ function createAccommodationCard(accommodation, section = 'other') {
     `;
 }
 
+let accommodationToDelete = null;
+
 function deleteAccommodationByAdmin(id) {
-    if (!confirm('Are you sure you want to permanently delete this accommodation?')) {
-        return;
-    }
-
-    const baseUrl = getBaseUrl();
-    fetch(`${baseUrl}/api/accommodation/deleteByAdmin`, {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: `id=${encodeURIComponent(id)}`
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (!data.success) {
-            alert(data.errors?.[0] || 'Failed to delete accommodation');
-            return;
-        }
-
-        allAccommodations = allAccommodations.filter(a => Number(a.id) !== Number(id));
-        updateStatistics();
-        displayPendingAccommodations();
-        applyFilters();
-    })
-    .catch(error => {
-        console.error('Error deleting accommodation:', error);
-        alert('Failed to delete accommodation');
-    });
+    accommodationToDelete = id;
+    document.getElementById('deleteModal').style.display = 'block';
 }
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+    accommodationToDelete = null;
+}
+
+function closeSuccessModal() {
+    document.getElementById('successModal').style.display = 'none';
+    // Optionally reload here if needed, but since we modify DOM directly, no reload is needed
+}
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+    const deleteModal = document.getElementById('deleteModal');
+    const successModal = document.getElementById('successModal');
+    
+    if (event.target === deleteModal) {
+      closeDeleteModal();
+    }
+    if (event.target === successModal) {
+      closeSuccessModal();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Add delete listener
+    document.getElementById('confirmDeleteBtn')?.addEventListener('click', function() {
+        if (!accommodationToDelete) return;
+        
+        const id = accommodationToDelete;
+        const baseUrl = getBaseUrl();
+        
+        fetch(`${baseUrl}/api/accommodation/deleteByAdmin`, {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `id=${encodeURIComponent(id)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            closeDeleteModal();
+            if (!data.success) {
+                alert(data.errors?.[0] || 'Failed to delete accommodation');
+                return;
+            }
+
+            document.getElementById('successMessage').textContent = 'This accommodation has been permanently deleted.';
+            document.getElementById('successModal').style.display = 'block';
+
+            allAccommodations = allAccommodations.filter(a => Number(a.id) !== Number(id));
+            updateStatistics();
+            displayPendingAccommodations();
+            applyFilters();
+        })
+        .catch(error => {
+            closeDeleteModal();
+            console.error('Error deleting accommodation:', error);
+            alert('Failed to delete accommodation');
+        });
+    });
+});
 
 function moderateAccommodation(id, action) {
     const endpoint = action === 'approve' ? 'approve' : 'reject';
@@ -277,9 +322,13 @@ function moderateAccommodation(id, action) {
 
 // Apply filters
 function applyFilters() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const statusFilter = document.getElementById('statusFilter').value;
-    const typeFilter = document.getElementById('typeFilter').value.toLowerCase();
+    const searchInput = document.getElementById('searchInput');
+    const statusFilterEl = document.getElementById('statusFilter');
+    const typeFilterEl = document.getElementById('typeFilter');
+
+    const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+    const statusFilter = statusFilterEl ? statusFilterEl.value : '';
+    const typeFilter = typeFilterEl ? typeFilterEl.value.toLowerCase() : '';
     
     const nonPendingAccommodations = allAccommodations.filter(a => a.status !== 'pending');
 

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Accommodations - TravelMate Admin</title>
-  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/ViewAccommodations.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/ViewAccommodations.css?v=<?php echo time(); ?>">
   <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -257,6 +257,42 @@
 
       <div class="view-modal-footer">
         <button class="btn-secondary" onclick="closeViewModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Confirm Deletion</h3>
+        <span class="close" onclick="closeDeleteModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to permanently delete this accommodation?</p>
+        <div class="warning-box">
+          <p class="warning"><strong>This action cannot be undone!</strong> All associated data (images, bookings, etc.) will be removed.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+        <button class="btn-danger" id="confirmDeleteBtn">Delete Permanently</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Success</h3>
+        <span class="close" onclick="closeSuccessModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p id="successMessage">Accommodation deleted successfully.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeSuccessModal()">OK</button>
       </div>
     </div>
   </div>

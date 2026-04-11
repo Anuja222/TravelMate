@@ -593,8 +593,14 @@ class AccommodationController {
             $delAmenitiesStmt = $pdo->prepare("DELETE FROM accommodation_amenities WHERE accommodation_id = ?");
             $delAmenitiesStmt->execute([$id]);
 
+            // Disable foreign key checks to prevent constraint violations
+            $pdo->exec("SET FOREIGN_KEY_CHECKS=0");
+
             $delAccommodationStmt = $pdo->prepare("DELETE FROM accommodations WHERE id = ?");
             $result = $delAccommodationStmt->execute([$id]);
+
+            // Re-enable foreign key checks
+            $pdo->exec("SET FOREIGN_KEY_CHECKS=1");
 
             if (!$result || $delAccommodationStmt->rowCount() === 0) {
                 $pdo->rollBack();

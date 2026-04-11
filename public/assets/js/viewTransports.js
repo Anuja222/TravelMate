@@ -7,13 +7,18 @@ let pendingActionResolve = null;
 document.addEventListener('DOMContentLoaded', function() {
     loadTransports();
     
-    // Add event listeners
-    document.getElementById('btnApplyFilter').addEventListener('click', applyFilters);
-    document.getElementById('searchInput').addEventListener('keyup', function(e) {
-        if (e.key === 'Enter') {
-            applyFilters();
-        }
-    });
+    // Add event listeners securely
+    const btnApplyFilter = document.getElementById('btnApplyFilter');
+    if (btnApplyFilter) btnApplyFilter.addEventListener('click', applyFilters);
+    
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                applyFilters();
+            }
+        });
+    }
 
     const confirmProceedBtn = document.getElementById('actionConfirmProceed');
     const confirmCancelBtn = document.getElementById('actionConfirmCancel');
@@ -71,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.addEventListener('click', function(event) {
-        const actionButton = event.target.closest('.btn-view, .btn-approve, .btn-reject');
+        const actionButton = event.target.closest('.btn-view, .btn-approve, .btn-reject, .btn-delete');
         if (actionButton) {
             event.preventDefault();
             event.stopPropagation();
@@ -94,8 +99,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (action === 'reject') {
                 moderateVehicle(id, 'reject');
+                return;
             }
-            return;
+
+            if (action === 'delete') {
+                deleteVehicle(id);
+                return;
+            }
         }
 
         const card = event.target.closest('.transport-card');
@@ -315,6 +325,13 @@ function createTransportCard(transport) {
                                 Reject
                             </button>
                         ` : ''}
+                        <button type="button" class="btn-delete" data-vehicle-id="${transport.id}" data-action="delete">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            Delete
+                        </button>
                     </div>
                 </div>
             </div>
@@ -390,6 +407,53 @@ function runVehicleModeration(id, action) {
     });
 }
 
+function deleteVehicle(id) {
+    openActionConfirmModal({
+        title: 'Delete Vehicle',
+        message: 'Are you sure you want to permanently delete this vehicle? This cannot be undone.',
+        confirmText: 'Delete',
+        actionType: 'delete'
+    }).then(confirmed => {
+        if (!confirmed) {
+            return;
+        }
+
+        const baseUrl = getBaseUrl();
+        fetch(`${baseUrl}/api/vehicle/deleteByAdmin`, {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `id=${encodeURIComponent(id)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                alert(data.errors?.error || 'Failed to delete vehicle');
+                return;
+            }
+
+            allTransports = allTransports.filter(v => Number(v.id) !== Number(id));
+
+            updateStatistics();
+            displayPendingTransports();
+            displayRejectedTransports();
+            applyFilters();
+
+            openActionSuccessModal({
+                title: 'Deleted Successfully',
+                message: 'Vehicle has been permanently deleted.',
+                actionType: 'delete'
+            });
+        })
+        .catch(error => {
+            console.error('Error trying to delete vehicle:', error);
+            alert('Failed to delete vehicle');
+        });
+    });
+}
+
 function openActionConfirmModal({ title, message, confirmText, actionType }) {
     const modal = document.getElementById('actionConfirmModal');
     const titleEl = document.getElementById('actionConfirmTitle');
@@ -406,13 +470,13 @@ function openActionConfirmModal({ title, message, confirmText, actionType }) {
     messageEl.textContent = message || 'Please confirm this action.';
     confirmBtn.textContent = confirmText || 'Confirm';
 
-    const isReject = actionType === 'reject';
-    confirmBtn.style.background = isReject
+    const isRejectOrDelete = actionType === 'reject' || actionType === 'delete';
+    confirmBtn.style.background = isRejectOrDelete
         ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
         : 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
 
     if (iconEl) {
-        iconEl.innerHTML = isReject
+        iconEl.innerHTML = isRejectOrDelete
             ? '<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>'
             : '<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="9 12 11 14 15 10"></polyline></svg>';
     }
@@ -481,10 +545,15 @@ function closeActionSuccessModal() {
 
 // Apply filters
 function applyFilters() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const statusFilter = document.getElementById('statusFilter').value;
-    const typeFilter = document.getElementById('typeFilter').value.toLowerCase();
-    const acFilter = document.getElementById('acFilter').value.toLowerCase();
+    const searchInputEl = document.getElementById('searchInput');
+    const statusFilterEl = document.getElementById('statusFilter');
+    const typeFilterEl = document.getElementById('typeFilter');
+    const acFilterEl = document.getElementById('acFilter');
+
+    const searchTerm = searchInputEl ? searchInputEl.value.toLowerCase() : '';
+    const statusFilter = statusFilterEl ? statusFilterEl.value : '';
+    const typeFilter = typeFilterEl ? typeFilterEl.value.toLowerCase() : '';
+    const acFilter = acFilterEl ? acFilterEl.value.toLowerCase() : '';
     
     const nonPendingTransports = allTransports.filter(v => v.status === 'active');
 
