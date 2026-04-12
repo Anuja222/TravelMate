@@ -13,10 +13,10 @@
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
   <!-- Hero Section -->
-  <section class="hero-section">
-    <div class="hero-background">
-      <div class="hero-overlay">
-        <div class="hero-content">
+  <section class="hero-section" style="position: relative; min-height: 60vh; display: flex; align-items: center; justify-content: center;">
+    <div class="hero-background" style="position: absolute; inset: 0; background-image: url('assets/images/accomodationmain.png'); background-size: cover; background-position: center; background-attachment: fixed; z-index: 1;"></div>
+    <div class="hero-overlay" style="position: relative; z-index: 2; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); padding: 50px 20px;">
+      <div class="hero-content" style="text-align: center; color: white;">
           <h1>Find Your Perfect Stay</h1>
           <p>From luxury resorts to cozy guesthouses, discover the best accommodations in Sri Lanka</p>
         </div>

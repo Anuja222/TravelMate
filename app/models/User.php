@@ -10,6 +10,7 @@ class User
     public $dateOfBirth;
     public $gender;
     public $password;
+    public $role;
     public $profile_image;
 
     public function __construct($firstName, $lastName, $email, $phone, $dateOfBirth, $gender, $password, $profile_image = null)

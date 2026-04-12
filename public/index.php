@@ -351,7 +351,7 @@ if ($requestUri === '/api/blog/create' && $_SERVER['REQUEST_METHOD'] === 'POST')
     require_once '../app/core/Controller.php';
     require_once '../app/controllers/Shared/Blog.php';
     $blogController = new Blog();
-    $blogController->create();
+    $blogController->store();
     exit;
 } elseif ($requestUri === '/blog/store' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     error_log(">>> Routing to Blog Store");
@@ -439,7 +439,7 @@ elseif ($requestUri === '/post/store' && $_SERVER['REQUEST_METHOD'] === 'POST') 
     require_once '../app/core/Controller.php';
     require_once '../app/models/Post.php';
     require_once '../app/controllers/Traveller/PostController.php';
-    $postController = new Blog();
+    $postController = new PostController();
     $postController->store();
     exit;
 }
