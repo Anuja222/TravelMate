@@ -423,4 +423,229 @@ class AccommodationController {
             $this->sendResponse(false, ['Failed to update property status']);
         }
     }
+
+
+    public function getRoomAvailability() {
+        global $pdo;
+        
+        $id = $_GET['id'] ?? null;
+        if (!$id) {
+            $this->sendResponse(false, ['Accommodation ID not provided']);
+            return;
+        }
+        
+        try {
+            // Get total rooms from accommodation
+            $stmt = $pdo->prepare("SELECT rooms FROM accommodations WHERE id = ?");
+            $stmt->execute([$id]);
+            $accommodation = $stmt->fetch(\PDO::FETCH_ASSOC);
+            
+            if (!$accommodation) {
+                $this->sendResponse(false, ['Accommodation not found']);
+                return;
+            }
+            
+            $totalRooms = (int)$accommodation['rooms'];
+            
+            // Get booked rooms (only active/confirmed bookings that haven't been completed or cancelled)
+            $stmt = $pdo->prepare("
+                SELECT COALESCE(SUM(number_of_rooms), 0) as booked_rooms 
+                FROM bookings 
+                WHERE accommodation_id = ? 
+                AND booking_status IN ('confirmed', 'pending')
+                AND checkout_date >= CURDATE()
+            ");
+            $stmt->execute([$id]);
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            
+            $bookedRooms = (int)$result['booked_rooms'];
+            $availableRooms = max(0, $totalRooms - $bookedRooms);
+            
+            $this->sendResponse(true, [], [
+                'total_rooms' => $totalRooms,
+                'available_rooms' => $availableRooms,
+                'unavailable_rooms' => $bookedRooms
+            ]);
+            
+        } catch (\Exception $e) {
+            error_log("Error getting room availability: " . $e->getMessage());
+            $this->sendResponse(false, ['Failed to get room availability']);
+        }
+    }
+
+    public function approveByAdmin() {
+        global $pdo;
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->sendResponse(false, ['Invalid request method']);
+        }
+
+        if (!isset($_SESSION['user']) || ($_SESSION['user']['role'] ?? '') !== 'admin') {
+            $this->sendResponse(false, ['Unauthorized']);
+        }
+
+        $id = $_POST['id'] ?? null;
+        if (!$id) {
+            $this->sendResponse(false, ['Accommodation ID not provided']);
+        }
+
+        try {
+            $stmt = $pdo->prepare("UPDATE accommodations SET status = 'active', updated_at = NOW() WHERE id = ?");
+            $result = $stmt->execute([$id]);
+
+            if ($result && $stmt->rowCount() > 0) {
+                $this->sendResponse(true, [], ['status' => 'active']);
+            }
+
+            $this->sendResponse(false, ['Failed to approve accommodation']);
+        } catch (\Exception $e) {
+            error_log("Error approving accommodation: " . $e->getMessage());
+            $this->sendResponse(false, ['Failed to approve accommodation']);
+        }
+    }
+
+    public function rejectByAdmin() {
+        global $pdo;
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->sendResponse(false, ['Invalid request method']);
+        }
+
+        if (!isset($_SESSION['user']) || ($_SESSION['user']['role'] ?? '') !== 'admin') {
+            $this->sendResponse(false, ['Unauthorized']);
+        }
+
+        $id = $_POST['id'] ?? null;
+        if (!$id) {
+            $this->sendResponse(false, ['Accommodation ID not provided']);
+        }
+
+        try {
+            $stmt = $pdo->prepare("UPDATE accommodations SET status = 'inactive', updated_at = NOW() WHERE id = ?");
+            $result = $stmt->execute([$id]);
+
+            if ($result && $stmt->rowCount() > 0) {
+                $this->sendResponse(true, [], ['status' => 'inactive']);
+            }
+
+            $this->sendResponse(false, ['Failed to reject accommodation']);
+        } catch (\Exception $e) {
+            error_log("Error rejecting accommodation: " . $e->getMessage());
+            $this->sendResponse(false, ['Failed to reject accommodation']);
+        }
+    }
+
+    public function deleteByAdmin() {
+        global $pdo;
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->sendResponse(false, ['Invalid request method']);
+        }
+
+        if (!isset($_SESSION['user']) || (($_SESSION['user']['role'] ?? '') !== 'admin')) {
+            $this->sendResponse(false, ['Unauthorized']);
+        }
+
+        $id = $_POST['id'] ?? null;
+        if (!$id) {
+            $this->sendResponse(false, ['Accommodation ID not provided']);
+        }
+
+        try {
+            $pdo->beginTransaction();
+
+            $imgStmt = $pdo->prepare("SELECT image_path FROM accommodation_images WHERE accommodation_id = ?");
+            $imgStmt->execute([$id]);
+            $images = $imgStmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            $delImgsStmt = $pdo->prepare("DELETE FROM accommodation_images WHERE accommodation_id = ?");
+            $delImgsStmt->execute([$id]);
+
+            $delAmenitiesStmt = $pdo->prepare("DELETE FROM accommodation_amenities WHERE accommodation_id = ?");
+            $delAmenitiesStmt->execute([$id]);
+
+            // Disable foreign key checks to prevent constraint violations
+            $pdo->exec("SET FOREIGN_KEY_CHECKS=0");
+
+            $delAccommodationStmt = $pdo->prepare("DELETE FROM accommodations WHERE id = ?");
+            $result = $delAccommodationStmt->execute([$id]);
+
+            // Re-enable foreign key checks
+            $pdo->exec("SET FOREIGN_KEY_CHECKS=1");
+
+            if (!$result || $delAccommodationStmt->rowCount() === 0) {
+                $pdo->rollBack();
+                $this->sendResponse(false, ['Failed to delete accommodation']);
+            }
+
+            $pdo->commit();
+
+            foreach ($images as $image) {
+                if (!empty($image['image_path'])) {
+                    $filePath = __DIR__ . '/../../../public/' . ltrim($image['image_path'], '/');
+                    if (file_exists($filePath)) {
+                        @unlink($filePath);
+                    }
+                }
+            }
+
+            $this->sendResponse(true, [], ['id' => (int)$id]);
+        } catch (\Exception $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            error_log("Error deleting accommodation by admin: " . $e->getMessage());
+            $this->sendResponse(false, ['Failed to delete accommodation']);
+        }
+    }
+
+    // Get all bookings for provider's accommodations
+    public function getProviderBookings() {
+        global $pdo;
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        error_log("=== Get Provider Bookings Called ===");
+        error_log("Session User: " . print_r($_SESSION['user'] ?? 'NOT SET', true));
+        
+        if (!isset($_SESSION['user'])) {
+            error_log("Unauthorized access to provider bookings - no user session");
+            $this->sendResponse(false, ['Unauthorized access - Please log in']);
+            return;
+        }
+        
+        try {
+            $userId = $_SESSION['user']['id'];
+            error_log("Fetching bookings for user_id: " . $userId);
+            
+            // Get all bookings for this provider's accommodations with accommodation and user details
+            $sql = "SELECT 
+                        b.*,
+                        a.title as accommodation_name,
+                        a.property_type,
+                        ai.image_path as accommodation_image,
+                        CONCAT(u.first_name, ' ', COALESCE(u.last_name, '')) as customer_name,
+                        u.email as customer_email,
+                        u.phone as customer_phone
+                    FROM bookings b
+                    INNER JOIN accommodations a ON b.accommodation_id = a.id
+                    INNER JOIN users u ON b.user_id = u.id
+                    LEFT JOIN accommodation_images ai ON a.id = ai.accommodation_id AND ai.is_main = 1
+                    WHERE a.user_id = ?
+                    ORDER BY b.created_at DESC";
+            
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$userId]);
+            $bookings = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            
+            error_log("Found " . count($bookings) . " bookings");
+            
+            $this->sendResponse(true, [], ['bookings' => $bookings]);
+            
+        } catch (\Exception $e) {
+            error_log("Error getting provider bookings: " . $e->getMessage());
+            $this->sendResponse(false, ['Failed to get bookings']);
+        }
+    }
 }

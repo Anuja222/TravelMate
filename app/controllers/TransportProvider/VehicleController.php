@@ -337,6 +337,74 @@ class VehicleController
         }
     }
 
+    public function deleteByAdmin()
+    {
+        global $pdo;
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->sendResponse(false, ['error' => 'Invalid method']);
+        }
+
+        if (!isset($_SESSION['user']) || (($_SESSION['user']['role'] ?? '') !== 'admin')) {
+            $this->sendResponse(false, ['error' => 'Unauthorized']);
+        }
+
+        $id = $_POST['id'] ?? null;
+
+        if (!$id) {
+            $this->sendResponse(false, ['error' => 'Missing vehicle ID']);
+        }
+
+        try {
+            $pdo->beginTransaction();
+
+            // First get documents to potentially delete files if needed
+            $docStmt = $pdo->prepare("SELECT file_path FROM vehicle_documents WHERE vehicle_id = ?");
+            $docStmt->execute([$id]);
+            $documents = $docStmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            // Delete related documents from DB
+            $delDocsStmt = $pdo->prepare("DELETE FROM vehicle_documents WHERE vehicle_id = ?");
+            $delDocsStmt->execute([$id]);
+
+            // Disable foreign key checks to prevent constraint violations
+            $pdo->exec("SET FOREIGN_KEY_CHECKS=0");
+
+            // Then delete the vehicle
+            $delVehicleStmt = $pdo->prepare("DELETE FROM vehicles WHERE id = ?");
+            $result = $delVehicleStmt->execute([$id]);
+
+            // Re-enable foreign key checks
+            $pdo->exec("SET FOREIGN_KEY_CHECKS=1");
+
+            if (!$result || $delVehicleStmt->rowCount() === 0) {
+                $pdo->rollBack();
+                $this->sendResponse(false, ['error' => 'Failed to delete vehicle']);
+            }
+
+            $pdo->commit();
+
+            // Delete physical files
+            foreach ($documents as $doc) {
+                if (!empty($doc['file_path'])) {
+                    $filePath = __DIR__ . '/../../../public/' . ltrim($doc['file_path'], '/');
+                    if (file_exists($filePath)) {
+                        @unlink($filePath);
+                    }
+                }
+            }
+
+            $this->sendResponse(true);
+        } catch (\Exception $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->exec("SET FOREIGN_KEY_CHECKS=1");
+                $pdo->rollBack();
+            }
+            error_log("Vehicle delete error: " . $e->getMessage());
+            $this->sendResponse(false, ['error' => 'Delete failed: ' . $e->getMessage()]);
+        }
+    }
+
     public function get()
     {
         global $pdo;
@@ -515,6 +583,39 @@ class VehicleController
         } catch (\Exception $e) {
             error_log("Delete error: " . $e->getMessage());
             $this->sendResponse(false, ['error' => 'Delete failed']);
+        }
+    }
+    public function deleteDocument()
+    {
+        global $pdo;
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->sendResponse(false, ['error' => 'Invalid method']);
+        }
+
+        if (!isset($_SESSION['user'])) {
+            $this->sendResponse(false, ['error' => 'Unauthorized']);
+        }
+
+        $userId = $_SESSION['user']['id'];
+        $docId = $_POST['doc_id'] ?? null;
+        $vehicleId = $_POST['vehicle_id'] ?? null;
+
+        if (!$docId || !$vehicleId) {
+            $this->sendResponse(false, ['error' => 'Missing document or vehicle ID']);
+        }
+
+        try {
+            // Verify ownership
+            $vehicle = Vehicle::findById($pdo, $vehicleId, $userId);
+            if (!$vehicle || !$docId) {
+                $this->sendResponse(false, ['error' => 'Vehicle not found or unauthorized']);
+            }
+
+            $ok = Vehicle::deleteDocument($pdo, $docId);
+            $this->sendResponse((bool) $ok, $ok ? [] : ['error' => 'Delete failed']);
+        } catch (\Exception $e) {
+            $this->sendResponse(false, ['error' => 'Delete failed: ' . $e->getMessage()]);
         }
     }
 }

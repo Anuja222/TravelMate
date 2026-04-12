@@ -168,6 +168,25 @@
     </div>
   </div>
 
+  <!-- Delete Confirm Modal -->
+  <div id="deleteConfirmModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-icon-warning" style="margin-bottom:15px; color:#ef4444; display:flex; justify-content:center;">
+        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
+      <h3 class="modal-message">Delete Location</h3>
+      <p style="color:#6b7280; font-size:14px; margin-bottom:20px; text-align:center;">Are you sure you want to delete this location? This action cannot be undone.</p>
+      <div style="display: flex; gap: 12px; justify-content: center;">
+        <button onclick="closeDeleteConfirmModal()" class="btn-cancel" style="padding: 10px 24px; background: #f3f4f6; color: #374151; border: none; border-radius: 6px; cursor: pointer; font-weight:600;">Cancel</button>
+        <button id="confirmDeleteBtn" style="padding: 10px 24px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight:600;">Delete</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // Success Modal Functions
     function showSuccessModal(message) {
@@ -178,6 +197,63 @@
     function closeSuccessModal() {
       document.getElementById('successModal').style.display = 'none';
     }
+
+    // Delete Confirm Modal Functions
+    let placeToDeleteId = null;
+    let placeToDeleteElement = null;
+
+    function showDeleteConfirmModal(id, element) {
+      placeToDeleteId = id;
+      placeToDeleteElement = element;
+      document.getElementById('deleteConfirmModal').style.display = 'flex';
+    }
+
+    function closeDeleteConfirmModal() {
+      placeToDeleteId = null;
+      placeToDeleteElement = null;
+      document.getElementById('deleteConfirmModal').style.display = 'none';
+    }
+
+    // Attach listener immediately since elements exist here
+    document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+      if (!placeToDeleteId) return;
+
+      const fd = new FormData();
+      fd.append('id', placeToDeleteId);
+
+      // Disable button while processing
+      this.disabled = true;
+      const originalText = this.textContent;
+      this.textContent = 'Deleting...';
+
+      fetch('../public/api/activity/place/delete', { method: 'POST', body: fd, credentials: 'same-origin' })
+        .then(r => r.json())
+        .then(resp => {
+          this.disabled = false;
+          this.textContent = originalText;
+          closeDeleteConfirmModal();
+          
+          if (resp.success) {
+            showSuccessModal('Location deleted successfully!');
+            if (placeToDeleteElement) {
+              placeToDeleteElement.remove();
+            }
+            const container = document.getElementById('placesList');
+            if (container && container.children.length === 0) {
+              container.innerHTML = '<div class="empty-places">No locations added yet. Use the form below to add your first location.</div>';
+            }
+          } else {
+            alert('Delete failed: ' + (resp.errors ? JSON.stringify(resp.errors) : 'Unknown error'));
+          }
+        })
+        .catch(err => {
+          this.disabled = false;
+          this.textContent = originalText;
+          closeDeleteConfirmModal();
+          alert('Network error while deleting.');
+          console.error(err);
+        });
+    });
 
     // File input handlers
     document.getElementById('image').addEventListener('change', function() {
@@ -322,17 +398,7 @@
         // attach delete handlers
         document.querySelectorAll('.btn-delete-place').forEach(btn => {
           btn.addEventListener('click', function () {
-            if (!confirm('Delete this location?')) return;
-            const fd = new FormData();
-            fd.append('id', this.dataset.id);
-            fetch('../public/api/activity/place/delete', { method: 'POST', body: fd, credentials: 'same-origin' })
-              .then(r => r.json()).then(resp => {
-                if (resp.success) {
-                  showSuccessModal('Location deleted successfully!');
-                  // remove from DOM
-                  this.closest('.place-item').remove();
-                } else alert('Delete failed');
-              }).catch(() => alert('Network error'));
+            showDeleteConfirmModal(this.dataset.id, this.closest('.place-item'));
           });
         });
 

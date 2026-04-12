@@ -328,7 +328,8 @@
 }
 
 .btn-approve,
-.btn-reject {
+.btn-reject,
+.btn-delete {
   border: none;
   padding: 10px 14px;
   border-radius: 8px;
@@ -354,6 +355,15 @@
 
 .btn-reject:hover {
   background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  transform: translateY(-2px);
+}
+
+.btn-delete {
+  background: #c82333;
+}
+
+.btn-delete:hover {
+  background: #b21f2d;
   transform: translateY(-2px);
 }
 

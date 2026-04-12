@@ -541,9 +541,25 @@
 
     function confirmDelete() {
       if (userToDelete) {
-        alert('Deleted user ID: ' + userToDelete);
-        // Implement actual delete functionality
-        closeModal();
+        const formData = new FormData();
+        formData.append('id', userToDelete);
+        
+        fetch('<?= ROOT ?>/admin_delete_user', {
+          method: 'POST',
+          body: formData
+        }).then(response => response.json())
+          .then(data => {
+            if(data.success) {
+              closeModal();
+              document.getElementById('successMessage').textContent = 'This user has been permanently deleted.';
+              document.getElementById('successModal').style.display = 'block';
+            } else {
+              alert('Failed to delete user: ' + (data.error || 'Unknown error'));
+            }
+          }).catch(e => {
+            console.error('Error:', e);
+            alert('A network error occurred.');
+          });
       }
     }
 

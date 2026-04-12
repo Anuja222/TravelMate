@@ -34,7 +34,7 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TravelMate Dashboard</title>
-  <link rel="stylesheet" href="assets/css/Transpoter/dashboard.css">
+  <link rel="stylesheet" href="assets/css/Transpoter/dashboard.css?v=2">
   <link rel="stylesheet" href="assets/css/Transpoter/common.css?v=2">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
@@ -329,7 +329,8 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
 
       <!-- COVER -->
       <div class="cover">
-        <img src="assets/trimages/travel1.jpg" class="cover-img" alt="cover">
+        <img src="/TravelMate/public/assets/images/cover.jpg" class="cover-img" alt="cover">
+        <span class="cover-text">TRAVEL <span class="cover-sub">more</span></span>
       </div>
 
       <!-- PROFILE -->
