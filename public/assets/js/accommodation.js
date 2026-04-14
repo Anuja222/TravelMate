@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.getBaseUrl = getBaseUrl;
     console.log('accommodation.js loaded, baseUrl=', baseUrl);
 
-    // ========== PROPERTY LISTING START PAGE ==========
+    //  PROPERTY LISTING START PAGE 
     const propertyTypes = document.querySelectorAll('.property-type');
     if (propertyTypes.length > 0) {
         propertyTypes.forEach(type => {
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ========== ACCOMMODATION FEATURES PAGE ==========
+    //  ACCOMMODATION FEATURES PAGE 
     const featuresForm = document.querySelector('.features-form');
     if (featuresForm) {
         const features = {};
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ========== PROPERTY DETAILS PAGE ==========
+    //  PROPERTY DETAILS PAGE 
     const detailsForm = document.querySelector('.property-details-form');
     if (detailsForm) {
         // Load any existing data
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ========== PHOTO UPLOAD PAGE ==========
+    //  PHOTO UPLOAD PAGE 
     const photoForm = document.querySelector('.photo-upload-form');
     if (photoForm) {
         const imagesList = [];
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // ========== HOUSE RULES PAGE ==========
+    //  HOUSE RULES PAGE 
     const rulesForm = document.querySelector('.house-rules-form');
     if (rulesForm) {
         rulesForm.addEventListener('submit', async function(e) {
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ========== DASHBOARD - LIST PROPERTIES ==========
+    //  DASHBOARD - LIST PROPERTIES 
     const propertyListContainer = document.querySelector('.property-cards-grid');
     if (propertyListContainer) {
         // Function to load user's properties

@@ -1,7 +1,8 @@
 <?php
 
 class Setting extends Controller {
-    public function index() {
+
+        public function index() {
         if (!isset($_SESSION['user']['id'])) {
             header('Location: login');
             exit;

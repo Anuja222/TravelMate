@@ -1,6 +1,6 @@
 <?php
-
-if($_SERVER['SERVER_NAME'] == 'localhost'){
+//manage database connection details
+if($_SERVER['SERVER_NAME'] == 'localhost'){ //check whether project is run on a local server or a live server
     define('DBNAME','travelmate');
     define('DBHOST','localhost');
     define('DBUSER','root');
