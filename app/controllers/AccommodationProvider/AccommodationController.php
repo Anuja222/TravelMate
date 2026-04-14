@@ -1,8 +1,8 @@
 <?php
 namespace App\Controllers;
 
-require_once __DIR__ . '/../models/Accommodation.php';
-require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../models/Accommodation.php';
+require_once __DIR__ . '/../../../config/database.php';
 
 use App\Models\Accommodation;
 
@@ -13,7 +13,7 @@ class AccommodationController {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        $this->uploadDir = __DIR__ . '/../../public/uploads/accommodations';
+        $this->uploadDir = __DIR__ . '/../../../public/uploads/accommodations';
         if (!is_dir($this->uploadDir)) {
             mkdir($this->uploadDir, 0777, true);
         }
@@ -42,7 +42,7 @@ class AccommodationController {
 
         $userId = $_SESSION['user']['id'];
         
-        // Get accommodation details from POST data
+        // get accommodation details from POST data
         $propertyType = $_POST['property_type'] ?? '';
         $title = $_POST['title'] ?? '';
         $description = $_POST['description'] ?? '';
@@ -185,7 +185,7 @@ class AccommodationController {
         try {
             $accommodations = Accommodation::findByUser($pdo, $_SESSION['user']['id']);
             
-            // Get main image for each accommodation
+            // get main image for each accommodation
             foreach ($accommodations as &$accommodation) {
                 $accommodation['main_image'] = Accommodation::getMainImage($pdo, $accommodation['id']);
             }
@@ -289,7 +289,7 @@ class AccommodationController {
             $pdo->beginTransaction();
             
             if ($accommodation->update($pdo)) {
-                // Allow deletion of existing images (delete_images[])
+                // allow deletion of existing images (delete_images[])
                 if (!empty($_POST['delete_images'])) {
                     $delIds = is_array($_POST['delete_images']) ? $_POST['delete_images'] : explode(',', $_POST['delete_images']);
                     foreach ($delIds as $imgId) {
@@ -301,7 +301,7 @@ class AccommodationController {
                         $row = $stmtImg->fetch(\PDO::FETCH_ASSOC);
                         if ($row) {
                             // remove file if exists
-                            $fileOnDisk = __DIR__ . '/../../public/' . $row['image_path'];
+                            $fileOnDisk = __DIR__ . '/../../../public/' . $row['image_path'];
                             if (file_exists($fileOnDisk)) {
                                 @unlink($fileOnDisk);
                             }
@@ -311,7 +311,7 @@ class AccommodationController {
                     }
                 }
 
-                // Handle new image uploads (can mark first new uploaded as main via make_new_main)
+                // handle new image uploads (can mark first new uploaded as main via make_new_main)
                 $makeNewMain = isset($_POST['make_new_main']) && ($_POST['make_new_main'] === '1' || $_POST['make_new_main'] === 'on');
                 if (isset($_FILES['images']) && !empty($_FILES['images']['name'][0])) {
                     $images = $_FILES['images'];
@@ -331,7 +331,7 @@ class AccommodationController {
                     }
                 }
 
-                // Set existing image as main if requested (main_image_id)
+                // set existing image as main if requested (main_image_id)
                 if (!empty($_POST['main_image_id'])) {
                     $mainId = intval($_POST['main_image_id']);
                     if ($mainId > 0) {

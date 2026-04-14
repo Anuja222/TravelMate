@@ -1,10 +1,10 @@
 <?php
 
-class Controller{
+class Controller{ //this  is the base class of all controllers. all controllers are extend this class
 
     public function view($name,$data = []){
         
-        // Extract data array to variables
+        // extract/convert data array to variables
         if(!empty($data)){
             extract($data);
         }

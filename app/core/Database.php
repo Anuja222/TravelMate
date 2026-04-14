@@ -1,11 +1,11 @@
 <?php
 
-Trait Database{
+Trait Database{ //use for connect database and run queries.
 
-    protected function connect(){
+    protected function connect(){ //create DB connection
         $string = "mysql:hostname=".DBHOST.";dbname=".DBNAME;
         try {
-            $conn = new PDO($string,DBUSER,DBPASS);
+            $conn = new PDO($string,DBUSER,DBPASS); //handle database connection using PDO 
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return $conn;
         } catch (PDOException $e) {
