@@ -3,7 +3,7 @@
 class Feed extends Controller{
 
     public function index($a = '', $b = '' , $c = ''){
-        // Load config and dependencies
+        // load config and dependencies
         require_once __DIR__ . '/../../core/config.php';
         require_once __DIR__ . '/../../core/Model.php';
         require_once __DIR__ . '/../../core/Database.php';
@@ -13,17 +13,17 @@ class Feed extends Controller{
         
         $category = $_GET['category'] ?? null;
         
-        // Get posts from database
+        // get posts from database
         $post = new Post();
         $currentUserId = $_SESSION['user']['id'] ?? 0;
         $posts = $post->getAllWithUserInfo($currentUserId, $category);
         
-        // Get trending destinations (top 3 destinations from database)
+        // get trending destinations (top 3 destinations from database)
         $stmt = $pdo->prepare("SELECT id, title, slug, image FROM destinations ORDER BY created_at DESC LIMIT 3");
         $stmt->execute();
         $destinations = $stmt->fetchAll(PDO::FETCH_OBJ);
         
-        // Get post counts for each destination location
+        // get post counts for each destination location
         $destinationPostCounts = [];
         foreach ($destinations as $destination) {
             $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM posts WHERE location LIKE ?");
@@ -31,16 +31,16 @@ class Feed extends Controller{
             $destinationPostCounts[$destination->id] = $stmt->fetch(PDO::FETCH_OBJ)->count ?? 0;
         }
         
-        // Get suggested travelers (random 3 travelers excluding current user)
+        // get suggested travelers (random 3 travelers excluding current user)
         $currentUserId = $_SESSION['user']['id'] ?? 0;
         $stmt = $pdo->prepare("SELECT id, first_name, last_name, email, created_at FROM users WHERE id != ? AND role = 'traveller' ORDER BY RAND() LIMIT 3");
         $stmt->execute([$currentUserId]);
         $suggestedTravelers = $stmt->fetchAll(PDO::FETCH_OBJ);
         
-        // Get follower counts for suggested travelers (placeholder for now - set to 0)
+        // get follower counts for suggested travelers (placeholder for now - set to 0)
         $travelerFollowerCounts = [];
         foreach ($suggestedTravelers as $traveler) {
-            $travelerFollowerCounts[$traveler->id] = 0; // Placeholder - can be updated when followers feature is implemented
+            $travelerFollowerCounts[$traveler->id] = 0; // placeholder - can be updated when followers feature is implemented
         }
         
         $data = [

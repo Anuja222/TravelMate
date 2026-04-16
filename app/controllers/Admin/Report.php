@@ -4,7 +4,7 @@ class Report extends Controller {
     use Database;
 
     public function index($a = "", $b = "", $c = "") {
-        // Only admin? (assume admin since it is in Admin folder)
+        // only admin? (assume admin since it is in Admin folder)
         if (!isset($_SESSION["user"]["id"])) {
             header("Location: login");
             exit;
@@ -21,7 +21,7 @@ class Report extends Controller {
 
         $period = $_GET["period"] ?? "week";
         
-        // Build base condition
+        // build base condition
         $dateCond = "1=1";
         switch ($period) {
             case "today":
@@ -60,7 +60,7 @@ class Report extends Controller {
                 break;
         }
 
-        // Stats
+        // stats
         $users = $this->query("SELECT COUNT(*) as count FROM users WHERE $dateCond") ?: [(object)["count"=>0]];
         $prevUsers = $this->query("SELECT COUNT(*) as count FROM users WHERE $prevCond") ?: [(object)["count"=>0]];
         
@@ -83,16 +83,16 @@ class Report extends Controller {
         $prevRevTrans = $this->query("SELECT SUM(total_price) as sum FROM transport_bookings WHERE booking_status = \"confirmed\" AND $prevCond") ?: [(object)["sum"=>0]];
         $prevRevenue = ($prevRevAcc[0]->sum ?: 0) + ($prevRevTrans[0]->sum ?: 0);
         
-        // Calc percentage change
+        // calc percentage change
         $calcChange = function($current, $prev) {
             if ($prev == 0) return $current > 0 ? "+100%" : "0%";
             $pct = (($current - $prev) / $prev) * 100;
             return ($pct >= 0 ? "+" : "") . number_format($pct, 1) . "%";
         };
         
-        // Data for tables
+        // data for tables
         $recentUsers = $this->query("SELECT first_name, last_name, role, created_at, \"Active\" as status FROM users ORDER BY created_at DESC LIMIT 4") ?: [];
-        // Pending approvals (fake content logic from accommodations and vehicles, just taking a few properties)
+        // pending approvals (fake content logic from accommodations and vehicles, just taking a few properties)
         $pendingApprovals = $this->query("
             (SELECT title as content, \"Accommodation\" as type, created_at FROM accommodations ORDER BY created_at DESC LIMIT 2)
             UNION
@@ -100,7 +100,7 @@ class Report extends Controller {
             ORDER BY created_at DESC LIMIT 3
         ") ?: [];
 
-        // Chart: User Distribution
+        // chart: User Distribution
         $rawUserDist = $this->query("SELECT role as label, COUNT(*) as count FROM users GROUP BY role") ?: [];
         $userDistLabels = [];
         $userDistData = [];
@@ -109,12 +109,12 @@ class Report extends Controller {
             $userDistData[] = (int)$row->count;
         }
 
-        // Chart: Booking Trends
+        // chart: Booking Trends
         $chartPeriod = $_GET["chart_period"] ?? "weekly";
         $bookingTrendsMap = [];
         
         if ($chartPeriod === 'yearly') {
-            // Group by month for the last 12 months
+            // group by month for the last 12 months
             for ($i = 11; $i >= 0; $i--) {
                 $d = date('Y-m', strtotime("-$i months"));
                 $bookingTrendsMap[$d] = 0;
@@ -137,7 +137,7 @@ class Report extends Controller {
             $bookingTrendLabels = array_map(function($date) { return date('M Y', strtotime($date . '-01')); }, array_keys($bookingTrendsMap));
         
         } elseif ($chartPeriod === 'monthly') {
-            // Group by day for the last 30 days
+            // group by day for the last 30 days
             for ($i = 29; $i >= 0; $i--) {
                 $d = date('Y-m-d', strtotime("-$i days"));
                 $bookingTrendsMap[$d] = 0;

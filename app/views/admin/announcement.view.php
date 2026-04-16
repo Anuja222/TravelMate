@@ -14,7 +14,7 @@
     <?php include 'sidebar.view.php'; ?>
 
     <div class="content">
-      <!-- Page Header -->
+      <!-- page Header -->
       <div class="page-title">
         <div class="page-title-content">
           <div class="page-icon">
@@ -33,7 +33,7 @@
         </button>
       </div>
 
-      <!-- Statistics -->
+      <!-- statistics -->
       <div class="stats-row">
         <div class="stat-card">
           <div class="stat-number">24</div>
@@ -53,9 +53,9 @@
         </div>
       </div>
 
-      <!-- Announcements List -->
+      <!-- announcements List -->
       <div class="announcements-grid">
-        <!-- Announcement 1 -->
+        <!-- announcement 1 -->
         <div class="announcement-card">
           <div class="announcement-header">
             <h3 class="announcement-title">System Maintenance - March 20</h3>
@@ -76,7 +76,7 @@
           </div>
         </div>
 
-        <!-- Announcement 2 -->
+        <!-- announcement 2 -->
         <div class="announcement-card">
           <div class="announcement-header">
             <h3 class="announcement-title">New Feature: Advanced Booking Analytics</h3>
@@ -97,7 +97,7 @@
           </div>
         </div>
 
-        <!-- Announcement 3 -->
+        <!-- announcement 3 -->
         <div class="announcement-card">
           <div class="announcement-header">
             <h3 class="announcement-title">Summer Travel Deals & Promotions</h3>
@@ -119,7 +119,7 @@
         </div>
       </div>
 
-      <!-- Empty State (hidden by default) -->
+      <!-- empty State (hidden by default) -->
       <div class="empty-state" style="display: none;">
         <div class="empty-state-icon">📢</div>
         <h3>No Announcements Yet</h3>
@@ -131,7 +131,7 @@
     </div>
   </div>
 
-  <!-- New Announcement Modal -->
+  <!-- new Announcement Modal -->
   <div id="announcementModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -197,7 +197,7 @@
     </div>
   </div>
 
-  <!-- Delete Confirmation Modal -->
+  <!-- delete Confirmation Modal -->
   <div id="deleteModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -219,7 +219,7 @@
     let currentAnnouncementId = null;
     let isEditing = false;
 
-    // Modal Functions
+    // modal Functions
     function openNewAnnouncementModal() {
       isEditing = false;
       document.getElementById('modalTitle').textContent = 'New Announcement';
@@ -232,8 +232,8 @@
       currentAnnouncementId = id;
       document.getElementById('modalTitle').textContent = 'Edit Announcement';
       
-      // In a real application, you would fetch the announcement data
-      // For demo purposes, we'll set some sample values
+      // in a real application, you would fetch the announcement data
+      // for demo purposes, we'll set some sample values
       document.getElementById('announcementTitle').value = 'System Maintenance - March 20';
       document.getElementById('announcementContent').value = 'We will be performing scheduled system maintenance on March 20, 2024 from 2:00 AM to 6:00 AM (UTC). During this time, the platform will be temporarily unavailable. We apologize for any inconvenience.';
       
@@ -251,14 +251,14 @@
       currentAnnouncementId = null;
     }
 
-    // Announcement Functions
+    // announcement Functions
     function sendAnnouncement() {
       const title = document.getElementById('announcementTitle').value;
       const content = document.getElementById('announcementContent').value;
       const priority = document.getElementById('announcementPriority').value;
       const sendNotification = document.getElementById('sendNotification').checked;
       
-      // Get selected audiences
+      // get selected audiences
       const audiences = [];
       if (document.getElementById('audienceAll').checked) audiences.push('all');
       if (document.getElementById('audienceTravelers').checked) audiences.push('travelers');
@@ -274,7 +274,7 @@
         return;
       }
       
-      // In a real application, you would send this data to the server
+      // in a real application, you would send this data to the server
       console.log('Sending announcement:', {
         title,
         content,
@@ -285,13 +285,13 @@
         id: currentAnnouncementId
       });
       
-      // Show success message
+      // show success message
       alert(isEditing ? 'Announcement updated successfully!' : 'Announcement sent successfully!');
       
       closeModal();
       
-      // In a real application, you would refresh the announcements list
-      // For demo, we'll just log to console
+      // in a real application, you would refresh the announcements list
+      // for demo, we'll just log to console
       console.log('Announcements list should be refreshed');
     }
 
@@ -302,18 +302,18 @@
 
     function confirmDelete() {
       if (currentAnnouncementId) {
-        // In a real application, you would send delete request to server
+        // in a real application, you would send delete request to server
         console.log('Deleting announcement:', currentAnnouncementId);
         alert('Announcement deleted successfully!');
         closeDeleteModal();
         
-        // In a real application, you would remove the announcement from the list
-        // For demo, we'll just log to console
+        // in a real application, you would remove the announcement from the list
+        // for demo, we'll just log to console
         console.log('Announcement should be removed from the list');
       }
     }
 
-    // Close modals when clicking outside
+    // close modals when clicking outside
     window.onclick = function(event) {
       const announcementModal = document.getElementById('announcementModal');
       const deleteModal = document.getElementById('deleteModal');
@@ -326,7 +326,7 @@
       }
     }
 
-    // Handle audience selection (if "All" is selected, deselect others)
+    // handle audience selection (if "All" is selected, deselect others)
     document.getElementById('audienceAll').addEventListener('change', function() {
       if (this.checked) {
         document.getElementById('audienceTravelers').checked = false;

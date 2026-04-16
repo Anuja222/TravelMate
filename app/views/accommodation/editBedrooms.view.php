@@ -1,4 +1,4 @@
-<!-- Bed Room Page -->
+<!-- bed Room Page -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/TravelMate/public/assets/css/main.css">
 </head>
 <body>
-    <!-- Header -->
+    <!-- header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
     <?php
@@ -42,11 +42,11 @@
         </div>
         <button type="button" class="save-btn">Save & Continue</button>
     </form>
-    <!-- Footer -->
+    <!-- footer -->
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
     <script src="/TravelMate/public/assets/js/Accomodation_provider/bedRoom.js"></script>
     <script>
-    // Redirect back to propertyDetails with selected bed info
+    // redirect back to propertyDetails with selected bed info
     (function(){
         const bedNumber = <?php echo (int) $bedNumber; ?>;
         document.querySelector('.save-btn').addEventListener('click', function(e){
@@ -59,7 +59,7 @@
             params.set('bed', bedNumber);
             params.set('type', type);
             params.set('count', count);
-            // Redirect back to propertyDetails route using front controller fallback
+            // redirect back to propertyDetails route using front controller fallback
             window.location.href = '/TravelMate/public/index.php?url=Accomodation_provider/propertyDetails&' + params.toString();
         });
     })();

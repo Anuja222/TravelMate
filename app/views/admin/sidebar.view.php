@@ -2,7 +2,7 @@
   <link rel="stylesheet" href="<?= defined('ROOT') ? ROOT : '/TravelMate/public' ?>/assets/css/Admin/common.css">
 
   <ul class="sidebar-menu">
-    <!-- Main Section -->
+    <!-- main Section -->
     <li class="menu-item">
       <a href="ad_dashboard">
         <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -17,7 +17,7 @@
     
     <li class="menu-separator"></li>
     
-    <!-- Management Section -->
+    <!-- management Section -->
     <li class="menu-item">
       <a href="Users">
         <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -106,7 +106,7 @@
     
     <li class="menu-separator"></li>
     
-    <!-- System Section -->
+    <!-- system Section -->
     <li class="menu-item">
       <a href="report">
         <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -143,7 +143,7 @@
   </ul>
   
   <script>
-    // Auto-highlight active menu item based on current URL
+    // auto-highlight active menu item based on current URL
     document.addEventListener('DOMContentLoaded', function() {
       const currentPath = window.location.pathname;
       const menuLinks = document.querySelectorAll('.menu-item a');

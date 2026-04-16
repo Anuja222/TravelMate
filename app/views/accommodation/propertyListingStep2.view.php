@@ -3,13 +3,13 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is authenticated
+// check if user is authenticated
 if (!isset($_SESSION['user'])) {
     header('Location: /TravelMate/public/index.php?url=Login');
     exit;
 }
 
-// Save step 1 data if coming from POST
+// save step 1 data if coming from POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['submit_property'])) {
     $_SESSION['listing_step1'] = [
         'property_type' => $_POST['property_type'] ?? '',
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['submit_property'])) 
     ];
 }
 
-// Check if step 1 data exists
+// check if step 1 data exists
 if (!isset($_SESSION['listing_step1'])) {
     header('Location: /TravelMate/public/index.php?url=Accomodation_provider/propertyListingStart');
     exit;
@@ -559,7 +559,7 @@ $step1Data = $_SESSION['listing_step1'];
             }
         }
         
-        /* Success Modal Styles */
+        /* success Modal Styles */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -721,7 +721,7 @@ $step1Data = $_SESSION['listing_step1'];
     </style>
 </head>
 <body>
-    <!-- Header -->
+    <!-- header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
     <main class="listing-main">
@@ -748,7 +748,7 @@ $step1Data = $_SESSION['listing_step1'];
 
             <form method="POST" action="/TravelMate/public/index.php?url=Accomodation_provider/saveProperty" enctype="multipart/form-data" id="step2Form">
                 
-                <!-- Room Details -->
+                <!-- room Details -->
                 <div class="section-title"><i class="fas fa-bed"></i>Room Details</div>
                 <div class="form-row">
                     <div class="form-group">
@@ -781,7 +781,7 @@ $step1Data = $_SESSION['listing_step1'];
                     </div>
                 </div>
 
-                <!-- Check-in/Check-out Times -->
+                <!-- check-in/Check-out Times -->
                 <div class="section-title"><i class="fas fa-clock"></i>Check-in & Check-out</div>
                 <div class="form-row">
                     <div class="form-group">
@@ -800,7 +800,7 @@ $step1Data = $_SESSION['listing_step1'];
                     </div>
                 </div>
 
-                <!-- House Rules -->
+                <!-- house Rules -->
                 <div class="section-title"><i class="fas fa-shield-alt"></i>House Rules</div>
                 <div class="checkbox-group">
                     <div class="checkbox-option">
@@ -832,7 +832,7 @@ $step1Data = $_SESSION['listing_step1'];
                     </div>
                 </div>
 
-                <!-- Contact Information -->
+                <!-- contact Information -->
                 <div class="section-title"><i class="fas fa-address-book"></i>Contact Information</div>
                 <div class="form-row">
                     <div class="form-group">
@@ -851,7 +851,7 @@ $step1Data = $_SESSION['listing_step1'];
                     </div>
                 </div>
 
-                <!-- Amenities -->
+                <!-- amenities -->
                 <div class="section-title"><i class="fas fa-star"></i>Amenities & Features</div>
                 <div class="amenities-grid">
                     <div class="amenity-item">
@@ -901,7 +901,7 @@ $step1Data = $_SESSION['listing_step1'];
                     </div>
                 </div>
 
-                <!-- Services -->
+                <!-- services -->
                 <div class="section-title"><i class="fas fa-concierge-bell"></i>Services</div>
                 <div class="form-row-2">
                     <div class="form-group">
@@ -923,7 +923,7 @@ $step1Data = $_SESSION['listing_step1'];
                     </div>
                 </div>
 
-                <!-- Pricing -->
+                <!-- pricing -->
                 <div class="section-title"><i class="fas fa-dollar-sign"></i>Pricing</div>
                 <div class="form-row-2">
                     <div class="form-group">
@@ -937,7 +937,7 @@ $step1Data = $_SESSION['listing_step1'];
                     </div>
                 </div>
 
-                <!-- Photo Upload -->
+                <!-- photo Upload -->
                 <div class="section-title"><i class="fas fa-camera"></i>Property Photos</div>
                 <div class="form-group">
                     <div class="file-upload-area" onclick="document.getElementById('images').click()">
@@ -952,7 +952,7 @@ $step1Data = $_SESSION['listing_step1'];
                     <div id="previewGrid" class="preview-grid"></div>
                 </div>
 
-                <!-- Buttons -->
+                <!-- buttons -->
                 <div class="btn-container">
                     <button type="button" class="btn btn-secondary" onclick="window.history.back()">
                         <i class="fas fa-arrow-left" style="margin-right: 8px;"></i>Back
@@ -965,10 +965,10 @@ $step1Data = $_SESSION['listing_step1'];
         </div>
     </main>
 
-    <!-- Footer -->
+    <!-- footer -->
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-    <!-- Success Modal -->
+    <!-- success Modal -->
     <div class="modal-overlay" id="successModal">
         <div class="success-modal">
             <div class="success-modal-icon">
@@ -982,12 +982,12 @@ $step1Data = $_SESSION['listing_step1'];
     </div>
 
     <script>
-        // Prevent button click from propagating when clicking upload area
+        // prevent button click from propagating when clicking upload area
         document.querySelector('.file-upload-area button').addEventListener('click', function(e) {
             e.stopPropagation();
         });
         
-        // Image preview
+        // image preview
         const imageInput = document.getElementById('images');
         const previewGrid = document.getElementById('previewGrid');
         let selectedFiles = [];
@@ -1036,7 +1036,7 @@ $step1Data = $_SESSION['listing_step1'];
             });
         }
 
-        // Form submission
+        // form submission
         document.getElementById('step2Form').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -1049,11 +1049,11 @@ $step1Data = $_SESSION['listing_step1'];
             errorMsg.style.display = 'none';
             successMsg.style.display = 'none';
             
-            // Create FormData from form
+            // create FormData from form
             const formData = new FormData(this);
             
-            // Add selected images to FormData
-            // Remove any existing images[] entries first
+            // add selected images to FormData
+            // remove any existing images[] entries first
             formData.delete('images[]');
             
             selectedFiles.forEach((file, index) => {
@@ -1076,7 +1076,7 @@ $step1Data = $_SESSION['listing_step1'];
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Show success modal
+                    // show success modal
                     showSuccessModal();
                 } else {
                     errorMsg.innerHTML = '<i class="fas fa-exclamation-circle" style="margin-right: 8px;"></i>' + data.errors.join(', ');
@@ -1094,7 +1094,7 @@ $step1Data = $_SESSION['listing_step1'];
             });
         });
         
-        // Success Modal Functions
+        // success Modal Functions
         let countdownInterval;
         
         function showSuccessModal() {
@@ -1102,7 +1102,7 @@ $step1Data = $_SESSION['listing_step1'];
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
             
-            // Start countdown
+            // start countdown
             let seconds = 3;
             const countdownElement = document.getElementById('countdown');
             
@@ -1122,7 +1122,7 @@ $step1Data = $_SESSION['listing_step1'];
             window.location.href = '/TravelMate/public/index.php?url=Accomodation_provider/newerDashboard';
         }
         
-        // Close modal on overlay click
+        // close modal on overlay click
         document.addEventListener('click', function(e) {
             const modal = document.getElementById('successModal');
             if (e.target === modal) {

@@ -10,7 +10,7 @@
 <body>
   
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
-  <!-- Hero Section -->
+  <!-- hero Section -->
   <section class="hero-section">
     <div class="hero-background">
       <div class="hero-overlay">
@@ -22,7 +22,7 @@
     </div>
   </section>
 
-  <!-- Beaches Section -->
+  <!-- beaches Section -->
   <section class="beaches-section">
     <div class="container">
       <div class="section-header">
@@ -30,7 +30,7 @@
       </div>
 
       <div class="beaches-grid">
-        <!-- Blue -->
+        <!-- blue -->
         <div class="card" data-location="blue">
           <div class="card-image">
             <img src="assets/images/bluebeach.png" alt="Blue Beach">
@@ -43,7 +43,7 @@
             <p>Blue Beach (also called Blue Beach Island) is a small scenic beach/island located near Nilwella, between Dickwella and Tangalle on Sri Lanka’s southern coast.</p>
           </div>
         </div>
-        <!-- Thalpe -->
+        <!-- thalpe -->
         <div class="card" data-location="thalpe">
           <div class="card-image">
             <img src="assets/images/thalpe.png" alt="Thalpe Beach">
@@ -56,7 +56,7 @@
             <p>The beach has unique rock pools carved into coral reefs which fill with ocean water. These make for calm shallow bathing areas. It’s relatively less crowded than nearby tourist hotspots, offering peace, golden sand, palm trees, and scenic views.</p>
           </div>
         </div>
-        <!-- Jungle -->
+        <!-- jungle -->
         <div class="card" data-location="jungle">
           <div class="card-image">
             <img src="assets/images/jungle.png" alt="Jungle Beach">
@@ -69,7 +69,7 @@
             <p>A peaceful, relatively secluded cove near Unawatuna, surrounded by lush jungle and forest on the Rumassala hill side. Golden sand, clear turquoise waters, calm waves — good for swimming, especially for those who aren’t strong swimmers.</p>
           </div>
         </div>
-        <!-- Hikkaduwa -->
+        <!-- hikkaduwa -->
         <div class="card" data-location="hikkaduwa">
           <div class="card-image">
             <img src="assets/images/hikkaduwa.png" alt="Hikkaduwa Beach">
@@ -82,7 +82,7 @@
             <p>Hikkaduwa Beach is a famous coastal destination on Sri Lanka’s southwest coast, known for its golden sand, clear blue waters, and vibrant coral reefs. It’s a popular spot for swimming, snorkeling, surfing, and watching sea turtles.</p>
           </div>
         </div>
-        <!-- Mirissa -->
+        <!-- mirissa -->
         <div class="card" data-location="mirissa">
           <div class="card-image">
             <img src="assets/images/mirissa.png" alt="Mirissa Beach">
@@ -95,7 +95,7 @@
             <p>The beach features golden sand fringed by coconut palms, calm turquoise waters, and a relaxed tropical vibe. It’s great for swimming, sunbathing, enjoying seafood by the shore, or watching dramatic sunsets.</p>
           </div>
         </div>
-        <!-- Marble Beach -->
+        <!-- marble Beach -->
         <div class="card" data-location="marble">
           <div class="card-image">
             <img src="assets/images/marble.png" alt="Marble Beach">
@@ -108,7 +108,7 @@
             <p>The water is crystal clear, and often calm, making it good for swimming and snorkeling. It’s more peaceful and less commercial than many tourist beaches — good for relaxing, enjoying nature, quiet walks, particularly those seeking calm and beauty.</p>
           </div>
         </div>
-        <!-- Nilaweli Beach -->
+        <!-- nilaweli Beach -->
         <div class="card" data-location="nilaweli">
           <div class="card-image">
             <img src="assets/images/nilaweli.png" alt="Nilaweli Beach">
@@ -121,7 +121,7 @@
             <p>The beach is known for its soft white-sand shores, calm turquoise waters, and gentle slope into the sea — making it ideal for swimming, relaxing, and quiet beach walks.</p>
           </div>
         </div>
-        <!-- Unawatuna Beach -->
+        <!-- unawatuna Beach -->
         <div class="card" data-location="unawatuna">
           <div class="card-image">
             <img src="assets/images/unawatuna.png" alt="Unawatuna Beach">
@@ -138,7 +138,7 @@
     </div>
   </section>
 
-  <!-- Beach Details Modal -->
+  <!-- beach Details Modal -->
   <!-- <div class="modal" id="beachModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -168,7 +168,7 @@
     </div>
   </div> -->
 
-  <!-- Booking Modal -->
+  <!-- booking Modal -->
   <!-- <div class="modal" id="bookingModal">
     <div class="modal-content">
       <div class="modal-header">

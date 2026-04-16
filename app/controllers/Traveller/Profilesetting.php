@@ -3,13 +3,13 @@
 class Profilesetting extends Controller{
 
     public function index($a = '', $b = '' , $c = ''){
-        // Check if user is logged in
+        // check if user is logged in
         if (!isset($_SESSION['user']['id'])) {
             header('Location: login');
             exit;
         }
         
-        // Load database config and create connection
+        // load database config and create connection
         require_once __DIR__ . '/../../core/config.php';
         
         $dsn = "mysql:host=" . DBHOST . ";dbname=" . DBNAME . ";charset=utf8mb4";
@@ -20,21 +20,21 @@ class Profilesetting extends Controller{
         $stmt->execute([$_SESSION['user']['id']]);
         $userData = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        // Pass user data to view
+        // pass user data to view
         $this->view('Traveller/profilesetting', ['user' => $userData]);
     }
 
     public function update(){
-        // Start output buffering to prevent any output before JSON
+        // start output buffering to prevent any output before JSON
         ob_start();
         
-        // Load necessary files
+        // load necessary files
         require_once __DIR__ . '/../../core/config.php';
         require_once __DIR__ . '/../../core/Model.php';
         require_once __DIR__ . '/../../core/Database.php';
         require_once __DIR__ . '/../../models/User.php';
         
-        // Check if user is logged in
+        // check if user is logged in
         if (!isset($_SESSION['user']['id'])) {
             ob_end_clean();
             header('Content-Type: application/json');
@@ -44,7 +44,7 @@ class Profilesetting extends Controller{
         
         $userId = $_SESSION['user']['id'];
         
-        // Get POST data
+        // get POST data
         $firstName = $_POST['firstName'] ?? '';
         $lastName = $_POST['lastName'] ?? '';
         $email = $_POST['email'] ?? '';
@@ -59,7 +59,7 @@ class Profilesetting extends Controller{
         $budget = $_POST['budget'] ?? '';
         $interests = $_POST['interests'] ?? '';
         
-        // Validation
+        // validation
         $errors = [];
         if (empty($firstName)) {
             $errors[] = 'First name is required';
@@ -96,7 +96,7 @@ class Profilesetting extends Controller{
             'interests' => $interests
         ];
 
-        // Handle profile photo upload or removal
+        // handle profile photo upload or removal
         if (isset($_POST['removePhoto']) && $_POST['removePhoto'] === 'true') {
             $updateData['profile_image'] = '';
         } elseif (isset($_FILES['profilePhoto']) && $_FILES['profilePhoto']['error'] === UPLOAD_ERR_OK) {
@@ -118,11 +118,11 @@ class Profilesetting extends Controller{
             }
         }
         
-        // Update user in database
+        // update user in database
         $result = \App\Models\User::updateUser($userId, $updateData);
         
         if ($result) {
-            // Update session data
+            // update session data
             $_SESSION['user']['first_name'] = $firstName;
             $_SESSION['user']['last_name'] = $lastName;
             $_SESSION['user']['email'] = $email;

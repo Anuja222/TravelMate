@@ -42,21 +42,21 @@
             </ul>
         </aside>
 
-    <!-- Main Content -->
+    <!-- main Content -->
     <section class="main-content">
         <div class="page-header">
             <h1>My Accommodation Bookings</h1>
             <p>Manage and view all your travel reservations</p>
         </div>
 
-        <!-- Filter Tabs -->
+        <!-- filter Tabs -->
         <div class="filter-tabs">
             <div class="filter-tab active" data-filter="all">All Bookings</div>
             <div class="filter-tab" data-filter="confirmed">Confirmed</div>
             <div class="filter-tab" data-filter="cancelled">Cancelled</div>
         </div>
 
-        <!-- Search Section -->
+        <!-- search Section -->
         <div class="controls-section" style="margin-bottom: 2em; display: none;">
             <input type="text" class="search-box" placeholder="Search bookings by room name or booking ID..." id="bookingSearch">
             <select class="sort-dropdown" id="sortBookings">
@@ -67,24 +67,24 @@
             </select>
         </div>
 
-        <!-- Loading State -->
+        <!-- loading State -->
         <div class="loading-container" style="text-align: center; padding: 3em; display: none;">
             <div class="loading-spinner" style="display: inline-block; width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #1abc5b; border-radius: 50%; animation: spin 1s linear infinite;"></div>
             <p style="margin-top: 1em; color: #666;">Loading your bookings...</p>
         </div>
 
         <div class="bookings-container">
-            <!-- Hotels Section -->
+            <!-- hotels Section -->
             <div class="booking-section" data-category="hotels">
                 <div class="section-header">
                     <div class="section-icon"><i class="fas fa-hotel" aria-hidden="true"></i></div>
                     <h2 class="section-title">Hotel Bookings</h2>
                 </div>
                 
-                <!-- Bookings will be dynamically loaded here -->
+                <!-- bookings will be dynamically loaded here -->
             </div>
 
-            <!-- Booking History Section -->
+            <!-- booking History Section -->
             <div class="booking-section" data-category="history">
                 <div class="section-header">
                     <div class="section-icon"><i class="fas fa-clock-rotate-left" aria-hidden="true"></i></div>
@@ -93,7 +93,7 @@
                 <p class="history-note">Expired bookings appear here. You can rate your completed stays.</p>
             </div>
 
-            <!-- Transport Section (Future Implementation) -->
+            <!-- transport Section (Future Implementation) -->
             <div class="booking-section" data-category="transport" style="display: none;">
                 <div class="section-header">
                     <div class="section-icon"><i class="fas fa-plane-departure" aria-hidden="true"></i></div>
@@ -107,7 +107,7 @@
             </div>
         </div>
 
-        <!-- Summary Section -->
+        <!-- summary Section -->
         <div class="booking-section" style="margin-top: 2em;">
             <div class="section-header">
                 <div class="section-icon"><i class="fas fa-chart-simple" aria-hidden="true"></i></div>
@@ -137,7 +137,7 @@
 
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-    <!-- Booking Details Modal -->
+    <!-- booking Details Modal -->
     <div id="bookingDetailsModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6);">
         <div class="modal-content" style="background-color: #fefefe; margin: 5% auto; padding: 2em; border-radius: 16px; width: 80%; max-width: 800px; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
             <span class="close" style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
@@ -146,7 +146,7 @@
         </div>
     </div>
 
-    <!-- Cancel Confirmation Modal -->
+    <!-- cancel Confirmation Modal -->
     <div id="cancelConfirmModal" class="cancel-confirm-modal">
         <div class="cancel-confirm-content">
             <div class="cancel-icon">
@@ -165,7 +165,7 @@
         </div>
     </div>
 
-    <!-- Cancel Success Modal -->
+    <!-- cancel Success Modal -->
     <div id="cancelSuccessModal" class="cancel-success-modal">
         <div class="cancel-success-content">
             <div class="success-icon">
@@ -180,7 +180,7 @@
         </div>
     </div>
 
-    <!-- Error Modal -->
+    <!-- error Modal -->
     <div id="errorModal" class="error-modal">
         <div class="error-modal-content">
             <div class="error-icon">
@@ -196,7 +196,7 @@
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
+    <!-- delete Confirmation Modal -->
     <div id="deleteConfirmModal" class="delete-confirm-modal">
         <div class="delete-confirm-content">
             <div class="delete-icon">
@@ -215,7 +215,7 @@
         </div>
     </div>
 
-    <!-- Delete Success Modal -->
+    <!-- delete Success Modal -->
     <div id="deleteSuccessModal" class="delete-success-modal">
         <div class="delete-success-content">
             <div class="success-icon">
@@ -262,7 +262,7 @@
             }
         }
 
-        /* Cancel Confirmation Modal */
+        /* cancel Confirmation Modal */
         .cancel-confirm-modal {
             display: none;
             position: fixed;
@@ -373,7 +373,7 @@
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
 
-        /* Cancel Success Modal */
+        /* cancel Success Modal */
         .cancel-success-modal {
             display: none;
             position: fixed;
@@ -439,7 +439,7 @@
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
 
-        /* Error Modal */
+        /* error Modal */
         .error-modal {
             display: none;
             position: fixed;
@@ -505,7 +505,7 @@
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
 
-        /* Delete Confirmation Modal */
+        /* delete Confirmation Modal */
         .delete-confirm-modal {
             display: none;
             position: fixed;
@@ -571,7 +571,7 @@
             box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
         }
 
-        /* Delete Success Modal */
+        /* delete Success Modal */
         .delete-success-modal {
             display: none;
             position: fixed;

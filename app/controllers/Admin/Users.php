@@ -3,15 +3,15 @@
 class Users extends Controller {
 
     public function index($a = '', $b = '', $c = '') {
-        // Access global database connection (already loaded in index.php)
+        // access global database connection (already loaded in index.php)
         global $pdo;
         
-        // If PDO doesn't exist, try to load it
+        // if PDO doesn't exist, try to load it
         if (!isset($pdo)) {
             require_once __DIR__ . '/../../../config/database.php';
         }
         
-        // Fetch all users from database
+        // fetch all users from database
         try {
             $stmt = $pdo->prepare("
                 SELECT 
@@ -37,10 +37,10 @@ class Users extends Controller {
             $stmt->execute();
             $users = $stmt->fetchAll(PDO::FETCH_OBJ);
             
-            // Add default status to each user if not in database
+            // add default status to each user if not in database
             foreach ($users as $user) {
 
-                // Map profile_image to profile_picture for view compatibility
+                // map profile_image to profile_picture for view compatibility
                 $user->profile_picture = $user->profile_image ?? null;
             }
         } catch (Exception $e) {
@@ -51,7 +51,7 @@ class Users extends Controller {
             $users = [];
         }
         
-        // Pass data to view
+        // pass data to view
         $data = [
             'users' => $users
         ];
@@ -89,13 +89,13 @@ class Users extends Controller {
             try {
                 $pdo->beginTransaction();
                 
-                // Disable foreign key checks to prevent constraint violations
+                // disable foreign key checks to prevent constraint violations
                 $pdo->exec("SET FOREIGN_KEY_CHECKS=0");
                 
                 $stmt = $pdo->prepare("DELETE FROM users WHERE id=?");
                 $stmt->execute([$id]);
                 
-                // Re-enable foreign key checks
+                // re-enable foreign key checks
                 $pdo->exec("SET FOREIGN_KEY_CHECKS=1");
                 
                 $pdo->commit();

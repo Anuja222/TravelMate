@@ -12,7 +12,7 @@
 
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-  <!-- Hero Section -->
+  <!-- hero Section -->
   <section class="hero-section" style="position: relative; min-height: 60vh; display: flex; align-items: center; justify-content: center;">
     <div class="hero-background" style="position: absolute; inset: 0; background-image: url('assets/images/accomodationmain.png'); background-size: cover; background-position: center; background-attachment: fixed; z-index: 1;"></div>
     <div class="hero-overlay" style="position: relative; z-index: 2; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); padding: 50px 20px;">
@@ -24,7 +24,7 @@
     </div>
   </section>
 
-  <!-- Filter Section -->
+  <!-- filter Section -->
   <section class="filter-section">
     <div class="container">
       <div class="filter-bar">
@@ -76,7 +76,7 @@
     </div>
   </section>
 
-  <!-- Accommodations Section -->
+  <!-- accommodations Section -->
   <section class="accommodations-section">
     <div class="container">
       <!-- <div class="section-header">
@@ -85,7 +85,7 @@
       </div> -->
 
       <div class="accommodations-grid" id="accommodationsGrid">
-        <!-- Luxury Resort -->
+        <!-- luxury Resort -->
         <div class="accommodation-card" data-type="resort" data-location="bentota" data-price="luxury" data-rating="5">
           <div class="card-image">
             <img src="assets/images/luxuryhotel.png" alt="Luxury Beach Resort">
@@ -121,7 +121,7 @@
           </div>
         </div>
 
-        <!-- Boutique Hotel -->
+        <!-- boutique Hotel -->
         <div class="accommodation-card" data-type="boutique" data-location="kandy" data-price="mid" data-rating="4">
           <div class="card-image">
             <img src="assets/images/boutiquehotel.png" alt="Kandy Boutique Hotel">
@@ -157,7 +157,7 @@
           </div>
         </div>
 
-        <!-- Mountain Lodge -->
+        <!-- mountain Lodge -->
         <div class="accommodation-card" data-type="mountain" data-location="kandy" data-price="mid" data-rating="4">
           <div class="card-image">
             <img src="assets/images/mountainlodge.png" alt="Mountain Lodge">
@@ -193,7 +193,7 @@
           </div>
         </div>
 
-        <!-- Hill Country Villa -->
+        <!-- hill Country Villa -->
         <div class="accommodation-card" data-type="villa" data-location="ella" data-price="mid" data-rating="4">
           <div class="card-image">
             <img src="assets/images/countryvilla.png" alt="Hill Country Villa">
@@ -229,7 +229,7 @@
           </div>
         </div>
 
-        <!-- Heritage Hotel -->
+        <!-- heritage Hotel -->
         <div class="accommodation-card" data-type="hotel" data-location="galle" data-price="mid" data-rating="4">
           <div class="card-image">
             <img src="assets/images/heritagevilla.png" alt="Heritage Hotel">
@@ -265,7 +265,7 @@
           </div>
         </div>
 
-        <!-- Budget Guesthouse -->
+        <!-- budget Guesthouse -->
         <div class="accommodation-card" data-type="guesthouse" data-location="sigiriya" data-price="budget" data-rating="3">
           <div class="card-image">
             <img src="assets/images/gardenhouse.png" alt="Sigiriya Guesthouse">
@@ -301,7 +301,7 @@
           </div>
         </div>
 
-        <!-- City Hotel -->
+        <!-- city Hotel -->
         <div class="accommodation-card" data-type="hotel" data-location="colombo" data-price="mid" data-rating="4">
           <div class="card-image">
             <img src="assets/images/cityhotel.png" alt="Colombo City Hotel">
@@ -343,7 +343,7 @@
       </div> -->
     </div>
   </section>
-  <!-- Booking Modal -->
+  <!-- booking Modal -->
   <!-- <div class="modal" id="bookingModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -399,7 +399,7 @@
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
   
   <script>
-    // Load accommodations dynamically
+    // load accommodations dynamically
     document.addEventListener('DOMContentLoaded', function() {
       loadAccommodations();
     });
@@ -438,7 +438,7 @@
       const grid = document.getElementById('accommodationsGrid');
       if (!grid) return;
 
-      // Clear existing static content
+      // clear existing static content
       grid.innerHTML = '';
 
       if (accommodations.length === 0) {
@@ -483,7 +483,7 @@
       })();
       const ratingText = ratingCount > 0 ? `${avgRatingValue.toFixed(1)} (${ratingCount})` : 'Not yet rated';
       
-      // Format property type for badge
+      // format property type for badge
       const propertyType = accommodation.property_type ? 
         accommodation.property_type.charAt(0).toUpperCase() + accommodation.property_type.slice(1).replace(/_/g, ' ') : 
         'Property';

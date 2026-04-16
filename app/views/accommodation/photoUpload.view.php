@@ -1,4 +1,4 @@
-<!-- Photo Upload Page -->
+<!-- photo Upload Page -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +11,7 @@
     <script src="/TravelMate/public/assets/js/propertyListing.js" defer></script>
 </head>
 <body>
-    <!-- Header -->
+    <!-- header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
     <h1>What does your place look like?</h1>
     <form class="photo-upload-form" action="houseRules" method="get">
@@ -29,7 +29,7 @@
         </div>
         <button type="submit" class="save-btn">Continue</button>
     </form>
-    <!-- Footer -->
+    <!-- footer -->
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
     <script></script>
 </body>

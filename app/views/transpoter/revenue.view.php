@@ -1,5 +1,5 @@
 <?php
-// Start session if not already started
+// start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -116,16 +116,16 @@ if (session_status() === PHP_SESSION_NONE) {
 
 <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
   
-  <!-- MAIN CONTENT -->
+  <!-- mAIN CONTENT -->
   <main>
-    <!-- SIDEBAR -->
+    <!-- sIDEBAR -->
     <?php
       $active_page = 'revenue';
       include __DIR__ . '/sidebar.view.php';
     ?>
 
     <div class="content">
-        <!-- Hidden PDF Header (Only visible in PDF) -->
+        <!-- hidden PDF Header (Only visible in PDF) -->
         <div id="pdfHeader" style="display: none; padding: 20px; border-bottom: 2px solid #1abc5b; margin-bottom: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div style="display: flex; align-items: center; gap: 15px;">
@@ -245,7 +245,7 @@ function downloadPDF() {
     const filterContainer = document.querySelector('.filter-container');
     const pdfHeader = document.getElementById('pdfHeader');
     
-    // Temporarily edit UI elements for the PDF
+    // temporarily edit UI elements for the PDF
     if(filterContainer) filterContainer.style.display = 'none';
     if(pdfHeader) pdfHeader.style.display = 'block';
     
@@ -258,7 +258,7 @@ function downloadPDF() {
         pagebreak:    { mode: ['css', 'legacy'] }
     };
 
-    // Generate PDF and then restore hidden elements
+    // generate PDF and then restore hidden elements
     html2pdf().set(opt).from(element).save().then(() => {
         if(filterContainer) filterContainer.style.display = 'flex';
         if(pdfHeader) pdfHeader.style.display = 'none';

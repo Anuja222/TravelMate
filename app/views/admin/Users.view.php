@@ -156,7 +156,7 @@
     </div>
   </div>
 
-  <!-- Delete Confirmation Modal -->
+  <!-- delete Confirmation Modal -->
   <div id="deleteModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -183,7 +183,7 @@
     </div>
   </div>
 
-  <!-- Suspend Confirmation Modal -->
+  <!-- suspend Confirmation Modal -->
   <div id="suspendModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -204,7 +204,7 @@
     </div>
   </div>
 
-  <!-- Unsuspend Confirmation Modal -->
+  <!-- unsuspend Confirmation Modal -->
   <div id="unsuspendModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -221,7 +221,7 @@
     </div>
   </div>
 
-  <!-- View User Details Modal -->
+  <!-- view User Details Modal -->
   <div id="viewUserModal" class="modal" style="overflow-y: auto;">
     <div class="modal-content" style="max-width: 700px; margin: 20px auto; max-height: 90vh; display: flex; flex-direction: column;">
       <div class="modal-header">
@@ -325,7 +325,7 @@
     </div>
   </div>
 
-  <!-- Success Modal -->
+  <!-- success Modal -->
   <div id="successModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -368,7 +368,7 @@
     }
 
     function viewUserDetails(user) {
-      // Populate modal with user data
+      // populate modal with user data
       document.getElementById('viewUserImage').src = user.profile_picture ? ('<?= ROOT ?>/' + user.profile_picture) : '<?= ROOT ?>/assets/images/profile.jpg';
       document.getElementById('viewUserFullName').textContent = (user.first_name || '') + ' ' + (user.last_name || '');
       document.getElementById('viewUserFirstName').textContent = user.first_name || 'N/A';
@@ -388,7 +388,7 @@
           document.getElementById('viewUserSuspendReasonContainer').style.display = 'none';
       }
 
-      // Format date
+      // format date
       if (user.created_at) {
         const date = new Date(user.created_at);
         document.getElementById('viewUserJoined').textContent = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
@@ -396,7 +396,7 @@
         document.getElementById('viewUserJoined').textContent = 'N/A';
       }
 
-      // Optional fields
+      // optional fields
       if (user.bio && user.bio.trim()) {
         document.getElementById('viewUserBio').textContent = user.bio;
         document.getElementById('viewUserBioSection').style.display = 'block';
@@ -404,7 +404,7 @@
         document.getElementById('viewUserBioSection').style.display = 'none';
       }
 
-      // Construct address from city and country
+      // construct address from city and country
       let addressText = '';
       if (user.city && user.country) {
         addressText = user.city + ', ' + user.country;
@@ -421,7 +421,7 @@
         document.getElementById('viewUserAddressSection').style.display = 'none';
       }
 
-      // Show modal
+      // show modal
       document.getElementById('viewUserModal').style.display = 'block';
     }
 
@@ -429,14 +429,14 @@
       document.getElementById('viewUserModal').style.display = 'none';
     }
 
-    // Add event listeners to checkboxes and filters
+    // add event listeners to checkboxes and filters
     document.addEventListener('DOMContentLoaded', function() {
       const checkboxes = document.querySelectorAll('.user-checkbox');
       checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', updateSelectedUsers);
       });
 
-      // Filter functionality
+      // filter functionality
       const applyBtn = document.getElementById('applyFilter');
       const searchBox = document.getElementById('searchBox');
       const typeFilter = document.getElementById('userTypeFilter');
@@ -462,14 +462,14 @@
           const matchesStatus = (selectedStatus === 'all') || (status === selectedStatus);
           
           if (matchesSearch && matchesType && matchesStatus) {
-            card.style.display = ''; // Revert to stylesheet default
+            card.style.display = ''; // revert to stylesheet default
             visibleCount++;
           } else {
             card.style.display = 'none';
           }
         });
         
-        // Handle "No users found" state dynamically when filtering zero results
+        // handle "No users found" state dynamically when filtering zero results
         let noUsersMsg = document.querySelector('.no-users-dynamic');
         if (visibleCount === 0 && userCards.length > 0) {
           if (!noUsersMsg) {
@@ -493,7 +493,7 @@
       }
 
       if (applyBtn) applyBtn.addEventListener('click', filterUsers);
-      // Optional: Filter in real-time immediately when typing or selecting dropdowns
+      // optional: Filter in real-time immediately when typing or selecting dropdowns
       if (searchBox) searchBox.addEventListener('input', filterUsers);
       if (typeFilter) typeFilter.addEventListener('change', filterUsers);
       if (statusFilter) statusFilter.addEventListener('change', filterUsers);
@@ -501,7 +501,7 @@
 
     function viewUser(id) {
       alert('Viewing user ID: ' + id);
-      // Implement view functionality
+      // implement view functionality
     }
 
     function deleteUser(id, name) {
@@ -519,7 +519,7 @@
     function activateUser(id, name) {
       if (confirm(`Activate user "${name}"?`)) {
         alert('Activated user ID: ' + id);
-        // Implement activation functionality
+        // implement activation functionality
       }
     }
 
@@ -637,7 +637,7 @@
       }
       if (confirm(`Suspend ${selectedUsers.length} selected users?`)) {
         alert('Bulk suspended users: ' + selectedUsers.join(', '));
-        // Implement bulk suspend functionality
+        // implement bulk suspend functionality
       }
     }
 
@@ -648,11 +648,11 @@
       }
       if (confirm(`Permanently delete ${selectedUsers.length} selected users? This action cannot be undone!`)) {
         alert('Bulk deleted users: ' + selectedUsers.join(', '));
-        // Implement bulk delete functionality
+        // implement bulk delete functionality
       }
     }
 
-    // Close modal when clicking outside
+    // close modal when clicking outside
     window.onclick = function(event) {
       const deleteModal = document.getElementById('deleteModal');
       const suspendModal = document.getElementById('suspendModal');

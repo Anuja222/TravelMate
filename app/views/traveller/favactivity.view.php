@@ -8,10 +8,10 @@
   <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
 </head>
 <body>
-  <!-- Header/Navbar -->
+  <!-- header/Navbar -->
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-  <!-- Hero Section -->
+  <!-- hero Section -->
   <section class="hero-section">
     <div class="hero-background">
       <div class="hero-overlay">
@@ -23,7 +23,7 @@
     </div>
   </section>
 
-  <!-- Activities Section -->
+  <!-- activities Section -->
   <section class="activities-section">
     <div class="container">
       <div class="section-header">
@@ -32,13 +32,13 @@
       </div>
 
       <div class="activities-grid" id="activitiesContainer">
-        <!-- Dynamic loaded activities -->
+        <!-- dynamic loaded activities -->
         <p style="grid-column: 1/-1; text-align: center; padding: 40px 20px; color: #666;">Loading activities...</p>
       </div>
     </div>
   </section>
 
-  <!-- Booking Modal -->
+  <!-- booking Modal -->
   <!-- <div class="modal" id="activityModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -118,7 +118,7 @@
         return origin + '/TravelMate/public';
       })();
 
-      // Fetch activities from API
+      // fetch activities from API
       fetch(baseApi + '/api/activity/list', { credentials: 'same-origin' })
         .then(r => r.json())
         .then(resp => {
@@ -133,7 +133,7 @@
             return;
           }
 
-          // Render all activities
+          // render all activities
           container.innerHTML = activities.map(activity => {
             const baseUrl = window.location.origin + '/TravelMate/public';
             const img = activity.image ? baseUrl + activity.image : 'assets/images/default-activity.png';

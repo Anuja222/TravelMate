@@ -12,7 +12,7 @@
 
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-  <!-- Hotel Hero Section -->
+  <!-- hotel Hero Section -->
   <section class="hotel-hero">
     <div class="hero-gallery">
       <div class="main-image">
@@ -26,22 +26,22 @@
         </div>
       </div>
       <div class="thumbnail-gallery" id="thumbnailGallery">
-        <!-- Thumbnails will be populated by JavaScript -->
+        <!-- thumbnails will be populated by JavaScript -->
       </div>
     </div>
   </section>
 
-  <!-- Hotel Details Section -->
+  <!-- hotel Details Section -->
   <section class="hotel-details-section">
     <div class="container">
       <div class="details-grid">
-        <!-- Left Column - Hotel Info -->
+        <!-- left Column - Hotel Info -->
         <div class="hotel-info">
           <div class="hotel-header">
             <div class="hotel-title">
               <h1 id="hotelTitle">Loading accommodation...</h1>
               <div class="hotel-badges" id="hotelBadges">
-                <!-- Badge will be populated by JavaScript -->
+                <!-- badge will be populated by JavaScript -->
               </div>
             </div>
             <!-- <div class="hotel-rating">
@@ -86,7 +86,7 @@
                 </div>
               </div>
               <div id="availabilityMessage" style="margin-top: 15px; padding: 12px; background: white; border-radius: 8px; text-align: center; font-size: 14px; color: #666; display: none;">
-                <!-- Availability message will be shown here -->
+                <!-- availability message will be shown here -->
               </div>
             </div>
           </div>
@@ -94,14 +94,14 @@
           <div class="hotel-amenities">
             <h3>Amenities & Features</h3>
             <div class="amenities-grid" id="amenitiesGrid">
-              <!-- Amenities will be populated by JavaScript -->
+              <!-- amenities will be populated by JavaScript -->
             </div>
           </div>
 
           <div class="hotel-rooms">
             <h3>Room Types</h3>
             <div class="rooms-grid" id="roomsGrid">
-              <!-- Room types will be populated by JavaScript -->
+              <!-- room types will be populated by JavaScript -->
             </div>
           </div>
 
@@ -113,16 +113,16 @@
                 <div class="rating-label">Excellent</div>
               </div>
               <div class="rating-breakdown" id="ratingBreakdown">
-                <!-- Rating breakdown will be populated by JavaScript -->
+                <!-- rating breakdown will be populated by JavaScript -->
               </div>
             </div>
             <div class="reviews-list" id="reviewsList">
-              <!-- Reviews will be populated by JavaScript -->
+              <!-- reviews will be populated by JavaScript -->
             </div>
           </div>
         </div>
 
-        <!-- Right Column - Booking Widget -->
+        <!-- right Column - Booking Widget -->
         <div class="booking-widget">
           <div class="widget-header">
             <div class="price-display">
@@ -170,7 +170,7 @@
               <select id="roomType" required>
                 <option value="0">Select Room Type</option>
                 <option value="1">Family Suite</option>
-                <!-- Room options will be populated by JavaScript -->
+                <!-- room options will be populated by JavaScript -->
               </select>
             </div>
 
@@ -218,7 +218,7 @@
     </div>
   </section>
 
-  <!-- Similar Hotels Section -->
+  <!-- similar Hotels Section -->
   <!-- <section class="similar-hotels-section">
     <div class="container">
       <div class="section-header">
@@ -231,7 +231,7 @@
     </div>
   </section> -->
 
-  <!-- Image Gallery Modal -->
+  <!-- image Gallery Modal -->
   <!-- <div class="modal gallery-modal" id="galleryModal">
     <div class="gallery-modal-content">
       <div class="gallery-header">
@@ -254,7 +254,7 @@
     </div>
   </div>  -->
 
-  <!-- Validation Error Modal -->
+  <!-- validation Error Modal -->
   <div id="mapModal" class="map-modal">
     <div class="map-modal-content">
       <div class="map-modal-header">

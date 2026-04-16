@@ -1,4 +1,4 @@
-<!-- Price Page -->
+<!-- price Page -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/TravelMate/public/assets/css/main.css">
 </head>
 <body>
-    <!-- Header -->
+    <!-- header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
     <section class="price-section">
         <h1>Add Price</h1>
@@ -29,7 +29,7 @@
             <button type="submit" class="continue-btn">Continue</button>
         </form>
     </section>
-    <!-- Footer -->
+    <!-- footer -->
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
     <script src="/TravelMate/public/assets/js/Accomodation_provider/price.js"></script>
     <script>

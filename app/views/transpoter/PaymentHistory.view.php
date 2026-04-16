@@ -12,7 +12,7 @@
 
 <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
   
-  <!-- MAIN CONTENT -->
+  <!-- mAIN CONTENT -->
   <main>
     <div class="content">
       <div class="page-title">  
@@ -157,7 +157,7 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Search functionality
+      // search functionality
       const searchInput = document.getElementById('payment-search');
       const paymentItems = document.querySelectorAll('.payment-item');
       
@@ -174,25 +174,25 @@
         });
       });
       
-      // Filter by period functionality
+      // filter by period functionality
       const periodSelect = document.getElementById('filter-period');
       
       periodSelect.addEventListener('change', function() {
         const filterValue = this.value;
         alert(`Filtering by ${filterValue} period. This would filter payments in a real application.`);
-        // In a real application, this would filter payments by date
+        // in a real application, this would filter payments by date
       });
       
-      // Sort functionality
+      // sort functionality
       const sortSelect = document.getElementById('sort-payments');
       
       sortSelect.addEventListener('change', function() {
         const sortValue = this.value;
         alert(`Sorting by ${sortValue}. This would sort payments in a real application.`);
-        // In a real application, this would sort the payment items
+        // in a real application, this would sort the payment items
       });
       
-      // Download receipt functionality
+      // download receipt functionality
       const downloadButtons = document.querySelectorAll('.download-btn');
       
       downloadButtons.forEach(button => {
@@ -200,11 +200,11 @@
           const paymentItem = this.closest('.payment-item');
           const serviceType = paymentItem.querySelector('h2').textContent;
           alert(`Downloading receipt for: ${serviceType}`);
-          // In a real application, this would download a PDF receipt
+          // in a real application, this would download a PDF receipt
         });
       });
       
-      // Contact customer functionality
+      // contact customer functionality
       const contactButtons = document.querySelectorAll('.contact-btn');
       
       contactButtons.forEach(button => {
@@ -213,13 +213,13 @@
           const customerElement = paymentItem.querySelector('.payment-customer');
           const customer = customerElement ? customerElement.textContent.replace(' ', '') : 'customer';
           alert(`Opening contact form for ${customer}`);
-          // In a real application, this would open a contact modal or email client
+          // in a real application, this would open a contact modal or email client
         });
       });
       
-      // Form validation for search
+      // form validation for search
       searchInput.addEventListener('keypress', function(e) {
-        // Prevent special characters that might be used for injection attacks
+        // prevent special characters that might be used for injection attacks
         const invalidChars = /[<>$#{}]/;
         if (invalidChars.test(e.key)) {
           e.preventDefault();
@@ -227,7 +227,7 @@
         }
       });
       
-      // Responsive adjustments
+      // responsive adjustments
       function handleResponsive() {
         if (window.innerWidth < 768) {
           document.querySelector('.payment-summary').classList.add('mobile-view');
@@ -242,7 +242,7 @@
         }
       }
       
-      // Initial call and event listener for responsiveness
+      // initial call and event listener for responsiveness
       handleResponsive();
       window.addEventListener('resize', handleResponsive);
     });

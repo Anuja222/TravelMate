@@ -86,12 +86,12 @@ class Vehicle
 
     public static function deleteById($conn, $id, $userId)
     {
-        // First delete related documents
+        // first delete related documents
         $sql = "DELETE FROM vehicle_documents WHERE vehicle_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$id]);
         
-        // Then delete the vehicle
+        // then delete the vehicle
         $sql = "DELETE FROM vehicles WHERE id = ? AND user_id = ?";
         $stmt = $conn->prepare($sql);
         return $stmt->execute([$id, $userId]);
@@ -169,7 +169,7 @@ class Vehicle
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    // Document helpers
+    // document helpers
     public static function addDocument($conn, $vehicleId, $docType, $filePath)
     {
         $sql = "INSERT INTO vehicle_documents (vehicle_id, doc_type, file_path, created_at) 

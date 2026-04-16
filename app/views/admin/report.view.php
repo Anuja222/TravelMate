@@ -4,9 +4,9 @@
   <title>Admin Dashboard - System Reports</title>
   <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css">
   <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/report.css">
-  <!-- Font Awesome for Icons -->
+  <!-- font Awesome for Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Chart.js -->
+  <!-- chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     .stat-section-title { color: #2e6262; font-size: 1.1rem; margin: 25px 0 15px; font-weight: 700; }
@@ -36,7 +36,7 @@
     <?php include 'sidebar.view.php'; ?>
 
     <div class="content">
-      <!-- Dashboard Header -->
+      <!-- dashboard Header -->
       <div class="page-title">
         <div class="page-title-content">
           <div class="page-icon">
@@ -63,7 +63,7 @@
         </div>
       </div>
 
-      <!-- Stats Grid -->
+      <!-- stats Grid -->
       <div class="custom-report-stats">
         <h3 class="stat-section-title"><i class="fas fa-users"></i> Users Summary</h3>
         <div class="stats-grid custom-grid">
@@ -173,7 +173,7 @@
         </div>
       </div>
 
-      <!-- Charts Section -->
+      <!-- charts Section -->
       <div class="charts-section">
         <div class="chart-card">
           <div class="chart-header">
@@ -199,7 +199,7 @@
         </div>
       </div>
 
-      <!-- Data Tables -->
+      <!-- data Tables -->
       <div class="data-section">
         <div class="data-card">
           <div class="data-header">
@@ -311,7 +311,7 @@
         </div>
       </div>
 
-      <!-- Quick Actions -->
+      <!-- quick Actions -->
       <div class="quick-actions">
         <h3 style="margin: 0 0 20px 0; color: #222;">Quick Actions</h3>
         <div class="actions-grid">
@@ -348,7 +348,7 @@
     let bookingChartInstance = null;
     let userDistChartInstance = null;
 
-    // Time period selector
+    // time period selector
     document.getElementById('timePeriod').addEventListener('change', function() {
       const activeChartBtn = document.querySelector('.chart-btn.active');
       const chartPeriod = activeChartBtn ? activeChartBtn.getAttribute('data-period') : 'weekly';
@@ -357,7 +357,7 @@
 
     function updateDashboardData(period, chartPeriod = 'weekly') {
       console.log('Fetching dashboard data for period:', period, 'chart:', chartPeriod);
-      // Show loading state
+      // show loading state
       const stats = document.querySelectorAll('.stat-value');
       const changes = document.querySelectorAll('.stat-change span:first-child');
       stats.forEach(stat => stat.textContent = '...');
@@ -371,7 +371,7 @@
                 return;
             }
             
-            // Update stats
+            // update stats
             document.getElementById('stat-total-users').textContent = data.stats.users.value;
             document.getElementById('change-total-users').textContent = data.stats.users.change;
             
@@ -407,7 +407,7 @@
             
             document.getElementById('stat-pending').textContent = data.stats.pending_approvals.value;
             
-            // Format stat changes
+            // format stat changes
             const applyChange = (id, changeText) => {
                 const el = document.getElementById(id);
                 if (!el) return;
@@ -440,9 +440,9 @@
             applyChange('change-total-activities', data.stats.total_activities.change);
             applyChange('change-blogs-vlogs', data.stats.blogs_vlogs.change);
             
-            // Update Charts
+            // update Charts
             if (data.charts) {
-                // Booking Trends Chart
+                // booking Trends Chart
                 const bookingCtx = document.getElementById('bookingTrendsChart').getContext('2d');
                 if (bookingChartInstance) {
                     bookingChartInstance.destroy();
@@ -473,7 +473,7 @@
                     }
                 });
 
-                // User Distribution Chart
+                // user Distribution Chart
                 const userDistCtx = document.getElementById('userDistChart').getContext('2d');
                 if (userDistChartInstance) {
                     userDistChartInstance.destroy();
@@ -498,9 +498,9 @@
                 });
             }
 
-            // Format stat changes colors depending on +/- // (Removed since change metrics aren't in this UI, but you can add them back)
+            // format stat changes colors depending on +/- // (Removed since change metrics aren't in this UI, but you can add them back)
 
-            // Update recent users table
+            // update recent users table
             const usersTbody = document.querySelector('.data-card:nth-child(1) .data-table tbody');
             usersTbody.innerHTML = '';
             if (data.lists.recentUsers.length > 0) {
@@ -523,7 +523,7 @@
                 usersTbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No recent users</td></tr>';
             }
 
-            // Update pending approvals table
+            // update pending approvals table
             const pendingTbody = document.querySelector('.data-card:nth-child(2) .data-table tbody');
             pendingTbody.innerHTML = '';
             if (data.lists.pending.length > 0) {
@@ -547,7 +547,7 @@
         .catch(error => console.error('Error fetching dashboard data:', error));
     }
 
-    // Chart period buttons
+    // chart period buttons
     document.querySelectorAll('.chart-btn').forEach(button => {
       button.addEventListener('click', function() {
         
@@ -564,7 +564,7 @@
       });
     });
 
-    // Quick action functions
+    // quick action functions
     function generateReport() {
       alert('Report generation functionality would open here');
     }
@@ -579,7 +579,7 @@
       }
     }
 
-    // Initialize dashboard with current data
+    // initialize dashboard with current data
     document.addEventListener('DOMContentLoaded', function() {
       updateDashboardData('week');
     });

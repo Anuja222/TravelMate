@@ -3,24 +3,24 @@
 class Dashboard extends Controller{
 
     public function index($a = '', $b = '' , $c = ''){
-        // Check if user is logged in
+        // check if user is logged in
         if (!isset($_SESSION['user']['id'])) {
             header('Location: login');
             exit;
         }
         
-        // Load dependencies
+        // load dependencies
         require_once __DIR__ . '/../../core/config.php';
         require_once __DIR__ . '/../../core/Model.php';
         require_once __DIR__ . '/../../core/Database.php';
         require_once __DIR__ . '/../../models/Post.php';
         
-        // Get user's posts
+        // get user's posts
         $postModel = new Post();
         $userId = $_SESSION['user']['id'];
         $userPosts = $postModel->getUserPosts($userId);
         
-        // Count accommodation and transport bookings
+        // count accommodation and transport bookings
         $accBookingsCount = 0;
         $transBookingsCount = 0;
         $userBio = '';
@@ -28,7 +28,7 @@ class Dashboard extends Controller{
         try {
             $db = new class { use Database; };
             
-            // Get user bio
+            // get user bio
             $userResult = $db->query("SELECT bio FROM users WHERE id = :id", ['id' => $userId]);
             if ($userResult && count($userResult) > 0) {
                 $userBio = $userResult[0]->bio;
@@ -47,7 +47,7 @@ class Dashboard extends Controller{
             error_log("Error getting booking counts: " . $e->getMessage());
         }
         
-        // Pass posts to view
+        // pass posts to view
         $data = [
             'posts' => $userPosts ? $userPosts : [],
             'accBookingsCount' => $accBookingsCount,

@@ -14,7 +14,7 @@ class Revenue extends Controller {
 
         $userId = $_SESSION['user']['id'];
         
-        // Filter logic
+        // filter logic
         $filter = $_GET['filter'] ?? 'month';
         
         if ($filter === 'week') {
@@ -26,7 +26,7 @@ class Revenue extends Controller {
             $previousCondition = "YEAR(b.created_at) = YEAR(DATE_SUB(CURDATE(), INTERVAL 1 YEAR))";
             $periodLabel = "This Year";
         } else {
-            $filter = 'month'; // Ensure valid value
+            $filter = 'month'; // ensure valid value
             $currentCondition = "MONTH(b.created_at) = MONTH(CURDATE()) AND YEAR(b.created_at) = YEAR(CURDATE())";
             $previousCondition = "MONTH(b.created_at) = MONTH(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) AND YEAR(b.created_at) = YEAR(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))";
             $periodLabel = "This Month";
@@ -72,7 +72,7 @@ class Revenue extends Controller {
         $stmtProps->execute([$userId]);
         $properties = $stmtProps->fetchAll(PDO::FETCH_ASSOC);
 
-        // Helper string formatting for UI
+        // helper string formatting for UI
         $calcImprovement = function($current, $previous) {
             if ($previous == 0) {
                 return $current > 0 ? 100 : 0;

@@ -27,12 +27,12 @@ class VehicleController
         exit;
     }
 
-    // Create vehicle
+    // create vehicle
     public function create()
     {
         global $pdo;
 
-        // Log for debugging
+        // log for debugging
         error_log("=== Vehicle Create Called ===");
         error_log("POST Data: " . print_r($_POST, true));
         error_log("FILES Data: " . print_r($_FILES, true));
@@ -61,7 +61,7 @@ class VehicleController
 
         error_log("Parsed Data - Type: $vehicleType, District: $workingDistrict, Model: $model");
 
-        // Validate required fields
+        // validate required fields
         if (empty($vehicleType)) {
             $this->sendResponse(false, ['error' => 'Vehicle type is required']);
         }
@@ -99,7 +99,7 @@ class VehicleController
                 throw new \Exception('Failed to create vehicle - no ID returned');
             }
 
-            // Handle file uploads
+            // handle file uploads
             $fileFields = [
                 'revenue_license',
                 'insurance',
@@ -119,7 +119,7 @@ class VehicleController
             foreach ($fileFields as $field) {
                 if (isset($_FILES[$field]) && $_FILES[$field]['error'] !== UPLOAD_ERR_NO_FILE) {
                     if (is_array($_FILES[$field]['name'])) {
-                        // Multiple files
+                        // multiple files
                         foreach ($_FILES[$field]['tmp_name'] as $idx => $tmp) {
                             if ($_FILES[$field]['error'][$idx] === UPLOAD_ERR_OK) {
                                 $orig = $_FILES[$field]['name'][$idx];
@@ -132,7 +132,7 @@ class VehicleController
                             }
                         }
                     } else {
-                        // Single file
+                        // single file
                         if ($_FILES[$field]['error'] === UPLOAD_ERR_OK) {
                             $path = $this->saveFile($_FILES[$field]['tmp_name'], $_FILES[$field]['name']);
                             if ($path) {
@@ -231,12 +231,12 @@ class VehicleController
             $userId = $_SESSION['user']['id'];
             $vehicles = Vehicle::findByUser($pdo, $userId);
 
-            // Add main image to each vehicle
+            // add main image to each vehicle
             foreach ($vehicles as &$vehicle) {
                 $mainImage = self::getVehicleMainImage($pdo, $vehicle['id']);
                 $vehicle['main_image'] = $mainImage;
 
-                // Get all documents for this vehicle
+                // get all documents for this vehicle
                 $docs = Vehicle::getDocuments($pdo, $vehicle['id']);
                 $vehicle['documents'] = $docs;
             }
@@ -256,12 +256,12 @@ class VehicleController
             $isAdmin = isset($_SESSION['user']) && (($_SESSION['user']['role'] ?? '') === 'admin');
             $vehicles = $isAdmin ? Vehicle::findAllForAdmin($pdo) : Vehicle::findAll($pdo);
 
-            // Add main image to each vehicle
+            // add main image to each vehicle
             foreach ($vehicles as &$vehicle) {
                 $mainImage = self::getVehicleMainImage($pdo, $vehicle['id']);
                 $vehicle['main_image'] = $mainImage;
 
-                // Get all documents for this vehicle
+                // get all documents for this vehicle
                 $docs = Vehicle::getDocuments($pdo, $vehicle['id']);
                 $vehicle['documents'] = $docs;
             }
@@ -358,23 +358,23 @@ class VehicleController
         try {
             $pdo->beginTransaction();
 
-            // First get documents to potentially delete files if needed
+            // first get documents to potentially delete files if needed
             $docStmt = $pdo->prepare("SELECT file_path FROM vehicle_documents WHERE vehicle_id = ?");
             $docStmt->execute([$id]);
             $documents = $docStmt->fetchAll(\PDO::FETCH_ASSOC);
 
-            // Delete related documents from DB
+            // delete related documents from DB
             $delDocsStmt = $pdo->prepare("DELETE FROM vehicle_documents WHERE vehicle_id = ?");
             $delDocsStmt->execute([$id]);
 
-            // Disable foreign key checks to prevent constraint violations
+            // disable foreign key checks to prevent constraint violations
             $pdo->exec("SET FOREIGN_KEY_CHECKS=0");
 
-            // Then delete the vehicle
+            // then delete the vehicle
             $delVehicleStmt = $pdo->prepare("DELETE FROM vehicles WHERE id = ?");
             $result = $delVehicleStmt->execute([$id]);
 
-            // Re-enable foreign key checks
+            // re-enable foreign key checks
             $pdo->exec("SET FOREIGN_KEY_CHECKS=1");
 
             if (!$result || $delVehicleStmt->rowCount() === 0) {
@@ -384,7 +384,7 @@ class VehicleController
 
             $pdo->commit();
 
-            // Delete physical files
+            // delete physical files
             foreach ($documents as $doc) {
                 if (!empty($doc['file_path'])) {
                     $filePath = __DIR__ . '/../../../public/' . ltrim($doc['file_path'], '/');
@@ -460,13 +460,13 @@ class VehicleController
             $this->sendResponse(false, ['error' => 'Missing vehicle ID']);
         }
 
-        // Get existing vehicle to verify ownership
+        // get existing vehicle to verify ownership
         $existingVehicle = Vehicle::findById($pdo, $id, $userId);
         if (!$existingVehicle) {
             $this->sendResponse(false, ['error' => 'Vehicle not found or unauthorized']);
         }
 
-        // Get form data with fallback to existing data
+        // get form data with fallback to existing data
         $vehicleType = $_POST['vehicle_type'] ?? $existingVehicle['vehicle_type'];
         $workingDistrict = $_POST['working_district'] ?? $existingVehicle['working_district'];
         $passengerCount = $_POST['passenger_count'] ?? $existingVehicle['passenger_count'];
@@ -505,7 +505,7 @@ class VehicleController
             $ok = $vehicle->update($pdo);
             error_log("Update result: " . ($ok ? 'success' : 'failed'));
 
-            // Handle new file uploads if any
+            // handle new file uploads if any
             $fileFields = [
                 'revenue_license',
                 'insurance',
@@ -606,7 +606,7 @@ class VehicleController
         }
 
         try {
-            // Verify ownership
+            // verify ownership
             $vehicle = Vehicle::findById($pdo, $vehicleId, $userId);
             if (!$vehicle || !$docId) {
                 $this->sendResponse(false, ['error' => 'Vehicle not found or unauthorized']);

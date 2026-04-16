@@ -1,5 +1,5 @@
 <?php
-// Start session if not already started
+// start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -34,12 +34,12 @@ $currentProfileImage = (!empty($userData['profile_image'])) ? $rootUrl . '/' . $
 
 <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
   
-  <!-- Toast notification -->
+  <!-- toast notification -->
   <div class="toast" id="toast"></div>
   
-  <!-- MAIN CONTENT -->
+  <!-- mAIN CONTENT -->
   <main>
-    <!-- SIDEBAR -->
+    <!-- sIDEBAR -->
     <?php 
     $active_page = 'settings';
     include __DIR__ . '/sidebar.view.php'; 
@@ -59,7 +59,7 @@ $currentProfileImage = (!empty($userData['profile_image'])) ? $rootUrl . '/' . $
           <h2>Profile Settings</h2>
         </div>
             <form class="auth-form" id="profileForm">
-            <!-- Profile Photo Upload -->
+            <!-- profile Photo Upload -->
             <div class="form-group">
               <label>Profile Photo</label>
               <div class="profile-photo-upload">
@@ -105,7 +105,7 @@ $currentProfileImage = (!empty($userData['profile_image'])) ? $rootUrl . '/' . $
               <div class="error-message" id="phoneError"></div>
             </div>
 
-            <!-- Date of Birth and Gender Row -->
+            <!-- date of Birth and Gender Row -->
             <div class="form-row">
               <div class="form-group" id="dobGroup">
                 <label for="dateOfBirth">Date of Birth</label>
@@ -125,7 +125,7 @@ $currentProfileImage = (!empty($userData['profile_image'])) ? $rootUrl . '/' . $
               </div>
             </div>
 
-            <!-- Bio, Country, and City -->
+            <!-- bio, Country, and City -->
             <div class="form-group" id="bioGroup">
               <label for="bio">Provider Bio / Description</label>
               <textarea id="bio" name="bio" placeholder="Tell us about yourself or your property management business" rows="4"><?php echo htmlspecialchars($bio); ?></textarea>
@@ -154,7 +154,7 @@ $currentProfileImage = (!empty($userData['profile_image'])) ? $rootUrl . '/' . $
           </form>
       </section>
 
-      <!-- Password and Security-->
+      <!-- password and Security-->
       <section class="settings-section">
         <div class="section-header">
           <i class="fas fa-lock"></i>
@@ -198,7 +198,7 @@ $currentProfileImage = (!empty($userData['profile_image'])) ? $rootUrl . '/' . $
 <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
 <script>
-// DOM Elements
+// dOM Elements
 const profileForm = document.getElementById('profileForm');
 const securityForm = document.getElementById('securityForm');
 const toast = document.getElementById('toast');
@@ -209,7 +209,7 @@ const newPasswordInput = document.getElementById('new_password');
 const passwordStrength = document.getElementById('passwordStrength');
 const passwordStrengthText = document.getElementById('passwordStrengthText');
 
-// Event Listeners
+// event Listeners
 document.addEventListener('DOMContentLoaded', initApp);
 profileForm.addEventListener('submit', handleProfileSubmit);
 securityForm.addEventListener('submit', handleSecuritySubmit);
@@ -217,12 +217,12 @@ profilePhoto.addEventListener('change', handleProfilePhotoUpload);
 removePhotoBtn.addEventListener('click', removeProfilePhoto);
 newPasswordInput.addEventListener('input', checkPasswordStrength);
 
-// Initialize the application
+// initialize the application
 function initApp() {
-  // We no longer rely on localStorage dummy data, the page natively populates from PHP.
+  // we no longer rely on localStorage dummy data, the page natively populates from PHP.
 }
 
-// Handle profile form submission
+// handle profile form submission
 function handleProfileSubmit(e) {
   e.preventDefault();
   
@@ -230,7 +230,7 @@ function handleProfileSubmit(e) {
     const submitBtn = document.getElementById('profileSaveBtn');
     const spinner = document.getElementById('profileSpinner');
     
-    // Show loading state
+    // show loading state
     submitBtn.disabled = true;
     spinner.style.display = 'inline-block';
     
@@ -261,11 +261,11 @@ function handleProfileSubmit(e) {
   }
 }
 
-// Validate profile form
+// validate profile form
 function validateProfileForm() {
   let isValid = true;
   
-  // Reset error states
+  // reset error states
   resetErrors('profileForm');
 
   const firstName = document.getElementById('firstName').value.trim();
@@ -274,14 +274,14 @@ function validateProfileForm() {
     isValid = false;
   }
   
-  // Validate last name
+  // validate last name
   const lastName = document.getElementById('lastName').value.trim();
   if (!lastName) {
     showError('lastNameGroup', 'Last name is required');
     isValid = false;
   }
   
-  // Validate email
+  // validate email
   const email = document.getElementById('email').value.trim();
   if (!email) {
     showError('emailGroup', 'Email is required');
@@ -291,7 +291,7 @@ function validateProfileForm() {
     isValid = false;
   }
   
-  // Validate phone
+  // validate phone
   const phone = document.getElementById('phone').value.trim();
   if (!phone) {
     showError('phoneGroup', 'Phone number is required');
@@ -301,7 +301,7 @@ function validateProfileForm() {
     isValid = false;
   }
   
-  // Validate date of birth
+  // validate date of birth
   const dob = document.getElementById('dateOfBirth').value;
   if (!dob) {
     showError('dobGroup', 'Date of birth is required');
@@ -317,14 +317,14 @@ function validateProfileForm() {
     }
   }
   
-  // Validate gender
+  // validate gender
   const gender = document.getElementById('gender').value;
   if (!gender) {
     showError('genderGroup', 'Please select your gender');
     isValid = false;
   }
 
-  // Validate country and city
+  // validate country and city
   const country = document.getElementById('country').value.trim();
   if (!country) {
     showError('countryGroup', 'Country is required');
@@ -340,7 +340,7 @@ function validateProfileForm() {
   return isValid;
 }
 
-// Handle security form submission
+// handle security form submission
 function handleSecuritySubmit(e) {
   e.preventDefault();
   
@@ -348,7 +348,7 @@ function handleSecuritySubmit(e) {
     const submitBtn = document.getElementById('securitySaveBtn');
     const spinner = document.getElementById('securitySpinner');
     
-    // Show loading state
+    // show loading state
     submitBtn.disabled = true;
     spinner.style.display = 'inline-block';
     
@@ -381,21 +381,21 @@ function handleSecuritySubmit(e) {
   }
 }
 
-// Validate security form
+// validate security form
 function validateSecurityForm() {
   let isValid = true;
   
-  // Reset error states
+  // reset error states
   resetErrors('securityForm');
   
-  // Validate current password
+  // validate current password
   const currentPassword = document.getElementById('current_password').value;
   if (!currentPassword) {
     showError('currentPasswordGroup', 'Current password is required');
     isValid = false;
   }
   
-  // Validate new password
+  // validate new password
   const newPassword = document.getElementById('new_password').value;
   if (!newPassword) {
     showError('newPasswordGroup', 'New password is required');
@@ -408,7 +408,7 @@ function validateSecurityForm() {
     isValid = false;
   }
   
-  // Validate confirm password
+  // validate confirm password
   const confirmPassword = document.getElementById('confirm_password').value;
   if (!confirmPassword) {
     showError('confirmPasswordGroup', 'Please confirm your password');
@@ -421,18 +421,18 @@ function validateSecurityForm() {
   return isValid;
 }
 
-// Handle profile photo upload
+// handle profile photo upload
 function handleProfilePhotoUpload(e) {
   const file = e.target.files[0];
   if (!file) return;
   
-  // Validate file type
+  // validate file type
   if (!file.type.match('image.*')) {
     showError('photoPreview', 'Please select an image file');
     return;
   }
   
-  // Validate file size (max 5MB)
+  // validate file size (max 5MB)
   if (file.size > 5 * 1024 * 1024) {
     showError('photoPreview', 'File size must be less than 5MB');
     return;
@@ -443,13 +443,13 @@ function handleProfilePhotoUpload(e) {
     photoPreview.innerHTML = `<img src="${e.target.result}" alt="Profile Photo">`;
     removePhotoBtn.style.display = 'block';
     
-    // Save to localStorage
+    // save to localStorage
     localStorage.setItem('profilePhoto', e.target.result);
   };
   reader.readAsDataURL(file);
 }
 
-// Remove profile photo
+// remove profile photo
 function removeProfilePhoto() {
   photoPreview.innerHTML = `
     <svg class="default-avatar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -459,11 +459,11 @@ function removeProfilePhoto() {
   `;
   removePhotoBtn.style.display = 'none';
   
-  // Remove from localStorage
+  // remove from localStorage
   localStorage.removeItem('profilePhoto');
 }
 
-// Check password strength
+// check password strength
 function checkPasswordStrength() {
   const password = newPasswordInput.value;
   const strengthBar = passwordStrength;
@@ -475,25 +475,25 @@ function checkPasswordStrength() {
     return;
   }
   
-  // Calculate strength
+  // calculate strength
   let strength = 0;
   
-  // Length check
+  // length check
   if (password.length >= 8) strength += 1;
   
-  // Contains lowercase
+  // contains lowercase
   if (/[a-z]/.test(password)) strength += 1;
   
-  // Contains uppercase
+  // contains uppercase
   if (/[A-Z]/.test(password)) strength += 1;
   
-  // Contains numbers
+  // contains numbers
   if (/\d/.test(password)) strength += 1;
   
-  // Contains special characters
+  // contains special characters
   if (/[^A-Za-z0-9]/.test(password)) strength += 1;
   
-  // Update UI
+  // update UI
   if (strength <= 2) {
     strengthBar.className = 'password-strength strength-weak';
     strengthText.textContent = 'Weak password';
@@ -509,7 +509,7 @@ function checkPasswordStrength() {
   }
 }
 
-// Show error message
+// show error message
 function showError(elementId, message) {
   const element = document.getElementById(elementId);
   const errorElement = element.querySelector('.error-message') || document.getElementById(elementId + 'Error');
@@ -521,7 +521,7 @@ function showError(elementId, message) {
   }
 }
 
-// Reset all errors in a form
+// reset all errors in a form
 function resetErrors(formId) {
   const form = document.getElementById(formId);
   const errorElements = form.querySelectorAll('.error-message');
@@ -537,7 +537,7 @@ function resetErrors(formId) {
   });
 }
 
-// Show toast notification
+// show toast notification
 function showToast(message, type = 'success') {
   toast.textContent = message;
   toast.className = 'toast';
@@ -551,13 +551,13 @@ function showToast(message, type = 'success') {
   
   toast.classList.add('show');
   
-  // Hide after 3 seconds
+  // hide after 3 seconds
   setTimeout(() => {
     toast.classList.remove('show');
   }, 3000);
 }
 
-// Utility functions
+// utility functions
 function isValidEmail(email) {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return re.test(email);

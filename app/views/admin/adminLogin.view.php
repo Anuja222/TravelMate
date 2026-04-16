@@ -8,10 +8,10 @@
   <link rel="stylesheet" href="assets/css/Admin/common.css">
 </head>
 <body>
-  <!-- Auth Section -->
+  <!-- auth Section -->
   <section class="auth-section">
     <div class="auth-container">
-      <!-- Left Side - Form -->
+      <!-- left Side - Form -->
       <div class="auth-form-section">
         <div class="auth-form-container">
           <div class="auth-header">
@@ -56,7 +56,7 @@
         </div>
       </div>
 
-      <!-- Right Side - Image -->
+      <!-- right Side - Image -->
       <div class="auth-image-section">
         <div class="auth-image">
           <div class="image-overlay">

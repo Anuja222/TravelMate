@@ -1,4 +1,4 @@
-// Simple form handling for the footer subscription
+// simple form handling for the footer subscription
 document.addEventListener('DOMContentLoaded', function() {
   const subscribeForm = document.querySelector('.subscribe-form');
   if (subscribeForm) {

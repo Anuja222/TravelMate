@@ -1,4 +1,4 @@
-// My Transport Bookings JavaScript
+// my Transport Bookings JavaScript
 
 const BASE_PATH = window.location.pathname.includes('/TravelMate/')
     ? '/TravelMate/public'
@@ -48,7 +48,7 @@ function getVehicleImageFallbackByType(vehicleType) {
     return fallbackMap[type] || `${BASE_PATH}/assets/trimages/car.png`;
 }
 
-// Load bookings on page load
+// load bookings on page load
 document.addEventListener('DOMContentLoaded', function() {
     showQueryNotifications();
     loadBookings();
@@ -65,7 +65,7 @@ function showQueryNotifications() {
     }
 }
 
-// Setup filter tabs
+// setup filter tabs
 function setupFilterTabs() {
     const tabs = document.querySelectorAll('.filter-tab');
     tabs.forEach(tab => {
@@ -78,7 +78,7 @@ function setupFilterTabs() {
     });
 }
 
-// Load all bookings
+// load all bookings
 async function loadBookings() {
     const loadingContainer = document.querySelector('.loading-container');
 
@@ -114,7 +114,7 @@ async function loadBookings() {
     }
 }
 
-// Filter bookings
+// filter bookings
 function filterBookings() {
     let filteredBookings = allBookings;
 
@@ -138,7 +138,7 @@ function filterBookings() {
     displayBookings(filteredBookings);
 }
 
-// Display bookings
+// display bookings
 function displayBookings(bookings) {
     const pendingSection = document.querySelector('[data-category="pending"]');
     const transportSection = document.querySelector('[data-category="transport"]');
@@ -255,7 +255,7 @@ function renderSectionBookings(sectionElement, bookings, emptyConfig) {
     sectionElement.appendChild(cardsGrid);
 }
 
-// Create booking element HTML
+// create booking element HTML
 function createBookingElement(booking) {
     const bookingDiv = document.createElement('div');
     bookingDiv.className = 'booking-item';
@@ -414,7 +414,7 @@ async function submitTransportBookingRating(bookingId) {
     }
 }
 
-// Format service type
+// format service type
 function formatServiceType(type) {
     const types = {
         'airport': 'Airport Transfer',
@@ -425,17 +425,17 @@ function formatServiceType(type) {
     return types[type] || type;
 }
 
-// Capitalize first letter
+// capitalize first letter
 function capitalizeFirst(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-// Show empty state
+// show empty state
 function showEmptyState() {
     displayBookings([]);
 }
 
-// Update booking statistics
+// update booking statistics
 function updateBookingStats() {
     const stats = allBookings.reduce((acc, booking) => {
         acc.total++;
@@ -473,7 +473,7 @@ function updateBookingStats() {
 function proceedToPayment(bookingId) {
     window.location.href = `${BASE_PATH}/transport-booking-details?booking_id=${encodeURIComponent(bookingId)}`;
 }
-// View booking details
+// view booking details
 function viewBookingDetails(bookingId) {
     const booking = allBookings.find(b => b.booking_id === bookingId);
     if (!booking) return;
@@ -541,7 +541,7 @@ function viewBookingDetails(bookingId) {
     modal.style.display = 'block';
 }
 
-// Cancel booking
+// cancel booking
 function cancelBooking(bookingId) {
     bookingIdToCancel = bookingId;
     const modal = document.getElementById('cancelConfirmModal');
@@ -549,7 +549,7 @@ function cancelBooking(bookingId) {
     setTimeout(() => modal.classList.add('show'), 10);
 }
 
-// Close cancel confirmation modal
+// close cancel confirmation modal
 function closeConfirmModal() {
     const modal = document.getElementById('cancelConfirmModal');
     modal.classList.remove('show');
@@ -559,7 +559,7 @@ function closeConfirmModal() {
     }, 300);
 }
 
-// Proceed with cancel
+// proceed with cancel
 async function proceedWithCancel() {
     closeConfirmModal();
 
@@ -592,21 +592,21 @@ async function proceedWithCancel() {
     }
 }
 
-// Show cancel success modal
+// show cancel success modal
 function showCancelSuccessModal() {
     const modal = document.getElementById('cancelSuccessModal');
     modal.style.display = 'flex';
     setTimeout(() => modal.classList.add('show'), 10);
 }
 
-// Close cancel success modal
+// close cancel success modal
 function closeCancelSuccessModal() {
     const modal = document.getElementById('cancelSuccessModal');
     modal.classList.remove('show');
     setTimeout(() => modal.style.display = 'none', 300);
 }
 
-// Delete booking
+// delete booking
 function deleteBooking(bookingId) {
     bookingIdToDelete = bookingId;
     const modal = document.getElementById('deleteConfirmModal');
@@ -614,7 +614,7 @@ function deleteBooking(bookingId) {
     setTimeout(() => modal.classList.add('show'), 10);
 }
 
-// Close delete confirmation modal
+// close delete confirmation modal
 function closeDeleteConfirmModal() {
     const modal = document.getElementById('deleteConfirmModal');
     modal.classList.remove('show');
@@ -624,7 +624,7 @@ function closeDeleteConfirmModal() {
     }, 300);
 }
 
-// Proceed with delete
+// proceed with delete
 async function proceedWithDelete() {
     closeDeleteConfirmModal();
 
@@ -657,21 +657,21 @@ async function proceedWithDelete() {
     }
 }
 
-// Show delete success modal
+// show delete success modal
 function showDeleteSuccessModal() {
     const modal = document.getElementById('deleteSuccessModal');
     modal.style.display = 'flex';
     setTimeout(() => modal.classList.add('show'), 10);
 }
 
-// Close delete success modal
+// close delete success modal
 function closeDeleteSuccessModal() {
     const modal = document.getElementById('deleteSuccessModal');
     modal.classList.remove('show');
     setTimeout(() => modal.style.display = 'none', 300);
 }
 
-// Show error modal
+// show error modal
 function showErrorModal(message) {
     const modal = document.getElementById('errorModal');
     const messageEl = document.getElementById('errorModalMessage');
@@ -680,14 +680,14 @@ function showErrorModal(message) {
     setTimeout(() => modal.classList.add('show'), 10);
 }
 
-// Close error modal
+// close error modal
 function closeErrorModal() {
     const modal = document.getElementById('errorModal');
     modal.classList.remove('show');
     setTimeout(() => modal.style.display = 'none', 300);
 }
 
-// Close modal handlers
+// close modal handlers
 function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
@@ -695,7 +695,7 @@ function closeModal(modalId) {
     }
 }
 
-// Close booking details modal
+// close booking details modal
 function closeBookingDetailsModal() {
     const modal = document.getElementById('bookingDetailsModal');
     if (modal) {
@@ -703,7 +703,7 @@ function closeBookingDetailsModal() {
     }
 }
 
-// Close modals on outside click
+// close modals on outside click
 window.onclick = function(event) {
     const modal = document.getElementById('bookingDetailsModal');
     if (event.target === modal) {
@@ -711,9 +711,9 @@ window.onclick = function(event) {
     }
 }
 
-// Setup modal close buttons
+// setup modal close buttons
 document.addEventListener('DOMContentLoaded', function() {
-    // Close button for booking details modal
+    // close button for booking details modal
     const detailsModal = document.getElementById('bookingDetailsModal');
     if (detailsModal) {
         const closeBtn = detailsModal.querySelector('.close');

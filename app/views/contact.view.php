@@ -8,10 +8,10 @@
   <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
-  <!-- Header/Navbar -->
+  <!-- header/Navbar -->
   <?php include __DIR__ . '../Traveller/header.view.php'; ?>
 
-  <!-- Hero Section -->
+  <!-- hero Section -->
   <section class="hero">
   <img src="assets/images/contact.jpg" alt="Contact Hero">
     <div class="hero-overlay"></div>
@@ -20,7 +20,7 @@
     </div>
   </section>
 
-  <!-- Contact Info Section -->
+  <!-- contact Info Section -->
   <section class="contact-info">
     <div class="contact-cards">
       <div class="contact-card">
@@ -60,7 +60,7 @@
     </div>
   </section>
 
-  <!-- Contact Form Section -->
+  <!-- contact Form Section -->
   <section class="contact-section">
     <div class="contact-container">
       <div class="form-section">
@@ -96,7 +96,7 @@
     </div>
   </section>
 
-  <!-- Map Section -->
+  <!-- map Section -->
   <section class="map-section">
     <div class="map-container">
       <iframe 
@@ -111,7 +111,7 @@
     </div>
   </section>
 
-  <!-- Footer -->
+  <!-- footer -->
   <footer>
     <div class="footer-content">
       <div class="footer-section company">

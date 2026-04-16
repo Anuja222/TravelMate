@@ -66,7 +66,7 @@ class Activity
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    // Places (locations where activity is available)
+    // places (locations where activity is available)
     public static function createPlace($conn, $activityId, $title, $slug, $description, $image, $location = null, $best_time = null)
     {
         $sql = "INSERT INTO activity_places (activity_id, title, slug, description, image, location, best_time, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";

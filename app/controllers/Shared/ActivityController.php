@@ -141,7 +141,7 @@ class ActivityController
         $this->sendResponse((bool)$ok, $ok ? [] : ['error'=>'Delete failed']);
     }
 
-    // Places (locations related to activity)
+    // places (locations related to activity)
     public function placeCreate()
     {
         global $pdo;

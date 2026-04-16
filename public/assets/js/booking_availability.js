@@ -1,26 +1,26 @@
-// Load booking data on page load
+// load booking data on page load
 document.addEventListener('DOMContentLoaded', function () {
     loadBookingData();
     initializeChangeSearch();
     updateProgressBar();
 });
 
-// Load booking data from localStorage
+// load booking data from localStorage
 function loadBookingData() {
     const bookingData = JSON.parse(localStorage.getItem('currentBooking'));
 
     if (!bookingData) {
-        // Redirect back if no booking data
+        // redirect back if no booking data
         window.location.href = 'accommodationdetail.php';
         return;
     }
 
-    // Update display with booking data
+    // update display with booking data
     updateBookingDisplay(bookingData);
     updateAvailabilityTable(bookingData);
 }
 
-// Update booking display
+// update booking display
 function updateBookingDisplay(bookingData) {
     const checkin = new Date(bookingData.checkinDate);
     const checkout = new Date(bookingData.checkoutDate);
@@ -28,18 +28,18 @@ function updateBookingDisplay(bookingData) {
     const dateDisplay = `${formatDate(checkin)} — ${formatDate(checkout)}`;
     const guestDisplay = `${bookingData.adults} adults · ${bookingData.children} children · 1 room`;
 
-    // Update date and guest displays
+    // update date and guest displays
     document.querySelector('.date-picker input').value = dateDisplay;
     document.querySelector('.guest-room-picker input').value = guestDisplay;
 }
 
-// Format date for display
+// format date for display
 function formatDate(date) {
     const options = { weekday: 'short', month: 'short', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
 }
 
-// Update availability table with booking data
+// update availability table with booking data
 function updateAvailabilityTable(bookingData) {
     const roomLink = document.querySelector('.room-link');
     const oldPrice = document.querySelector('.old-price');
@@ -47,13 +47,13 @@ function updateAvailabilityTable(bookingData) {
 
     roomLink.textContent = bookingData.roomName;
 
-    // Calculate prices with potential discount
-    const originalPrice = bookingData.totalPrice * 1.3; // Show 30% discount
+    // calculate prices with potential discount
+    const originalPrice = bookingData.totalPrice * 1.3; // show 30% discount
     oldPrice.textContent = `LKR ${Math.round(originalPrice).toLocaleString()}`;
     currentPrice.textContent = `LKR ${Math.round(bookingData.totalPrice).toLocaleString()}`;
 }
 
-// Initialize change search functionality
+// initialize change search functionality
 function initializeChangeSearch() {
     const changeSearchBtn = document.querySelector('.change-search-btn');
 
@@ -62,12 +62,12 @@ function initializeChangeSearch() {
     });
 }
 
-// Show change search modal
+// show change search modal
 function showChangeSearchModal() {
     const modal = createSearchModal();
     document.body.appendChild(modal);
 
-    // Load current booking data into modal
+    // load current booking data into modal
     const bookingData = JSON.parse(localStorage.getItem('currentBooking'));
     if (bookingData) {
         document.getElementById('modalCheckin').value = bookingData.checkinDate;
@@ -77,7 +77,7 @@ function showChangeSearchModal() {
     }
 }
 
-// Create search modal
+// create search modal
 function createSearchModal() {
     const modal = document.createElement('div');
     modal.className = 'search-modal';
@@ -129,7 +129,7 @@ function createSearchModal() {
     return modal;
 }
 
-// Close search modal
+// close search modal
 function closeSearchModal() {
     const modal = document.querySelector('.search-modal');
     if (modal) {
@@ -137,7 +137,7 @@ function closeSearchModal() {
     }
 }
 
-// Update search with new values
+// update search with new values
 function updateSearch() {
     const checkinDate = document.getElementById('modalCheckin').value;
     const checkoutDate = document.getElementById('modalCheckout').value;
@@ -158,15 +158,15 @@ function updateSearch() {
         return;
     }
 
-    // Get current booking data and update
+    // get current booking data and update
     const bookingData = JSON.parse(localStorage.getItem('currentBooking'));
 
-    // Recalculate prices
+    // recalculate prices
     const basePrice = bookingData.roomPrice * nights;
     const taxes = basePrice * 0.15;
     const totalPrice = basePrice + taxes;
 
-    // Update booking data
+    // update booking data
     bookingData.checkinDate = checkinDate;
     bookingData.checkoutDate = checkoutDate;
     bookingData.nights = nights;
@@ -176,45 +176,45 @@ function updateSearch() {
     bookingData.taxes = taxes;
     bookingData.totalPrice = totalPrice;
 
-    // Save updated data
+    // save updated data
     localStorage.setItem('currentBooking', JSON.stringify(bookingData));
 
-    // Refresh display
+    // refresh display
     updateBookingDisplay(bookingData);
     updateAvailabilityTable(bookingData);
 
-    // Close modal
+    // close modal
     closeSearchModal();
 }
 
-// Update progress bar
+// update progress bar
 function updateProgressBar() {
     const steps = document.querySelectorAll('.booking-progress .step');
     steps[0].classList.add('active');
 }
 
-// Handle reserve button click
+// handle reserve button click
 document.addEventListener('DOMContentLoaded', function () {
     const reserveBtn = document.querySelector('.reserve-btn');
     if (reserveBtn) {
         reserveBtn.addEventListener('click', function () {
-            // Save final booking data
+            // save final booking data
             const bookingData = JSON.parse(localStorage.getItem('currentBooking'));
             bookingData.status = 'confirmed';
             bookingData.bookingDate = new Date().toISOString();
 
-            // Generate booking ID
+            // generate booking ID
             bookingData.bookingId = 'BK' + Date.now();
 
-            // Save to localStorage
+            // save to localStorage
             localStorage.setItem('confirmedBooking', JSON.stringify(bookingData));
 
-            // Add to booking history
+            // add to booking history
             let bookingHistory = JSON.parse(localStorage.getItem('bookingHistory')) || [];
             bookingHistory.push(bookingData);
             localStorage.setItem('bookingHistory', JSON.stringify(bookingHistory));
 
-            // Redirect to next step
+            // redirect to next step
             window.location.href = 'booking_details';
         });
     }

@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Helper function to get base URL
+    // helper function to get base URL
     function getBaseUrl() {
         const path = window.location.pathname;
         const parts = path.split('/');
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const ownershipError = document.getElementById('ownership-error');
         let selectedVehicle = sessionStorage.getItem('vehicleType') || null;
 
-        // Handle vehicle card clicks
+        // handle vehicle card clicks
         vehicleCards.forEach(card => {
             card.addEventListener('click', function (e) {
                 if (e.target.classList.contains('btn-list-vehicle')) return;
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Handle ownership selection
+        // handle ownership selection
         ownershipRadios.forEach(radio => {
             radio.addEventListener('change', function () {
                 if (ownershipError) ownershipError.style.display = 'none';
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
             continueBtn.disabled = !(selectedVehicle && ownershipSelected);
         }
 
-        // Continue button click
+        // continue button click
         continueBtn.addEventListener('click', function () {
             const ownershipSelected = document.querySelector('input[name="ownership"]:checked');
             
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
             window.location.href = 'personalDetails';
         });
 
-        // Load saved selections
+        // load saved selections
         if (selectedVehicle) {
             const card = document.querySelector(`.vehicle-card[data-vehicle-type="${selectedVehicle}"]`);
             if (card) card.classList.add('selected');
@@ -96,17 +96,17 @@ document.addEventListener('DOMContentLoaded', function () {
         personalForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
-            // Store form data
+            // store form data
             const formData = new FormData(personalForm);
             sessionStorage.setItem('working_district', formData.get('working_district') || '');
             
-            // Get AC type from radio buttons
+            // get AC type from radio buttons
             const acTypeRadio = document.querySelector('input[name="ac-type"]:checked');
             if (acTypeRadio) {
                 sessionStorage.setItem('ac_type', acTypeRadio.value);
             }
 
-            // Navigate to vehicle document page
+            // navigate to vehicle document page
             window.location.href = 'vehicleDocument';
         });
     }
@@ -122,15 +122,15 @@ document.addEventListener('DOMContentLoaded', function () {
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
             submitBtn.disabled = true;
 
-            // Build complete form data
+            // build complete form data
             const fd = new FormData();
             
-            // Add stored session data
+            // add stored session data
             fd.append('vehicle_type', sessionStorage.getItem('vehicleType') || '');
             fd.append('working_district', sessionStorage.getItem('working_district') || '');
             fd.append('ac_type', sessionStorage.getItem('ac_type') || 'non-ac');
 
-            // Add fields from current form
+            // add fields from current form
             const inputs = docsForm.querySelectorAll('input, select, textarea');
             inputs.forEach(input => {
                 if (input.type === 'file') {
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
-            // Submit to API
+            // submit to API
             fetch(baseUrl + '/api/vehicle/create', {
                 method: 'POST',
                 body: fd,
@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    // Clear session storage
+                    // clear session storage
                     sessionStorage.removeItem('vehicleType');
                     sessionStorage.removeItem('working_district');
                     sessionStorage.removeItem('ac_type');
@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 `;
             }).join('');
 
-            // Attach edit handlers
+            // attach edit handlers
             document.querySelectorAll('.btn-edit').forEach(btn => {
                 btn.addEventListener('click', function () {
                     const id = this.dataset.id;
@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             });
 
-            // Attach delete handlers
+            // attach delete handlers
             document.querySelectorAll('.btn-delete').forEach(btn => {
                 btn.addEventListener('click', function () {
                     const id = this.dataset.id;
@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const vehicleId = params.get('id');
 
         if (vehicleId) {
-            // Fetch vehicle data
+            // fetch vehicle data
             fetch(baseUrl + '/api/vehicle/get?id=' + encodeURIComponent(vehicleId), {
                 method: 'GET',
                 credentials: 'same-origin'
@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const v = res.data;
 
-                // Populate form fields
+                // populate form fields
                 if (document.getElementById('working-district')) {
                     document.getElementById('working-district').value = v.working_district || '';
                 }
@@ -279,7 +279,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById('passenger-count').value = v.passenger_count || 2;
                 }
                 
-                // Set AC type radio buttons
+                // set AC type radio buttons
                 if (v.ac_type === 'ac' && document.getElementById('ac')) {
                     document.getElementById('ac').checked = true;
                     document.getElementById('ac-option').classList.add('selected');
@@ -303,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById('vehicle-number').value = v.vehicle_number || '';
                 }
 
-                // Add hidden ID field
+                // add hidden ID field
                 if (!vehicleEditForm.querySelector('input[name="id"]')) {
                     const hidden = document.createElement('input');
                     hidden.type = 'hidden';
@@ -318,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        // Handle form submission
+        // handle form submission
         vehicleEditForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
@@ -353,7 +353,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-        // Cancel button
+        // cancel button
         const cancelBtn = vehicleEditForm.querySelector('.cancel-btn');
         if (cancelBtn) {
             cancelBtn.addEventListener('click', function () {
@@ -417,7 +417,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Utility function
+    // utility function
     function escapeHtml(text) {
         if (!text) return '';
         const map = {

@@ -1,24 +1,24 @@
-// Provider Bookings Page - Fetch and display bookings for accommodation provider
+// provider Bookings Page - Fetch and display bookings for accommodation provider
 
-// Get base URL helper
+// get base URL helper
 function getBaseUrl() {
     return window.location.origin + '/TravelMate/public';
 }
 
-// Format date to readable format
+// format date to readable format
 function formatDate(dateString) {
     const date = new Date(dateString);
     const options = { weekday: 'short', month: 'short', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
 }
 
-// Format property type
+// format property type
 function formatPropertyType(type) {
     if (!type) return 'Property';
     return type.charAt(0).toUpperCase() + type.slice(1).replace(/_/g, ' ');
 }
 
-// Calculate number of nights
+// calculate number of nights
 function calculateNights(checkin, checkout) {
     const checkinDate = new Date(checkin);
     const checkoutDate = new Date(checkout);
@@ -27,12 +27,12 @@ function calculateNights(checkin, checkout) {
     return diffDays;
 }
 
-// Load bookings from API
+// load bookings from API
 async function loadBookings() {
     const currentContainer = document.getElementById('currentBookingsGrid') || document.querySelector('.bookings-grid');
     const expiredContainer = document.getElementById('expiredBookingsGrid');
     
-    // Show loading state
+    // show loading state
     if (currentContainer) {
         currentContainer.innerHTML = '<div class="loading-message"><i class="fas fa-spinner fa-spin"></i><p>Loading bookings...</p></div>';
     }
@@ -43,12 +43,12 @@ async function loadBookings() {
     try {
         const response = await fetch(`${getBaseUrl()}/api/accommodation/providerBookings`);
         
-        // Check if response is OK
+        // check if response is OK
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        // Check if response is JSON
+        // check if response is JSON
         const contentType = response.headers.get('content-type');
         if (!contentType || !contentType.includes('application/json')) {
             console.error('Response is not JSON:', await response.text());
@@ -80,33 +80,33 @@ async function loadBookings() {
     }
 }
 
-// Store bookings data globally for modal access
+// store bookings data globally for modal access
 let bookingsData = [];
 
-// Check for new bookings and show notification
+// check for new bookings and show notification
 function checkForNewBookings(bookings) {
-    // Get last visit timestamp from localStorage
+    // get last visit timestamp from localStorage
     const lastVisit = localStorage.getItem('lastBookingsVisit');
     const currentTime = new Date().getTime();
     
     if (lastVisit) {
-        // Filter bookings created after last visit
+        // filter bookings created after last visit
         const newBookings = bookings.filter(booking => {
             const bookingTime = new Date(booking.created_at).getTime();
             return bookingTime > parseInt(lastVisit);
         });
         
-        // Show notification if there are new bookings
+        // show notification if there are new bookings
         if (newBookings.length > 0) {
             showNewBookingNotification(newBookings.length);
         }
     }
     
-    // Update last visit timestamp
+    // update last visit timestamp
     localStorage.setItem('lastBookingsVisit', currentTime);
 }
 
-// Show notification banner
+// show notification banner
 function showNewBookingNotification(count) {
     const notification = document.getElementById('newBookingNotification');
     const message = document.getElementById('notificationMessage');
@@ -115,14 +115,14 @@ function showNewBookingNotification(count) {
         message.textContent = `You have ${count} new booking${count > 1 ? 's' : ''} placed while you were away!`;
         notification.style.display = 'flex';
         
-        // Auto-dismiss after 10 seconds
+        // auto-dismiss after 10 seconds
         setTimeout(() => {
             dismissNotification();
         }, 10000);
     }
 }
 
-// Dismiss notification
+// dismiss notification
 function dismissNotification() {
     const notification = document.getElementById('newBookingNotification');
     if (notification) {
@@ -134,12 +134,12 @@ function dismissNotification() {
     }
 }
 
-// Display bookings in the container
+// display bookings in the container
 function displayBookings(bookings) {
     const currentContainer = document.getElementById('currentBookingsGrid') || document.querySelector('.bookings-grid');
     const expiredContainer = document.getElementById('expiredBookingsGrid');
     
-    // Store bookings data
+    // store bookings data
     bookingsData = bookings;
 
     const currentBookings = [];
@@ -192,7 +192,7 @@ function renderBookingsInto(container, bookings, emptyHtml) {
         const nights = calculateNights(booking.checkin_date, booking.checkout_date);
         const guests = parseInt(booking.adults || 1) + parseInt(booking.children || 0);
         
-        // Use accommodation image if available, otherwise use default
+        // use accommodation image if available, otherwise use default
         const imageUrl = booking.accommodation_image 
             ? `${getBaseUrl()}/${booking.accommodation_image}` 
             : `${getBaseUrl()}/assets/images/default-property.jpg`;
@@ -244,9 +244,9 @@ function renderBookingsInto(container, bookings, emptyHtml) {
     container.innerHTML = bookingsHTML;
 }
 
-// View booking details in modal
+// view booking details in modal
 function viewBookingDetails(bookingId) {
-    // Find the booking data
+    // find the booking data
     const booking = bookingsData.find(b => b.booking_id == bookingId);
     
     if (!booking) {
@@ -257,7 +257,7 @@ function viewBookingDetails(bookingId) {
     const nights = calculateNights(booking.checkin_date, booking.checkout_date);
     const guests = parseInt(booking.adults || 1) + parseInt(booking.children || 0);
     
-    // Build modal content
+    // build modal content
     const modalBody = document.getElementById('modalBody');
     modalBody.innerHTML = `
         <div class="modal-booking-header">
@@ -359,16 +359,16 @@ function viewBookingDetails(bookingId) {
         </div>
     `;
     
-    // Show modal
+    // show modal
     document.getElementById('bookingModal').style.display = 'block';
 }
 
-// Close modal
+// close modal
 function closeModal() {
     document.getElementById('bookingModal').style.display = 'none';
 }
 
-// Contact customer - Show contact options in modal
+// contact customer - Show contact options in modal
 function contactCustomer(phone, email, guestName) {
     const contactModalBody = document.getElementById('contactModalBody');
     
@@ -383,7 +383,7 @@ function contactCustomer(phone, email, guestName) {
         <div class="contact-methods">
     `;
     
-    // Add phone option if available
+    // add phone option if available
     if (phone && phone !== '') {
         contactOptions += `
             <div class="contact-method-card">
@@ -397,7 +397,7 @@ function contactCustomer(phone, email, guestName) {
             </div>
         `;
         
-        // Add WhatsApp option
+        // add WhatsApp option
         contactOptions += `
             <div class="contact-method-card">
                 <div class="contact-method-icon whatsapp">
@@ -411,7 +411,7 @@ function contactCustomer(phone, email, guestName) {
         `;
     }
     
-    // Add email option if available
+    // add email option if available
     if (email && email !== '') {
         contactOptions += `
             <div class="contact-method-card">
@@ -426,7 +426,7 @@ function contactCustomer(phone, email, guestName) {
         `;
     }
     
-    // If no contact information available
+    // if no contact information available
     if ((!phone || phone === '') && (!email || email === '')) {
         contactOptions += `
             <div class="no-contact-info">
@@ -447,32 +447,32 @@ function contactCustomer(phone, email, guestName) {
     
     contactModalBody.innerHTML = contactOptions;
     
-    // Show contact modal
+    // show contact modal
     document.getElementById('contactModal').style.display = 'block';
 }
 
-// Close contact modal
+// close contact modal
 function closeContactModal() {
     document.getElementById('contactModal').style.display = 'none';
 }
 
-// Initialize page when DOM is loaded
+// initialize page when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     loadBookings();
     
-    // Modal close functionality
+    // modal close functionality
     const modal = document.getElementById('bookingModal');
     const contactModal = document.getElementById('contactModal');
     const closeBtn = document.querySelector('.modal-close');
     
-    // Close modal when clicking X
+    // close modal when clicking X
     if (closeBtn) {
         closeBtn.onclick = function() {
             closeModal();
         };
     }
     
-    // Close modal when clicking outside
+    // close modal when clicking outside
     window.onclick = function(event) {
         if (event.target == modal) {
             closeModal();
@@ -482,7 +482,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
-    // Close modal on ESC key
+    // close modal on ESC key
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape') {
             if (modal.style.display === 'block') {

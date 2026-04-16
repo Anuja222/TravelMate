@@ -1,13 +1,13 @@
-// Global variables
+// global variables
 let allTransports = [];
 let filteredTransports = [];
 let pendingActionResolve = null;
 
-// Initialize on page load
+// initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     loadTransports();
     
-    // Add event listeners securely
+    // add event listeners securely
     const btnApplyFilter = document.getElementById('btnApplyFilter');
     if (btnApplyFilter) btnApplyFilter.addEventListener('click', applyFilters);
     
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Get base URL helper
+// get base URL helper
 function getBaseUrl() {
     const path = window.location.pathname;
     const parts = path.split('/');
@@ -129,7 +129,7 @@ function getBaseUrl() {
     return '/TravelMate/public';
 }
 
-// Load all transports
+// load all transports
 function loadTransports() {
     const baseUrl = getBaseUrl();
     
@@ -157,7 +157,7 @@ function loadTransports() {
     });
 }
 
-// Update statistics cards
+// update statistics cards
 function updateStatistics() {
     const active = allTransports.filter(v => v.status === 'active').length;
     const pending = allTransports.filter(v => v.status === 'pending').length;
@@ -173,7 +173,7 @@ function updateStatistics() {
     document.getElementById('totalCount').textContent = total;
 }
 
-// Display transports in grid
+// display transports in grid
 function displayTransports(transports) {
     const grid = document.getElementById('transportsGrid');
     const emptyState = document.getElementById('emptyState');
@@ -232,7 +232,7 @@ function displayRejectedTransports() {
     grid.innerHTML = rejectedTransports.map(transport => createTransportCard(transport)).join('');
 }
 
-// Show empty state
+// show empty state
 function showEmptyState() {
     const grid = document.getElementById('transportsGrid');
     const emptyState = document.getElementById('emptyState');
@@ -254,7 +254,7 @@ function showEmptyState() {
     }
 }
 
-// Create transport card HTML
+// create transport card HTML
 function createTransportCard(transport) {
     const baseUrl = getBaseUrl();
     const image = transport.main_image 
@@ -543,7 +543,7 @@ function closeActionSuccessModal() {
     document.body.style.overflow = 'auto';
 }
 
-// Apply filters
+// apply filters
 function applyFilters() {
     const searchInputEl = document.getElementById('searchInput');
     const statusFilterEl = document.getElementById('statusFilter');
@@ -578,18 +578,18 @@ function applyFilters() {
     displayTransports(filteredTransports);
 }
 
-// View transport details in modal
+// view transport details in modal
 function viewTransport(id) {
     const transport = allTransports.find(v => v.id === id);
     if (!transport) return;
     
     const baseUrl = getBaseUrl();
     
-    // Set modal title
+    // set modal title
     const modelText = transport.vehicle_model || 'Vehicle';
     document.getElementById('modalTitle').textContent = `${modelText} Details`;
     
-    // Set basic information
+    // set basic information
     document.getElementById('modalVehicleId').textContent = `#${transport.id}`;
     document.getElementById('modalVehicleType').textContent = transport.vehicle_type || 'N/A';
     document.getElementById('modalModel').textContent = transport.vehicle_model || 'N/A';
@@ -597,16 +597,16 @@ function viewTransport(id) {
     document.getElementById('modalStatus').textContent = (transport.status || 'active').toUpperCase();
     document.getElementById('modalStatus').className = 'detail-value status-' + (transport.status || 'active');
     
-    // Set vehicle details
+    // set vehicle details
     document.getElementById('modalColor').textContent = transport.vehicle_color || 'N/A';
     document.getElementById('modalNumber').textContent = transport.vehicle_number || 'N/A';
     document.getElementById('modalPassengers').textContent = transport.passenger_count || '0';
     document.getElementById('modalAcType').textContent = (transport.ac_type || 'N/A').toUpperCase();
     
-    // Set location & service
+    // set location & service
     document.getElementById('modalDistrict').textContent = transport.working_district || 'N/A';
     
-    // Set provider information
+    // set provider information
     document.getElementById('modalUserId').textContent = `#${transport.user_id || 'N/A'}`;
     document.getElementById('modalCreatedAt').textContent = transport.created_at 
         ? formatDateTime(transport.created_at) 
@@ -615,13 +615,13 @@ function viewTransport(id) {
         ? formatDateTime(transport.updated_at) 
         : 'N/A';
     
-    // Set document information
+    // set document information
     const documents = transport.documents || [];
     document.getElementById('modalDocCount').textContent = documents.length;
     const hasPhotos = documents.some(doc => doc.doc_type === 'vehicle_photos' || doc.doc_type === 'vehicle_photo');
     document.getElementById('modalHasPhotos').textContent = hasPhotos ? 'Yes' : 'No';
     
-    // Display document list
+    // display document list
     const docList = document.getElementById('modalDocumentList');
     if (documents.length > 0) {
         docList.innerHTML = documents.map(doc => {
@@ -641,11 +641,11 @@ function viewTransport(id) {
         docList.innerHTML = '<p style="color: #7f8c8d; text-align: center; padding: 20px;">No documents uploaded</p>';
     }
     
-    // Set up image gallery
+    // set up image gallery
     const mainImage = document.getElementById('mainImage');
     const imageGallery = document.getElementById('imageGallery');
     
-    // Get all image documents
+    // get all image documents
     const imageDocuments = documents.filter(doc => 
         doc.doc_type === 'vehicle_photos' || 
         doc.doc_type === 'vehicle_photo' ||
@@ -653,11 +653,11 @@ function viewTransport(id) {
     );
     
     if (imageDocuments.length > 0) {
-        // Set main image
+        // set main image
         const mainImageSrc = transport.main_image ? `${baseUrl}${transport.main_image}` : `${baseUrl}${imageDocuments[0].file_path}`;
         mainImage.innerHTML = `<img src="${mainImageSrc}" alt="Vehicle" onerror="this.src='assets/images/default-vehicle.jpg'">`;
         
-        // Set gallery thumbnails
+        // set gallery thumbnails
         if (imageDocuments.length > 1) {
             imageGallery.innerHTML = imageDocuments.map((doc, index) => {
                 const imageSrc = `${baseUrl}${doc.file_path}`;
@@ -676,30 +676,30 @@ function viewTransport(id) {
         imageGallery.innerHTML = '';
     }
     
-    // Show modal
+    // show modal
     document.getElementById('viewModal').style.display = 'block';
     document.body.style.overflow = 'hidden';
 }
 
-// Change main image in gallery
+// change main image in gallery
 function changeMainImage(imageSrc, thumbElement) {
     const mainImage = document.getElementById('mainImage');
     mainImage.innerHTML = `<img src="${imageSrc}" alt="Vehicle" onerror="this.src='assets/images/default-vehicle.jpg'">`;
     
-    // Update active thumbnail
+    // update active thumbnail
     document.querySelectorAll('.gallery-thumb').forEach(thumb => {
         thumb.classList.remove('active');
     });
     thumbElement.classList.add('active');
 }
 
-// Close modal
+// close modal
 function closeViewModal() {
     document.getElementById('viewModal').style.display = 'none';
     document.body.style.overflow = 'auto';
 }
 
-// Format date time
+// format date time
 function formatDateTime(dateString) {
     if (!dateString) return 'N/A';
     
@@ -718,7 +718,7 @@ function formatDateTime(dateString) {
     }
 }
 
-// Escape HTML to prevent XSS
+// escape HTML to prevent XSS
 function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');
@@ -726,7 +726,7 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Status color helper
+// status color helper
 function getStatusColor(status) {
     switch(status) {
         case 'active': return '#1abc5b';
@@ -736,7 +736,7 @@ function getStatusColor(status) {
     }
 }
 
-// Close modal when clicking outside
+// close modal when clicking outside
 window.onclick = function(event) {
     const modal = document.getElementById('viewModal');
     if (event.target === modal) {

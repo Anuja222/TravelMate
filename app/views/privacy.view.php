@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Privacy Policy — TravelMate</title>
 
-  <!-- Google Font -->
+  <!-- google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-  <!-- Stylesheet -->
+  <!-- stylesheet -->
   <link rel="stylesheet" href="assets/css/privacy.css">
 </head>
 <body>
 
-  <!-- Header (consistent with site) -->
+  <!-- header (consistent with site) -->
    <?php include __DIR__ . '../traveller/header.view.php'; ?>
   <!-- <header class="tm-header" role="banner">
     <div class="tm-container header-inner">
@@ -36,7 +36,7 @@
     </div>
   </header> -->
 
-  <!-- Hero -->
+  <!-- hero -->
   <section class="terms-hero">
     <div class="tm-container hero-inner">
       <h1>Privacy Policy</h1>
@@ -44,7 +44,7 @@
     </div>
   </section>
 
-  <!-- Main content -->
+  <!-- main content -->
   <main class="tm-container content" id="main">
     <article class="terms-card privacy-card">
       <section>
@@ -125,7 +125,7 @@
     </article>
   </main>
 
-  <!-- Footer -->
+  <!-- footer -->
    <?php include __DIR__ . '../Traveller/footer.view.php'; ?>
   <!-- <footer class="tm-footer" role="contentinfo">
     <div class="tm-container footer-grid">

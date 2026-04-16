@@ -196,25 +196,25 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Print receipt functionality
+      // print receipt functionality
       const printBtn = document.getElementById('print-btn');
       
       printBtn.addEventListener('click', function() {
         window.print();
       });
       
-      // Back button functionality
+      // back button functionality
       const backBtn = document.getElementById('back-btn');
       
       backBtn.addEventListener('click', function() {
         window.history.back();
       });
       
-      // Download invoice functionality
+      // download invoice functionality
       const downloadInvoiceBtn = document.getElementById('download-invoice');
       
       downloadInvoiceBtn.addEventListener('click', function() {
-        // Simulate download process
+        // simulate download process
         this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Downloading...';
         
         setTimeout(() => {
@@ -223,11 +223,11 @@
         }, 1500);
       });
       
-      // Send invoice functionality
+      // send invoice functionality
       const sendInvoiceBtn = document.getElementById('send-invoice');
       
       sendInvoiceBtn.addEventListener('click', function() {
-        // Simulate sending process
+        // simulate sending process
         this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
         
         setTimeout(() => {
@@ -236,7 +236,7 @@
         }, 1500);
       });
       
-      // Responsive adjustments
+      // responsive adjustments
       function handleResponsive() {
         const summaryElement = document.querySelector('.booking-summary');
         
@@ -249,10 +249,10 @@
         }
       }
       
-      // Initial call
+      // initial call
       handleResponsive();
       
-      // Listen for window resize
+      // listen for window resize
       window.addEventListener('resize', handleResponsive);
     });
   </script>

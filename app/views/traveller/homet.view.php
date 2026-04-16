@@ -1,10 +1,10 @@
 <?php
-// Start session if not already started
+// start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is logged in
+// check if user is logged in
 $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
 $firstName = $isLoggedIn ? $_SESSION['user']['first_name'] : '';
 $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
@@ -26,16 +26,16 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
 
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-    <!-- Main Content -->
+    <!-- main Content -->
     <main class="main-content">
-        <!-- Welcome Section -->
+        <!-- welcome Section -->
         <div class="welcome-section">
             <h1>Welcome back, <?php echo htmlspecialchars($firstName); ?>!</h1>
             <p>Ready for your next adventure? Discover amazing destinations, book comfortable stays, and find the best
                 transport options.</p>
         </div>
 
-        <!-- Popular Destinations Section -->
+        <!-- popular Destinations Section -->
         <section class="destinations-section">
             <div class="section-header">
                 <div class="title-area">
@@ -65,7 +65,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
             </div>
         </section>
 
-        <!-- Accommodation Section -->
+        <!-- accommodation Section -->
         <section class="accommodation-section">
             <div class="section-header">
                 <div class="title-area">
@@ -80,7 +80,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
             </div>
         </section>
 
-        <!-- Transport Section -->
+        <!-- transport Section -->
         <section class="transport-section">
             <div class="section-header">
                 <div class="title-area">
@@ -147,7 +147,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                     container.innerHTML = '<p>Error loading destinations</p>';
                 });
 
-            // Load Activities
+            // load Activities
             const activityContainer = document.getElementById('popularActivities');
 
             fetch(baseApi + '/api/activity/list', { credentials: 'same-origin' })
@@ -185,7 +185,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                     activityContainer.innerHTML = '<p>Error loading activities</p>';
                 });
 
-            // Load Accommodations
+            // load Accommodations
             const accommodationContainer = document.getElementById('featuredAccommodations');
 
             fetch(baseApi + '/api/accommodation/listAll', { credentials: 'same-origin' })
@@ -244,7 +244,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                     accommodationContainer.innerHTML = '<p>Error loading accommodations</p>';
                 });
 
-                        // Load Transports
+                        // load Transports
                         const transportContainer = document.getElementById('transportOptions');
 
                         fetch(baseApi + '/api/vehicle/listAll', { credentials: 'same-origin' })
@@ -373,7 +373,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
             }
         });
 
-        // Add interactivity to cards and see all buttons
+        // add interactivity to cards and see all buttons
         document.addEventListener('DOMContentLoaded', function () {
             const cards = document.querySelectorAll('.card');
             const actionCards = document.querySelectorAll('.action-card');
@@ -384,7 +384,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                     const button = this.querySelector('.explore-btn');
                     if (button) {
                         console.log('Clicked:', button.textContent);
-                        // Add navigation logic here
+                        // add navigation logic here
                     }
                 });
             });
@@ -393,7 +393,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                 card.addEventListener('click', function () {
                     const title = this.querySelector('h4').textContent;
                     console.log('Quick action:', title);
-                    // Add quick action logic here
+                    // add quick action logic here
                 });
             });
 
@@ -402,7 +402,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                     // e.preventDefault();
                     const href = this.getAttribute('href');
                     console.log('See all clicked:', href);
-                    // Add navigation logic here
+                    // add navigation logic here
                     // window.location.href = href;
                 });
             });

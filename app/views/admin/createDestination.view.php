@@ -85,7 +85,7 @@
     </div>
   </div>
 
-  <!-- Success Modal -->
+  <!-- success Modal -->
   <div id="successModal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
       <div class="modal-icon-success">
@@ -101,7 +101,7 @@
 
 
   <script>
-    // Success Modal Functions
+    // success Modal Functions
     function showSuccessModal(message) {
       document.getElementById('successMessage').textContent = message;
       document.getElementById('successModal').style.display = 'flex';
@@ -112,7 +112,7 @@
       window.location.href = 'ViewListing';
     }
 
-    // File input handler - show filename when selected
+    // file input handler - show filename when selected
     document.getElementById('image').addEventListener('change', function() {
       const fileName = this.files[0] ? this.files[0].name : 'No file chosen';
       document.getElementById('image-name').textContent = fileName;

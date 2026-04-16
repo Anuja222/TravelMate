@@ -1,8 +1,8 @@
 // bedRoom.js
-// JS for Bed Room page
+// jS for Bed Room page
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Counter logic for bed types
+    // counter logic for bed types
     document.querySelectorAll('.bed-type-row').forEach(function(row) {
         const decrement = row.querySelector('.decrement');
         const increment = row.querySelector('.increment');

@@ -11,7 +11,7 @@
 
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-  <!-- Transportation Hero Section -->
+  <!-- transportation Hero Section -->
   <section class="transport-hero">
     <div class="hero-gallery">
       <div class="main-image">
@@ -25,16 +25,16 @@
         </div>
       </div>
       <div class="thumbnail-gallery" id="thumbnailGallery">
-        <!-- Thumbnails will be populated by JavaScript -->
+        <!-- thumbnails will be populated by JavaScript -->
       </div>
     </div>
   </section>
 
-  <!-- Transportation Details Section -->
+  <!-- transportation Details Section -->
   <section class="transport-details-section">
     <div class="container">
       <div class="details-grid">
-        <!-- Left Column - Transport Info -->
+        <!-- left Column - Transport Info -->
         <div class="transport-info">
           <div class="transport-header">
             <div class="transport-title">
@@ -61,21 +61,21 @@
           <div class="transport-features">
             <h3>Vehicle Features & Amenities</h3>
             <div class="features-grid" id="featuresGrid">
-              <!-- Features will be populated by JavaScript -->
+              <!-- features will be populated by JavaScript -->
             </div>
           </div>
 
           <div class="transport-specifications">
             <h3>Vehicle Specifications</h3>
             <div class="specs-grid" id="specsGrid">
-              <!-- Specifications will be populated by JavaScript -->
+              <!-- specifications will be populated by JavaScript -->
             </div>
           </div>
 
           <div class="transport-pricing">
             <h3>Pricing Options</h3>
             <div class="pricing-grid" id="pricingGrid">
-              <!-- Pricing options will be populated by JavaScript -->
+              <!-- pricing options will be populated by JavaScript -->
             </div>
           </div>
 
@@ -87,16 +87,16 @@
                 <div class="rating-label">Excellent</div>
               </div>
               <div class="rating-breakdown" id="ratingBreakdown">
-                <!-- Rating breakdown will be populated by JavaScript -->
+                <!-- rating breakdown will be populated by JavaScript -->
               </div>
             </div>
             <div class="reviews-list" id="reviewsList">
-              <!-- Reviews will be populated by JavaScript -->
+              <!-- reviews will be populated by JavaScript -->
             </div>
           </div>
         </div>
 
-        <!-- Right Column - Booking Widget -->
+        <!-- right Column - Booking Widget -->
         <div class="booking-widget">
           <div class="widget-header">
             <div class="price-display">
@@ -209,7 +209,7 @@
             </form>
           </div>
 
-          <!-- Provider Profile Widget -->
+          <!-- provider Profile Widget -->
           <div class="booking-widget" style="margin-top: 20px;">
             <div class="widget-header">
               <h3 style="margin:0; font-size: 1.2rem;">Transport Provider</h3>
@@ -229,7 +229,7 @@
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-  <!-- Transport Booking Success Modal -->
+  <!-- transport Booking Success Modal -->
   <div id="bookingSuccessModal" class="booking-success-modal">
     <div class="booking-success-content">
       <div class="success-icon">
@@ -449,7 +449,7 @@
 
   <script src="assets/js/transportdetails.js?v=<?php echo file_exists(__DIR__ . '/../../../public/assets/js/transportdetails.js') ? filemtime(__DIR__ . '/../../../public/assets/js/transportdetails.js') : time(); ?>"></script>
   <script>
-    // Modal helper functions
+    // modal helper functions
     function showBookingSuccessModal(bookingId) {
       const modal = document.getElementById('bookingSuccessModal');
       const bookingIdEl = document.getElementById('modalBookingId');
@@ -463,7 +463,7 @@
       const modal = document.getElementById('bookingSuccessModal');
       if (modal) {
         modal.style.display = 'none';
-        // Reset form
+        // reset form
         document.getElementById('bookingForm').reset();
         document.getElementById('bookingSummary').style.display = 'none';
         document.querySelector('.book-now-btn').style.display = 'block';

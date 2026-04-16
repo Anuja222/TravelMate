@@ -212,7 +212,7 @@
 
 </div>
 
-<!-- View Post Modal -->
+<!-- view Post Modal -->
 <div id="viewPostModal" class="modal" style="display: none;">
   <div class="modal-content" style="max-width: 900px;">
     <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; padding-bottom: 15px; margin-bottom: 20px;">
@@ -228,7 +228,7 @@
   </div>
 </div>
 
-<!-- Confirmation Modal -->
+<!-- confirmation Modal -->
 <div id="confirmModal" class="modal" style="display: none;">
   <div class="modal-content" style="max-width: 450px;">
     <div class="confirm-modal-icon" id="confirmIcon"></div>
@@ -241,7 +241,7 @@
   </div>
 </div>
 
-<!-- Success Modal -->
+<!-- success Modal -->
 <div id="successModal" class="modal" style="display: none;">
   <div class="modal-content" style="max-width: 400px; text-align: center;">
     <div class="success-icon">
@@ -269,7 +269,7 @@
     font-size: 14px;
   }
 
-  /* Grid Layout */
+  /* grid Layout */
   .posts-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -277,7 +277,7 @@
     margin-top: 30px;
   }
   
-  /* Post Card */
+  /* post Card */
   .post-card {
     background: white;
     border-radius: 12px;
@@ -438,7 +438,7 @@
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
   }
   
-  /* Empty State */
+  /* empty State */
   .empty-state {
     text-align: center;
     padding: 80px 20px;
@@ -464,7 +464,7 @@
     font-size: 15px;
   }
   
-  /* Modal Styles */
+  /* modal Styles */
   .modal {
     position: fixed;
     top: 0;
@@ -525,7 +525,7 @@
     }
   }
   
-  /* Confirmation Modal Styles */
+  /* confirmation Modal Styles */
   .confirm-modal-icon {
     width: 64px;
     height: 64px;
@@ -674,10 +674,10 @@
       setTimeout(() => {
         postCard.remove();
         
-        // Check if there are no more posts
+        // check if there are no more posts
         const postsGrid = document.querySelector('.pending-posts-grid');
         if (postsGrid && postsGrid.querySelectorAll('.post-card').length === 0) {
-          // Replace only the grid, not the entire content
+          // replace only the grid, not the entire content
           postsGrid.outerHTML = `
             <div class="empty-state">
               <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -723,7 +723,7 @@
     const modal = document.getElementById('viewPostModal');
     document.getElementById('modalPostTitle').textContent = postData.title;
     
-    // Display image
+    // display image
     const imageDiv = document.getElementById('modalPostImage');
     if (postData.image) {
       imageDiv.innerHTML = `<img src="${postData.image}" alt="${postData.title}" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px;" onerror="this.style.display='none'">`;
@@ -731,7 +731,7 @@
       imageDiv.innerHTML = '';
     }
     
-    // Display meta information
+    // display meta information
     const metaDiv = document.getElementById('modalPostMeta');
     metaDiv.innerHTML = `
       <div style="display: flex; align-items: center; gap: 6px;">
@@ -759,10 +759,10 @@
       </div>
     `;
     
-    // Display content
+    // display content
     document.getElementById('modalPostContent').innerHTML = `<p style="white-space: pre-wrap;">${postData.description || ''}</p>`;
     
-    // Display action buttons
+    // display action buttons
     const actionsDiv = document.getElementById('modalPostActions');
     if (postType === 'feed') {
       actionsDiv.innerHTML = `

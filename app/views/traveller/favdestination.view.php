@@ -11,7 +11,7 @@
 <body>
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-  <!-- Hero Section -->
+  <!-- hero Section -->
   <section class="hero-section">
     <!-- <img src="assets/images/cover.jpg" alt="About Hero"> -->
     <div class="hero-background">
@@ -28,7 +28,7 @@
     </div>
   </section>
 
-  <!-- Destinations Section -->
+  <!-- destinations Section -->
   <section class="destinations-section">
     <div class="container">
       <div class="section-header">
@@ -62,7 +62,7 @@
     </div>
   </section>
 
-  <!-- Booking Modal -->
+  <!-- booking Modal -->
   <div class="modal" id="bookingModal">
     <div class="modal-content">
       <div class="modal-header">

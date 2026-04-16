@@ -1,14 +1,14 @@
 <?php
-// Start session if not already started
+// start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
 
-// Check if user is logged in
+// check if user is logged in
 $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
 $role = $isLoggedIn ? ($_SESSION['user']['role'] ?? $_SESSION['role'] ?? '') : '';
 
-// Role-based redirect - this is an accommodation provider page
+// role-based redirect - this is an accommodation provider page
 if (!$isLoggedIn || $role !== 'accommodation') {
     if ($role === 'admin') {
         header('Location: ad_dashboard');
@@ -385,7 +385,7 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
       }
     }
 
-    /* Status Toggle Modal Styles */
+    /* status Toggle Modal Styles */
     .status-modal-overlay {
       position: fixed;
       top: 0;
@@ -561,7 +561,7 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
       }
     }
 
-    /* Confirmation Modal Styles */
+    /* confirmation Modal Styles */
     .confirm-modal {
       background: white;
       border-radius: 20px;
@@ -668,7 +668,7 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
   </style>
 </head>
 <body>
-  <!-- Navbar -->
+  <!-- navbar -->
   <!-- <header>
     <nav class="navbar">
       <div class="logo-container">
@@ -697,12 +697,12 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
     include __DIR__ . '/sidebar.view.php'; 
     ?>
     <section class="dashboard-content">
-      <!-- Cover -->
+      <!-- cover -->
       <div class="cover">
   <img src="/TravelMate/public/assets/images/cover.jpg" alt="Travel Cover" class="cover-img">
         <span class="cover-text">TRAVEL <span class="cover-sub">more</span></span>
       </div>
-      <!-- Profile -->
+      <!-- profile -->
       <div class="profile-section">
   <img src="<?php echo htmlspecialchars($profileImage); ?>" alt="User" class="profile-pic" onerror="this.src='/TravelMate/public/assets/images/profile.jpg'">
         <div>
@@ -710,7 +710,7 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
           <span class="profile-email"><?php echo htmlspecialchars($_SESSION['user']['email']); ?></span>
         </div>
       </div>
-      <!-- Activity Summary -->
+      <!-- activity Summary -->
       <div class="activity-summary">
         <h3>Activity Summary</h3>
         <div class="summary-stats">
@@ -734,7 +734,7 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
         </div>
       </div>
 
-      <!-- Favourites -->
+      <!-- favourites -->
      <section class="favourite">
         <div class="section-header">
           <h3>My Properties</h3>
@@ -744,7 +744,7 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
         </div>
 
         <div class="property-cards-grid">
-          <!-- Property cards will be loaded here dynamically -->
+          <!-- property cards will be loaded here dynamically -->
           <div class="loading-message" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">
             <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i>
             <p>Loading your properties...</p>
@@ -753,7 +753,7 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
       </section>
     </section>
   </main>
-  <!-- Status Toggle Modal -->
+  <!-- status Toggle Modal -->
   <div class="status-modal-overlay" id="statusModal">
     <div class="status-modal">
       <div class="status-icon-circle" id="statusIconCircle">
@@ -765,7 +765,7 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
     </div>
   </div>
 
-  <!-- Delete Success Modal -->
+  <!-- delete Success Modal -->
   <div class="status-modal-overlay" id="deleteModal">
     <div class="status-modal">
       <div class="status-icon-circle" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
@@ -777,7 +777,7 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
     </div>
   </div>
 
-  <!-- Delete Confirmation Modal -->
+  <!-- delete Confirmation Modal -->
   <div class="status-modal-overlay" id="confirmDeleteModal">
     <div class="confirm-modal">
       <div class="confirm-icon-circle">
@@ -792,7 +792,7 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
     </div>
   </div>
 
-  <!-- Footer -->
+  <!-- footer -->
    <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
   <!-- <footer>
     <div class="footer-content">
@@ -825,10 +825,10 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
       <span>&copy; 2024 TravelMate Sri Lanka. All rights reserved.</span>
     </div>
   </footer> -->
-  <!-- Dashboard scripts -->
+  <!-- dashboard scripts -->
   <script src="/TravelMate/public/assets/js/accommodation.js"></script>
   <script>
-    // Status Modal Functions
+    // status Modal Functions
     function showStatusModal(isActive) {
       const modal = document.getElementById('statusModal');
       const iconCircle = document.getElementById('statusIconCircle');
@@ -858,7 +858,7 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
       document.body.style.overflow = '';
     }
     
-    // Delete Modal Functions
+    // delete Modal Functions
     function showDeleteModal() {
       const modal = document.getElementById('deleteModal');
       modal.classList.add('active');
@@ -871,7 +871,7 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
       document.body.style.overflow = '';
     }
     
-    // Confirmation Modal Functions
+    // confirmation Modal Functions
     let pendingDeleteId = null;
     
     function showConfirmDeleteModal(propertyId) {
@@ -890,14 +890,14 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
     
     function confirmDelete() {
       if (pendingDeleteId) {
-        // Trigger the actual delete by dispatching a custom event
+        // trigger the actual delete by dispatching a custom event
         const event = new CustomEvent('confirmDeleteProperty', { detail: { id: pendingDeleteId } });
         document.dispatchEvent(event);
         closeConfirmModal();
       }
     }
     
-    // Close modal when clicking overlay
+    // close modal when clicking overlay
     document.getElementById('statusModal').addEventListener('click', function(e) {
       if (e.target === this) {
         closeStatusModal();
@@ -916,7 +916,7 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
       }
     });
     
-    // Make functions globally available
+    // make functions globally available
     window.showStatusModal = showStatusModal;
     window.showDeleteModal = showDeleteModal;
     window.showConfirmDeleteModal = showConfirmDeleteModal;

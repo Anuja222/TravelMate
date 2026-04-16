@@ -187,7 +187,7 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Add click effect to buttons
+      // add click effect to buttons
       const buttons = document.querySelectorAll('.btn');
       buttons.forEach(button => {
         button.addEventListener('click', function() {
@@ -198,7 +198,7 @@
         });
       });
       
-      // Simulate receipt download
+      // simulate receipt download
       const downloadBtn = document.querySelector('.btn-secondary');
       downloadBtn.addEventListener('click', function() {
         this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing...';
@@ -208,13 +208,13 @@
         }, 1500);
       });
       
-      // Simulate rating process
+      // simulate rating process
       const rateBtn = document.querySelector('.btn-primary');
       rateBtn.addEventListener('click', function() {
         alert('Redirecting to rating page...');
       });
       
-      // Map interaction
+      // map interaction
       const mapElement = document.querySelector('.trip-map');
       mapElement.addEventListener('click', function() {
         alert('Showing detailed trip route map...');

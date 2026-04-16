@@ -85,7 +85,7 @@
         </form>
       </div>
 
-      <!-- Places (Beaches) management -->
+      <!-- places (Beaches) management -->
       <div class="form-card" style="margin-top: 32px;">
         <h2 class="section-title">Places / Beaches</h2>
         
@@ -155,7 +155,7 @@
     </div>
   </div>
 
-  <!-- Success Modal -->
+  <!-- success Modal -->
   <div id="successModal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
       <div class="modal-icon-success">
@@ -171,7 +171,7 @@
 
 
   <script>
-    // Success Modal Functions
+    // success Modal Functions
     function showSuccessModal(message) {
       document.getElementById('successMessage').textContent = message;
       document.getElementById('successModal').style.display = 'flex';
@@ -181,7 +181,7 @@
       document.getElementById('successModal').style.display = 'none';
     }
 
-    // File input handlers - show filename when selected
+    // file input handlers - show filename when selected
     document.getElementById('image').addEventListener('change', function() {
       const fileName = this.files[0] ? this.files[0].name : 'No file chosen';
       document.getElementById('image-name').textContent = fileName;
@@ -200,7 +200,7 @@
       let editingPlaceId = null;
       const addPlaceBtn = document.querySelector('#addPlaceForm button[type="submit"]');
 
-      // Fill destination form and places list
+      // fill destination form and places list
       fetch('../public/api/destination/get?id=' + encodeURIComponent(id), { credentials: 'same-origin' })
         .then(r => r.json()).then(resp => {
           if (!resp.success) { alert('Not found'); window.location.href = 'destinations'; return; }
@@ -214,7 +214,7 @@
           renderPlaces(d.places || []);
         }).catch(err => { console.error(err); alert('Load error'); });
 
-      // Update destination
+      // update destination
       document.getElementById('editDestForm').addEventListener('submit', function (e) {
         e.preventDefault();
         const fd = new FormData(this);
@@ -229,7 +229,7 @@
           }).catch(() => alert('Network error'));
       });
 
-      // Add or Update place
+      // add or Update place
       document.getElementById('addPlaceForm').addEventListener('submit', function (e) {
         e.preventDefault();
 
@@ -282,7 +282,7 @@
         }
       });
 
-      // Render places list and attach delete/edit handlers
+      // render places list and attach delete/edit handlers
       function renderPlaces(places) {
         const container = document.getElementById('placesList');
         if (!places || places.length === 0) {

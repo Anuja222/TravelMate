@@ -3,13 +3,13 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is authenticated
+// check if user is authenticated
 if (!isset($_SESSION['user'])) {
     header('Location: /TravelMate/public/index.php?url=Login');
     exit;
 }
 
-// Get saved data if returning from step 2
+// get saved data if returning from step 2
 $savedData = $_SESSION['listing_step1'] ?? [];
 ?>
 <!DOCTYPE html>
@@ -347,7 +347,7 @@ $savedData = $_SESSION['listing_step1'] ?? [];
     </style>
 </head>
 <body>
-    <!-- Header -->
+    <!-- header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
     <main class="listing-main">
@@ -371,7 +371,7 @@ $savedData = $_SESSION['listing_step1'] ?? [];
 
             <form method="POST" action="/TravelMate/public/index.php?url=Accomodation_provider/propertyListingStep2" id="step1Form">
                 
-                <!-- Property Type -->
+                <!-- property Type -->
                 <div class="form-group">
                     <label>Property Type <span class="required">*</span></label>
                     <div class="property-type-grid">
@@ -438,7 +438,7 @@ $savedData = $_SESSION['listing_step1'] ?? [];
                     <span class="error-message">Please select a property type</span>
                 </div>
 
-                <!-- Title -->
+                <!-- title -->
                 <div class="form-group">
                     <label for="title">Property Title <span class="required">*</span></label>
                     <input 
@@ -454,7 +454,7 @@ $savedData = $_SESSION['listing_step1'] ?? [];
                     <span class="error-message">Please enter a property title</span>
                 </div>
 
-                <!-- Location -->
+                <!-- location -->
                 <div class="form-group">
                     <label for="location">Location/City <span class="required">*</span></label>
                     <input 
@@ -470,7 +470,7 @@ $savedData = $_SESSION['listing_step1'] ?? [];
                     <span class="error-message">Please enter the location</span>
                 </div>
 
-                <!-- Address -->
+                <!-- address -->
                 <div class="form-group">
                     <label for="address">Full Address</label>
                     <textarea 
@@ -481,7 +481,7 @@ $savedData = $_SESSION['listing_step1'] ?? [];
                     ><?= htmlspecialchars($savedData['address'] ?? '') ?></textarea>
                 </div>
 
-                <!-- Description -->
+                <!-- description -->
                 <div class="form-group">
                     <label for="description">Property Description <span class="required">*</span></label>
                     <textarea 
@@ -494,7 +494,7 @@ $savedData = $_SESSION['listing_step1'] ?? [];
                     <span class="error-message">Please enter a description</span>
                 </div>
 
-                <!-- Buttons -->
+                <!-- buttons -->
                 <div class="btn-container">
                     <button type="button" class="btn btn-secondary" onclick="window.location.href='/TravelMate/public/index.php?url=Accomodation_provider/newerDashboard'">Cancel</button>
                     <button type="submit" class="btn btn-primary">Next: Property Features →</button>
@@ -503,28 +503,28 @@ $savedData = $_SESSION['listing_step1'] ?? [];
         </div>
     </main>
 
-    <!-- Footer -->
+    <!-- footer -->
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
     <script>
         function selectType(element, type) {
-            // Remove selected class from all options
+            // remove selected class from all options
             document.querySelectorAll('.property-type-option').forEach(opt => {
                 opt.classList.remove('selected');
             });
             
-            // Add selected class to clicked option
+            // add selected class to clicked option
             element.classList.add('selected');
             
-            // Check the radio button
+            // check the radio button
             element.querySelector('input[type="radio"]').checked = true;
         }
         
-        // Form validation
+        // form validation
         document.getElementById('step1Form').addEventListener('submit', function(e) {
             let isValid = true;
             
-            // Check all required fields
+            // check all required fields
             const requiredFields = this.querySelectorAll('[required]');
             requiredFields.forEach(field => {
                 const formGroup = field.closest('.form-group');
@@ -542,7 +542,7 @@ $savedData = $_SESSION['listing_step1'] ?? [];
             }
         });
         
-        // Remove error on input
+        // remove error on input
         document.querySelectorAll('.form-control').forEach(input => {
             input.addEventListener('input', function() {
                 this.closest('.form-group').classList.remove('has-error');

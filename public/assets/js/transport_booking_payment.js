@@ -1,4 +1,4 @@
-// Transport Booking Payment Form Handler
+// transport Booking Payment Form Handler
 document.addEventListener('DOMContentLoaded', function() {
     const paymentForm = document.getElementById('paymentForm');
     const bookingId = String(window.transportPaymentBookingId || new URLSearchParams(window.location.search).get('booking_id') || '').trim();
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
         submitBtn.innerHTML = 'Complete Payment';
     });
     
-    // Format card number input
+    // format card number input
     const cardNumberInput = document.getElementById('card_number');
     cardNumberInput.addEventListener('input', function(e) {
         let value = e.target.value.replace(/\s/g, '');
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.target.value = formattedValue;
     });
     
-    // Format expiry date input
+    // format expiry date input
     const expiryInput = document.getElementById('expiry_date');
     expiryInput.addEventListener('input', function(e) {
         let value = e.target.value.replace(/\D/g, '');
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.target.value = value;
     });
     
-    // Only allow numbers in CVV
+    // only allow numbers in CVV
     const cvvInput = document.getElementById('cvv');
     cvvInput.addEventListener('input', function(e) {
         e.target.value = e.target.value.replace(/\D/g, '');
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
     paymentForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        // Gather form data
+        // gather form data
         const formData = {
             card_name: document.getElementById('card_name').value.trim(),
             card_number: document.getElementById('card_number').value.replace(/\s/g, ''),
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
             billing_country: document.getElementById('billing_country').value
         };
         
-        // Validate required fields
+        // validate required fields
         if (!formData.card_name || !formData.card_number || !formData.expiry_date || 
             !formData.cvv || !formData.billing_address || !formData.billing_city || 
             !formData.billing_country) {
@@ -73,27 +73,27 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Validate card number (should be 16 digits)
+        // validate card number (should be 16 digits)
         if (formData.card_number.length !== 16) {
             alert('Please enter a valid 16-digit card number');
             return;
         }
         
-        // Validate expiry date format (MM/YY)
+        // validate expiry date format (MM/YY)
         const expiryRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
         if (!expiryRegex.test(formData.expiry_date)) {
             alert('Please enter expiry date in MM/YY format');
             return;
         }
         
-        // Validate CVV (should be 3 digits)
+        // validate CVV (should be 3 digits)
         if (formData.cvv.length !== 3) {
             alert('Please enter a valid 3-digit CVV');
             return;
         }
         
         try {
-            // Disable submit button
+            // disable submit button
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
             

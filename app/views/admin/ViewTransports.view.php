@@ -17,7 +17,7 @@
     <?php include 'sidebar.view.php'; ?>
 
     <div class="content">
-      <!-- Page Header -->
+      <!-- page Header -->
       <div class="page-title">
         <div class="page-title-content">
           <div class="page-icon">
@@ -36,7 +36,7 @@
         </div>
       </div>
 
-      <!-- Statistics Summary -->
+      <!-- statistics Summary -->
       <div class="stats-summary">
         <div class="stat-card">
           <div class="stat-icon" style="background: #1abc5b;">
@@ -76,7 +76,7 @@
         </div>
       </div>
 
-      <!-- Pending Vehicles Section -->
+      <!-- pending Vehicles Section -->
       <div class="section-block">
         <div class="section-title-row">
           <h2>Pending Vehicles</h2>
@@ -99,7 +99,7 @@
         </div>
       </div>
 
-      <!-- Rejected Vehicles Section -->
+      <!-- rejected Vehicles Section -->
       <div class="section-block">
         <div class="section-title-row" style="margin-top: 10px;">
           <h2>Rejected Vehicles</h2>
@@ -121,20 +121,20 @@
         </div>
       </div>
 
-      <!-- Transports Grid -->
+      <!-- transports Grid -->
       <div class="section-title-row" style="margin-top: 10px;">
         <h2>Approved Vehicles</h2>
         <p>Browse approved vehicles.</p>
       </div>
       <div id="transportsGrid" class="transports-grid">
-        <!-- Loading state -->
+        <!-- loading state -->
         <div class="loading-state">
           <i class="fas fa-spinner fa-spin"></i>
           <p>Loading vehicles...</p>
         </div>
       </div>
 
-      <!-- Empty State -->
+      <!-- empty State -->
       <div id="emptyState" class="empty-state" style="display: none;">
         <div class="empty-icon">
           <i class="fas fa-car"></i>
@@ -146,7 +146,7 @@
     </div>
   </div>
 
-  <!-- View Modal -->
+  <!-- view Modal -->
   <div id="viewModal" class="view-modal" style="display: none;">
     <div class="view-modal-content">
       <div class="view-modal-header">
@@ -157,17 +157,17 @@
       </div>
       
       <div class="view-modal-body">
-        <!-- Image Gallery -->
+        <!-- image Gallery -->
         <div class="modal-image-section">
           <div id="mainImage" class="main-image">
             <img src="" alt="Vehicle">
           </div>
           <div id="imageGallery" class="image-gallery">
-            <!-- Thumbnails will be inserted here -->
+            <!-- thumbnails will be inserted here -->
           </div>
         </div>
 
-        <!-- Details Grid -->
+        <!-- details Grid -->
         <div class="modal-details-grid">
           <div class="detail-section">
             <h3><i class="fas fa-info-circle"></i> Basic Information</h3>
@@ -252,7 +252,7 @@
           <div class="detail-section full-width">
             <h3><i class="fas fa-list"></i> Document List</h3>
             <div id="modalDocumentList" class="document-list">
-              <!-- Documents will be listed here -->
+              <!-- documents will be listed here -->
             </div>
           </div>
         </div>
@@ -264,7 +264,7 @@
     </div>
   </div>
 
-  <!-- Action Confirm Modal -->
+  <!-- action Confirm Modal -->
   <div id="actionConfirmModal" class="modal" style="display: none;">
     <div class="modal-content" style="max-width: 450px; text-align: center;">
       <div class="confirm-modal-icon" id="actionConfirmIcon">
@@ -282,7 +282,7 @@
     </div>
   </div>
 
-  <!-- Action Success Modal -->
+  <!-- action Success Modal -->
   <div id="actionSuccessModal" class="modal" style="display: none;">
     <div class="modal-content" style="max-width: 400px; text-align: center;">
       <div class="success-icon" id="actionSuccessIcon">

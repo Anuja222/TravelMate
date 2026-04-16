@@ -18,7 +18,7 @@ class App{
         $filename = "../app/controllers/".ucfirst($URL[0]).".php";
         $controllerFound = false;
         
-        // Check in main controllers directory first
+        // check in main controllers directory first
         if(file_exists($filename)){
             require $filename;
             $this->controller = ucfirst($URL[0]);
@@ -26,7 +26,7 @@ class App{
             unset($URL[0]);
         }
         else{
-            // Check in subdirectories
+            // check in subdirectories
             foreach($this->subdirs as $subdir){
                 $filename = "../app/controllers/{$subdir}/".ucfirst($URL[0]).".php";
                 if(file_exists($filename)){
@@ -38,7 +38,7 @@ class App{
                 }
             }
             
-            // If still not found, load 404
+            // if still not found, load 404
             if(!$controllerFound){
                 $filename = "../app/controllers/_404.php";
                 if(file_exists($filename)){

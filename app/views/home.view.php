@@ -8,10 +8,10 @@
   <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
-  <!-- Header/Navbar -->
+  <!-- header/Navbar -->
   <?php include __DIR__ . '../Traveller/header.view.php'; ?>
 
-  <!-- Hero Section -->
+  <!-- hero Section -->
   <section class="hero" id="home">
     <img src="assets/images/home1.jpg" alt="Home Hero">
     <div class="hero-overlay"></div>
@@ -35,7 +35,7 @@
     </div>
   </section>
 
-  <!-- Popular Destinations -->
+  <!-- popular Destinations -->
   <section class="destinations">
     <h2>Popular Destinations</h2>
     <p>From ancient temples and royal cities going to beautiful, diverse experiences.<br>Let's explore our amazing country in a new way.</p>
@@ -96,7 +96,7 @@
     </div>
   </section>
 
-  <!-- Empower Your Business -->
+  <!-- empower Your Business -->
   <section class="empower-business">
     <h2>Empower Your <span>Business</span></h2>
     <p>
@@ -142,7 +142,7 @@
     </div>
   </section>
 
-  <!-- Things To Do -->
+  <!-- things To Do -->
   <section class="things-to-do">
     <h2>Things To Do</h2>
     <div class="todo-cards">
@@ -172,7 +172,7 @@
     </div>
   </section>
 
-  <!-- Transport Section -->
+  <!-- transport Section -->
   <section class="transport">
     <h3>Explore hassle free transport options to get you where you need to go.</h3>
     <p>
@@ -193,7 +193,7 @@
     <button class="btn learn">Learn More</button>
   </section>
 
-    <!-- Why Choose Us Section -->
+    <!-- why Choose Us Section -->
   <section class="why-choose-section" id="aboutUs">
     <div class="why-choose-container">
       <div class="image-section">
@@ -231,7 +231,7 @@
     </div>
   </section>
 
-  <!-- Footer -->
+  <!-- footer -->
   <footer>
     <div class="footer-content">
       <div class="footer-section company">

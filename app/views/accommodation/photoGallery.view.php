@@ -1,4 +1,4 @@
-<!-- Photo Gallery Management Page -->
+<!-- photo Gallery Management Page -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,12 +10,12 @@
     <link rel="stylesheet" href="/TravelMate/public/assets/css/main.css">
 </head>
 <body>
-    <!-- Header -->
+    <!-- header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
     <h1>ABC Villa</h1>
     <div class="photo-gallery">
         <div class="gallery-photos">
-            <!-- Repeat for each photo -->
+            <!-- repeat for each photo -->
             <div class="gallery-photo">
                 <img src="/assets/images/cover.jpg" alt="Property Photo">
                 <button class="delete-photo-btn">Delete</button>
@@ -46,7 +46,7 @@
             </form>            
         </div>
     </div>
-    <!-- Footer -->
+    <!-- footer -->
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
     <script src="/TravelMate/public/assets/js/Accomodation_provider/photoGallery.js"></script>
 </body>

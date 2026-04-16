@@ -1,4 +1,4 @@
-// JS for delete property confirmation page
+// jS for delete property confirmation page
 document.addEventListener('DOMContentLoaded', function() {
     console.log('[deleteProperty.js] script loaded');
     const yesBtn = document.querySelector('.yes-btn');
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const propertyName = document.querySelector('.property-name')?.textContent || 'this property';
         const message = `The property "${propertyName}" will be deleted. OK to proceed?`;
         if (confirm(message)) {
-             // Redirect to dashboard route (front controller handles views)
+             // redirect to dashboard route (front controller handles views)
              window.location.href = '/TravelMate/Accomodation_provider/dashboard';
         } else {
             // cancelled — stay on page
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     noBtn?.addEventListener('click', function() {
-        // Redirect back to property view
+        // redirect back to property view
           window.location.href = '/TravelMate/Accomodation_provider/viewProperty';
     });
 });

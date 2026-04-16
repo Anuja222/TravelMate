@@ -43,7 +43,7 @@ class Tr_setting extends Controller {
 
             $profileImagePath = null;
             if (isset($_FILES['profilePhoto']) && $_FILES['profilePhoto']['error'] === UPLOAD_ERR_OK) {
-                // Handle file upload
+                // handle file upload
                 $uploadDir = __DIR__ . '/../../../public/uploads/profile_images/';
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0777, true);
@@ -106,13 +106,13 @@ class Tr_setting extends Controller {
             }
 
             try {
-                // Get current password hash
+                // get current password hash
                 $stmt = $conn->prepare("SELECT password FROM users WHERE id = ?");
                 $stmt->execute([$userId]);
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 if ($user && password_verify($currentPassword, $user['password'])) {
-                    // Update to new password
+                    // update to new password
                     $newHash = password_hash($newPassword, PASSWORD_DEFAULT);
                     $updateStmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
                     $updateStmt->execute([$newHash, $userId]);

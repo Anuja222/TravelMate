@@ -8,11 +8,11 @@ class PreferenceController {
     public function save() {
         global $pdo;
         
-        // Start clean output buffering
+        // start clean output buffering
         if (ob_get_level()) ob_end_clean();
         ob_start();
         
-        // Clear any previous output
+        // clear any previous output
         header('Content-Type: application/json; charset=utf-8');
         http_response_code(200);
         

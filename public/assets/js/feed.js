@@ -1,19 +1,19 @@
-// Feed Page Interactions
+// feed Page Interactions
 document.addEventListener('DOMContentLoaded', function() {
-    // Filter Tabs Functionality
+    // filter Tabs Functionality
     const filterTabs = document.querySelectorAll('.tab-btn');
     const posts = document.querySelectorAll('.post-card');
 
     filterTabs.forEach(tab => {
         tab.addEventListener('click', function() {
-            // Remove active class from all tabs
+            // remove active class from all tabs
             filterTabs.forEach(t => t.classList.remove('active'));
-            // Add active class to clicked tab
+            // add active class to clicked tab
             this.classList.add('active');
 
             const filter = this.dataset.filter;
 
-            // Filter posts
+            // filter posts
             posts.forEach(post => {
                 if (filter === 'all') {
                     post.style.display = 'block';
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Vote Button Functionality
+    // vote Button Functionality
     const voteBtns = document.querySelectorAll('.vote-btn');
     voteBtns.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -36,12 +36,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const type = this.dataset.type; // 'upvote' or 'downvote'
             const postActions = this.closest('.post-actions');
             
-            // Send AJAX request to update database
+            // send AJAX request to update database
             const formData = new FormData();
             formData.append('post_id', postId);
             formData.append('type', type);
             
-            // Get base URL to ensure proper endpoint mapping safely provided by PHP
+            // get base URL to ensure proper endpoint mapping safely provided by PHP
             const baseUrl = window.AppConfig && window.AppConfig.baseUrl ? window.AppConfig.baseUrl : '';
             
             fetch(baseUrl + '/blog/vote', {
@@ -54,20 +54,20 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(data => {
                 if (data.success) {
-                    // Update UI counters
+                    // update UI counters
                     postActions.querySelector('.upvote .count').textContent = data.upvotes;
                     postActions.querySelector('.downvote .count').textContent = data.downvotes;
                     
-                    // Toggle active state classes
+                    // toggle active state classes
                     const isCurrentlyActive = this.classList.contains('active');
                     
-                    // Reset both buttons
+                    // reset both buttons
                     postActions.querySelectorAll('.vote-btn').forEach(b => {
                         b.classList.remove('active');
                         b.style.removeProperty('color');
                     });
                     
-                    // Re-apply to clicked if it wasn't just toggled off
+                    // re-apply to clicked if it wasn't just toggled off
                     if (!isCurrentlyActive) {
                         this.classList.add('active');
                     }
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Save Button Functionality
+    // save Button Functionality
     const saveBtns = document.querySelectorAll('.save-btn');
     saveBtns.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Comment Input Focus
+    // comment Input Focus
     const commentInputs = document.querySelectorAll('.comment-input');
     commentInputs.forEach(input => {
         input.addEventListener('focus', function() {
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Send Comment
+    // send Comment
     const sendBtns = document.querySelectorAll('.send-comment-btn');
     sendBtns.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -120,16 +120,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Image Click to Enlarge (Simple version)
+    // image Click to Enlarge (Simple version)
     const postImages = document.querySelectorAll('.post-image');
     postImages.forEach(img => {
         img.addEventListener('click', function() {
-            // Could implement lightbox here
+            // could implement lightbox here
             console.log('Image clicked:', this.src);
         });
     });
 
-    // Post Menu Button
+    // post Menu Button
     const menuBtns = document.querySelectorAll('.post-menu-btn');
     menuBtns.forEach(btn => {
         btn.addEventListener('click', function(e) {
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // View More Comments
+    // view More Comments
     const viewMoreBtns = document.querySelectorAll('.view-more-comments');
     viewMoreBtns.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Follow Button
+    // follow Button
     const followBtns = document.querySelectorAll('.follow-btn');
     followBtns.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -163,20 +163,20 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Toggle post menu
+// toggle post menu
 function toggleMenu(postId) {
     const menu = document.getElementById('menu-' + postId);
-    // Close all other menus
+    // close all other menus
     document.querySelectorAll('.post-menu-dropdown').forEach(m => {
         if (m.id !== 'menu-' + postId) {
             m.style.display = 'none';
         }
     });
-    // Toggle current menu
+    // toggle current menu
     menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
 }
 
-// Close menus when clicking outside
+// close menus when clicking outside
 document.addEventListener('click', function(event) {
     if (!event.target.closest('.post-menu')) {
         document.querySelectorAll('.post-menu-dropdown').forEach(m => {

@@ -1,7 +1,7 @@
-// Accommodation Detail Page JavaScript
+// accommodation Detail Page JavaScript
 console.log('=== Accommodation Detail JS Loaded ===');
 
-// Get base URL
+// get base URL
 function getBaseUrl() {
     const path = window.location.pathname;
     if (path.includes('/TravelMate')) {
@@ -10,17 +10,17 @@ function getBaseUrl() {
     return '';
 }
 
-// Get accommodation ID from URL
+// get accommodation ID from URL
 function getAccommodationId() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('id');
 }
 
-// Global accommodation data
+// global accommodation data
 let accommodationData = null;
 let currentImageIndex = 0;
 
-// Initialize page on load
+// initialize page on load
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Page loaded, initializing...');
     const accommodationId = getAccommodationId();
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (!accommodationId) {
         console.warn('No accommodation ID found in URL');
-        // Load first available accommodation as fallback for testing
+        // load first available accommodation as fallback for testing
         loadAccommodationData(null);
         initializeDatePickers();
         return;
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeDatePickers();
 });
 
-// Load accommodation data from API
+// load accommodation data from API
 async function loadAccommodationData(accommodationId) {
     try {
         console.log('Fetching accommodation data...');
@@ -57,7 +57,7 @@ async function loadAccommodationData(accommodationId) {
             return;
         }
         
-        // Find the specific accommodation or use first one if no ID
+        // find the specific accommodation or use first one if no ID
         let accommodation;
         if (accommodationId) {
             accommodation = result.data.find(acc => acc.id == accommodationId);
@@ -78,7 +78,7 @@ async function loadAccommodationData(accommodationId) {
         
         console.log('Processing accommodation:', accommodation);
         
-        // Store accommodation data globally
+        // store accommodation data globally
         accommodationData = {
             id: accommodation.id,
             name: accommodation.title,
@@ -88,15 +88,15 @@ async function loadAccommodationData(accommodationId) {
             ratingCount: parseInt(accommodation.rating_count || 0, 10) || 0,
             description: accommodation.description || 'No description available',
             images: (() => {
-                // Use images array from API if available
+                // use images array from API if available
                 if (accommodation.images && Array.isArray(accommodation.images) && accommodation.images.length > 0) {
                     return accommodation.images.map(img => getBaseUrl() + '/' + img.image_path);
                 }
-                // Fallback to main_image if no gallery images
+                // fallback to main_image if no gallery images
                 else if (accommodation.main_image) {
                     return [getBaseUrl() + '/' + accommodation.main_image];
                 }
-                // Default fallback
+                // default fallback
                 else {
                     return ['assets/images/default-accommodation.png'];
                 }
@@ -110,7 +110,7 @@ async function loadAccommodationData(accommodationId) {
         console.log('Accommodation data prepared:', accommodationData);
         console.log('Images loaded:', accommodationData.images.length, 'images');
         
-        // Load the data into the page
+        // load the data into the page
         populateAccommodationDetails();
         populateThumbnails();
         updateMainImage();
@@ -125,7 +125,7 @@ async function loadAccommodationData(accommodationId) {
     }
 }
 
-// Populate accommodation details into the page
+// populate accommodation details into the page
 function populateAccommodationDetails() {
     if (!accommodationData) {
         console.error('No accommodation data available');
@@ -134,7 +134,7 @@ function populateAccommodationDetails() {
     
     console.log('Populating page with accommodation details...');
     
-    // Set basic details
+    // set basic details
     document.getElementById('hotelTitle').textContent = accommodationData.name;
     document.getElementById('hotelLocation').textContent = accommodationData.location;
     document.getElementById('hotelDescription').textContent = accommodationData.description;
@@ -142,13 +142,13 @@ function populateAccommodationDetails() {
     
     console.log('Basic details updated');
     
-    // Set property type badge
+    // set property type badge
     const badgesContainer = document.getElementById('hotelBadges');
     badgesContainer.innerHTML = `<span class="badge">${formatPropertyType(accommodationData.propertyType)}</span>`;
     
     console.log('Badge updated');
     
-    // Load amenities based on accommodation data
+    // load amenities based on accommodation data
     const amenitiesGrid = document.getElementById('amenitiesGrid');
     amenitiesGrid.innerHTML = `
         <div class="amenity-item">
@@ -179,13 +179,13 @@ function populateAccommodationDetails() {
     
     console.log('Amenities updated');
     
-    // Load room types (simplified - using property rooms as room types)
+    // load room types (simplified - using property rooms as room types)
     const roomsGrid = document.getElementById('roomsGrid');
     const roomSelect = document.getElementById('roomType');
     roomsGrid.innerHTML = '';
     roomSelect.innerHTML = '<option value="">Select Room Type</option>';
     
-    // Create a standard room option based on the accommodation
+    // create a standard room option based on the accommodation
     const roomCard = document.createElement('div');
     roomCard.className = 'room-type';
     roomCard.innerHTML = `
@@ -202,7 +202,7 @@ function populateAccommodationDetails() {
     `;
     roomsGrid.appendChild(roomCard);
     
-    // Add option to select dropdown
+    // add option to select dropdown
     const option = document.createElement('option');
     option.value = 'standard';
     option.textContent = `Standard Room - Rs.${accommodationData.basePrice.toLocaleString()}/night`;
@@ -212,20 +212,20 @@ function populateAccommodationDetails() {
     
     console.log('Room types updated');
     
-    // Update adults dropdown based on max guests
+    // update adults dropdown based on max guests
     updateGuestsDropdown();
     
     console.log('Guests dropdown updated');
     console.log('Population complete!');
 }
 
-// Format property type
+// format property type
 function formatPropertyType(type) {
     if (!type) return 'Property';
     return type.charAt(0).toUpperCase() + type.slice(1).replace(/_/g, ' ');
 }
 
-// Load room availability data
+// load room availability data
 async function loadRoomAvailability() {
     if (!accommodationData || !accommodationData.id) {
         console.error('No accommodation data available for room availability');
@@ -237,12 +237,12 @@ async function loadRoomAvailability() {
         const result = await response.json();
 
         if (result.success && result.data) {
-            // Update room counts
+            // update room counts
             document.getElementById('totalRooms').textContent = result.data.total_rooms;
             document.getElementById('availableRooms').textContent = result.data.available_rooms;
             document.getElementById('unavailableRooms').textContent = result.data.unavailable_rooms;
 
-            // Update availability message
+            // update availability message
             const messageDiv = document.getElementById('availabilityMessage');
             const availableRooms = result.data.available_rooms;
             
@@ -260,7 +260,7 @@ async function loadRoomAvailability() {
                 messageDiv.style.display = 'flex';
             }
 
-            // Populate number of rooms dropdown based on available rooms
+            // populate number of rooms dropdown based on available rooms
             updateNumberOfRoomsDropdown(availableRooms);
 
             console.log('Room availability loaded:', result.data);
@@ -272,15 +272,15 @@ async function loadRoomAvailability() {
     }
 }
 
-// Update number of rooms dropdown based on available rooms
+// update number of rooms dropdown based on available rooms
 function updateNumberOfRoomsDropdown(availableRooms) {
     const selectElement = document.getElementById('numberOfRooms');
     if (!selectElement) return;
 
-    // Clear existing options
+    // clear existing options
     selectElement.innerHTML = '';
 
-    // Add options based on available rooms
+    // add options based on available rooms
     if (availableRooms === 0) {
         const option = document.createElement('option');
         option.value = '0';
@@ -299,7 +299,7 @@ function updateNumberOfRoomsDropdown(availableRooms) {
     console.log(`Updated room dropdown with ${availableRooms} available rooms`);
 }
 
-// Update guests dropdown based on max capacity
+// update guests dropdown based on max capacity
 function updateGuestsDropdown() {
     if (!accommodationData) return;
     
@@ -314,13 +314,13 @@ function updateGuestsDropdown() {
     }
 }
 
-// Load hotel data into page (deprecated - now using populateAccommodationDetails)
+// load hotel data into page (deprecated - now using populateAccommodationDetails)
 function loadHotelData() {
-    // This function is no longer used - data is loaded via API
+    // this function is no longer used - data is loaded via API
     console.log('Using dynamic data loading');
 }
 
-// Load reviews (placeholder - can be extended later)
+// load reviews (placeholder - can be extended later)
 function loadReviews() {
     const reviewsList = document.getElementById('reviewsList');
     reviewsList.innerHTML = '<p style="text-align: center; color: #666;">No reviews yet. Be the first to review!</p>';
@@ -405,7 +405,7 @@ function populateReviewSummary() {
     }
 }
 
-// Initialize date pickers with minimum date as today
+// initialize date pickers with minimum date as today
 function initializeDatePickers() {
     const today = new Date();
     const tomorrow = new Date(today);
@@ -414,14 +414,14 @@ function initializeDatePickers() {
     const checkinDate = document.getElementById('checkinDate');
     const checkoutDate = document.getElementById('checkoutDate');
     
-    // Set minimum dates
+    // set minimum dates
     checkinDate.min = today.toISOString().split('T')[0];
     checkinDate.value = today.toISOString().split('T')[0];
     
     checkoutDate.min = tomorrow.toISOString().split('T')[0];
     checkoutDate.value = tomorrow.toISOString().split('T')[0];
     
-    // Update checkout min when checkin changes
+    // update checkout min when checkin changes
     checkinDate.addEventListener('change', function() {
         const checkinValue = new Date(this.value);
         const minCheckout = new Date(checkinValue);
@@ -434,7 +434,7 @@ function initializeDatePickers() {
     });
 }
 
-// Gallery functions
+// gallery functions
 function populateThumbnails() {
     if (!accommodationData) return;
     
@@ -462,11 +462,11 @@ function updateMainImage() {
         this.src = 'assets/images/default-accommodation.png';
     };
     
-    // Update counter
+    // update counter
     document.getElementById('imageCounter').textContent = 
         `${currentImageIndex + 1} / ${accommodationData.images.length}`;
     
-    // Update active thumbnail
+    // update active thumbnail
     document.querySelectorAll('.thumbnail').forEach((thumb, index) => {
         thumb.classList.toggle('active', index === currentImageIndex);
     });
@@ -484,7 +484,7 @@ function nextImage() {
     updateMainImage();
 }
 
-// Calculate price and show summary
+// calculate price and show summary
 function calculatePrice() {
     if (!accommodationData) {
         showValidationModal('Accommodation data not loaded');
@@ -498,7 +498,7 @@ function calculatePrice() {
     const roomType = document.getElementById('roomType');
     const numberOfRooms = document.getElementById('numberOfRooms').value;
     
-    // Validation
+    // validation
     if (!checkinDate || !checkoutDate || !roomType.value || !numberOfRooms) {
         showValidationModal('Please fill in all required fields: Check-in date, Check-out date, Room type, and Number of rooms');
         return;
@@ -518,32 +518,32 @@ function calculatePrice() {
     const roomName = selectedRoom.dataset.name || 'Standard Room';
     const rooms = parseInt(numberOfRooms);
     
-    // Calculate pricing
+    // calculate pricing
     const basePrice = roomPrice * nights * rooms;
     const taxRate = 0.15; // 15% tax and service charge
     const taxes = Math.round(basePrice * taxRate);
     const totalPrice = basePrice + taxes;
     
-    // Validate guest count
+    // validate guest count
     const totalGuests = parseInt(adults) + parseInt(children || 0);
     if (totalGuests > accommodationData.maxGuests) {
         showValidationModal(`This property can accommodate maximum ${accommodationData.maxGuests} guests`);
         return;
     }
     
-    // Update summary display
+    // update summary display
     document.getElementById('nightsCount').textContent = `${nights} night${nights > 1 ? 's' : ''}`;
     document.getElementById('roomsCount').textContent = `${rooms} room${rooms > 1 ? 's' : ''}`;
     document.getElementById('basePrice').textContent = `Rs.${basePrice.toLocaleString()}`;
     document.getElementById('taxesFees').textContent = `Rs.${taxes.toLocaleString()}`;
     document.getElementById('totalPrice').textContent = `Rs.${totalPrice.toLocaleString()}`;
     
-    // Show summary and confirm button
+    // show summary and confirm button
     document.getElementById('bookingSummary').style.display = 'block';
     document.querySelector('.book-now-btn').style.display = 'none';
     document.querySelector('.confirm-booking-btn').style.display = 'block';
     
-    // Store booking data for submission
+    // store booking data for submission
     const bookingData = {
         accommodationId: accommodationData.id,
         accommodationName: accommodationData.name,
@@ -564,13 +564,13 @@ function calculatePrice() {
         timestamp: new Date().toISOString()
     };
     
-    // Store in session storage
+    // store in session storage
     sessionStorage.setItem('pendingBooking', JSON.stringify(bookingData));
     
     console.log('Booking calculation complete:', bookingData);
 }
 
-// Show validation modal
+// show validation modal
 function showValidationModal(message) {
     const modal = document.getElementById('validationModal');
     const messageElement = document.getElementById('validationMessage');
@@ -585,7 +585,7 @@ function showValidationModal(message) {
     modal.classList.add('show');
 }
 
-// Confirm booking and proceed to booking flow
+// confirm booking and proceed to booking flow
 function confirmBooking() {
     const bookingData = JSON.parse(sessionStorage.getItem('pendingBooking'));
     
@@ -598,65 +598,65 @@ function confirmBooking() {
     console.log('Pending booking data from sessionStorage:', bookingData);
     console.log('AccommodationId:', bookingData.accommodationId);
     
-    // Prepare booking data for multi-step booking process
+    // prepare booking data for multi-step booking process
     const currentBooking = {
-        // Booking step tracker (2 = details, 3 = payment, 4 = final)
+        // booking step tracker (2 = details, 3 = payment, 4 = final)
         bookingStep: 2,
         
-        // Accommodation details
+        // accommodation details
         accommodationId: bookingData.accommodationId,
         accommodationName: bookingData.accommodationName || 'Accommodation',
         
-        // Room details
+        // room details
         roomId: bookingData.roomId,
         roomName: bookingData.roomName,
         roomPrice: bookingData.roomPrice,
         numberOfRooms: bookingData.numberOfRooms,
         
-        // Stay details
+        // stay details
         checkinDate: bookingData.checkinDate,
         checkoutDate: bookingData.checkoutDate,
         nights: bookingData.nights,
         adults: bookingData.adults,
         children: bookingData.children || 0,
         
-        // Pricing details
+        // pricing details
         basePrice: bookingData.basePrice,
         taxes: bookingData.taxes,
         totalPrice: bookingData.totalPrice,
         discount: 0,
         
-        // Status
+        // status
         bookingStatus: 'pending',
         paymentStatus: 'pending',
         
-        // Timestamps
+        // timestamps
         reservedAt: new Date().toISOString()
     };
     
     console.log('CurrentBooking object created:', currentBooking);
     console.log('AccommodationId in currentBooking:', currentBooking.accommodationId);
     
-    // Save to localStorage for the booking flow
+    // save to localStorage for the booking flow
     localStorage.setItem('currentBooking', JSON.stringify(currentBooking));
     console.log('Saved to localStorage');
     
-    // Clear session storage
+    // clear session storage
     sessionStorage.removeItem('pendingBooking');
     
-    // Redirect to booking details page
+    // redirect to booking details page
     console.log('Redirecting to booking_details...');
     window.location.href = 'booking_details';
 }
 
-// Show success modal
+// show success modal
 function showSuccessModal(message) {
     const modal = document.getElementById('validationModal');
     const messageElement = document.getElementById('validationMessage');
     const iconSvg = modal.querySelector('.validation-icon svg circle');
     const pathElement = modal.querySelector('.validation-icon svg path');
     
-    // Change colors to green for success
+    // change colors to green for success
     if (iconSvg) iconSvg.setAttribute('stroke', '#1abc5b');
     if (pathElement) pathElement.setAttribute('stroke', '#1abc5b');
     
@@ -664,7 +664,7 @@ function showSuccessModal(message) {
     modal.querySelector('h2').textContent = 'Success!';
     modal.classList.add('show');
     
-    // Reset colors after modal closes
+    // reset colors after modal closes
     setTimeout(() => {
         if (iconSvg) iconSvg.setAttribute('stroke', '#f59e0b');
         if (pathElement) pathElement.setAttribute('stroke', '#f59e0b');
@@ -672,7 +672,7 @@ function showSuccessModal(message) {
     }, 3000);
 }
 
-// Show map (placeholder function)
+// show map (placeholder function)
 function showMap() {
     const locationText = (accommodationData && accommodationData.location)
         ? String(accommodationData.location).trim()

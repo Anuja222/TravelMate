@@ -5,20 +5,20 @@ class Profile extends Controller {
     public function index($username = null) {
         global $pdo;
         
-        // Get the target user (username parameter is actually email)
+        // get the target user (username parameter is actually email)
         if ($username) {
-            // Find by email
+            // find by email
             $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
             $stmt->execute([$username]);
             $user = $stmt->fetch(PDO::FETCH_OBJ);
             
             if (!$user) {
-                // User not found, redirect to 404
+                // user not found, redirect to 404
                 $this->view('404');
                 return;
             }
         } else {
-            // No username provided, show current user's profile
+            // no username provided, show current user's profile
             if (!isset($_SESSION['user_id'])) {
                 header('Location: login');
                 exit;
@@ -34,18 +34,18 @@ class Profile extends Controller {
             }
         }
 
-        // Get user statistics
+        // get user statistics
         $stats = $this->getUserStats($user->id);
         
-        // Get user posts
+        // get user posts
         $stmt = $pdo->prepare("SELECT * FROM posts WHERE user_id = ? ORDER BY created_at DESC");
         $stmt->execute([$user->id]);
         $posts = $stmt->fetchAll(PDO::FETCH_OBJ);
         
-        // Get user preferences
+        // get user preferences
         $preferences = $this->getUserPreferences($user->id);
         
-        // Pass data to view
+        // pass data to view
         $data = [
             'user' => $user,
             'stats' => $stats,
@@ -58,7 +58,7 @@ class Profile extends Controller {
     
     private function getUserStats($userId) {
         try {
-            // Using the database connection from config
+            // using the database connection from config
             global $pdo;
             
             if (!isset($pdo)) {
@@ -70,18 +70,18 @@ class Profile extends Controller {
                 ];
             }
             
-            // Get posts count
+            // get posts count
             $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM posts WHERE user_id = ?");
             $stmt->execute([$userId]);
             $postsCount = $stmt->fetch(PDO::FETCH_OBJ)->count ?? 0;
             
-            // Get followers count (placeholder - implement when followers table exists)
+            // get followers count (placeholder - implement when followers table exists)
             $followersCount = 0;
             
-            // Get following count (placeholder - implement when followers table exists)
+            // get following count (placeholder - implement when followers table exists)
             $followingCount = 0;
             
-            // Get destinations count (placeholder - based on unique locations in posts)
+            // get destinations count (placeholder - based on unique locations in posts)
             $stmt = $pdo->prepare("SELECT COUNT(DISTINCT location) as count FROM posts WHERE user_id = ? AND location IS NOT NULL AND location != ''");
             $stmt->execute([$userId]);
             $destinationsCount = $stmt->fetch(PDO::FETCH_OBJ)->count ?? 0;
@@ -114,12 +114,12 @@ class Profile extends Controller {
                 ];
             }
             
-            // Get user environments
+            // get user environments
             $stmt = $pdo->prepare("SELECT environment_name FROM user_environments WHERE user_id = ?");
             $stmt->execute([$userId]);
             $environments = $stmt->fetchAll(PDO::FETCH_COLUMN);
             
-            // Get user activities
+            // get user activities
             $stmt = $pdo->prepare("SELECT activity_name FROM user_activities WHERE user_id = ?");
             $stmt->execute([$userId]);
             $activities = $stmt->fetchAll(PDO::FETCH_COLUMN);

@@ -10,9 +10,9 @@
 </head>
 <body>
 
-  <!-- MAIN CONTENT -->
+  <!-- mAIN CONTENT -->
   <main>
-    <!-- SIDEBAR -->
+    <!-- sIDEBAR -->
 
     <div class="content">
       <div class="page-title">  
@@ -151,7 +151,7 @@
   </main>
 
   <script>
-    // Search functionality
+    // search functionality
     document.getElementById('bookingSearch').addEventListener('keyup', function() {
       const searchTerm = this.value.toLowerCase();
       const bookings = document.querySelectorAll('.booking-item');
@@ -166,55 +166,55 @@
       });
     });
     
-    // Filter functionality
+    // filter functionality
     document.getElementById('bookingFilter').addEventListener('change', function() {
       const filterValue = this.value;
       const bookings = document.querySelectorAll('.booking-item');
       
-      // In a real application, this would filter based on actual data
-      // For demo purposes, we're just showing all items
+      // in a real application, this would filter based on actual data
+      // for demo purposes, we're just showing all items
       bookings.forEach(booking => {
         booking.style.display = 'flex';
       });
       
-      // Show message based on selection
+      // show message based on selection
       if (filterValue !== 'all') {
         alert('Filtering by: ' + this.options[this.selectedIndex].text);
       }
     });
     
-    // Modal functionality
+    // modal functionality
     const modal = document.getElementById('ratingModal');
     const closeBtn = document.querySelector('.close-btn');
     const ratingStars = document.querySelectorAll('.rating-stars i');
     const ratingValue = document.getElementById('ratingValue');
     
-    // Function to open rating modal
+    // function to open rating modal
     function openRatingModal(bookingId, customer) {
       document.getElementById('bookingId').value = bookingId;
       document.getElementById('customerName').textContent = customer;
       modal.style.display = 'flex';
     }
     
-    // Close modal
+    // close modal
     closeBtn.addEventListener('click', function() {
       modal.style.display = 'none';
     });
     
-    // Close modal if clicked outside
+    // close modal if clicked outside
     window.addEventListener('click', function(event) {
       if (event.target === modal) {
         modal.style.display = 'none';
       }
     });
     
-    // Star rating functionality
+    // star rating functionality
     ratingStars.forEach(star => {
       star.addEventListener('click', function() {
         const value = this.getAttribute('data-value');
         ratingValue.value = value;
         
-        // Update star display
+        // update star display
         ratingStars.forEach(s => {
           if (s.getAttribute('data-value') <= value) {
             s.classList.add('active');
@@ -225,26 +225,26 @@
       });
     });
     
-    // Form submission
+    // form submission
     document.getElementById('ratingForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
-      // Validate rating
+      // validate rating
       if (!ratingValue.value) {
         alert('Please select a rating');
         return;
       }
       
-      // In a real application, this would submit to the server
+      // in a real application, this would submit to the server
       alert('Rating submitted for booking #' + document.getElementById('bookingId').value);
       modal.style.display = 'none';
       
-      // Reset form
+      // reset form
       this.reset();
       ratingStars.forEach(star => star.classList.remove('active'));
     });
     
-    // Responsive adjustments
+    // responsive adjustments
     function handleResize() {
       const bookings = document.querySelectorAll('.booking-item');
       
@@ -261,7 +261,7 @@
       }
     }
     
-    // Initial call and event listener
+    // initial call and event listener
     handleResize();
     window.addEventListener('resize', handleResize);
   </script>

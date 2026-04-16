@@ -46,7 +46,7 @@
                 </div>
             </div>
             <div class="ride-map-box">
-                <!-- Google Map iframe or map placeholder -->
+                <!-- google Map iframe or map placeholder -->
                 <div class="map-placeholder">Map</div>
             </div>
         </div>

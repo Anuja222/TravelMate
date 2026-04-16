@@ -84,7 +84,7 @@
     </div>
   </div>
 
-  <!-- Success Modal -->
+  <!-- success Modal -->
   <div id="successModal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
       <div class="modal-icon-success">
@@ -99,7 +99,7 @@
   </div>
 
   <script>
-    // Success Modal Functions
+    // success Modal Functions
     function showSuccessModal(message) {
       document.getElementById('successMessage').textContent = message;
       document.getElementById('successModal').style.display = 'flex';
@@ -110,13 +110,13 @@
       window.location.href = 'ViewActivities';
     }
 
-    // File input handler
+    // file input handler
     document.getElementById('image').addEventListener('change', function() {
       const fileName = this.files[0] ? this.files[0].name : 'No file chosen';
       document.getElementById('image-name').textContent = fileName;
     });
 
-    // Form submission
+    // form submission
     document.getElementById('createActivityForm').addEventListener('submit', function(e){
       e.preventDefault();
       const fd = new FormData(this);

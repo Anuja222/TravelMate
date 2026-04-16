@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
 </head>
 <body>
-    <!-- Header -->
+    <!-- header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-    <!-- Hero Section -->
+    <!-- hero Section -->
     <section class="hero-section">
         <div class="hero-background"></div>
         <div class="hero-overlay">
@@ -22,7 +22,7 @@
         </div>
     </section>
 
-    <!-- Surfing Spots Section -->
+    <!-- surfing Spots Section -->
     <section class="beaches-section">
         <div class="container">
             <div class="section-header">
@@ -98,7 +98,7 @@
         </div>
     </section>
 
-    <!-- Modals for each surf spot -->
+    <!-- modals for each surf spot -->
     <div id="hikkaduwa-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -250,7 +250,7 @@
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
     <script>
-        // Modal functionality
+        // modal functionality
         function openModal(spotName) {
             const modal = document.getElementById(spotName + '-modal');
             modal.classList.add('active');
@@ -263,7 +263,7 @@
             document.body.style.overflow = 'auto';
         }
 
-        // Close modal when clicking outside
+        // close modal when clicking outside
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.classList.remove('active');
@@ -271,12 +271,12 @@
             }
         }
 
-        // Back button functionality
+        // back button functionality
         function goBack() {
             window.history.back();
         }
 
-        // Add scroll animations
+        // add scroll animations
         function addScrollAnimations() {
             const cards = document.querySelectorAll('.beach-card');
             
@@ -295,11 +295,11 @@
             });
         }
 
-        // Initialize when DOM is loaded
+        // initialize when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
             addScrollAnimations();
             
-            // Add keyboard navigation for modals
+            // add keyboard navigation for modals
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
                     const activeModal = document.querySelector('.modal.active');
@@ -311,7 +311,7 @@
             });
         });
 
-        // Add hover effects for cards
+        // add hover effects for cards
         document.querySelectorAll('.beach-card').forEach(card => {
             card.addEventListener('mouseenter', function() {
                 this.style.transform = 'translateY(-10px)';

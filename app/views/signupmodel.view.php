@@ -86,36 +86,36 @@
         function selectUserType(type) {
             selectedUserType = type;
 
-            // Store the selected role in localStorage
+            // store the selected role in localStorage
             localStorage.setItem('selectedUserRole', type);
 
-            // Remove selected class from all cards
+            // remove selected class from all cards
             document.querySelectorAll('.user-type-card').forEach(card => {
                 card.classList.remove('selected');
             });
 
-            // Add selected class to clicked card
+            // add selected class to clicked card
             document.querySelector(`[data-type="${type}"]`).classList.add('selected');
 
-            // Show the form after a brief delay for visual feedback
+            // show the form after a brief delay for visual feedback
             setTimeout(() => {
-                // Verify role is stored before redirect
+                // verify role is stored before redirect
                 const storedRole = localStorage.getItem('selectedUserRole');
-                console.log('Stored role before redirect:', storedRole); // Add this for debugging
+                console.log('Stored role before redirect:', storedRole); // add this for debugging
                 window.location.href = 'signup';
             }, 300);
         }
 
         function showSignupForm(type) {
-            // Hide user type selection
+            // hide user type selection
             document.getElementById('userTypeSelection').style.display = 'none';
 
-            // Hide all forms
+            // hide all forms
             document.querySelectorAll('.signup-form-container').forEach(form => {
                 form.classList.remove('active');
             });
 
-            // Show the appropriate form
+            // show the appropriate form
             const formId = type === 'traveller' ? 'travellerForm' :
                 type === 'accommodation' ? 'accommodationForm' :
                     'transportForm';
@@ -124,49 +124,49 @@
         }
 
         function goBack() {
-            // Hide all forms
+            // hide all forms
             document.querySelectorAll('.signup-form-container').forEach(form => {
                 form.classList.remove('active');
             });
 
-            // Show user type selection
+            // show user type selection
             document.getElementById('userTypeSelection').style.display = 'block';
 
-            // Clear form selection
+            // clear form selection
             selectedUserType = null;
             document.querySelectorAll('.user-type-card').forEach(card => {
                 card.classList.remove('selected');
             });
         }
 
-        // Handle form submissions
+        // handle form submissions
         document.querySelectorAll('form').forEach(form => {
             form.addEventListener('submit', function (e) {
                 e.preventDefault();
 
-                // Basic validation
+                // basic validation
                 const passwords = this.querySelectorAll('input[type="password"]');
                 if (passwords.length === 2 && passwords[0].value !== passwords[1].value) {
                     alert('Passwords do not match!');
                     return;
                 }
 
-                // Here you would typically send the form data to your server
+                // here you would typically send the form data to your server
                 alert(`Account creation for ${selectedUserType} submitted successfully!`);
 
-                // Reset form (in real implementation, redirect to login or dashboard)
+                // reset form (in real implementation, redirect to login or dashboard)
                 this.reset();
                 goBack();
             });
         });
 
         document.addEventListener('DOMContentLoaded', function () {
-            // Check if role exists in localStorage
+            // check if role exists in localStorage
             const storedRole = localStorage.getItem('selectedUserRole');
             console.log('Stored role on page load:', storedRole);
 
             if (storedRole) {
-                // If role exists, highlight the corresponding card
+                // if role exists, highlight the corresponding card
                 const card = document.querySelector(`[data-type="${storedRole}"]`);
                 if (card) {
                     card.classList.add('selected');
@@ -174,7 +174,7 @@
             }
         });
 
-        // Add smooth scroll behavior
+        // add smooth scroll behavior
         document.documentElement.style.scrollBehavior = 'smooth';
     </script>
 </body>

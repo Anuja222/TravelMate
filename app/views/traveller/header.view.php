@@ -142,13 +142,13 @@ if ($role === 'traveller') {
         </ul>
 
         <?php if (!$isLoggedIn): ?>
-            <!-- Show when user is NOT logged in -->
+            <!-- show when user is NOT logged in -->
             <div class="nav-actions">
                 <a href="signupmodel" class="btn signup">Sign Up</a>
                 <a href="login" class="btn login">Login</a>
             </div>
         <?php else: ?>
-            <!-- Show when user IS logged in -->
+            <!-- show when user IS logged in -->
             <div class="nav-actions">
                 <div class="notification-container">
                     <div class="notification-icon">
@@ -295,12 +295,12 @@ if ($role === 'traveller') {
                 userDropdown.classList.toggle('active');
             });
 
-            // Close dropdown when clicking outside
+            // close dropdown when clicking outside
             document.addEventListener('click', function () {
                 userDropdown.classList.remove('active');
             });
 
-            // Prevent dropdown from closing when clicking inside it
+            // prevent dropdown from closing when clicking inside it
             userDropdown.addEventListener('click', function (e) {
                 e.stopPropagation();
             });

@@ -18,13 +18,13 @@ function previewPhoto(input) {
         }
 
         function saveProfile(event) {
-            // Prevent default form submission
+            // prevent default form submission
             if (event) event.preventDefault();
             
-            // Collect form data
+            // collect form data
             const formData = new FormData(document.getElementById('profileForm'));
             
-            // Add additional fields from other sections
+            // add additional fields from other sections
             formData.append('country', document.getElementById('country').value);
             formData.append('city', document.getElementById('city').value);
             formData.append('timezone', document.getElementById('timezone').value);
@@ -32,18 +32,18 @@ function previewPhoto(input) {
             formData.append('budget', document.getElementById('budget').value);
             formData.append('interests', document.getElementById('interests').value);
             
-            // Add profile photo if uploaded
+            // add profile photo if uploaded
             const photoInput = document.getElementById('photoInput');
             if(photoInput.files && photoInput.files.length > 0) {
                 formData.append('profilePhoto', photoInput.files[0]);
             }
             
-            // Add flag to handle remove photo
+            // add flag to handle remove photo
             if (document.getElementById('profilePhoto').src.includes('assets/images/profile.jpg')) {
                 formData.append('removePhoto', 'true');
             }
             
-            // Show loading state
+            // show loading state
             const saveBtn = document.querySelector('.save-btn');
             const originalText = saveBtn.textContent;
             saveBtn.textContent = 'Saving...';
@@ -51,8 +51,8 @@ function previewPhoto(input) {
             
             console.log('Sending profile update...');
             
-            // Send data to server
-            // Determine the base path so fetch works from any URL nesting
+            // send data to server
+            // determine the base path so fetch works from any URL nesting
             const basePath = window.location.pathname.split('/').slice(0, window.location.pathname.split('/').indexOf('public') + 1).join('/');
             
             fetch(basePath + '/profile_setting/update', {
@@ -63,12 +63,12 @@ function previewPhoto(input) {
                 console.log('Response status:', response.status);
                 console.log('Response ok:', response.ok);
                 
-                // First check if response is OK
+                // first check if response is OK
                 if (!response.ok) {
                     throw new Error('Network response was not ok: ' + response.status);
                 }
                 
-                // Try to parse as JSON
+                // try to parse as JSON
                 return response.text().then(text => {
                     console.log('Response text:', text);
                     try {
@@ -84,7 +84,7 @@ function previewPhoto(input) {
                 console.log('Parsed data:', data);
                 if (data.success) {
                     showSuccessModal();
-                    // Optionally redirect after a delay
+                    // optionally redirect after a delay
                     setTimeout(() => {
                         window.location.href = 'dashboard';
                     }, 2000);
@@ -104,19 +104,19 @@ function previewPhoto(input) {
 
         function cancelChanges() {
             if (confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
-                // Reset form to original values or redirect
+                // reset form to original values or redirect
                 window.location.reload();
             }
         }
 
-        // Show success modal
+        // show success modal
         function showSuccessModal() {
             const modal = document.getElementById('successModal');
             modal.style.display = 'flex';
             setTimeout(() => modal.classList.add('show'), 10);
         }
 
-        // Close success modal
+        // close success modal
         function closeSuccessModal() {
             const modal = document.getElementById('successModal');
             modal.classList.remove('show');
@@ -126,17 +126,17 @@ function previewPhoto(input) {
             }, 300);
         }
 
-        // Auto-save functionality
+        // auto-save functionality
         let saveTimeout;
         function autoSave() {
             clearTimeout(saveTimeout);
             saveTimeout = setTimeout(() => {
                 console.log('Auto-saving profile...');
-                // Implement auto-save logic here
+                // implement auto-save logic here
             }, 2000);
         }
 
-        // Add auto-save listeners to form inputs
+        // add auto-save listeners to form inputs
         document.addEventListener('DOMContentLoaded', function() {
             const inputs = document.querySelectorAll('input, textarea, select');
             inputs.forEach(input => {

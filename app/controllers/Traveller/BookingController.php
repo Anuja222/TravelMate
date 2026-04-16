@@ -20,12 +20,12 @@ class BookingController
         }
     }
 
-    // Create a new booking
+    // create a new booking
     public function createBooking()
     {
         global $pdo;
         
-        // Check authentication first
+        // check authentication first
         if (!isset($_SESSION['user']['id'])) {
             $this->sendResponse(false, ['auth' => 'Please login to complete booking']);
             return;
@@ -33,10 +33,10 @@ class BookingController
         
         $data = json_decode(file_get_contents('php://input'), true);
         
-        // Log the received data for debugging
+        // log the received data for debugging
         error_log('Booking data received: ' . json_encode($data));
 
-        // Validate required fields
+        // validate required fields
         $errors = $this->validator->validateRequiredFields($data, [
             'bookingId',
             'accommodationId',
@@ -59,7 +59,7 @@ class BookingController
             return;
         }
 
-        // Business logic validations
+        // business logic validations
         if ($data['adults'] < 1)
             $errors['adults'] = 'At least one adult is required';
         if ($data['nights'] < 1)
@@ -79,7 +79,7 @@ class BookingController
 
         $booking = new Booking();
         $result = $booking->createBooking($pdo, [
-            'user_id' => $_SESSION['user']['id'], // Get from session, not from request
+            'user_id' => $_SESSION['user']['id'], // get from session, not from request
             'booking_id' => $data['bookingId'],
             'accommodation_id' => $data['accommodationId'],
             'room_id' => $data['roomId'],
@@ -106,7 +106,7 @@ class BookingController
         }
     }
 
-    // Get all bookings for logged-in user
+    // get all bookings for logged-in user
     public function getUserBookings()
     {
         global $pdo;
@@ -126,7 +126,7 @@ class BookingController
         ]);
     }
 
-    // Get single booking
+    // get single booking
     public function getBooking($bookingId)
     {
         global $pdo;
@@ -146,12 +146,12 @@ class BookingController
         }
     }
 
-    // Update booking
+    // update booking
     public function updateBooking()
     {
         global $pdo;
 
-        // Ensure JSON response even on errors
+        // ensure JSON response even on errors
         header('Content-Type: application/json');
 
         try {
@@ -167,7 +167,7 @@ class BookingController
                 return;
             }
 
-            // Validate required fields
+            // validate required fields
             $errors = [];
 
             if (empty($data['checkinDate'])) {
@@ -186,7 +186,7 @@ class BookingController
                 $errors['nights'] = 'Number of nights must be at least 1';
             }
 
-            // Validate dates
+            // validate dates
             if (!empty($data['checkinDate']) && !empty($data['checkoutDate'])) {
                 $checkin = strtotime($data['checkinDate']);
                 $checkout = strtotime($data['checkoutDate']);
@@ -201,7 +201,7 @@ class BookingController
                 return;
             }
 
-            // Prepare update data
+            // prepare update data
             $updateData = [
                 'checkin_date' => $data['checkinDate'],
                 'checkout_date' => $data['checkoutDate'],
@@ -211,7 +211,7 @@ class BookingController
                 'booking_status' => $data['bookingStatus'] ?? 'confirmed'
             ];
 
-            // Include pricing if provided (to prevent zeroing out)
+            // include pricing if provided (to prevent zeroing out)
             if (isset($data['roomPrice'])) {
                 $updateData['room_price'] = $data['roomPrice'];
             }
@@ -240,7 +240,7 @@ class BookingController
         }
     }
 
-    // Update booking status
+    // update booking status
     public function updateBookingStatus()
     {
         global $pdo;
@@ -266,58 +266,58 @@ class BookingController
         }
     }
 
-    // Cancel booking
+    // cancel booking
     public function cancelBooking()
     {
         global $pdo;
         
         try {
-            // Check session first
+            // check session first
             if (!isset($_SESSION['user']['id'])) {
                 $this->sendResponse(false, ['auth' => 'Please login to cancel booking']);
                 return;
             }
             
-            // Get raw input
+            // get raw input
             $rawInput = file_get_contents('php://input');
             
-            // Validate raw input
+            // validate raw input
             if (empty($rawInput)) {
                 $this->sendResponse(false, ['general' => 'No data received']);
                 return;
             }
             
-            // Decode JSON
+            // decode JSON
             $data = json_decode($rawInput, true);
             
-            // Check if JSON decode was successful
+            // check if JSON decode was successful
             if (json_last_error() !== JSON_ERROR_NONE) {
                 $this->sendResponse(false, ['general' => 'Invalid JSON: ' . json_last_error_msg()]);
                 return;
             }
             
-            // Check if data is array
+            // check if data is array
             if (!is_array($data)) {
                 $this->sendResponse(false, ['general' => 'Invalid request format']);
                 return;
             }
             
-            // Check if bookingId exists and is not empty
+            // check if bookingId exists and is not empty
             if (!isset($data['bookingId']) || empty(trim($data['bookingId']))) {
                 $this->sendResponse(false, ['general' => 'Booking ID is required']);
                 return;
             }
             
-            // Get and validate booking ID
+            // get and validate booking ID
             $bookingId = trim($data['bookingId']);
             
-            // Check if booking ID is the string "null" or "undefined"
+            // check if booking ID is the string "null" or "undefined"
             if ($bookingId === 'null' || $bookingId === 'undefined') {
                 $this->sendResponse(false, ['general' => 'Invalid booking ID']);
                 return;
             }
             
-            // Try to cancel the booking
+            // try to cancel the booking
             $booking = new Booking();
             $result = $booking->cancelBooking($pdo, $bookingId, $_SESSION['user']['id']);
             
@@ -332,7 +332,7 @@ class BookingController
         }
     }
 
-    // Delete booking
+    // delete booking
     public function deleteBooking()
     {
         global $pdo;
@@ -358,7 +358,7 @@ class BookingController
         }
     }
 
-    // Get bookings by filter
+    // get bookings by filter
     public function getFilteredBookings()
     {
         global $pdo;
@@ -398,7 +398,7 @@ class BookingController
         $this->sendResponse(true, [], ['bookings' => $bookings]);
     }
 
-    // Search bookings
+    // search bookings
     public function searchBookings()
     {
         global $pdo;

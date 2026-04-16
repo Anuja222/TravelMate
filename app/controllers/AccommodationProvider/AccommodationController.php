@@ -42,7 +42,7 @@ class AccommodationController {
 
         $userId = $_SESSION['user']['id'];
         
-        // Get accommodation details from POST data
+        // get accommodation details from POST data
         $propertyType = $_POST['property_type'] ?? '';
         $title = $_POST['title'] ?? '';
         $description = $_POST['description'] ?? '';
@@ -59,7 +59,7 @@ class AccommodationController {
         $checkOutTime = $_POST['check_out_time'] ?? '';
         $status = 'pending';
 
-        // Validate required fields
+        // validate required fields
         if (empty($propertyType) || empty($title) || empty($description)) {
             $this->sendResponse(false, ['Missing required fields']);
         }
@@ -86,10 +86,10 @@ class AccommodationController {
         try {
             $pdo->beginTransaction();
             
-            // Create accommodation record
+            // create accommodation record
             $accommodationId = $accommodation->create($pdo);
             
-            // Handle image uploads
+            // handle image uploads
             if (isset($_FILES['images']) && !empty($_FILES['images']['name'][0])) {
                 $images = $_FILES['images'];
                 $totalFiles = count($images['name']);
@@ -101,7 +101,7 @@ class AccommodationController {
                         $filePath = $this->saveFile($tmpName, $originalName);
                         
                         if ($filePath) {
-                            // Set first image as main image
+                            // set first image as main image
                             Accommodation::addImage($pdo, $accommodationId, $filePath, $i === 0);
                         }
                     }
@@ -118,9 +118,9 @@ class AccommodationController {
         }
     }
 
-    // Temporary upload endpoint used by client-side uploaders (returns JSON)
+    // temporary upload endpoint used by client-side uploaders (returns JSON)
     public function uploadTemp() {
-        // Accept POST file uploads and return JSON with saved paths
+        // accept POST file uploads and return JSON with saved paths
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->sendResponse(false, ['Invalid request method']);
         }
@@ -185,7 +185,7 @@ class AccommodationController {
         try {
             $accommodations = Accommodation::findByUser($pdo, $_SESSION['user']['id']);
             
-            // Get main image for each accommodation
+            // get main image for each accommodation
             foreach ($accommodations as &$accommodation) {
                 $accommodation['main_image'] = Accommodation::getMainImage($pdo, $accommodation['id']);
             }
@@ -207,7 +207,7 @@ class AccommodationController {
                 ? Accommodation::findAllForAdmin($pdo)
                 : Accommodation::findAll($pdo);
             
-            // Get main image and all images for each accommodation
+            // get main image and all images for each accommodation
             foreach ($accommodations as &$accommodation) {
                 $accommodation['main_image'] = Accommodation::getMainImage($pdo, $accommodation['id']);
                 $accommodation['images'] = Accommodation::getImages($pdo, $accommodation['id']);
@@ -235,7 +235,7 @@ class AccommodationController {
                 $this->sendResponse(false, ['Accommodation not found']);
             }
             
-            // Get all images for the accommodation
+            // get all images for the accommodation
             $accommodation['images'] = Accommodation::getImages($pdo, $id);
             
             $this->sendResponse(true, [], $accommodation);
@@ -280,7 +280,7 @@ class AccommodationController {
                 'bathrooms' => $_POST['bathrooms'] ?? $existing['bathrooms'],
                 'maxGuests' => $_POST['max_guests'] ?? $existing['max_guests'],
                 'childrenAllowed' => isset($_POST['children_allowed']) ? intval($_POST['children_allowed']) : $existing['children_allowed'],
-                // Accept explicit 0/1 values for checkboxes (form should send 0 when unchecked)
+                // accept explicit 0/1 values for checkboxes (form should send 0 when unchecked)
                 'smoking' => isset($_POST['smoking']) ? intval($_POST['smoking']) : $existing['smoking'],
                 'parties' => isset($_POST['parties']) ? intval($_POST['parties']) : $existing['parties'],
                 'pets' => $_POST['pets'] ?? $existing['pets'],
@@ -319,7 +319,7 @@ class AccommodationController {
                     }
                 }
 
-                // Allow deletion of existing images (delete_images[])
+                // allow deletion of existing images (delete_images[])
                 if (!empty($_POST['delete_images'])) {
                     $delIds = is_array($_POST['delete_images']) ? $_POST['delete_images'] : explode(',', $_POST['delete_images']);
                     foreach ($delIds as $imgId) {
@@ -341,7 +341,7 @@ class AccommodationController {
                     }
                 }
 
-                // Handle new image uploads (can mark first new uploaded as main via make_new_main)
+                // handle new image uploads (can mark first new uploaded as main via make_new_main)
                 $makeNewMain = isset($_POST['make_new_main']) && ($_POST['make_new_main'] === '1' || $_POST['make_new_main'] === 'on');
                 if (isset($_FILES['images']) && !empty($_FILES['images']['name'][0])) {
                     $images = $_FILES['images'];
@@ -361,7 +361,7 @@ class AccommodationController {
                     }
                 }
 
-                // Set existing image as main if requested (main_image_id)
+                // set existing image as main if requested (main_image_id)
                 if (!empty($_POST['main_image_id'])) {
                     $mainId = intval($_POST['main_image_id']);
                     if ($mainId > 0) {
@@ -464,7 +464,7 @@ class AccommodationController {
         }
         
         try {
-            // Get total rooms from accommodation
+            // get total rooms from accommodation
             $stmt = $pdo->prepare("SELECT rooms FROM accommodations WHERE id = ?");
             $stmt->execute([$id]);
             $accommodation = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -476,7 +476,7 @@ class AccommodationController {
             
             $totalRooms = (int)$accommodation['rooms'];
             
-            // Get booked rooms (only active/confirmed bookings that haven't been completed or cancelled)
+            // get booked rooms (only active/confirmed bookings that haven't been completed or cancelled)
             $stmt = $pdo->prepare("
                 SELECT COALESCE(SUM(number_of_rooms), 0) as booked_rooms 
                 FROM bookings 
@@ -593,13 +593,13 @@ class AccommodationController {
             $delAmenitiesStmt = $pdo->prepare("DELETE FROM accommodation_amenities WHERE accommodation_id = ?");
             $delAmenitiesStmt->execute([$id]);
 
-            // Disable foreign key checks to prevent constraint violations
+            // disable foreign key checks to prevent constraint violations
             $pdo->exec("SET FOREIGN_KEY_CHECKS=0");
 
             $delAccommodationStmt = $pdo->prepare("DELETE FROM accommodations WHERE id = ?");
             $result = $delAccommodationStmt->execute([$id]);
 
-            // Re-enable foreign key checks
+            // re-enable foreign key checks
             $pdo->exec("SET FOREIGN_KEY_CHECKS=1");
 
             if (!$result || $delAccommodationStmt->rowCount() === 0) {
@@ -628,7 +628,7 @@ class AccommodationController {
         }
     }
 
-    // Get all bookings for provider's accommodations
+    // get all bookings for provider's accommodations
     public function getProviderBookings() {
         global $pdo;
         if (session_status() === PHP_SESSION_NONE) {
@@ -648,7 +648,7 @@ class AccommodationController {
             $userId = $_SESSION['user']['id'];
             error_log("Fetching bookings for user_id: " . $userId);
             
-            // Get all bookings for this provider's accommodations with accommodation and user details
+            // get all bookings for this provider's accommodations with accommodation and user details
             $sql = "SELECT 
                         b.*,
                         a.title as accommodation_name,

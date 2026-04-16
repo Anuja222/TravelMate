@@ -14,7 +14,7 @@ class Accomodation_provider extends Controller {
             session_start();
         }
         
-        // Check if user is authenticated
+        // check if user is authenticated
         if (!isset($_SESSION['user'])) {
             header('Location: /TravelMate/public/index.php?url=Login');
             exit;
@@ -26,26 +26,26 @@ class Accomodation_provider extends Controller {
         }
     }
 
-    // Dashboard
+    // dashboard
     public function newerDashboard() {
         $this->view('accommodation/newerDashboard');
     }
 
-    // Property Listing - Selection View
+    // property Listing - Selection View
     public function propertyListingStart() {
         $this->view('accommodation/propertyListingStart');
     }
     
-    // Property Listing - Step 1 View
+    // property Listing - Step 1 View
     public function propertyListingStep1() {
-        // Save property type if coming from selection page
+        // save property type if coming from selection page
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['property_type'])) {
             $_SESSION['listing_step1'] = [
                 'property_type' => $_POST['property_type'] ?? ''
             ];
         }
         
-        // If no session data exists and not POST, initialize empty session
+        // if no session data exists and not POST, initialize empty session
         if (!isset($_SESSION['listing_step1']) && $_SERVER['REQUEST_METHOD'] !== 'POST') {
             $_SESSION['listing_step1'] = [
                 'property_type' => '',
@@ -56,13 +56,13 @@ class Accomodation_provider extends Controller {
             ];
         }
         
-        // Show step 1 form
+        // show step 1 form
         $this->view('accommodation/propertyListingStep1');
     }
 
-    // Property Listing - Step 2 View
+    // property Listing - Step 2 View
     public function propertyListingStep2() {
-        // Save step 1 data to session if POST request
+        // save step 1 data to session if POST request
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['listing_step1'] = [
                 'property_type' => $_POST['property_type'] ?? '',
@@ -73,11 +73,11 @@ class Accomodation_provider extends Controller {
             ];
         }
         
-        // Show step 2 form
+        // show step 2 form
         $this->view('accommodation/propertyListingStep2');
     }
     
-    // Save Property - Handle form submission from step 2
+    // save Property - Handle form submission from step 2
     public function saveProperty() {
         global $pdo;
 
@@ -91,51 +91,51 @@ class Accomodation_provider extends Controller {
 
         $userId = $_SESSION['user']['id'];
         
-        // Get data from both steps
+        // get data from both steps
         $step1Data = $_SESSION['listing_step1'] ?? [];
         
-        // Step 1 data
+        // step 1 data
         $propertyType = $step1Data['property_type'] ?? '';
         $title = $step1Data['title'] ?? '';
         $location = $step1Data['location'] ?? '';
         $address = $step1Data['address'] ?? '';
         $description = $step1Data['description'] ?? '';
         
-        // Step 2 data - Room details
+        // step 2 data - Room details
         $rooms = $_POST['rooms'] ?? 1;
         $bathrooms = $_POST['bathrooms'] ?? 1;
         $maxGuests = $_POST['max_guests'] ?? 2;
         $childrenAllowed = ($_POST['children_allowed'] ?? '1') === '1' ? 1 : 0;
         
-        // Check-in/out times
+        // check-in/out times
         $checkInStart = $_POST['check_in_start'] ?? '';
         $checkInEnd = $_POST['check_in_end'] ?? '';
         $checkOutTime = $_POST['check_out_time'] ?? '';
         
-        // House rules
+        // house rules
         $smoking = isset($_POST['smoking']) ? 1 : 0;
         $parties = isset($_POST['parties']) ? 1 : 0;
         $pets = $_POST['pets'] ?? 'no';
         
-        // Contact info
+        // contact info
         $contactName = $_POST['contact_name'] ?? '';
         $contactPhone = $_POST['contact_phone'] ?? '';
         $contactEmail = $_POST['contact_email'] ?? '';
         
-        // Services
+        // services
         $breakfast = $_POST['breakfast'] ?? 'no';
         $parking = $_POST['parking'] ?? 'no';
         
-        // Pricing
+        // pricing
         $pricePerNight = $_POST['price_per_night'] ?? 0;
         $pricePerGuest = $_POST['price_per_guest'] ?? 0;
         
-        // Amenities - collect all selected amenities
+        // amenities - collect all selected amenities
         $amenities = isset($_POST['amenities']) && is_array($_POST['amenities']) 
             ? json_encode($_POST['amenities']) 
             : json_encode([]);
 
-        // Validate required fields
+        // validate required fields
         if (empty($propertyType) || empty($title) || empty($location) || empty($description) || empty($pricePerNight)) {
             $this->sendResponse(false, ['Missing required fields']);
         }
@@ -143,7 +143,7 @@ class Accomodation_provider extends Controller {
         try {
             $pdo->beginTransaction();
             
-            // Insert accommodation record
+            // insert accommodation record
             $sql = "INSERT INTO accommodations (
                 user_id, property_type, title, description, location, address,
                 rooms, bathrooms, max_guests, children_allowed,
@@ -183,7 +183,7 @@ class Accomodation_provider extends Controller {
             error_log("Checking for image uploads...");
             error_log("FILES array: " . print_r($_FILES, true));
             
-            // Handle image uploads
+            // handle image uploads
             if (isset($_FILES['images']) && !empty($_FILES['images']['name'][0])) {
                 error_log("Images found in FILES array");
                 $images = $_FILES['images'];
@@ -199,7 +199,7 @@ class Accomodation_provider extends Controller {
                         $filePath = $this->saveFile($tmpName, $originalName);
                         
                         if ($filePath) {
-                            // Set first image as main image
+                            // set first image as main image
                             $isMain = ($i === 0) ? 1 : 0;
                             error_log("Saving image to DB: $filePath (is_main: $isMain)");
                             $imgSql = "INSERT INTO accommodation_images (accommodation_id, image_path, is_main) VALUES (?, ?, ?)";
@@ -217,7 +217,7 @@ class Accomodation_provider extends Controller {
                 error_log("No images found in request");
             }
             
-            // Save individual amenities to accommodation_amenities table
+            // save individual amenities to accommodation_amenities table
             if (isset($_POST['amenities']) && is_array($_POST['amenities'])) {
                 foreach ($_POST['amenities'] as $amenity) {
                     $amenitySql = "INSERT INTO accommodation_amenities (accommodation_id, amenity_name) VALUES (?, ?)";
@@ -228,7 +228,7 @@ class Accomodation_provider extends Controller {
             
             $pdo->commit();
             
-            // Clear session data
+            // clear session data
             unset($_SESSION['listing_step1']);
             
             $this->sendResponse(true, [], ['id' => $accommodationId, 'message' => 'Property listed successfully!']);
@@ -240,7 +240,7 @@ class Accomodation_provider extends Controller {
         }
     }
 
-    // Legacy property listing pages (keep for backward compatibility)
+    // legacy property listing pages (keep for backward compatibility)
     public function accommodationFeatures() {
         $this->view('accommodation/accommodationFeatures');
     }
@@ -273,7 +273,7 @@ class Accomodation_provider extends Controller {
         $this->view('accommodation/success');
     }
 
-    // Property management pages
+    // property management pages
     public function viewProperty() {
         $this->view('accommodation/viewProperty');
     }
@@ -330,7 +330,7 @@ class Accomodation_provider extends Controller {
         $this->view('accommodation/setting');
     }
 
-    // API endpoint for creating property (called from step 2)
+    // aPI endpoint for creating property (called from step 2)
     public function createProperty() {
         global $pdo;
 
@@ -340,41 +340,41 @@ class Accomodation_provider extends Controller {
 
         $userId = $_SESSION['user']['id'];
         
-        // Get data from both steps
+        // get data from both steps
         $step1Data = $_SESSION['listing_step1'] ?? [];
         
-        // Merge step 1 and step 2 data
+        // merge step 1 and step 2 data
         $propertyType = $step1Data['property_type'] ?? $_POST['property_type'] ?? '';
         $title = $step1Data['title'] ?? $_POST['title'] ?? '';
         $location = $step1Data['location'] ?? $_POST['location'] ?? '';
         $address = $step1Data['address'] ?? '';
         $description = $step1Data['description'] ?? $_POST['description'] ?? '';
         
-        // Step 2 data
+        // step 2 data
         $rooms = $_POST['rooms'] ?? 1;
         $bathrooms = $_POST['bathrooms'] ?? 1;
         $maxGuests = $_POST['max_guests'] ?? 2;
         $childrenAllowed = ($_POST['children_allowed'] ?? 'yes') === 'yes' ? 1 : 0;
         
-        // Pricing
+        // pricing
         $pricePerNight = $_POST['price_per_night'] ?? 0;
         $pricePerGuest = $_POST['price_per_guest'] ?? 0;
         
-        // House rules
+        // house rules
         $smoking = isset($_POST['smoking']) ? 1 : 0;
         $parties = isset($_POST['parties']) ? 1 : 0;
         $pets = $_POST['pets'] ?? 'no';
         
-        // Times
+        // times
         $checkInStart = $_POST['check_in_start'] ?? '';
         $checkInEnd = $_POST['check_in_end'] ?? '';
         $checkOutTime = $_POST['check_out_time'] ?? '';
         
-        // Services
+        // services
         $breakfast = $_POST['breakfast'] ?? 'no';
         $parking = $_POST['parking'] ?? 'no';
 
-        // Validate required fields
+        // validate required fields
         if (empty($propertyType) || empty($title) || empty($location) || empty($description)) {
             $this->sendResponse(false, ['Missing required fields']);
         }
@@ -401,10 +401,10 @@ class Accomodation_provider extends Controller {
         try {
             $pdo->beginTransaction();
             
-            // Create accommodation record
+            // create accommodation record
             $accommodationId = $accommodation->create($pdo);
             
-            // Handle image uploads
+            // handle image uploads
             if (isset($_FILES['images']) && !empty($_FILES['images']['name'][0])) {
                 $images = $_FILES['images'];
                 $totalFiles = count($images['name']);
@@ -416,14 +416,14 @@ class Accomodation_provider extends Controller {
                         $filePath = $this->saveFile($tmpName, $originalName);
                         
                         if ($filePath) {
-                            // Set first image as main image
+                            // set first image as main image
                             Accommodation::addImage($pdo, $accommodationId, $filePath, $i === 0);
                         }
                     }
                 }
             }
             
-            // Save amenities/features as JSON
+            // save amenities/features as JSON
             $features = [];
             foreach ($_POST as $key => $value) {
                 if (strpos($key, 'feature_') === 0 && $value == '1') {
@@ -432,13 +432,13 @@ class Accomodation_provider extends Controller {
             }
             
             if (!empty($features)) {
-                // Store features in a separate table or as JSON field
-                // For now, we'll assume there's a features column or you can store in metadata
+                // store features in a separate table or as JSON field
+                // for now, we'll assume there's a features column or you can store in metadata
             }
             
             $pdo->commit();
             
-            // Clear session data
+            // clear session data
             unset($_SESSION['listing_step1']);
             
             $this->sendResponse(true, [], ['id' => $accommodationId]);

@@ -2,7 +2,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-// Convert the PHP objects/arrays to a format JS can easily use
+// convert the PHP objects/arrays to a format JS can easily use
 $placesJson = isset($places) ? json_encode($places) : '[]';
 ?>
 <!DOCTYPE html>
@@ -19,7 +19,7 @@ $placesJson = isset($places) ? json_encode($places) : '[]';
   
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
   
-  <!-- Hero Section -->
+  <!-- hero Section -->
   <section class="hero-section">
     <div class="hero-background" style="background-image: url('<?php 
       $imagePath = is_object($destination) ? ($destination->image ?? 'assets/images/default-dest.png') : 'assets/images/default-dest.png';
@@ -37,7 +37,7 @@ $placesJson = isset($places) ? json_encode($places) : '[]';
     </div>
   </section>
 
-  <!-- Places/Locations Section -->
+  <!-- places/Locations Section -->
   <section class="beaches-section">
     <div class="container">
       <div class="section-header">
@@ -58,7 +58,7 @@ $placesJson = isset($places) ? json_encode($places) : '[]';
                 ?>
                 <img src="<?php echo htmlspecialchars($placeImage); ?>" alt="<?php echo htmlspecialchars($place->title ?? ''); ?>">
                 <div class="card-overlay">
-                  <!-- The onclick calls our new openModal function passing the ID -->
+                  <!-- the onclick calls our new openModal function passing the ID -->
                   <button class="explore-btn" onclick="openPlaceModal(<?php echo $place->id; ?>)">Explore</button>
                 </div>
               </div>
@@ -82,7 +82,7 @@ $placesJson = isset($places) ? json_encode($places) : '[]';
     </div>
   </section>
 
-  <!-- Related Posts Section -->
+  <!-- related Posts Section -->
   <?php if (isset($relatedPosts) && count($relatedPosts) > 0): ?>
   <section class="beaches-section related-posts-section">
     <div class="container">
@@ -122,7 +122,7 @@ $placesJson = isset($places) ? json_encode($places) : '[]';
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-  <!-- THE MODAL HTML -->
+  <!-- tHE MODAL HTML -->
   <div id="placeModal" class="place-modal" onclick="closePlaceModal(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
       <div class="close-btn" onclick="closePlaceModal(event)">&times;</div>
@@ -161,16 +161,16 @@ $placesJson = isset($places) ? json_encode($places) : '[]';
     </div>
   </div>
 
-  <!-- Load FontAwesome for icons -->
+  <!-- load FontAwesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <script>
-    // Make PHP data available to JS
+    // make PHP data available to JS
     const placesData = <?php echo $placesJson; ?>;
     const modal = document.getElementById('placeModal');
 
     function openPlaceModal(placeId) {
-      // Find the specific place object
+      // find the specific place object
       const place = placesData.find(p => p.id == placeId);
       
       if (!place) {
@@ -178,18 +178,18 @@ $placesJson = isset($places) ? json_encode($places) : '[]';
           return;
       }
 
-      // Populate Image - Handle leading slash
+      // populate Image - Handle leading slash
       let imgPath = place.image || 'assets/images/default-place.png';
       if (imgPath.startsWith('/')) {
           imgPath = imgPath.substring(1);
       }
       document.getElementById('modalImage').src = imgPath;
 
-      // Populate Title & Description
+      // populate Title & Description
       document.getElementById('modalTitle').textContent = place.title || 'Unknown Place';
       document.getElementById('modalDescription').textContent = place.description || 'No description available for this place.';
 
-      // Extra Details
+      // extra Details
       const locWrap = document.getElementById('modalLocationWrap');
       if (place.location && place.location.trim() !== '') {
           document.getElementById('modalLocation').textContent = place.location;
@@ -210,7 +210,7 @@ $placesJson = isset($places) ? json_encode($places) : '[]';
           btWrap.classList.add('hidden-wrap');
       }
 
-      // Format Date
+      // format Date
       let dateText = '';
       if(place.created_at) {
           const d = new Date(place.created_at);
@@ -218,7 +218,7 @@ $placesJson = isset($places) ? json_encode($places) : '[]';
       }
       document.getElementById('modalDate').textContent = dateText;
 
-      // Show modal
+      // show modal
       modal.classList.add('show');
       document.body.classList.add('no-scroll'); // prevent background scrolling
     }

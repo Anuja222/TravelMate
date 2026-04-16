@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Delete confirmation handler
+  // delete confirmation handler
   const confirmDeleteBtn = document.getElementById('btnConfirmDelete');
   if (confirmDeleteBtn) {
     confirmDeleteBtn.addEventListener('click', function() {

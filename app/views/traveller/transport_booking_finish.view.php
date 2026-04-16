@@ -1,10 +1,10 @@
 <?php
-// Start session if not already started
+// start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is logged in
+// check if user is logged in
 $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
 if (!$isLoggedIn) {
     header('Location: /TravelMate/public/login');
@@ -148,7 +148,7 @@ if (!$bookingId) {
         </div>
     </div>
 
-    <!-- Booking Confirmation Modal -->
+    <!-- booking Confirmation Modal -->
     <div id="confirmationModal" class="confirmation-modal">
         <div class="confirmation-modal-content">
             <div class="confirmation-icon">

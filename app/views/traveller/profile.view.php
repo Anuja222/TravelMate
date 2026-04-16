@@ -10,15 +10,15 @@
 <body>
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-  <!-- Profile Container -->
+  <!-- profile Container -->
   <div class="profile-wrapper">
-    <!-- Cover Photo -->
+    <!-- cover Photo -->
     <div class="cover">
       <img src="assets/images/cover.jpg" alt="Travel Cover" class="cover-img">
       <span class="cover-text">TRAVEL <span class="cover-sub">more</span></span>
     </div>
     
-    <!-- Profile Section -->
+    <!-- profile Section -->
     <div class="profile-section">
       <img src="assets/images/profile.jpg" alt="User" class="profile-pic">
       <div>
@@ -27,7 +27,7 @@
       </div>
     </div>
 
-    <!-- My Posts Section -->
+    <!-- my Posts Section -->
     <div class="my-posts-section">
       <div class="posts-header">
         <h2>Shared Posts (<?php echo isset($posts) && is_array($posts) ? count($posts) : 0; ?> posts)</h2>
@@ -36,9 +36,9 @@
         <?php endif; ?>
       </div>
 
-      <!-- Profile Content -->
+      <!-- profile Content -->
       <div class="profile-content">
-        <!-- Left Sidebar -->
+        <!-- left Sidebar -->
         <aside class="profile-sidebar">
         <div class="sidebar-card">
           <h3>About</h3>
@@ -76,12 +76,12 @@
                 <p class="label">Phone</p>
                 <p class="value"><?php 
                   $phone = $user->phone ?? '';
-                  // Format phone numbers for better readability
+                  // format phone numbers for better readability
                   if (!empty($phone) && strlen($phone) == 10) {
-                    // Format as: XXX XXX XXXX
+                    // format as: XXX XXX XXXX
                     echo htmlspecialchars(substr($phone, 0, 3) . ' ' . substr($phone, 3, 3) . ' ' . substr($phone, 6, 4));
                   } elseif (!empty($phone) && strlen($phone) == 9) {
-                    // Format as: XX XXX XXXX
+                    // format as: XX XXX XXXX
                     echo htmlspecialchars(substr($phone, 0, 2) . ' ' . substr($phone, 2, 3) . ' ' . substr($phone, 5, 4));
                   } else {
                     echo htmlspecialchars($phone);
@@ -151,9 +151,9 @@
         </div>
       </aside>
 
-      <!-- Main Content Area -->
+      <!-- main Content Area -->
       <div class="profile-main">
-        <!-- Navigation Tabs -->
+        <!-- navigation Tabs -->
         <div class="profile-tabs">
           <button class="tab-btn active" data-tab="posts">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -174,7 +174,7 @@
           </button>
         </div>
 
-        <!-- Tab Content -->
+        <!-- tab Content -->
         <div class="tab-content active" id="posts-tab">
           <?php if (isset($posts) && count($posts) > 0): ?>
             <div class="posts-grid">

@@ -12,7 +12,7 @@
       .vote-btn.downvote.active { color: #e74c3c !important; }
       .vote-btn.downvote.active svg { stroke: #e74c3c !important; }
       
-      /* Active category style */
+      /* active category style */
       .category-list li.active-category a {
           color: #1abc5b;
           font-weight: 600;
@@ -28,16 +28,16 @@
 <body>
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-  <!-- Output Base URL for JS safely -->
+  <!-- output Base URL for JS safely -->
   <script>
      window.AppConfig = {
          baseUrl: '<?php echo defined("ROOT") ? ROOT : "http://localhost/TravelMate/public"; ?>'
      };
   </script>
 
-  <!-- Main Feed Container -->
+  <!-- main Feed Container -->
   <div class="feed-wrapper">
-    <!-- Left Sidebar - Navigation -->
+    <!-- left Sidebar - Navigation -->
     <aside class="feed-sidebar left-sidebar">
       <div class="sidebar-section">
         <h3>Quick Access</h3>
@@ -63,9 +63,9 @@
       </div>
     </aside>
 
-    <!-- Main Feed Content -->
+    <!-- main Feed Content -->
     <main class="feed-main">
-      <!-- Create Post Section -->
+      <!-- create Post Section -->
       <div class="create-post-card">
         <div class="create-post-header">
           <?php 
@@ -93,7 +93,7 @@
         </div>
       </div>
 
-      <!-- Feed Posts -->
+      <!-- feed Posts -->
       <div class="feed-posts">
         <?php if (isset($posts) && is_array($posts) && count($posts) > 0): ?>
           <?php foreach ($posts as $post): ?>
@@ -171,7 +171,7 @@
       </div>
     </main>
 
-    <!-- Right Sidebar - Suggestions -->
+    <!-- right Sidebar - Suggestions -->
     <aside class="feed-sidebar right-sidebar">
       <div class="sidebar-section">
         <h3>Trending Destinations</h3>
@@ -181,7 +181,7 @@
               <a href="destinationview?id=<?php echo $destination->id; ?>" class="trending-item">
                 <?php 
                   $imagePath = $destination->image ?? 'assets/images/contact.jpg';
-                  // Remove leading slash if present to make path relative
+                  // remove leading slash if present to make path relative
                   if (substr($imagePath, 0, 1) === '/') {
                     $imagePath = substr($imagePath, 1);
                   }

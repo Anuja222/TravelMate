@@ -42,13 +42,13 @@ class Booking {
         }
     }
 
-    // Create booking
+    // create booking
     public function createBooking($conn, $data) {
-        // Check if accommodation_id column exists, if not, skip it
+        // check if accommodation_id column exists, if not, skip it
         $accommodationIdField = isset($data['accommodation_id']) ? ', accommodation_id' : '';
         $accommodationIdValue = isset($data['accommodation_id']) ? ', ?' : '';
         
-        // Check if number_of_rooms is provided
+        // check if number_of_rooms is provided
         $numberOfRoomsField = isset($data['number_of_rooms']) ? ', number_of_rooms' : '';
         $numberOfRoomsValue = isset($data['number_of_rooms']) ? ', ?' : '';
         
@@ -95,7 +95,7 @@ class Booking {
         return $stmt->execute($params);
     }
 
-    // Get all bookings by user
+    // get all bookings by user
     public function getBookingsByUserId($conn, $userId) {
         $hasRatingsTable = false;
 
@@ -154,7 +154,7 @@ class Booking {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Get single booking
+    // get single booking
     public function getBookingById($conn, $bookingId, $userId) {
         $sql = "SELECT * FROM bookings WHERE booking_id = ? AND user_id = ? LIMIT 1";
         $stmt = $conn->prepare($sql);
@@ -162,7 +162,7 @@ class Booking {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Update booking status
+    // update booking status
     public function updateBookingStatus($conn, $bookingId, $status, $userId) {
         $sql = "UPDATE bookings 
                 SET booking_status = ?, updated_at = NOW() 
@@ -171,7 +171,7 @@ class Booking {
         return $stmt->execute([$status, $bookingId, $userId]);
     }
 
-    // Update booking details
+    // update booking details
     public function updateBooking($conn, $bookingId, $userId, $data) {
         $sql = "UPDATE bookings 
                 SET checkin_date = ?, checkout_date = ?, adults = ?, children = ?, 
@@ -194,7 +194,7 @@ class Booking {
         ]);
     }
 
-    // Cancel booking
+    // cancel booking
     public function cancelBooking($conn, $bookingId, $userId) {
         $sql = "UPDATE bookings 
                 SET booking_status = 'cancelled', updated_at = NOW() 
@@ -203,14 +203,14 @@ class Booking {
         return $stmt->execute([$bookingId, $userId]);
     }
 
-    // Delete booking
+    // delete booking
     public function deleteBooking($conn, $bookingId, $userId) {
         $sql = "DELETE FROM bookings WHERE booking_id = ? AND user_id = ?";
         $stmt = $conn->prepare($sql);
         return $stmt->execute([$bookingId, $userId]);
     }
 
-    // Get bookings by status
+    // get bookings by status
     public function getBookingsByStatus($conn, $userId, $status) {
         $sql = "SELECT * FROM bookings 
                 WHERE user_id = ? AND booking_status = ? 
@@ -220,7 +220,7 @@ class Booking {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Get upcoming bookings
+    // get upcoming bookings
     public function getUpcomingBookings($conn, $userId) {
         $sql = "SELECT * FROM bookings 
                 WHERE user_id = ? 
@@ -232,7 +232,7 @@ class Booking {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Get past bookings
+    // get past bookings
     public function getPastBookings($conn, $userId) {
         $sql = "SELECT * FROM bookings 
                 WHERE user_id = ? 
@@ -243,7 +243,7 @@ class Booking {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Get current bookings (active)
+    // get current bookings (active)
     public function getCurrentBookings($conn, $userId) {
         $sql = "SELECT * FROM bookings 
                 WHERE user_id = ? 
@@ -256,7 +256,7 @@ class Booking {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Get booking statistics
+    // get booking statistics
     public function getBookingStats($conn, $userId) {
         $sql = "SELECT 
                     COUNT(*) as total_bookings,
@@ -272,7 +272,7 @@ class Booking {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Search bookings
+    // search bookings
     public function searchBookings($conn, $userId, $searchTerm) {
         $sql = "SELECT * FROM bookings 
                 WHERE user_id = ? 

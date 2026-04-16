@@ -1,4 +1,4 @@
-// Transport Booking Finish Handler
+// transport Booking Finish Handler
 initializeFinishPage();
 
 function initializeFinishPage() {
@@ -20,7 +20,7 @@ function setupFinishPage() {
     
     completeBookingBtn.addEventListener('click', async function() {
         try {
-            // Disable button
+            // disable button
             completeBookingBtn.disabled = true;
             completeBookingBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Payment...';
 
@@ -44,7 +44,7 @@ function setupFinishPage() {
             console.log('Booking result:', result);
             
             if (result.success) {
-                // Show confirmation modal
+                // show confirmation modal
                 document.getElementById('modalBookingId').textContent = bookingId;
                 const modal = document.getElementById('confirmationModal');
                 modal.classList.add('show');

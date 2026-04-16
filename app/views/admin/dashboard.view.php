@@ -1,5 +1,5 @@
 ﻿<?php
-// Initialize database connection for dynamic counts
+// initialize database connection for dynamic counts
 require_once __DIR__ . '/../../core/config.php';
 require_once __DIR__ . '/../../core/Database.php';
 
@@ -10,7 +10,7 @@ if (!class_exists('AdminDashboardDB')) {
 }
 $db = new AdminDashboardDB();
 
-// Dynamic Data Fetching
+// dynamic Data Fetching
 
 // 1. Users
 $usersData = $db->getRow("SELECT COUNT(*) as count FROM users");
@@ -88,7 +88,7 @@ $pendingVlogsCount = $pendingVlogsData ? $pendingVlogsData->count : 0;
       </div>
     </div>
 
-    <!-- USERS SUMMARY -->
+    <!-- uSERS SUMMARY -->
     <div class="dashboard-section">
       <h2 class="section-title"><i class="fas fa-users"></i> Users Summary</h2>
       <div class="dashboard-grid">
@@ -123,7 +123,7 @@ $pendingVlogsCount = $pendingVlogsData ? $pendingVlogsData->count : 0;
       </div>
     </div>
 
-    <!-- LISTINGS & BOOKINGS SUMMARY -->
+    <!-- lISTINGS & BOOKINGS SUMMARY -->
     <div class="dashboard-section">
       <h2 class="section-title"><i class="fas fa-list-alt"></i> Listings & Bookings</h2>
       <div class="dashboard-grid">
@@ -158,7 +158,7 @@ $pendingVlogsCount = $pendingVlogsData ? $pendingVlogsData->count : 0;
       </div>
     </div>
 
-    <!-- CONTENT SUMMARY -->
+    <!-- cONTENT SUMMARY -->
     <div class="dashboard-section">
       <h2 class="section-title"><i class="fas fa-globe-americas"></i> Content & Media</h2>
       <div class="dashboard-grid">

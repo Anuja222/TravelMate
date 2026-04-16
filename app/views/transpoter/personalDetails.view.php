@@ -255,12 +255,12 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      // Form elements
+      // form elements
       const form = document.getElementById('personal-docs-form');
       const continueBtn = document.querySelector('.continue-btn');
       const saveBtn = document.querySelector('.save-btn');
 
-      // File input change handlers
+      // file input change handlers
       document.querySelectorAll('input[type="file"]').forEach(input => {
         input.addEventListener('change', function (e) {
           const file = this.files[0];
@@ -269,7 +269,7 @@
           const errorElement = document.getElementById(this.id + '-error');
 
           if (file) {
-            // Validate file size (max 5MB)
+            // validate file size (max 5MB)
             if (file.size > 5 * 1024 * 1024) {
               if (errorElement) errorElement.textContent = 'File size must be less than 5MB';
               this.value = '';
@@ -282,7 +282,7 @@
               return;
             }
 
-            // Validate file type
+            // validate file type
             const validTypes = ['image/jpeg', 'image/png'];
             if (!validTypes.includes(file.type)) {
               if (errorElement) errorElement.textContent = 'Only JPG and PNG files are allowed';
@@ -296,10 +296,10 @@
               return;
             }
 
-            // Clear any previous error
+            // clear any previous error
             if (errorElement) errorElement.textContent = '';
 
-            // Update UI
+            // update UI
             let fileName = file.name;
             if (fileName.length > 25) {
               fileName = fileName.substring(0, 22) + '...';
@@ -312,13 +312,13 @@
               if (uploadIcon) uploadIcon.innerHTML = '<i class="fas fa-check-circle" style="color: #1abc5b;"></i>';
             }
 
-            // Preview image if needed
+            // preview image if needed
             previewImage(file, box);
           }
         });
       });
 
-      // Drag and drop functionality
+      // drag and drop functionality
       document.querySelectorAll('.upload-box').forEach(box => {
         box.addEventListener('dragover', function (e) {
           e.preventDefault();
@@ -343,12 +343,12 @@
             const input = document.getElementById(inputId);
 
             if (input) {
-              // Create a new FileList object simulation
+              // create a new FileList object simulation
               const dataTransfer = new DataTransfer();
               dataTransfer.items.add(files[0]);
               input.files = dataTransfer.files;
 
-              // Trigger change event
+              // trigger change event
               const event = new Event('change');
               input.dispatchEvent(event);
             }
@@ -356,14 +356,14 @@
         });
       });
 
-      // Input validation
+      // input validation
       document.querySelectorAll('input[type="text"], input[type="number"], select').forEach(input => {
         input.addEventListener('blur', function () {
           validateField(this);
         });
 
         input.addEventListener('input', function () {
-          // Clear error when user starts typing
+          // clear error when user starts typing
           const errorElement = document.getElementById(this.id + '-error');
           if (errorElement) {
             errorElement.textContent = '';
@@ -372,14 +372,14 @@
         });
       });
 
-      // Form submission
+      // form submission
       if (form) {
         form.addEventListener('submit', function (e) {
           e.preventDefault();
 
           let isValid = true;
 
-          // Validate all text/number/select required fields
+          // validate all text/number/select required fields
           const requiredFields = this.querySelectorAll('input[type="text"][required], input[type="number"][required], select[required]');
           requiredFields.forEach(field => {
             if (!validateField(field)) {
@@ -387,7 +387,7 @@
             }
           });
 
-          // Validate file inputs
+          // validate file inputs
           const fileChecks = [
             { id: 'license-front', errId: 'license-front-error', label: 'License (front)' },
             { id: 'license-rear', errId: 'license-rear-error', label: 'License (rear)' },
@@ -411,25 +411,25 @@
           });
 
           if (isValid) {
-            // Show loading state
+            // show loading state
             if (continueBtn) {
               continueBtn.innerHTML = 'Processing... <i class="fas fa-spinner fa-spin"></i>';
               continueBtn.disabled = true;
             }
 
-            // Store form data in sessionStorage
+            // store form data in sessionStorage
             const formData = new FormData(form);
             sessionStorage.setItem('working_district', formData.get('working_district') || '');
             sessionStorage.setItem('license_number', formData.get('license_number') || '');
             sessionStorage.setItem('nic_number', formData.get('nic_number') || '');
             sessionStorage.setItem('owner_nic_number', formData.get('owner_nic_number') || '');
 
-            // Navigate to vehicle document page
+            // navigate to vehicle document page
             setTimeout(() => {
               window.location.href = 'vehicleDocument';
             }, 500);
           } else {
-            // Scroll to first error
+            // scroll to first error
             const firstError = document.querySelector('.error-message:not(:empty)');
             if (firstError) {
               firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -438,14 +438,14 @@
         });
       }
 
-      // Save draft functionality
+      // save draft functionality
       if (saveBtn) {
         saveBtn.addEventListener('click', function () {
-          // Save form data to local storage
+          // save form data to local storage
           const formData = new FormData(form);
           const formObject = {};
 
-          // Only store non-file fields
+          // only store non-file fields
           for (let [key, value] of formData.entries()) {
             if (value instanceof File) continue;
             formObject[key] = value;
@@ -453,7 +453,7 @@
 
           localStorage.setItem('personalDetailsDraft', JSON.stringify(formObject));
 
-          // Show confirmation
+          // show confirmation
           const originalText = saveBtn.innerHTML;
           saveBtn.innerHTML = '<i class="fas fa-check"></i> Saved';
           saveBtn.style.background = '#1abc5b';
@@ -465,7 +465,7 @@
         });
       }
 
-      // Load draft if exists
+      // load draft if exists
       const draft = localStorage.getItem('personalDetailsDraft');
       if (draft) {
         try {
@@ -481,7 +481,7 @@
         }
       }
 
-      // Helper functions
+      // helper functions
       function validateField(field) {
         if (!field) return true;
 
@@ -493,7 +493,7 @@
           return false;
         }
 
-        // Field-specific validations
+        // field-specific validations
         if (field.id === 'nic-number' && field.value && !validateNIC(field.value)) {
           if (errorElement) errorElement.textContent = 'Please enter a valid NIC number';
           field.style.borderColor = '#e74c3c';
@@ -518,26 +518,26 @@
       }
 
       function validateNIC(nic) {
-        // Basic NIC validation for Sri Lankan NICs
+        // basic NIC validation for Sri Lankan NICs
         const oldPattern = /^[0-9]{9}[vVxX]$/;
         const newPattern = /^[0-9]{12}$/;
         return oldPattern.test(nic) || newPattern.test(nic);
       }
 
       function validateLicenseNumber(license) {
-        // Basic license number validation
+        // basic license number validation
         return license.length >= 5;
       }
 
       function previewImage(file, box) {
         if (!box) return;
 
-        // Simple preview implementation
+        // simple preview implementation
         if (file.type.match('image.*')) {
           const reader = new FileReader();
 
           reader.onload = function (e) {
-            // Add or update preview image
+            // add or update preview image
             let previewImg = box.querySelector('.preview-img');
             if (!previewImg) {
               previewImg = document.createElement('img');
@@ -553,7 +553,7 @@
         }
       }
 
-      // Responsive adjustments
+      // responsive adjustments
       function handleResponsive() {
         if (window.innerWidth < 768) {
           document.querySelectorAll('.section-title').forEach(title => {
@@ -566,7 +566,7 @@
         }
       }
 
-      // Initial call and event listener for responsiveness
+      // initial call and event listener for responsiveness
       handleResponsive();
       window.addEventListener('resize', handleResponsive);
     });

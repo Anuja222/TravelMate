@@ -17,7 +17,7 @@
     <?php include 'sidebar.view.php'; ?>
 
     <div class="content">
-      <!-- Page Header -->
+      <!-- page Header -->
       <div class="page-title">
         <div class="page-title-content">
           <div class="page-icon">
@@ -33,7 +33,7 @@
         </div>
       </div>
 
-      <!-- Statistics Summary -->
+      <!-- statistics Summary -->
       <div class="stats-summary">
         <div class="stat-card">
           <div class="stat-icon" style="background: #1abc5b;">
@@ -73,7 +73,7 @@
         </div>
       </div>
 
-      <!-- Pending Accommodations Section -->
+      <!-- pending Accommodations Section -->
       <div class="section-block">
         <div class="section-title-row">
           <h2>Pending Accommodations</h2>
@@ -96,20 +96,20 @@
         </div>
       </div>
 
-      <!-- Accommodations Grid -->
+      <!-- accommodations Grid -->
       <div class="section-title-row" style="margin-top: 10px;">
         <h2>All Other Accommodations</h2>
         <p>Browse approved and inactive properties.</p>
       </div>
       <div id="accommodationsGrid" class="accommodations-grid">
-        <!-- Loading state -->
+        <!-- loading state -->
         <div class="loading-state">
           <i class="fas fa-spinner fa-spin"></i>
           <p>Loading accommodations...</p>
         </div>
       </div>
 
-      <!-- Empty State -->
+      <!-- empty State -->
       <div id="emptyState" class="empty-state" style="display: none;">
         <div class="empty-icon">
           <i class="fas fa-home"></i>
@@ -121,7 +121,7 @@
     </div>
   </div>
 
-  <!-- View Modal -->
+  <!-- view Modal -->
   <div id="viewModal" class="view-modal" style="display: none;">
     <div class="view-modal-content">
       <div class="view-modal-header">
@@ -132,17 +132,17 @@
       </div>
       
       <div class="view-modal-body">
-        <!-- Image Gallery -->
+        <!-- image Gallery -->
         <div class="modal-image-section">
           <div id="mainImage" class="main-image">
             <img src="" alt="Accommodation">
           </div>
           <div id="imageGallery" class="image-gallery">
-            <!-- Thumbnails will be inserted here -->
+            <!-- thumbnails will be inserted here -->
           </div>
         </div>
 
-        <!-- Details Grid -->
+        <!-- details Grid -->
         <div class="modal-details-grid">
           <div class="detail-section">
             <h3><i class="fas fa-info-circle"></i> Basic Information</h3>
@@ -261,7 +261,7 @@
     </div>
   </div>
 
-  <!-- Delete Confirmation Modal -->
+  <!-- delete Confirmation Modal -->
   <div id="deleteModal" class="modal" style="display: none;">
     <div class="modal-content">
       <div class="modal-header">
@@ -281,7 +281,7 @@
     </div>
   </div>
 
-  <!-- Success Modal -->
+  <!-- success Modal -->
   <div id="successModal" class="modal" style="display: none;">
     <div class="modal-content">
       <div class="modal-header">

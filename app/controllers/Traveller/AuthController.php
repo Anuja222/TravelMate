@@ -1,7 +1,7 @@
 <?php
 namespace App\Controllers;
 
-// Manually include dependencies
+// manually include dependencies
 require_once __DIR__ . '/../../models/User.php';
 require_once __DIR__ . '/../../Validation/Validator.php';
 require_once __DIR__ . '/../../../config/database.php';
@@ -16,19 +16,19 @@ class AuthController
     public function __construct()
     {
         $this->validator = new Validator();
-        // Start session if not already started
+        // start session if not already started
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
     }
 
-    // Register user
+    // register user
     public function registerUser()
     {
         global $pdo;
         $data = $_POST;
 
-        // Validate required fields
+        // validate required fields
         $errors = $this->validator->validateRequiredFields($data, [
             'firstName',
             'lastName',
@@ -44,36 +44,36 @@ class AuthController
             return;
         }
 
-        // Email format
+        // email format
         if (!$this->validator->validateEmail($data['email'])) {
             $this->sendResponse(false, ['email' => 'Invalid email format']);
             return;
         }
 
-        // Password match
+        // password match
         if ($data['password'] !== $data['confirmPassword']) {
             $this->sendResponse(false, ['confirmPassword' => 'Passwords do not match']);
             return;
         }
 
-        // Password strength
+        // password strength
         if (!$this->validator->validatePassword($data['password'])) {
             $this->sendResponse(false, ['password' => 'Password must be at least 6 characters']);
             return;
         }
 
-        // Email exists
+        // email exists
         if (User::findUserByEmail($pdo, $data['email'])) {
             $this->sendResponse(false, ['email' => 'Email already registered']);
             return;
         }
 
-        // Handle profile picture upload
+        // handle profile picture upload
         $profileImagePath = null;
         if (isset($_FILES['profilePhoto']) && $_FILES['profilePhoto']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = __DIR__ . '/../../../public/uploads/profile_images/';
             
-            // Create directory if it doesn't exist
+            // create directory if it doesn't exist
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }
@@ -91,7 +91,7 @@ class AuthController
             }
         }
 
-        // Create user
+        // create user
         $user = new User(
             $data['firstName'],
             $data['lastName'],
@@ -114,7 +114,7 @@ class AuthController
         }
     }
 
-    // Login user
+    // login user
     public function loginUser()
     {
         global $pdo;
@@ -138,7 +138,7 @@ class AuthController
             return;
         }
 
-        // Set session with user data
+        // set session with user data
         $_SESSION['user'] = [
             'id' => $userData['id'],
             'email' => $userData['email'],
@@ -161,7 +161,7 @@ class AuthController
         ]);
     }
 
-    // Logout user
+    // logout user
     public function logoutUser()
     {
         $_SESSION = [];
@@ -192,7 +192,7 @@ class AuthController
 
     public function showLogin()
     {
-        // Redirect if already logged in
+        // redirect if already logged in
         if (isset($_SESSION['user']) && !empty($_SESSION['user'])) {
             header('Location: homet');
             exit;

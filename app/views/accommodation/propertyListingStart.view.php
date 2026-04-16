@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/TravelMate/public/assets/css/main.css">
 </head>
 <body>
-    <!-- Header -->
+    <!-- header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
     <main class="listing-main">
@@ -73,11 +73,11 @@
         </form>
     </main>
 
-    <!-- Footer -->
+    <!-- footer -->
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
     <script>
-        // Submit form with selected property type
+        // submit form with selected property type
         function selectAndSubmit(element, type) {
             document.getElementById('propertyTypeInput').value = type;
             element.closest('form').submit();

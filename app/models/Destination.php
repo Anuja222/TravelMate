@@ -66,7 +66,7 @@ class Destination
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    // Places (child items)
+    // places (child items)
     public static function createPlace($conn, $destinationId, $title, $slug, $description, $image, $location = null, $best_time = null)
     {
         $sql = "INSERT INTO destination_places (destination_id, title, slug, description, image, location, best_time, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";

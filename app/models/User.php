@@ -43,7 +43,7 @@ class User
                 $this->role ?? 'traveller',
                 $this->profile_image
             ]);
-            return $conn->lastInsertId(); // Return the new user's ID
+            return $conn->lastInsertId(); // return the new user's ID
         } catch (\PDOException $e) {
             return false;
         }
@@ -60,15 +60,15 @@ class User
     public static function updateUser($userId, $data)
     {
         try {
-            // Load database connection
+            // load database connection
             require_once '../config/database.php';
             
-            // Create PDO connection directly
+            // create PDO connection directly
             $dsn = "mysql:host=" . DBHOST . ";dbname=" . DBNAME . ";charset=utf8mb4";
             $conn = new \PDO($dsn, DBUSER, DBPASS);
             $conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
             
-            // Build update query dynamically based on provided data
+            // build update query dynamically based on provided data
             $updates = [];
             $params = [];
             
@@ -85,7 +85,7 @@ class User
                 return false;
             }
             
-            $params[] = $userId; // Add user ID at the end for WHERE clause
+            $params[] = $userId; // add user ID at the end for WHERE clause
             
             $sql = "UPDATE users SET " . implode(', ', $updates) . " WHERE id = ?";
             $stmt = $conn->prepare($sql);

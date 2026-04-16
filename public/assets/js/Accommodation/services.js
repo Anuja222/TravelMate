@@ -1,8 +1,8 @@
 // services.js
-// JS for Services page
+// jS for Services page
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Save & Continue handler
+    // save & Continue handler
     const saveBtn = document.querySelector('.save-btn');
     if (saveBtn) {
         saveBtn.addEventListener('click', function() {

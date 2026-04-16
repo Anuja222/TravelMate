@@ -12,7 +12,7 @@
   <div class="page-container">
 
     <div class="content">
-      <!-- Profile Header -->
+      <!-- profile Header -->
       <div class="profile-header">
         <div class="profile-banner"></div>
         <div class="profile-info">
@@ -51,7 +51,7 @@
         </div>
       </div>
 
-      <!-- Tabs -->
+      <!-- tabs -->
       <div class="profile-tabs">
         <div class="tabs-header">
           <button class="tab active" onclick="switchTab('overview')">Overview</button>
@@ -60,7 +60,7 @@
           <button class="tab" onclick="switchTab('preferences')">Preferences</button>
         </div>
 
-        <!-- Overview Tab -->
+        <!-- overview Tab -->
         <div id="overview" class="tab-content active">
           <div class="info-grid">
             <div class="info-card">
@@ -145,10 +145,10 @@
           </div>
         </div>
 
-        <!-- Bookings Tab -->
+        <!-- bookings Tab -->
         <div id="bookings" class="tab-content">
           <div class="bookings-grid">
-            <!-- Booking 1 -->
+            <!-- booking 1 -->
             <div class="booking-card">
               <div class="booking-header">
                 <h4>Sunrise Resort - Colombo</h4>
@@ -176,7 +176,7 @@
               </div>
             </div>
 
-            <!-- Booking 2 -->
+            <!-- booking 2 -->
             <div class="booking-card">
               <div class="booking-header">
                 <h4>Audi A4 - 17AW</h4>
@@ -204,7 +204,7 @@
               </div>
             </div>
 
-            <!-- Booking 3 -->
+            <!-- booking 3 -->
             <div class="booking-card">
               <div class="booking-header">
                 <h4>Ella Rock Guided Tour</h4>
@@ -234,7 +234,7 @@
           </div>
         </div>
 
-        <!-- Activities Tab -->
+        <!-- activities Tab -->
         <div id="activities" class="tab-content">
           <div class="activities-list">
             <div class="activity-item">
@@ -284,7 +284,7 @@
           </div>
         </div>
 
-        <!-- Preferences Tab -->
+        <!-- preferences Tab -->
         <div id="preferences" class="tab-content">
           <div class="info-grid">
             <div class="info-card">
@@ -342,20 +342,20 @@
 
   <script>
     function switchTab(tabName) {
-      // Hide all tab contents
+      // hide all tab contents
       document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
       });
       
-      // Remove active class from all tabs
+      // remove active class from all tabs
       document.querySelectorAll('.tab').forEach(tab => {
         tab.classList.remove('active');
       });
       
-      // Show selected tab content
+      // show selected tab content
       document.getElementById(tabName).classList.add('active');
       
-      // Add active class to clicked tab
+      // add active class to clicked tab
       event.target.classList.add('active');
     }
 

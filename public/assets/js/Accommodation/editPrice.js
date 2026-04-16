@@ -1,4 +1,4 @@
-// JS for edit price page
+// jS for edit price page
 document.querySelector('.price-form')?.addEventListener('submit', function(e) {
     e.preventDefault();
     // collect price inputs

@@ -1,5 +1,5 @@
 // photoUpload.js
-// JS for Photo Upload page
+// jS for Photo Upload page
 
 document.addEventListener('DOMContentLoaded', function() {
     const photoInput = document.getElementById('photoInput');

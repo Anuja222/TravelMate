@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* Fix grid layout for single items */
+    /* fix grid layout for single items */
     .transportation-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -193,10 +193,10 @@
   </style>
 </head>
 <body>
-  <!-- Header/Navbar -->
+  <!-- header/Navbar -->
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-  <!-- Hero Section -->
+  <!-- hero Section -->
   <section class="hero-section">
     <div class="hero-background">
       <div class="hero-overlay">
@@ -208,7 +208,7 @@
     </div>
   </section>
 
-  <!-- Filter Section -->
+  <!-- filter Section -->
   <section class="filter-section">
     <div class="container">
       <div class="filter-bar">
@@ -259,12 +259,12 @@
     </div>
   </section>
 
-  <!-- Transportation Section -->
+  <!-- transportation Section -->
   <section class="transportation-section">
     <div class="container">
       <div class="transportation-grid" id="transportationGrid">
         
-        <!-- Scenic Train -->
+        <!-- scenic Train -->
         <!-- <div class="transport-card" data-type="train" data-route="kandy-ella" data-price="budget" data-duration="long">
           <div class="card-image">
             <img src="assets/images/scenic-train.jpg" alt="Scenic Train Journey">
@@ -308,7 +308,7 @@
           </div>
         </div> -->
 
-        <!-- Express Bus -->
+        <!-- express Bus -->
         <div class="transport-card" data-type="bus" data-route="colombo-kandy" data-price="budget" data-duration="medium">
           <div class="card-image">
             <img src="assets/images/bus.png" alt="Express Bus">
@@ -352,7 +352,7 @@
           </div>
         </div>
 
-        <!-- Private Taxi -->
+        <!-- private Taxi -->
         <div class="transport-card" data-type="taxi" data-route="colombo-galle" data-price="premium" data-duration="medium">
           <div class="card-image">
             <img src="assets/images/car.png" alt="Private Taxi">
@@ -396,7 +396,7 @@
           </div>
         </div>
 
-        <!-- Tuk-Tuk Experience -->
+        <!-- tuk-Tuk Experience -->
         <div class="transport-card" data-type="tuk-tuk" data-route="galle-mirissa" data-price="mid" data-duration="short">
           <div class="card-image">
             <img src="assets/images/wheel.png" alt="Tuk-Tuk">
@@ -440,7 +440,7 @@
           </div>
         </div>
 
-        <!-- Boat Transfer -->
+        <!-- boat Transfer -->
         <!-- <div class="transport-card" data-type="boat" data-route="colombo-galle" data-price="premium" data-duration="medium">
           <div class="card-image">
             <img src="assets/images/boat-transfer.jpg" alt="Boat Transfer">
@@ -484,7 +484,7 @@
           </div>
         </div> -->
 
-        <!-- Domestic Flight -->
+        <!-- domestic Flight -->
         <!-- <div class="transport-card" data-type="plane" data-route="colombo-jaffna" data-price="premium" data-duration="short">
           <div class="card-image">
             <img src="assets/images/domestic-flight.jpg" alt="Domestic Flight">
@@ -536,7 +536,7 @@
     </div>
   </section>
 
-  <!-- Booking Modal -->
+  <!-- booking Modal -->
   <div class="modal" id="bookingModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -592,7 +592,7 @@
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
   <script>
-    // Load vehicles dynamically
+    // load vehicles dynamically
     document.addEventListener('DOMContentLoaded', function() {
       loadVehicles();
     });
@@ -631,7 +631,7 @@
       const grid = document.getElementById('transportationGrid');
       if (!grid) return;
 
-      // Clear existing static content
+      // clear existing static content
       grid.innerHTML = '';
 
       vehicles.forEach(vehicle => {

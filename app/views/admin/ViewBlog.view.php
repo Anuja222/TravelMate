@@ -12,9 +12,9 @@
   <div class="page-containerr">
 
     <div class="content">
-      <!-- Vlog Container -->
+      <!-- vlog Container -->
       <div class="vlog-container">
-        <!-- Vlog Header -->
+        <!-- vlog Header -->
         <div class="vlog-header">
           <div class="vlog-meta">
             <div class="author-info">
@@ -36,7 +36,7 @@
           <p class="vlog-subtitle">A journey through the untouched coastal paradise beyond the popular tourist spots</p>
         </div>
 
-        <!-- Vlog Content -->
+        <!-- vlog Content -->
         <div class="vlog-content">
           <div class="vlog-hero">
             <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Sri Lanka Beach">
@@ -85,7 +85,7 @@
           </div>
         </div>
 
-        <!-- Vlog Actions -->
+        <!-- vlog Actions -->
         <div class="vlog-actions">
           <button class="btn-action btn-approve" onclick="approveVlog()">
             <span>✓</span> Approve Vlog
@@ -99,7 +99,7 @@
         </div>
       </div>
 
-      <!-- Related Vlogs -->
+      <!-- related Vlogs -->
       <div class="related-vlogs">
         <h3 class="section-title">Related Vlogs</h3>
         <div class="related-grid">
@@ -150,7 +150,7 @@
     function approveVlog() {
       if (confirm('Approve this vlog for publication?')) {
         alert('Vlog approved successfully!');
-        // Implement actual approval functionality
+        // implement actual approval functionality
       }
     }
 
@@ -158,7 +158,7 @@
       const reason = prompt('Please enter reason for rejection:');
       if (reason) {
         alert(`Vlog rejected. Reason: ${reason}`);
-        // Implement actual rejection functionality
+        // implement actual rejection functionality
       }
     }
 

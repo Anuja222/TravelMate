@@ -239,41 +239,41 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Get DOM elements
+      // get DOM elements
       const alertBox = document.getElementById('alertBox');
       const completeBtn = document.getElementById('complete-booking');
       const modifyBtn = document.getElementById('modify-booking');
       
-      // Show alert function
+      // show alert function
       function showAlert(message, type) {
         alertBox.textContent = message;
         alertBox.className = `alert alert-${type}`;
         alertBox.style.display = 'block';
         
-        // Hide alert after 5 seconds
+        // hide alert after 5 seconds
         setTimeout(() => {
           alertBox.style.display = 'none';
         }, 5000);
       }
       
-      // Complete booking
+      // complete booking
       completeBtn.addEventListener('click', function() {
-        // Show loading state
+        // show loading state
         completeBtn.disabled = true;
         modifyBtn.disabled = true;
         completeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
         
-        // Simulate API call
+        // simulate API call
         setTimeout(() => {
           showAlert('Booking marked as completed successfully! Payment processed.', 'success');
           
-          // Update UI to show completed status
+          // update UI to show completed status
           document.querySelector('.tracking-step:nth-child(3)').classList.remove('active');
           document.querySelector('.tracking-step:nth-child(3)').classList.add('completed');
           document.querySelector('.tracking-step:nth-child(4)').classList.add('active');
           document.querySelector('.progress-bar').style.width = '100%';
           
-          // Reset button after success
+          // reset button after success
           setTimeout(() => {
             completeBtn.disabled = false;
             modifyBtn.disabled = false;
@@ -283,31 +283,31 @@
         }, 1500);
       });
       
-      // Modify booking
+      // modify booking
       modifyBtn.addEventListener('click', function() {
         const newPrice = prompt('Enter new price (LKR):', '2800');
         
-        if (newPrice === null) return; // User cancelled
+        if (newPrice === null) return; // user cancelled
           
         if (!newPrice.trim() || isNaN(newPrice)) {
           showAlert('Please enter a valid price', 'error');
           return;
         }
         
-        // Show loading state
+        // show loading state
         completeBtn.disabled = true;
         modifyBtn.disabled = true;
         modifyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
         
-        // Simulate API call
+        // simulate API call
         setTimeout(() => {
           showAlert('Booking details updated successfully! Customer notified.', 'success');
           
-          // Update UI with new price
+          // update UI with new price
           document.getElementById('agreed-fare').textContent = 'LKR ' + parseInt(newPrice).toLocaleString();
           document.querySelector('.summary-item:nth-last-child(2) .value').textContent = 'LKR ' + parseInt(newPrice).toLocaleString();
           
-          // Reset button after success
+          // reset button after success
           setTimeout(() => {
             completeBtn.disabled = false;
             modifyBtn.disabled = false;
@@ -316,7 +316,7 @@
         }, 1500);
       });
       
-      // Responsive adjustments
+      // responsive adjustments
       function handleResize() {
         if (window.innerWidth < 900) {
           document.querySelector('.detail-summary').style.position = 'relative';
@@ -325,10 +325,10 @@
         }
       }
       
-      // Listen for window resize
+      // listen for window resize
       window.addEventListener('resize', handleResize);
       
-      // Initial call
+      // initial call
       handleResize();
     });
   </script>

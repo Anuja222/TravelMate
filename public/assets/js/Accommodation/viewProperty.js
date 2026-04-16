@@ -1,6 +1,6 @@
-// View Property Page JavaScript
+// view Property Page JavaScript
 document.addEventListener('DOMContentLoaded', function() {
-    // Image Gallery Navigation
+    // image Gallery Navigation
     const mainImage = document.querySelector('.main-image img');
     const galleryImages = document.querySelectorAll('.image-grid img');
     const prevBtn = document.querySelector('.nav-btn.prev');
@@ -9,14 +9,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const images = Array.from(galleryImages).map(img => img.src);
     images.unshift(mainImage.src);
 
-    // Update main image
+    // update main image
     function updateMainImage(index) {
         mainImage.src = images[index];
         currentImageIndex = index;
         updateGalleryState();
     }
 
-    // Update gallery state (e.g., active states, etc)
+    // update gallery state (e.g., active states, etc)
     function updateGalleryState() {
         galleryImages.forEach((img, index) => {
             if (index + 1 === currentImageIndex) {
@@ -27,41 +27,41 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Next button click handler
+    // next button click handler
     nextBtn.addEventListener('click', () => {
         currentImageIndex = (currentImageIndex + 1) % images.length;
         updateMainImage(currentImageIndex);
     });
 
-    // Previous button click handler
+    // previous button click handler
     prevBtn.addEventListener('click', () => {
         currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
         updateMainImage(currentImageIndex);
     });
 
-    // Thumbnail click handlers
+    // thumbnail click handlers
     galleryImages.forEach((img, index) => {
         img.addEventListener('click', () => {
             updateMainImage(index + 1); // +1 because main image is at index 0
         });
     });
 
-    // Delete property button
-    // NOTE: Removed JavaScript confirmation + API call so the anchor
+    // delete property button
+    // nOTE: Removed JavaScript confirmation + API call so the anchor
     // <a class="delete-btn" href="deleteProperty.view.php"> will navigate directly
     // to the delete page. If you want a client-side confirmation, re-add here.
 
-    // Note: edit buttons are plain anchors in the view; do not override their default navigation.
+    // note: edit buttons are plain anchors in the view; do not override their default navigation.
 
-    // Helper function to get property ID from URL or data attribute
+    // helper function to get property ID from URL or data attribute
     function getPropertyId() {
-        // Implement this based on your URL structure or data attributes
+        // implement this based on your URL structure or data attributes
         return document.querySelector('[data-property-id]')?.dataset.propertyId;
     }
 
-    // Initialize the gallery state
+    // initialize the gallery state
     updateGalleryState();
-    // Apply any saved accommodation features from sessionStorage
+    // apply any saved accommodation features from sessionStorage
     (function applySavedFeatures(){
         try {
             const raw = sessionStorage.getItem('tm_features');
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!Array.isArray(features)) return;
             const thingsSection = document.querySelector('.property-things ul');
             if (!thingsSection) return;
-            // Clear existing and render saved list
+            // clear existing and render saved list
             thingsSection.innerHTML = '';
             features.forEach(f => {
                 const li = document.createElement('li');
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     })();
 
-    // Apply saved house rules from sessionStorage (if any)
+    // apply saved house rules from sessionStorage (if any)
     (function applySavedHouseRules(){
         try {
             const raw = sessionStorage.getItem('tm_houseRules');
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!rules || typeof rules !== 'object') return;
             const rulesList = document.querySelector('.house-rules .rules-list');
             if (!rulesList) return;
-            // Build new rules HTML
+            // build new rules HTML
             const rows = [];
             // toggles: assume order [smoking, parties]
             const toggles = Array.isArray(rules.toggles) ? rules.toggles : [];
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     })();
 
-    // Apply saved services from sessionStorage
+    // apply saved services from sessionStorage
     (function applySavedServices(){
         try {
             const raw = sessionStorage.getItem('tm_services');
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     })();
 
-    // Apply saved property details (guests, bathrooms, children) from sessionStorage
+    // apply saved property details (guests, bathrooms, children) from sessionStorage
     (function applySavedPropertyDetails(){
         try {
             const raw = sessionStorage.getItem('tm_propertyDetails');
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.debug('viewProperty: parsed prop=', prop);
             if (!prop || typeof prop !== 'object') return;
 
-            // Update maximum guests display
+            // update maximum guests display
             if (prop.guests) {
                 const rows = Array.from(document.querySelectorAll('.property-details .detail-row'));
                 let updated = false;
@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.debug('viewProperty: guests updated=', updated);
             }
 
-            // Update bathroom count
+            // update bathroom count
             if (prop.bathrooms) {
                 const rows = Array.from(document.querySelectorAll('.property-details .detail-row'));
                 let updated = false;
@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.debug('viewProperty: bathrooms updated=', updated);
             }
 
-            // Update children allow
+            // update children allow
             if (typeof prop.children !== 'undefined') {
                 const rows = Array.from(document.querySelectorAll('.property-details .detail-row'));
                 let updated = false;
@@ -213,14 +213,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.debug('viewProperty: children updated=', updated);
             }
 
-            // We don't need to persist this preview beyond the immediate apply
+            // we don't need to persist this preview beyond the immediate apply
             sessionStorage.removeItem('tm_propertyDetails');
         } catch (e) {
             console.warn('Unable to apply saved property details', e);
         }
     })();
 
-    // Apply saved price preview (if any)
+    // apply saved price preview (if any)
     (function applySavedPrice(){
         try {
             const raw = sessionStorage.getItem('tm_price');

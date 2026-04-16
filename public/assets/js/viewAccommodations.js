@@ -1,12 +1,12 @@
-// Global variables
+// global variables
 let allAccommodations = [];
 let filteredAccommodations = [];
 
-// Initialize on page load
+// initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     loadAccommodations();
     
-    // Add event listeners (check if elements exist first)
+    // add event listeners (check if elements exist first)
     const btnApplyFilter = document.getElementById('btnApplyFilter');
     if (btnApplyFilter) {
         btnApplyFilter.addEventListener('click', applyFilters);
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Load all accommodations
+// load all accommodations
 function loadAccommodations() {
     const baseUrl = getBaseUrl();
     
@@ -49,7 +49,7 @@ function loadAccommodations() {
     });
 }
 
-// Update statistics cards
+// update statistics cards
 function updateStatistics() {
     const active = allAccommodations.filter(a => a.status === 'active').length;
     const pending = allAccommodations.filter(a => a.status === 'pending').length;
@@ -62,7 +62,7 @@ function updateStatistics() {
     document.getElementById('totalCount').textContent = total;
 }
 
-// Display accommodations in grid
+// display accommodations in grid
 function displayAccommodations(accommodations) {
     const grid = document.getElementById('accommodationsGrid');
     const emptyState = document.getElementById('emptyState');
@@ -100,7 +100,7 @@ function displayPendingAccommodations() {
     grid.innerHTML = pendingAccommodations.map(accommodation => createAccommodationCard(accommodation, 'pending')).join('');
 }
 
-// Create accommodation card HTML
+// create accommodation card HTML
 function createAccommodationCard(accommodation, section = 'other') {
     const baseUrl = getBaseUrl();
     const image = accommodation.main_image 
@@ -225,10 +225,10 @@ function closeDeleteModal() {
 
 function closeSuccessModal() {
     document.getElementById('successModal').style.display = 'none';
-    // Optionally reload here if needed, but since we modify DOM directly, no reload is needed
+    // optionally reload here if needed, but since we modify DOM directly, no reload is needed
 }
 
-// Close modals when clicking outside
+// close modals when clicking outside
 window.onclick = function(event) {
     const deleteModal = document.getElementById('deleteModal');
     const successModal = document.getElementById('successModal');
@@ -242,7 +242,7 @@ window.onclick = function(event) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Add delete listener
+    // add delete listener
     document.getElementById('confirmDeleteBtn')?.addEventListener('click', function() {
         if (!accommodationToDelete) return;
         
@@ -320,7 +320,7 @@ function moderateAccommodation(id, action) {
     });
 }
 
-// Apply filters
+// apply filters
 function applyFilters() {
     const searchInput = document.getElementById('searchInput');
     const statusFilterEl = document.getElementById('statusFilter');
@@ -349,17 +349,17 @@ function applyFilters() {
     displayAccommodations(filteredAccommodations);
 }
 
-// View accommodation details in modal
+// view accommodation details in modal
 function viewAccommodation(id) {
     const accommodation = allAccommodations.find(a => a.id === id);
     if (!accommodation) return;
     
     const baseUrl = getBaseUrl();
     
-    // Set modal title
+    // set modal title
     document.getElementById('modalTitle').textContent = accommodation.title || 'Accommodation Details';
     
-    // Set basic information
+    // set basic information
     document.getElementById('modalPropertyId').textContent = `#${accommodation.id}`;
     document.getElementById('modalPropertyType').textContent = accommodation.property_type || 'N/A';
     document.getElementById('modalAccomTitle').textContent = accommodation.title || 'N/A';
@@ -367,7 +367,7 @@ function viewAccommodation(id) {
     document.getElementById('modalStatus').textContent = (accommodation.status || 'active').toUpperCase();
     document.getElementById('modalStatus').style.color = getStatusColor(accommodation.status);
     
-    // Set property details
+    // set property details
     document.getElementById('modalRooms').textContent = accommodation.rooms || '0';
     document.getElementById('modalBathrooms').textContent = accommodation.bathrooms || '0';
     document.getElementById('modalMaxGuests').textContent = accommodation.max_guests || '0';
@@ -375,17 +375,17 @@ function viewAccommodation(id) {
         ? `Rs ${parseFloat(accommodation.price_per_night).toFixed(2)} per night` 
         : 'N/A';
     
-    // Set check-in/out times
+    // set check-in/out times
     document.getElementById('modalCheckInStart').textContent = accommodation.check_in_start || 'N/A';
     document.getElementById('modalCheckInEnd').textContent = accommodation.check_in_end || 'N/A';
     document.getElementById('modalCheckOut').textContent = accommodation.check_out_time || 'N/A';
     
-    // Set house rules
+    // set house rules
     document.getElementById('modalSmoking').textContent = accommodation.smoking == 1 ? 'Allowed' : 'Not Allowed';
     document.getElementById('modalParties').textContent = accommodation.parties == 1 ? 'Allowed' : 'Not Allowed';
     document.getElementById('modalPets').textContent = accommodation.pets || 'Not Allowed';
     
-    // Set provider information
+    // set provider information
     document.getElementById('modalUserId').textContent = `#${accommodation.user_id || 'N/A'}`;
     document.getElementById('modalCreatedAt').textContent = accommodation.created_at 
         ? formatDateTime(accommodation.created_at) 
@@ -394,15 +394,15 @@ function viewAccommodation(id) {
         ? formatDateTime(accommodation.updated_at) 
         : 'N/A';
     
-    // Set media information
+    // set media information
     const imageCount = accommodation.images ? accommodation.images.length : 0;
     document.getElementById('modalImageCount').textContent = imageCount;
     document.getElementById('modalHasMainImage').textContent = accommodation.main_image ? 'Yes' : 'No';
     
-    // Set description
+    // set description
     document.getElementById('modalDescription').textContent = accommodation.description || 'No description provided.';
     
-    // Set images
+    // set images
     const mainImage = document.querySelector('#mainImage img');
     if (accommodation.main_image) {
         mainImage.src = `${baseUrl}/${accommodation.main_image}`;
@@ -410,7 +410,7 @@ function viewAccommodation(id) {
         mainImage.src = 'assets/images/default-accommodation.jpg';
     }
     
-    // Set image gallery
+    // set image gallery
     const gallery = document.getElementById('imageGallery');
     if (accommodation.images && accommodation.images.length > 0) {
         gallery.innerHTML = accommodation.images.map((img, index) => `
@@ -422,27 +422,27 @@ function viewAccommodation(id) {
         gallery.innerHTML = '<p style="color: #7f8c8d;">No additional images</p>';
     }
     
-    // Show modal
+    // show modal
     document.getElementById('viewModal').style.display = 'flex';
 }
 
-// Change main image in modal
+// change main image in modal
 function changeMainImage(imagePath, thumbElement) {
     document.querySelector('#mainImage img').src = imagePath;
     
-    // Update active state
+    // update active state
     document.querySelectorAll('.gallery-thumb').forEach(thumb => {
         thumb.classList.remove('active');
     });
     thumbElement.classList.add('active');
 }
 
-// Close modal
+// close modal
 function closeViewModal() {
     document.getElementById('viewModal').style.display = 'none';
 }
 
-// Close modal when clicking outside
+// close modal when clicking outside
 document.addEventListener('click', function(e) {
     const modal = document.getElementById('viewModal');
     if (e.target === modal) {
@@ -450,14 +450,14 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// Close modal with ESC key
+// close modal with ESC key
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closeViewModal();
     }
 });
 
-// Show empty state
+// show empty state
 function showEmptyState() {
     const grid = document.getElementById('accommodationsGrid');
     const emptyState = document.getElementById('emptyState');
@@ -473,7 +473,7 @@ function showEmptyState() {
     }
 }
 
-// Get status color
+// get status color
 function getStatusColor(status) {
     switch(status) {
         case 'active': return '#1abc5b';
@@ -483,7 +483,7 @@ function getStatusColor(status) {
     }
 }
 
-// Escape HTML to prevent XSS
+// escape HTML to prevent XSS
 function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');
@@ -491,7 +491,7 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Format date and time
+// format date and time
 function formatDateTime(dateString) {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
@@ -505,7 +505,7 @@ function formatDateTime(dateString) {
     return date.toLocaleDateString('en-US', options);
 }
 
-// Get base URL
+// get base URL
 function getBaseUrl() {
     return window.location.origin + '/TravelMate/public';
 }

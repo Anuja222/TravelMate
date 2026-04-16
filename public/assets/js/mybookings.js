@@ -2,7 +2,7 @@ const BASE_PATH = window.location.pathname.includes('/TravelMate/')
     ? '/TravelMate/public' 
     : '';
 
-// Initialize page on load
+// initialize page on load
 document.addEventListener('DOMContentLoaded', function() {
     loadUserBookings();
     setupFilterTabs();
@@ -36,7 +36,7 @@ function getAccommodationFallbackImage() {
     return `${BASE_PATH}/assets/images/no-image.jpg`;
 }
 
-// Load user bookings from database
+// load user bookings from database
 async function loadUserBookings() {
     try {
         const response = await fetch(`${BASE_PATH}/api/booking/user`, {
@@ -60,13 +60,13 @@ async function loadUserBookings() {
     }
 }
 
-// Display bookings on the page
+// display bookings on the page
 function displayBookings(bookings) {
     const hotelsSection = document.querySelector('[data-category="hotels"]');
     const historySection = document.querySelector('[data-category="history"]');
     const transportSection = document.querySelector('[data-category="transport"]');
     
-    // Clear existing content
+    // clear existing content
     const existingHotelItems = hotelsSection.querySelectorAll('.booking-item, .booking-cards-grid');
     const existingHistoryItems = historySection ? historySection.querySelectorAll('.booking-item, .booking-cards-grid') : [];
     const existingTransportItems = transportSection?.querySelectorAll('.booking-item, .booking-cards-grid');
@@ -147,7 +147,7 @@ function renderSectionBookings(sectionElement, bookings, isHistory = false) {
     sectionElement.appendChild(cardsGrid);
 }
 
-// Create booking element HTML
+// create booking element HTML
 function createBookingElement(booking, isHistory = false) {
     const bookingDiv = document.createElement('div');
     bookingDiv.className = 'booking-item';
@@ -304,16 +304,16 @@ async function submitBookingRating(bookingId) {
     }
 }
 
-// View booking details
+// view booking details
 function viewBookingDetails(bookingId) {
     window.location.href = `${BASE_PATH}/mybooking_details?id=${bookingId}`;
 }
 
-// Cancel booking
-// Store booking ID temporarily for cancel operation
+// cancel booking
+// store booking ID temporarily for cancel operation
 let bookingIdToCancel = null;
 
-// Show cancel confirmation modal
+// show cancel confirmation modal
 function cancelBooking(bookingId) {
     console.log('=== cancelBooking CALLED ==');
     console.log('Received booking ID:', bookingId);
@@ -328,7 +328,7 @@ function cancelBooking(bookingId) {
         return;
     }
     
-    // Store the booking ID
+    // store the booking ID
     bookingIdToCancel = String(bookingId).trim();
     console.log('Stored booking ID:', bookingIdToCancel);
     
@@ -341,19 +341,19 @@ function cancelBooking(bookingId) {
     }
 }
 
-// Close confirmation modal
+// close confirmation modal
 function closeConfirmModal() {
     console.log('=== closeConfirmModal CALLED ==');
     const modal = document.getElementById('cancelConfirmModal');
     if (modal) {
         modal.classList.remove('show');
     }
-    // Clear booking ID when user cancels
+    // clear booking ID when user cancels
     bookingIdToCancel = null;
     console.log('Booking ID cleared');
 }
 
-// Proceed with cancellation
+// proceed with cancellation
 async function proceedWithCancel() {
     console.log('=== proceedWithCancel CALLED ==');
     console.log('Current bookingIdToCancel:', bookingIdToCancel);
@@ -364,12 +364,12 @@ async function proceedWithCancel() {
         return;
     }
     
-    // Store booking ID BEFORE closing modal or any other operations
+    // store booking ID BEFORE closing modal or any other operations
     const bookingIdToProcess = String(bookingIdToCancel).trim();
     console.log('Processing booking ID:', bookingIdToProcess);
     console.log('BASE_PATH:', BASE_PATH);
     
-    // Close confirmation modal
+    // close confirmation modal
     const confirmModal = document.getElementById('cancelConfirmModal');
     if (confirmModal) {
         confirmModal.classList.remove('show');
@@ -396,11 +396,11 @@ async function proceedWithCancel() {
         console.log('Response status:', response.status);
         console.log('Response ok:', response.ok);
         
-        // Get response as text first
+        // get response as text first
         const responseText = await response.text();
         console.log('Raw response:', responseText);
         
-        // Try to parse as JSON
+        // try to parse as JSON
         let result;
         try {
             result = JSON.parse(responseText);
@@ -416,7 +416,7 @@ async function proceedWithCancel() {
         if (result.success) {
             console.log('Cancellation successful!');
             showCancelSuccessModal();
-            // Reload bookings after a short delay
+            // reload bookings after a short delay
             setTimeout(() => {
                 loadUserBookings();
             }, 500);
@@ -439,25 +439,25 @@ async function proceedWithCancel() {
         console.error('Error details:', error.message, error.stack);
         showErrorModal('Network error: ' + error.message);
     } finally {
-        // Clear booking ID after operation
+        // clear booking ID after operation
         bookingIdToCancel = null;
         console.log('Booking ID cleared after operation');
     }
 }
 
-// Show cancel success modal
+// show cancel success modal
 function showCancelSuccessModal() {
     const modal = document.getElementById('cancelSuccessModal');
     modal.classList.add('show');
 }
 
-// Close cancel success modal
+// close cancel success modal
 function closeCancelSuccessModal() {
     const modal = document.getElementById('cancelSuccessModal');
     modal.classList.remove('show');
 }
 
-// Show error modal
+// show error modal
 function showErrorModal(message) {
     const modal = document.getElementById('errorModal');
     const messageElement = document.getElementById('errorModalMessage');
@@ -469,7 +469,7 @@ function showErrorModal(message) {
     }
 }
 
-// Close error modal
+// close error modal
 function closeErrorModal() {
     const modal = document.getElementById('errorModal');
     if (modal) {
@@ -477,11 +477,11 @@ function closeErrorModal() {
     }
 }
 
-// Delete booking
-// Store booking ID temporarily for delete operation
+// delete booking
+// store booking ID temporarily for delete operation
 let bookingIdToDelete = null;
 
-// Show delete confirmation modal
+// show delete confirmation modal
 function deleteBooking(bookingId) {
     console.log('=== deleteBooking CALLED ==');
     console.log('Received booking ID:', bookingId);
@@ -492,7 +492,7 @@ function deleteBooking(bookingId) {
         return;
     }
     
-    // Store the booking ID
+    // store the booking ID
     bookingIdToDelete = String(bookingId).trim();
     console.log('Stored booking ID for deletion:', bookingIdToDelete);
     
@@ -505,19 +505,19 @@ function deleteBooking(bookingId) {
     }
 }
 
-// Close delete confirmation modal
+// close delete confirmation modal
 function closeDeleteConfirmModal() {
     console.log('=== closeDeleteConfirmModal CALLED ==');
     const modal = document.getElementById('deleteConfirmModal');
     if (modal) {
         modal.classList.remove('show');
     }
-    // Clear booking ID when user cancels
+    // clear booking ID when user cancels
     bookingIdToDelete = null;
     console.log('Booking ID cleared');
 }
 
-// Proceed with deletion
+// proceed with deletion
 async function proceedWithDelete() {
     console.log('=== proceedWithDelete CALLED ==');
     console.log('Current bookingIdToDelete:', bookingIdToDelete);
@@ -528,11 +528,11 @@ async function proceedWithDelete() {
         return;
     }
     
-    // Store booking ID BEFORE closing modal
+    // store booking ID BEFORE closing modal
     const bookingIdToProcess = String(bookingIdToDelete).trim();
     console.log('Processing booking ID for deletion:', bookingIdToProcess);
     
-    // Close confirmation modal
+    // close confirmation modal
     const confirmModal = document.getElementById('deleteConfirmModal');
     if (confirmModal) {
         confirmModal.classList.remove('show');
@@ -557,11 +557,11 @@ async function proceedWithDelete() {
 
         console.log('Delete response status:', response.status);
         
-        // Get response as text first
+        // get response as text first
         const responseText = await response.text();
         console.log('Delete raw response:', responseText);
         
-        // Try to parse as JSON
+        // try to parse as JSON
         let result;
         try {
             result = JSON.parse(responseText);
@@ -576,7 +576,7 @@ async function proceedWithDelete() {
         if (result.success) {
             console.log('Deletion successful!');
             showDeleteSuccessModal();
-            // Reload bookings after a short delay
+            // reload bookings after a short delay
             setTimeout(() => {
                 loadUserBookings();
             }, 500);
@@ -598,13 +598,13 @@ async function proceedWithDelete() {
         console.error('Delete fetch error:', error);
         showErrorModal('Network error: ' + error.message);
     } finally {
-        // Clear booking ID after operation
+        // clear booking ID after operation
         bookingIdToDelete = null;
         console.log('Booking ID cleared after delete operation');
     }
 }
 
-// Show delete success modal
+// show delete success modal
 function showDeleteSuccessModal() {
     const modal = document.getElementById('deleteSuccessModal');
     if (modal) {
@@ -612,7 +612,7 @@ function showDeleteSuccessModal() {
     }
 }
 
-// Close delete success modal
+// close delete success modal
 function closeDeleteSuccessModal() {
     const modal = document.getElementById('deleteSuccessModal');
     if (modal) {
@@ -620,7 +620,7 @@ function closeDeleteSuccessModal() {
     }
 }
 
-// Update booking statistics
+// update booking statistics
 function updateBookingStats(stats) {
     if (!stats) return;
 
@@ -653,7 +653,7 @@ function updateBookingStats(stats) {
     }
 }
 
-// Filter bookings by status - FIXED VERSION
+// filter bookings by status - FIXED VERSION
 function filterBookingsByStatus(status) {
     const sections = [
         document.querySelector('[data-category="hotels"]'),
@@ -687,30 +687,30 @@ function filterBookingsByStatus(status) {
     });
 }
 
-// Setup filter tabs - FIXED VERSION
+// setup filter tabs - FIXED VERSION
 function setupFilterTabs() {
     const tabs = document.querySelectorAll('.filter-tab');
     
     tabs.forEach(tab => {
         tab.addEventListener('click', function() {
-            // Remove active class from all tabs
+            // remove active class from all tabs
             tabs.forEach(t => t.classList.remove('active'));
             
-            // Add active class to clicked tab
+            // add active class to clicked tab
             this.classList.add('active');
             
-            // Get filter value from data-filter attribute
+            // get filter value from data-filter attribute
             const filter = this.getAttribute('data-filter');
             
-            // Filter bookings by status
+            // filter bookings by status
             filterBookingsByStatus(filter);
         });
     });
 }
 
-// Setup search functionality
+// setup search functionality
 function setupSearchFunctionality() {
-    // Add search box if it doesn't exist
+    // add search box if it doesn't exist
     const filterTabs = document.querySelector('.filter-tabs');
     if (filterTabs && !document.querySelector('.search-box')) {
         const controlsSection = document.createElement('div');
@@ -720,7 +720,7 @@ function setupSearchFunctionality() {
         `;
         filterTabs.parentNode.insertBefore(controlsSection, filterTabs.nextSibling);
 
-        // Add search event listener
+        // add search event listener
         const searchBox = document.getElementById('bookingSearch');
         let searchTimeout;
         searchBox.addEventListener('input', function(e) {
@@ -732,7 +732,7 @@ function setupSearchFunctionality() {
     }
 }
 
-// Search bookings
+// search bookings
 async function searchBookings(searchTerm) {
     if (!searchTerm.trim()) {
         loadUserBookings();
@@ -757,7 +757,7 @@ async function searchBookings(searchTerm) {
     }
 }
 
-// Show empty state
+// show empty state
 function showEmptyState() {
     const hotelsSection = document.querySelector('[data-category="hotels"]');
     if (hotelsSection) {
@@ -776,12 +776,12 @@ function showEmptyState() {
     }
 }
 
-// Show error message
+// show error message
 function showErrorMessage(message) {
     alert(message);
 }
 
-// Helper function to capitalize first letter
+// helper function to capitalize first letter
 function capitalizeFirst(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }

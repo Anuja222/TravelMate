@@ -17,7 +17,7 @@
     <?php include 'sidebar.view.php'; ?>
 
     <div class="content">
-      <!-- Page Header -->
+      <!-- page Header -->
       <div class="page-title">
         <div class="page-title-content">
           <div class="page-icon">
@@ -37,7 +37,7 @@
         </button>
       </div>
 
-      <!-- Statistics Summary -->
+      <!-- statistics Summary -->
       <div class="stats-summary">
         <div class="stat-card">
           <div class="stat-icon" style="background: #1abc5b;">
@@ -77,7 +77,7 @@
         </div>
       </div>
 
-      <!-- Activities Grid -->
+      <!-- activities Grid -->
       <div id="activityList" class="content-grid">
         <div class="loading-container">
           <i class="fas fa-spinner fa-spin" style="font-size: 32px; color: #1abc5b;"></i>
@@ -85,7 +85,7 @@
         </div>
       </div>
 
-      <!-- Empty State -->
+      <!-- empty State -->
       <div id="emptyState" class="empty-state" style="display: none;">
         <i class="fas fa-hiking"></i>
         <h3>No Activities Found</h3>
@@ -98,7 +98,7 @@
     </div>
   </div>
 
-  <!-- Delete Confirmation Modal -->
+  <!-- delete Confirmation Modal -->
   <div id="deleteModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -118,7 +118,7 @@
     </div>
   </div>
 
-  <!-- Success Modal -->
+  <!-- success Modal -->
   <div id="successModal" class="success-modal" style="display: none;">
     <div class="success-modal-content">
       <div class="success-modal-icon">
@@ -132,7 +132,7 @@
     </div>
   </div>
 
-  <!-- View Activity Modal -->
+  <!-- view Activity Modal -->
   <div id="viewModal" class="view-modal" style="display: none;">
     <div class="view-modal-content">
       <div class="view-modal-header">
@@ -158,7 +158,7 @@
             Locations for this Activity
           </h3>
           <div id="viewPlacesList" class="view-places-grid">
-            <!-- Places will be loaded here -->
+            <!-- places will be loaded here -->
           </div>
         </div>
       </div>
@@ -174,7 +174,7 @@
   <script src="<?= ROOT ?>/assets/js/activities.js"></script>
   
   <script>
-    // Success Modal Functions
+    // success Modal Functions
     function showSuccessModal(message) {
       document.getElementById('successMessage').textContent = message;
       document.getElementById('successModal').style.display = 'flex';
@@ -184,7 +184,7 @@
       document.getElementById('successModal').style.display = 'none';
     }
 
-    // View Modal Functions
+    // view Modal Functions
     let currentViewActivityId = null;
 
     function showViewModal(activityId) {
@@ -192,7 +192,7 @@
       const modal = document.getElementById('viewModal');
       modal.style.display = 'flex';
       
-      // Fetch activity details
+      // fetch activity details
       const baseApi = window.location.origin + '/TravelMate/public';
       fetch(baseApi + '/api/activity/get?id=' + activityId, { credentials: 'same-origin' })
         .then(r => r.json())
@@ -208,7 +208,7 @@
             const imgSrc = activity.image ? baseUrl + activity.image : '<?= ROOT ?>/assets/images/default-activity.png';
             document.getElementById('viewActivityImage').src = imgSrc;
             
-            // Display places
+            // display places
             const placesList = document.getElementById('viewPlacesList');
             if (activity.places && activity.places.length > 0) {
               placesList.innerHTML = activity.places.map(place => {
@@ -252,7 +252,7 @@
       }
     }
 
-    // Close modal when clicking outside
+    // close modal when clicking outside
     window.addEventListener('click', function(event) {
       const viewModal = document.getElementById('viewModal');
       if (event.target === viewModal) {
@@ -260,7 +260,7 @@
       }
     });
 
-    // Modal handling
+    // modal handling
     document.addEventListener('DOMContentLoaded', function() {
       const modal = document.getElementById('deleteModal');
       const closeBtn = document.querySelector('.close');
@@ -284,7 +284,7 @@
         }
       }
       
-      // Update stats animation
+      // update stats animation
       function animateValue(element, start, end, duration) {
         if (!element) return;
         
@@ -300,7 +300,7 @@
         window.requestAnimationFrame(step);
       }
       
-      // Example: Update stats (replace with actual data)
+      // example: Update stats (replace with actual data)
       setTimeout(() => {
         animateValue(document.getElementById('activeCount'), 0, 8, 1000);
         animateValue(document.getElementById('pendingCount'), 0, 2, 1000);

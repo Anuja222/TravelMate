@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Helper function to get base URL
+    // helper function to get base URL
     function getBaseUrl() {
         const path = window.location.pathname;
         const parts = path.split('/');
@@ -20,16 +20,16 @@ document.addEventListener('DOMContentLoaded', function() {
     if (propertyTypes.length > 0) {
         propertyTypes.forEach(type => {
             type.addEventListener('click', function() {
-                // Remove active class from all types
+                // remove active class from all types
                 propertyTypes.forEach(t => t.classList.remove('active'));
-                // Add active class to clicked type
+                // add active class to clicked type
                 this.classList.add('active');
                 
-                // Store property type in localStorage
+                // store property type in localStorage
                 const propertyType = this.querySelector('h3').textContent.trim().toLowerCase();
                 localStorage.setItem('property_type', propertyType);
                 
-                // Navigate to next page
+                // navigate to next page
                 window.location.href = baseUrl + '/accommodationFeatures';
             });
         });
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (featuresForm) {
         const features = {};
         
-        // Load any existing data
+        // load any existing data
         const savedFeatures = localStorage.getItem('property_features');
         if (savedFeatures) {
             const parsedFeatures = JSON.parse(savedFeatures);
@@ -59,16 +59,16 @@ document.addEventListener('DOMContentLoaded', function() {
         featuresForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Collect all form data
+            // collect all form data
             const formData = new FormData(this);
             formData.forEach((value, key) => {
                 features[key] = value;
             });
             
-            // Store in localStorage
+            // store in localStorage
             localStorage.setItem('property_features', JSON.stringify(features));
             
-            // Navigate to next page
+            // navigate to next page
             window.location.href = 'propertyDetails';
             
         });
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ========== PROPERTY DETAILS PAGE ==========
     const detailsForm = document.querySelector('.property-details-form');
     if (detailsForm) {
-        // Load any existing data
+        // load any existing data
         const savedDetails = localStorage.getItem('property_details');
         if (savedDetails) {
             const parsedDetails = JSON.parse(savedDetails);
@@ -90,17 +90,17 @@ document.addEventListener('DOMContentLoaded', function() {
         detailsForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Collect form data
+            // collect form data
             const details = {};
             const formData = new FormData(this);
             formData.forEach((value, key) => {
                 details[key] = value;
             });
             
-            // Store in localStorage
+            // store in localStorage
             localStorage.setItem('property_details', JSON.stringify(details));
             
-            // Navigate to next page
+            // navigate to next page
             window.location.href = baseUrl + '/photoUpload';
         });
     }
@@ -116,18 +116,18 @@ document.addEventListener('DOMContentLoaded', function() {
             for (let i = 0; i < files.length; i++) {
                 imagesList.push(files[i]);
             }
-            // Show preview of images
+            // show preview of images
             displayImagePreviews(imagesList);
         });
 
         photoForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Store description in localStorage
+            // store description in localStorage
             const description = document.getElementById('propertyDescription').value;
             localStorage.setItem('property_description', description);
             
-            // Navigate to next page
+            // navigate to next page
             window.location.href = baseUrl + '/houseRules';
         });
 
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 reader.readAsDataURL(file);
             });
             
-            // Replace existing previews
+            // replace existing previews
             const existing = document.querySelector('.image-previews');
             if (existing) existing.remove();
             photoForm.insertBefore(previewContainer, photoForm.querySelector('button'));
@@ -161,25 +161,25 @@ document.addEventListener('DOMContentLoaded', function() {
         rulesForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Collect all data from localStorage
+            // collect all data from localStorage
             const propertyType = localStorage.getItem('property_type');
             const features = JSON.parse(localStorage.getItem('property_features') || '{}');
             const details = JSON.parse(localStorage.getItem('property_details') || '{}');
             const description = localStorage.getItem('property_description');
             
-            // Collect house rules data
+            // collect house rules data
             const formData = new FormData(this);
             const rules = {};
             formData.forEach((value, key) => {
                 rules[key] = value;
             });
             
-            // Create final FormData object
+            // create final FormData object
             const finalFormData = new FormData();
             finalFormData.append('property_type', propertyType);
             finalFormData.append('description', description);
             
-            // Add all collected data
+            // add all collected data
             Object.keys(features).forEach(key => {
                 finalFormData.append(key, features[key]);
             });
@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 finalFormData.append(key, rules[key]);
             });
             
-            // Add images if any
+            // add images if any
             const imageInput = document.getElementById('photoInput');
             if (imageInput && imageInput.files.length > 0) {
                 Array.from(imageInput.files).forEach(file => {
@@ -226,13 +226,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 if (result && result.success) {
-                    // Clear localStorage
+                    // clear localStorage
                     localStorage.removeItem('property_type');
                     localStorage.removeItem('property_features');
                     localStorage.removeItem('property_details');
                     localStorage.removeItem('property_description');
                     
-                    // Navigate to success page
+                    // navigate to success page
                     window.location.href = baseUrl + '/success';
                 } else {
                     alert('Failed to create property: ' + (result.errors ? result.errors.join(', ') : 'Unknown error'));
@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Function to load user's properties
+        // function to load user's properties
         async function loadUserProperties() {
             try {
                 const response = await fetch(baseUrl + '/api/accommodation/list');
@@ -354,11 +354,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const statusClass = property.status === 'active' ? '' : property.status;
             const imagePath = property.main_image || 'assets/images/default-property.jpg';
             
-            // Format price with commas
+            // format price with commas
             const formattedPrice = property.price_per_night ? 
                 parseFloat(property.price_per_night).toLocaleString('en-US') : '0';
             
-            // Truncate description if too long
+            // truncate description if too long
             const description = property.description || 'No description available';
             const shortDescription = description.length > 120 ? 
                 description.substring(0, 120) + '...' : description;
@@ -385,7 +385,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 ? `${avgRatingValue.toFixed(1)} (${ratingCount})`
                 : 'Not yet rated';
             
-            // Format property type for display
+            // format property type for display
             const propertyType = property.property_type ? 
                 property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1).replace(/_/g, ' ') : '';
             
@@ -440,7 +440,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.location.href = `${baseUrl}/detailsProperty?id=${property.id}`;
             });
             
-            // Add click handler to edit button
+            // add click handler to edit button
             const editBtn = card.querySelector('.property-card-btn-edit');
             editBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -480,7 +480,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return card;
         }
 
-        // Load properties when page loads
+        // load properties when page loads
         loadUserProperties();
             // expose loader for debugging and manual triggering
             try { window.loadUserProperties = loadUserProperties; } catch(e){}
@@ -558,7 +558,7 @@ async function handleToggleStatus(id, currentStatus, toggleBtn) {
     }
 }
 
-    // Delegated click handlers for property action buttons (View / Update / Delete)
+    // delegated click handlers for property action buttons (View / Update / Delete)
     document.addEventListener('click', function(e){
         const viewBtn = e.target.closest('.view-btn');
         if (viewBtn) {
@@ -583,11 +583,11 @@ async function handleToggleStatus(id, currentStatus, toggleBtn) {
             const id = delBtn.dataset.id;
             if (!id) return;
             
-            // Show custom confirmation modal instead of browser confirm
+            // show custom confirmation modal instead of browser confirm
             if (typeof window.showConfirmDeleteModal === 'function') {
                 window.showConfirmDeleteModal(id);
             } else {
-                // Fallback to browser confirm
+                // fallback to browser confirm
                 if (!confirm('Are you sure you want to delete this property?')) return;
                 performDelete(id, delBtn);
             }
@@ -605,7 +605,7 @@ async function handleToggleStatus(id, currentStatus, toggleBtn) {
         }
     });
 
-// Function to perform the actual delete operation
+// function to perform the actual delete operation
 async function performDelete(id, buttonElement) {
     try {
         const res = await fetch(`${resolveBaseUrl()}/api/accommodation/delete`, {
@@ -625,7 +625,7 @@ async function performDelete(id, buttonElement) {
                     window.loadUserProperties();
                 }
                 
-                // Show success modal
+                // show success modal
                 if (typeof window.showDeleteModal === 'function') {
                     window.showDeleteModal();
                 } else {
@@ -645,14 +645,14 @@ async function performDelete(id, buttonElement) {
     }
 }
 
-// Listen for custom delete confirmation event
+// listen for custom delete confirmation event
 document.addEventListener('confirmDeleteProperty', function(e) {
     if (e.detail && e.detail.id) {
         performDelete(e.detail.id, null);
     }
 });
 
-// Global functions for property actions
+// global functions for property actions
 function editProperty(id) {
     window.location.href = `${resolveBaseUrl()}/updateProperty?id=${id}`;
 }

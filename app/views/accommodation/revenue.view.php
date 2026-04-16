@@ -1,5 +1,5 @@
 <?php
-// Start session if not already started
+// start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -20,16 +20,16 @@ if (session_status() === PHP_SESSION_NONE) {
 
 <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
   
-  <!-- MAIN CONTENT -->
+  <!-- mAIN CONTENT -->
   <main>
-    <!-- SIDEBAR -->
+    <!-- sIDEBAR -->
     <?php 
     $active_page = 'revenue';
     include __DIR__ . '/sidebar.view.php'; 
     ?>
 
     <div class="content dashboard-content">
-        <!-- Hidden PDF Header (Only visible in PDF) -->
+        <!-- hidden PDF Header (Only visible in PDF) -->
         <div id="pdfHeader" style="display: none; padding: 20px; border-bottom: 2px solid #1abc5b; margin-bottom: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div style="display: flex; align-items: center; gap: 15px;">
@@ -46,7 +46,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 </div>
             </div>
 
-            <!-- Activity Summary Section (For PDF) -->
+            <!-- activity Summary Section (For PDF) -->
             <div style="margin-top: 30px; padding: 25px; background: #f0fdf4; border-radius: 12px; text-align: center;">
                 <h3 style="margin: 0 0 20px 0; color: #0f172a; font-size: 20px; font-weight: 700;">Activity Summary (<?php echo htmlspecialchars($period_label ?? 'Current Period'); ?>)</h3>
                 <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
@@ -104,7 +104,7 @@ if (session_status() === PHP_SESSION_NONE) {
         </div>
 
         <div class="revenue-grid">
-            <!-- Overall Revenue for Selected Period -->
+            <!-- overall Revenue for Selected Period -->
             <div class="revenue-card">
                 <h3>Total Revenue (<?php echo htmlspecialchars($period_label ?? 'Current Period'); ?>)</h3>
                 <div class="revenue-amount">Rs. <?php echo number_format($total_revenue ?? 0, 2); ?></div>
@@ -121,7 +121,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 </div>
             </div>
 
-            <!-- Total Bookings for Selected Period -->
+            <!-- total Bookings for Selected Period -->
             <div class="revenue-card">
                 <h3>Total Bookings (<?php echo htmlspecialchars($period_label ?? 'Current Period'); ?>)</h3>
                 <div class="revenue-amount"><?php echo number_format($total_bookings ?? 0); ?></div>
@@ -131,7 +131,7 @@ if (session_status() === PHP_SESSION_NONE) {
             </div>
         </div>
 
-        <!-- Property Breakdown Table -->
+        <!-- property Breakdown Table -->
         <div class="property-list">
             <h2>Individual Property Performance (<?php echo htmlspecialchars($period_label ?? 'Current Period'); ?>)</h2>
             <table class="property-table">

@@ -135,13 +135,13 @@ function renderBasicDetails() {
     const category = getTransportCategory(type);
     badgesContainer.innerHTML = `<span class="badge ${category}">${type}</span>`;
 
-    // Provider Details
+    // provider Details
     const providerName = currentVehicle.first_name ? `${currentVehicle.first_name} ${currentVehicle.last_name || ''}`.trim() : 'N/A';
     const providerPhone = currentVehicle.phone || 'N/A';
     const providerEmail = currentVehicle.email || 'N/A';
     let providerImage = currentVehicle.profile_image || 'assets/images/default-profile.png';
     
-    // Ensure correct path if it doesn't start with http or /
+    // ensure correct path if it doesn't start with http or /
     if (providerImage && providerImage !== 'assets/images/default-profile.png' && !providerImage.startsWith('http') && !providerImage.startsWith('/')) {
         const base = window.location.pathname.substring(0, window.location.pathname.indexOf('/TransportDetails'));
         providerImage = base + '/' + providerImage;

@@ -43,7 +43,7 @@ class DestinationController
         global $pdo;
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') $this->sendResponse(false, ['error'=>'Invalid method']);
 
-        // Only admin users allowed (optional)
+        // only admin users allowed (optional)
         // if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') $this->sendResponse(false, ['error'=>'Unauthorized']);
 
         $title = trim($_POST['title'] ?? '');
@@ -145,7 +145,7 @@ class DestinationController
         $this->sendResponse((bool)$ok, $ok ? [] : ['error'=>'Delete failed']);
     }
 
-    // Places
+    // places
     public function placeCreate()
     {
         global $pdo;

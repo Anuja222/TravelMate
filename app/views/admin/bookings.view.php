@@ -1,5 +1,5 @@
 <?php
-// Initialize database connection and fetch all bookings
+// initialize database connection and fetch all bookings
 require_once __DIR__ . '/../../core/config.php';
 require_once __DIR__ . '/../../core/Database.php';
 
@@ -9,7 +9,7 @@ class AdminBookingDB {
 
 $db = new AdminBookingDB();
 
-// Fetch accommodation bookings joining users and accommodations manually
+// fetch accommodation bookings joining users and accommodations manually
 $accBookingsQuery = "
     SELECT b.*, u.first_name, u.last_name, u.email as user_email, 
            a.title as accommodation_name, a.property_type as accommodation_type, a.location as district
@@ -20,7 +20,7 @@ $accBookingsQuery = "
 ";
 $rawAccBookings = $db->query($accBookingsQuery, []) ?: [];
 
-// Fetch transport bookings joining users and vehicles manually
+// fetch transport bookings joining users and vehicles manually
 $transBookingsQuery = "
     SELECT tb.*, u.first_name, u.last_name, u.email as user_email,
            v.vehicle_model, v.vehicle_type, v.vehicle_number
@@ -31,7 +31,7 @@ $transBookingsQuery = "
 ";
 $rawTransBookings = $db->query($transBookingsQuery, []) ?: [];
 
-// Helper functions for displaying status tags
+// helper functions for displaying status tags
 function getStatusLabel($status) {
     $s = strtolower((string)$status);
     if ($s === 'confirmed') return 'Accepted';
@@ -111,7 +111,7 @@ function isTransportExpired($pickupDate) {
     .page-title-text h1 { margin: 0; font-size: 24px; color: #2c3e50; }
     .page-title-text p { margin: 4px 0 0 0; color: #7f8c8d; font-size: 14px; }
 
-    /* Bookings layout */
+    /* bookings layout */
     .bookings-wrapper {
         display: flex;
         flex-direction: column;
@@ -225,12 +225,12 @@ function isTransportExpired($pickupDate) {
 </head>
 <body>
 
-  <!-- Ensure header exists -->
+  <!-- ensure header exists -->
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
   <div class="page-container">
 
-    <!-- Include the sidebar we just updated -->
+    <!-- include the sidebar we just updated -->
     <?php include 'sidebar.view.php'; ?>
 
     <div class="content">
@@ -258,7 +258,7 @@ function isTransportExpired($pickupDate) {
 
       <div class="bookings-wrapper">
         
-        <!-- ACCOMMODATIONS TAB -->
+        <!-- aCCOMMODATIONS TAB -->
         <div id="tab-accommodations" class="tab-content active">
             <div class="booking-section">
                 <h2>Accommodation Bookings</h2>
@@ -284,7 +284,7 @@ function isTransportExpired($pickupDate) {
                                 $badgeClass = normalizeStatusClass($actualStatus);
                                 $badgeLabel = getStatusLabel($actualStatus);
 
-                                // If its expired, it overrides the visual presentation so admin knows it's a past travel.
+                                // if its expired, it overrides the visual presentation so admin knows it's a past travel.
                                 if($expired && ($actualStatus === 'pending' || $actualStatus === 'confirmed')) {
                                     $badgeClass = 'status-expired';
                                     $badgeLabel = getStatusLabel($actualStatus) . ' (History/Exp)';
@@ -325,7 +325,7 @@ function isTransportExpired($pickupDate) {
             </div>
         </div>
 
-        <!-- TRANSPORTS TAB -->
+        <!-- tRANSPORTS TAB -->
         <div id="tab-transports" class="tab-content">
             <div class="booking-section">
                 <h2>Transport Bookings</h2>
@@ -351,7 +351,7 @@ function isTransportExpired($pickupDate) {
                                 $badgeClass = normalizeStatusClass($actualStatus);
                                 $badgeLabel = getStatusLabel($actualStatus);
 
-                                // If its expired, override visualization
+                                // if its expired, override visualization
                                 if($expired && ($actualStatus === 'pending' || $actualStatus === 'confirmed')) {
                                     $badgeClass = 'status-expired';
                                     $badgeLabel = getStatusLabel($actualStatus) . ' (History/Exp)';

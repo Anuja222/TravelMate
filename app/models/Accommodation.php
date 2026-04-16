@@ -238,12 +238,12 @@ class Accommodation {
     }
 
     public static function deleteById($conn, $id, $userId) {
-        // First delete related images
+        // first delete related images
         $sql = "DELETE FROM accommodation_images WHERE accommodation_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$id]);
         
-        // Then delete the accommodation
+        // then delete the accommodation
         $sql = "DELETE FROM accommodations WHERE id = ? AND user_id = ?";
         $stmt = $conn->prepare($sql);
         return $stmt->execute([$id, $userId]);

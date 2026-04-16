@@ -1,4 +1,4 @@
-<!-- Services Page -->
+<!-- services Page -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/TravelMate/public/assets/css/main.css">
 </head>
 <body>
-    <!-- Header -->
+    <!-- header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
     <h1>Edit Services at your property</h1>
     <form class="services-form">
@@ -29,7 +29,7 @@
         </fieldset>
     <a href="viewProperty.view.php"><button type="button" class="save-btn">Save & Continue</button></a>
     </form>
-    <!-- Footer -->
+    <!-- footer -->
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
     <script src="/TravelMate/public/assets/js/Accomodation_provider/services.js"></script>
 </body>

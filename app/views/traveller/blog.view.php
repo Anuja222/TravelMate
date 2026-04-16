@@ -10,7 +10,7 @@
 <body>
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-    <!-- Create Post Content -->
+    <!-- create Post Content -->
     <main class="create-post-container">
         <div class="page-header">
             <h1>Share Your Adventure</h1>
@@ -97,7 +97,7 @@
 
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-    <!-- Success Modal -->
+    <!-- success Modal -->
     <div id="postSuccessModal" class="post-success-modal">
         <div class="post-success-content">
             <div class="success-icon">
@@ -116,7 +116,7 @@
     </div>
 
     <style>
-        /* Success Modal Styles */
+        /* success Modal Styles */
         .post-success-modal {
             display: none;
             position: fixed;
@@ -259,7 +259,7 @@
                 console.log('Response status:', response.status);
                 console.log('Response headers:', response.headers);
                 
-                // Log the actual response for debugging
+                // log the actual response for debugging
                 const text = await response.text();
                 console.log('Raw response:', text);
                 
@@ -301,7 +301,7 @@
         function closeSuccessModal() {
             const modal = document.getElementById('postSuccessModal');
             modal.classList.remove('show');
-            // Reset the form
+            // reset the form
             document.getElementById('createPostForm').reset();
             document.getElementById('imagePreview').style.display = 'none';
         }
@@ -310,7 +310,7 @@
             window.location.href = 'feed';
         }
 
-        // Tab functionality for filter
+        // tab functionality for filter
         document.addEventListener('DOMContentLoaded', function() {
             const tabBtns = document.querySelectorAll('.tab-btn');
             tabBtns.forEach(btn => {

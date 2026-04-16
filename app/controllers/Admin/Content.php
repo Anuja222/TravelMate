@@ -3,16 +3,16 @@
 class Content extends Controller{
 
     public function index($a = '', $b = '' , $c = ''){
-        // Check if user is admin
+        // check if user is admin
         if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
             header('Location: login');
             exit;
         }
         
-        // Get global database connection
+        // get global database connection
         global $pdo;
         
-        // Fetch pending posts with user information
+        // fetch pending posts with user information
         $stmt = $pdo->prepare("
             SELECT p.*, u.first_name, u.last_name, u.email 
             FROM posts p 
@@ -23,12 +23,12 @@ class Content extends Controller{
         $stmt->execute();
         $pendingPosts = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-        // Fetch approved posts currently visible in feed
+        // fetch approved posts currently visible in feed
         $approvedStmt = $pdo->prepare("\n            SELECT p.*, u.first_name, u.last_name, u.email \n            FROM posts p \n            JOIN users u ON p.user_id = u.id \n            WHERE p.status = 'approved' \n            ORDER BY p.created_at DESC\n        ");
         $approvedStmt->execute();
         $approvedPosts = $approvedStmt->fetchAll(PDO::FETCH_OBJ);
         
-        // Pass data to view
+        // pass data to view
         $data = [
             'pendingPosts' => $pendingPosts,
             'approvedPosts' => $approvedPosts
@@ -43,7 +43,7 @@ class Content extends Controller{
         try {
             header('Content-Type: application/json');
             
-            // Check if user is admin
+            // check if user is admin
             if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
                 ob_end_clean();
                 echo json_encode(['success' => false, 'message' => 'Unauthorized']);
@@ -84,7 +84,7 @@ class Content extends Controller{
         try {
             header('Content-Type: application/json');
             
-            // Check if user is admin
+            // check if user is admin
             if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
                 ob_end_clean();
                 echo json_encode(['success' => false, 'message' => 'Unauthorized']);

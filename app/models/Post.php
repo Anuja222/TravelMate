@@ -85,7 +85,7 @@ class Post {
     }
     
     public function insert($data) {
-        // Remove keys that are not allowed columns
+        // remove keys that are not allowed columns
         foreach ($data as $key => $value) {
             if (!in_array($key, $this->allowedColumns)) {
                 unset($data[$key]);
@@ -107,7 +107,7 @@ class Post {
             error_log("User ID: $userId (type: " . gettype($userId) . ")");
             error_log("Table: {$this->table}");
             
-            // First verify the post belongs to the user
+            // first verify the post belongs to the user
             $query = "SELECT * FROM {$this->table} WHERE id = :post_id AND user_id = :user_id";
             error_log("SELECT Query: $query");
             error_log("SELECT Parameters: " . json_encode(['post_id' => $postId, 'user_id' => $userId]));
@@ -120,14 +120,14 @@ class Post {
             if (!$result || !is_array($result) || count($result) === 0) {
                 error_log("Post not found or doesn't belong to user. Post ID: $postId, User ID: $userId");
                 error_log("=== DELETE POST FAILED (NOT FOUND) ===");
-                return false; // Post doesn't exist or doesn't belong to user
+                return false; // post doesn't exist or doesn't belong to user
             }
             
-            // Get post data to delete image file
+            // get post data to delete image file
             $post = $result[0];
             error_log("Found post: " . json_encode($post));
             
-            // Delete the post from database using direct connection
+            // delete the post from database using direct connection
             $conn = $this->connect();
             $deleteQuery = "DELETE FROM {$this->table} WHERE id = :post_id AND user_id = :user_id";
             error_log("DELETE Query: $deleteQuery");
@@ -145,7 +145,7 @@ class Post {
                 return false;
             }
             
-            // Delete the image file if it exists
+            // delete the image file if it exists
             if (!empty($post->image)) {
                 $imagePath = '../public/' . $post->image;
                 error_log("Attempting to delete image: $imagePath");

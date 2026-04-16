@@ -1,13 +1,13 @@
 <?php
-// Start session if not already started
+// start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is logged in
+// check if user is logged in
 $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
 
-// Use data passed from controller if available, otherwise use session
+// use data passed from controller if available, otherwise use session
 $userData = isset($user) ? $user : [];
 
 $firstName = $userData['first_name'] ?? ($isLoggedIn ? $_SESSION['user']['first_name'] : '');
@@ -37,20 +37,20 @@ $interests = $userData['interests'] ?? '';
 </head>
 
 <body>
-    <!-- Navbar -->
+    <!-- navbar -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-    <!-- Profile Container -->
+    <!-- profile Container -->
     <div class="profile-container">
-        <!-- Main Content -->
+        <!-- main Content -->
         <main class="main-content">
-            <!-- Header -->
+            <!-- header -->
             <div class="settings-header">
                 <h1>Profile Settings</h1>
                 <p>Manage your personal information and preferences</p>
             </div>
 
-            <!-- Profile Photo Section -->
+            <!-- profile Photo Section -->
             <div class="settings-section">
                 <h2 class="section-title">Profile Photo</h2>
                 <div class="profile-photo-section">
@@ -71,7 +71,7 @@ $interests = $userData['interests'] ?? '';
                 </div>
             </div>
 
-            <!-- Personal Information -->
+            <!-- personal Information -->
             <div class="settings-section">
                 <h2 class="section-title">Personal Information</h2>
                 <form id="profileForm">
@@ -127,7 +127,7 @@ $interests = $userData['interests'] ?? '';
                 </form>
             </div>
 
-            <!-- Location Information -->
+            <!-- location Information -->
             <div class="settings-section">
                 <h2 class="section-title">Location Information</h2>
                 <div class="form-row">
@@ -144,7 +144,7 @@ $interests = $userData['interests'] ?? '';
                             <option value="jp" <?php echo ($country === 'jp') ? 'selected' : ''; ?>>Japan</option>
                             <option value="sg" <?php echo ($country === 'sg') ? 'selected' : ''; ?>>Singapore</option>
                             <option value="lk" <?php echo ($country === 'lk') ? 'selected' : ''; ?>>Sri Lanka</option>
-                            <!-- Add more countries as needed -->
+                            <!-- add more countries as needed -->
                         </select>
                     </div>
                     <div class="form-group">
@@ -163,12 +163,12 @@ $interests = $userData['interests'] ?? '';
                         <option value="Europe/London" <?php echo ($timezone === 'Europe/London') ? 'selected' : ''; ?>>GMT (UTC+0)</option>
                         <option value="Asia/Tokyo" <?php echo ($timezone === 'Asia/Tokyo') ? 'selected' : ''; ?>>Japan Time (UTC+9)</option>
                         <option value="Asia/Colombo" <?php echo ($timezone === 'Asia/Colombo') ? 'selected' : ''; ?>>Sri Lanka Time (UTC+5:30)</option>
-                        <!-- Add more timezones as needed -->
+                        <!-- add more timezones as needed -->
                     </select>
                 </div>
             </div>
 
-            <!-- Travel Preferences -->
+            <!-- travel Preferences -->
             <div class="settings-section">
                 <h2 class="section-title">Travel Preferences</h2>
                 <div class="form-row">
@@ -204,7 +204,7 @@ $interests = $userData['interests'] ?? '';
                 </div>
             </div>
 
-            <!-- Action Buttons -->
+            <!-- action Buttons -->
             <div class="action-buttons">
                 <button type="button" class="cancel-btn" onclick="cancelChanges()">Cancel</button>
                 <button type="button" class="save-btn" onclick="saveProfile(event)">Save Changes</button>
@@ -214,7 +214,7 @@ $interests = $userData['interests'] ?? '';
 
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-    <!-- Success Modal -->
+    <!-- success Modal -->
     <div id="successModal" class="profile-success-modal">
         <div class="profile-success-content">
             <div class="success-icon">
@@ -232,7 +232,7 @@ $interests = $userData['interests'] ?? '';
     <script src="assets/js/profilesetting.js?v=<?php echo time(); ?>"></script>
     
     <style>
-        /* Success Modal Styles */
+        /* success Modal Styles */
         .profile-success-modal {
             display: none;
             position: fixed;

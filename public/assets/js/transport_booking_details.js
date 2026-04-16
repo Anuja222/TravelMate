@@ -1,4 +1,4 @@
-// Transport Booking Details Form Handler
+// transport Booking Details Form Handler
 document.addEventListener('DOMContentLoaded', function() {
     const detailsForm = document.getElementById('detailsForm');
     const bookingId = window.transportPaymentBookingId || new URLSearchParams(window.location.search).get('booking_id');
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
     detailsForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        // Gather form data
+        // gather form data
         const formData = {
             booking_id: bookingId,
             first_name: document.getElementById('first_name').value.trim(),
@@ -44,32 +44,32 @@ document.addEventListener('DOMContentLoaded', function() {
             special_requests: document.getElementById('special_requests').value.trim()
         };
         
-        // Validate required fields
+        // validate required fields
         if (!formData.first_name || !formData.last_name || !formData.email || 
             !formData.address || !formData.city || !formData.phone) {
             alert('Please fill in all required fields');
             return;
         }
         
-        // Validate email
+        // validate email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(formData.email)) {
             alert('Please enter a valid email address');
             return;
         }
         
-        // Validate phone
+        // validate phone
         if (formData.phone.length < 9) {
             alert('Please enter a valid phone number');
             return;
         }
         
         try {
-            // Disable submit button
+            // disable submit button
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
             
-            // Save details to session
+            // save details to session
             const response = await fetch('/TravelMate/public/api/transport-booking/save-details', {
                 method: 'POST',
                 headers: {
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const result = await response.json();
             
             if (result.success) {
-                // Redirect to payment page
+                // redirect to payment page
                 window.location.href = `/TravelMate/public/transport-booking-payment?booking_id=${encodeURIComponent(bookingId)}`;
             } else {
                 alert(getApiErrorMessage(result.errors, 'Failed to save details. Please try again.'));

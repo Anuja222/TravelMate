@@ -483,7 +483,7 @@ if (!$isLoggedIn || $role !== 'accommodation') {
 
                 root.innerHTML = html;
 
-                // Event Listeners
+                // event Listeners
                 document.getElementById('btnEdit').addEventListener('click', function () {
                     window.location.href = getBaseUrl() + '/updateProperty?id=' + encodeURIComponent(p.id);
                 });

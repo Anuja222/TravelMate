@@ -9,7 +9,7 @@
 
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
       
-  <!-- Content Area -->
+  <!-- content Area -->
  <div class="page-container">
 
  <?php include 'sidebar.view.php'; ?>
@@ -30,7 +30,7 @@
       </div>
     </div>
 
-    <!-- Stats Cards -->
+    <!-- stats Cards -->
     <div class="stats-container">
       <div class="stat-card">
         <div class="stat-label">Total Users</div>
@@ -51,10 +51,10 @@
       </div>
      </div>
 
-    <!-- Settings Grid -->
+    <!-- settings Grid -->
     <div class="settings-grid">
 
-      <!-- About & Terms Section -->
+      <!-- about & Terms Section -->
       <section class="settings-section">
         <div class="section-header">
           <h2>About & Legal</h2>
@@ -70,7 +70,7 @@
         </form>
       </section>
 
-        <!-- User Management -->
+        <!-- user Management -->
         <section class="settings-section">
           <div class="section-header">
             <h2>User Management</h2>
@@ -95,7 +95,7 @@
           </div>
         </section>
 
-        <!-- Database Management -->
+        <!-- database Management -->
         <section class="settings-section">
           <div class="section-header">
             <h2>Database Management</h2>
@@ -124,7 +124,7 @@
           </div>
         </section>
 
-        <!-- Security Settings -->
+        <!-- security Settings -->
         <section class="settings-section">
           <div class="section-header">
             <h2>Security</h2>

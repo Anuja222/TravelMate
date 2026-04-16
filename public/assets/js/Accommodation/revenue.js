@@ -4,7 +4,7 @@ function downloadPDF() {
     const pdfHeader = document.getElementById('pdfHeader');
     const sidebar = document.querySelector('.sidebar');
     
-    // Temporarily edit UI elements for the PDF
+    // temporarily edit UI elements for the PDF
     if(filterContainer) filterContainer.style.display = 'none';
     if(pdfHeader) pdfHeader.style.display = 'block';
     
@@ -17,7 +17,7 @@ function downloadPDF() {
         pagebreak:    { mode: ['css', 'legacy'] }
     };
 
-    // Generate PDF and then restore hidden elements
+    // generate PDF and then restore hidden elements
     html2pdf().set(opt).from(element).save().then(() => {
         if(filterContainer) filterContainer.style.display = 'flex';
         if(pdfHeader) pdfHeader.style.display = 'none';

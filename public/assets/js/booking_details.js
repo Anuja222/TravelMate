@@ -1,11 +1,11 @@
-// Initialize page on load
+// initialize page on load
 document.addEventListener('DOMContentLoaded', function() {
     checkBookingData();
     loadUserDetails();
     setupFormSubmission();
 });
 
-// Check if booking data exists
+// check if booking data exists
 function checkBookingData() {
     const bookingData = JSON.parse(window.localStorage.getItem('currentBooking'));
     
@@ -16,12 +16,12 @@ function checkBookingData() {
     }
 }
 
-// Load user details if available
+// load user details if available
 function loadUserDetails() {
     const userDetails = JSON.parse(window.localStorage.getItem('userDetails'));
     
     if (userDetails) {
-        // Populate form with saved details
+        // populate form with saved details
         if (userDetails.firstName) document.getElementById('first_name').value = userDetails.firstName;
         if (userDetails.lastName) document.getElementById('last_name').value = userDetails.lastName;
         if (userDetails.email) document.getElementById('email').value = userDetails.email;
@@ -34,7 +34,7 @@ function loadUserDetails() {
     }
 }
 
-// Setup form submission
+// setup form submission
 function setupFormSubmission() {
     const form = document.getElementById('detailsForm');
     
@@ -47,7 +47,7 @@ function setupFormSubmission() {
     });
 }
 
-// Validate form
+// validate form
 function validateForm() {
     const firstName = document.getElementById('first_name').value.trim();
     const lastName = document.getElementById('last_name').value.trim();
@@ -84,13 +84,13 @@ function validateForm() {
     return true;
 }
 
-// Validate email format
+// validate email format
 function isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
 }
 
-// Save user details to localStorage
+// save user details to localStorage
 function saveUserDetails() {
     const userDetails = {
         firstName: document.getElementById('first_name').value.trim(),
@@ -105,10 +105,10 @@ function saveUserDetails() {
         completedAt: new Date().toISOString()
     };
     
-    // Save user details
+    // save user details
     window.localStorage.setItem('userDetails', JSON.stringify(userDetails));
     
-    // Update booking data
+    // update booking data
     const bookingData = JSON.parse(window.localStorage.getItem('currentBooking'));
     bookingData.bookingStep = 3;
     bookingData.userDetails = userDetails;
@@ -116,6 +116,6 @@ function saveUserDetails() {
     
     window.localStorage.setItem('currentBooking', JSON.stringify(bookingData));
     
-    // Navigate to payment page
+    // navigate to payment page
     window.location.href = 'booking_payment';
 }

@@ -44,18 +44,18 @@
   </div>
 
   <script>
-    // Simple form handling simulation
+    // simple form handling simulation
     document.querySelector('.forgot-password-form').addEventListener('submit', function(e) {
       e.preventDefault();
       
       const email = document.getElementById('email').value;
       
       if (email) {
-        // Hide form and show success message
+        // hide form and show success message
         document.querySelector('.forgot-password-form').style.display = 'none';
         document.getElementById('successMessage').style.display = 'block';
       } else {
-        // Show error message
+        // show error message
         document.getElementById('errorMessage').style.display = 'block';
       }
     });

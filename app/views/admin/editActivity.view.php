@@ -84,7 +84,7 @@
         </form>
       </div>
 
-      <!-- Places (Locations) management -->
+      <!-- places (Locations) management -->
       <div class="form-card" style="margin-top: 32px;">
         <h2 class="section-title">Locations / Destinations for this Activity</h2>
         
@@ -154,7 +154,7 @@
     </div>
   </div>
 
-  <!-- Success Modal -->
+  <!-- success Modal -->
   <div id="successModal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
       <div class="modal-icon-success">
@@ -168,7 +168,7 @@
     </div>
   </div>
 
-  <!-- Delete Confirm Modal -->
+  <!-- delete Confirm Modal -->
   <div id="deleteConfirmModal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
       <div class="modal-icon-warning" style="margin-bottom:15px; color:#ef4444; display:flex; justify-content:center;">
@@ -188,7 +188,7 @@
   </div>
 
   <script>
-    // Success Modal Functions
+    // success Modal Functions
     function showSuccessModal(message) {
       document.getElementById('successMessage').textContent = message;
       document.getElementById('successModal').style.display = 'flex';
@@ -198,7 +198,7 @@
       document.getElementById('successModal').style.display = 'none';
     }
 
-    // Delete Confirm Modal Functions
+    // delete Confirm Modal Functions
     let placeToDeleteId = null;
     let placeToDeleteElement = null;
 
@@ -214,14 +214,14 @@
       document.getElementById('deleteConfirmModal').style.display = 'none';
     }
 
-    // Attach listener immediately since elements exist here
+    // attach listener immediately since elements exist here
     document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
       if (!placeToDeleteId) return;
 
       const fd = new FormData();
       fd.append('id', placeToDeleteId);
 
-      // Disable button while processing
+      // disable button while processing
       this.disabled = true;
       const originalText = this.textContent;
       this.textContent = 'Deleting...';
@@ -255,7 +255,7 @@
         });
     });
 
-    // File input handlers
+    // file input handlers
     document.getElementById('image').addEventListener('change', function() {
       const fileName = this.files[0] ? this.files[0].name : 'No file chosen';
       document.getElementById('image-name').textContent = fileName;
@@ -274,7 +274,7 @@
       let editingPlaceId = null;
       const addPlaceBtn = document.querySelector('#addPlaceForm button[type="submit"]');
 
-      // Fill activity form and places list
+      // fill activity form and places list
       fetch('../public/api/activity/get?id=' + encodeURIComponent(id), { credentials: 'same-origin' })
         .then(r => r.json()).then(resp => {
           if (!resp.success) { alert('Not found'); window.location.href='ViewActivities'; return; }
@@ -288,7 +288,7 @@
           renderPlaces(a.places || []);
         }).catch(err => { console.error(err); alert('Load error'); });
 
-      // Update activity
+      // update activity
       document.getElementById('editActivityForm').addEventListener('submit', function (e) {
         e.preventDefault();
         const fd = new FormData(this);
@@ -303,7 +303,7 @@
           }).catch(() => alert('Network error'));
       });
 
-      // Add or Update place
+      // add or Update place
       document.getElementById('addPlaceForm').addEventListener('submit', function (e) {
         e.preventDefault();
 
@@ -356,7 +356,7 @@
         }
       });
 
-      // Render places list and attach delete/edit handlers
+      // render places list and attach delete/edit handlers
       function renderPlaces(places) {
         const container = document.getElementById('placesList');
         if (!places || places.length === 0) {
