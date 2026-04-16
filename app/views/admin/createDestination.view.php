@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <title>Create Destination</title>
   <link rel="stylesheet" href="<?= defined('ROOT') ? ROOT : '/TravelMate/public' ?>/assets/css/Admin/createDestination.css">
   <link rel="stylesheet" href="<?= defined('ROOT') ? ROOT : '/TravelMate/public' ?>/assets/css/Admin/common.css">
 </head>
-
 <body>
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
+<<<<<<< HEAD
   <div class="page-container">
     <?php include 'sidebar.view.php'; ?>
 
@@ -81,57 +80,49 @@
           </div>
         </form>
       </div>
+=======
+  <div class="page-containerr">
+    <div class="content">
+      <h1>Create Destination</h1>
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
 
+      <form id="createDestForm">
+        <div>
+          <label>Title</label>
+          <input name="title" id="title" required>
+        </div>
+        <div>
+          <label>Slug (optional)</label>
+          <input name="slug" id="slug">
+        </div>
+        <div>
+          <label>Description</label>
+          <textarea name="description" id="description"></textarea>
+        </div>
+        <div>
+          <label>Image</label>
+          <input type="file" name="image" id="image">
+        </div>
+        <div>
+          <button type="submit" class="btn-primary">Create</button>
+          <button type="button" onclick="window.location.href='ViewListing'">Cancel</button>
+        </div>
+      </form>
     </div>
   </div>
-
-  <!-- Success Modal -->
-  <div id="successModal" class="modal-overlay" style="display: none;">
-    <div class="modal-content">
-      <div class="modal-icon-success">
-        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
-          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-          <polyline points="22 4 12 14.01 9 11.01"></polyline>
-        </svg>
-      </div>
-      <h3 id="successMessage" class="modal-message">Success!</h3>
-      <button onclick="closeSuccessModal()" class="modal-btn-ok">OK</button>
-    </div>
-  </div>
-
 
   <script>
-    // Success Modal Functions
-    function showSuccessModal(message) {
-      document.getElementById('successMessage').textContent = message;
-      document.getElementById('successModal').style.display = 'flex';
-    }
-
-    function closeSuccessModal() {
-      document.getElementById('successModal').style.display = 'none';
-      window.location.href = 'ViewListing';
-    }
-
-    // File input handler - show filename when selected
-    document.getElementById('image').addEventListener('change', function() {
-      const fileName = this.files[0] ? this.files[0].name : 'No file chosen';
-      document.getElementById('image-name').textContent = fileName;
-    });
-
-    document.getElementById('createDestForm').addEventListener('submit', function(e){
-      e.preventDefault();
-      const fd = new FormData(this);
-      fetch('../public/api/destination/create', { method:'POST', body: fd, credentials: 'same-origin' })
-        .then(r => r.json())
-        .then(resp => {
-          if (resp.success) { 
-            showSuccessModal('Destination created successfully!');
-          }
-          else alert(JSON.stringify(resp.errors));
-        })
-        .catch(err => { alert('Network error'); console.error(err); });
-    });
+  document.getElementById('createDestForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const fd = new FormData(this);
+    fetch('../public/api/destination/create', { method:'POST', body: fd, credentials: 'same-origin' })
+      .then(r => r.json())
+      .then(resp => {
+        if (resp.success) { alert('Created'); window.location.href='ViewListing'; }
+        else alert(JSON.stringify(resp.errors));
+      })
+      .catch(err => { alert('Network error'); console.error(err); });
+  });
   </script>
 </body>
-
 </html>

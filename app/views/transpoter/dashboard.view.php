@@ -6,22 +6,6 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Check if user is logged in
 $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
-$role = $isLoggedIn ? ($_SESSION['user']['role'] ?? $_SESSION['role'] ?? '') : '';
-
-// Role-based redirect - this is a transport provider page
-if (!$isLoggedIn || $role !== 'transport') {
-    if ($role === 'admin') {
-        header('Location: ad_dashboard');
-        exit;
-    } elseif ($role === 'accommodation') {
-        header('Location: ac_dashboard');
-        exit;
-    } else {
-        header('Location: homet');
-        exit;
-    }
-}
-
 $firstName = $isLoggedIn ? $_SESSION['user']['first_name'] : '';
 $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
 $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['profile_image'] : 'assets/trimages/profile.jpg';
@@ -320,10 +304,25 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
   <!-- MAIN CONTENT -->
   <main>
     <!-- SIDEBAR -->
+<<<<<<< HEAD
     <?php 
       $active_page = 'dashboard';
       include __DIR__ . '/sidebar.view.php'; 
     ?>
+=======
+   <aside class="sidebar">
+        <div class="sidebar-inner">
+          <div class="sidebar-menu">
+            <a href="/TravelMate/public/tr_dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="/TravelMate/public/bookingnew"><i class="fas fa-calendar-alt"></i> Bookings</a>
+            <a href="/TravelMate/public/payment-history"><i class="fas fa-credit-card"></i> Payment History</a>
+            <a href="/TravelMate/public/statistics"><i class="fas fa-chart-line"></i> Statistics</a>
+            <a href="/TravelMate/public/setting"><i class="fas fa-cog"></i> Settings</a>
+          </div>
+        </div>
+    </aside>
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
+
 
     <div class="dashboard-content">
 
@@ -394,7 +393,7 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
       <section class="favourites">
         <div class="section-header">
           <h3>My Vehicles</h3>
-          <button class="btn-list-vehicle" onclick="window.location.href='vehicleType';">
+          <button class="btn-list-vehicle" onclick="window.location.href='/TravelMate/public/vehicleType';">
             <i class="fas fa-plus"></i> List Your Vehicle
           </button>
         </div>
@@ -469,7 +468,7 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-  <script src="../public/assets/js/vehicle.js"></script>
+    <script src="../public/assets/js/vehicle.js"></script>
 
   <script>
     // Card hover effects
@@ -600,7 +599,9 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
         });
 
         const result = await response.json();
+        console.log('Vehicle list response:', result); // Debug log
 
+<<<<<<< HEAD
         if (result.success && result.data && result.data.length > 0) {
           displayVehicles(result.data);
           return result.data;
@@ -610,10 +611,44 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
             container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;"><p>No vehicles found. <a href="vehicleType" style="color: #1abc5b;">Add your first vehicle</a></p></div>';
           }
           return [];
+=======
+        // FIX: Check the correct response structure
+        if (result.success) {
+          // FIX: Access vehicles from data.vehicles (not data)
+          const vehicles = result.data?.vehicles || [];
+          
+          if (vehicles.length > 0) {
+            displayVehicles(vehicles);
+          } else {
+            const container = document.querySelector('.vehicle-cards-grid');
+            if (container) {
+              container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;"><p>No vehicles found. <a href="vehicleType" style="color: #1abc5b;">Add your first vehicle</a></p></div>';
+            }
+          }
+          
+          // Show account status message if account is deactivated
+          if (result.data?.account_deactivated) {
+            showAccountStatusMessage(result.data.message);
+          }
+        } else {
+          console.error('Failed to load vehicles:', result.errors);
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
         }
       } catch (error) {
         console.error('Error loading vehicles:', error);
         return [];
+      }
+    }
+
+    function showAccountStatusMessage(message) {
+      // Create and show a toast or banner message
+      const container = document.querySelector('.vehicle-cards-grid');
+      if (container && message) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'account-status-message';
+        messageDiv.style.cssText = 'grid-column: 1/-1; background: #fff3cd; color: #856404; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ffeeba;';
+        messageDiv.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+        container.parentNode.insertBefore(messageDiv, container);
       }
     }
 

@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.getBaseUrl = getBaseUrl;
     console.log('accommodation.js loaded, baseUrl=', baseUrl);
 
+<<<<<<< HEAD
     //  PROPERTY LISTING START PAGE 
     const propertyTypes = document.querySelectorAll('.property-type');
     if (propertyTypes.length > 0) {
@@ -558,6 +559,16 @@ document.addEventListener('confirmDeleteProperty', function(e) {
 function editProperty(id) {
     window.location.href = `${getBaseUrl()}/updateProperty?id=${id}`;
 }
+=======
+    // Helper function to capitalize first letter
+    function capitalizeFirst(str) {
+        if (!str) return '';
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    }
+});
+
+// Global function for property deletion
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
 
 async function deleteProperty(id) {
     if (!confirm('Are you sure you want to delete this property?')) {

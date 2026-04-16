@@ -1,4 +1,7 @@
+  
+  
   <aside class="sidebar">
+<<<<<<< HEAD
   <link rel="stylesheet" href="<?= defined('ROOT') ? ROOT : '/TravelMate/public' ?>/assets/css/Admin/common.css">
 
   <ul class="sidebar-menu">
@@ -157,3 +160,18 @@
     });
   </script>
 </aside>
+=======
+
+  <link rel="stylesheet" href="common.css">
+    <ul>
+      <li><a href="ad_dashboard">Dashboard</a></li>
+      <li><a href="Users">Users</a></li>
+      <li><a href="content">Blogs</a></li>
+      <li><a href="ViewListing">Listing</a></li>
+      <li><a href="notifications">Notifications</a></li>
+      <li><a href="announcement">Announcements</a></li>
+      <li><a href="report">Reports</a></li>
+      <li><a href="ad_setting">Settings</a></li>
+    </ul>
+  </aside>
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874

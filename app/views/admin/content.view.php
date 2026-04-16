@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Blog Management</title>
+  <title>Blogs</title>
   <link rel="stylesheet" href="assets/css/Admin/content.css">
   <link rel="stylesheet" href="assets/css/Admin/common.css">
 </head>
@@ -14,6 +14,7 @@
       <?php include 'sidebar.view.php'; ?>
 
 <div class="content">
+<<<<<<< HEAD
   <div class="page-title">
     <div class="page-title-content">
       <div class="page-icon">
@@ -740,23 +741,35 @@
           <circle cx="12" cy="7" r="4"></circle>
         </svg>
         <strong>Author:</strong> ${postData.first_name} ${postData.last_name}
+=======
+  <div class="page-title">  
+    <h1>Blog Management</h1>
+    </div>
+  <ul class="vlogs">
+    <li>
+      <div class="vlog-info">
+        <img src="assets/images/hidden beach.jpg" alt="Blog Preview">
+        <div class="vlog-details">
+          <h2>Exploring the Hidden Beaches of Southern Sri Lanka</h2>
+          <a href="viewblog?id=1" class="view-link">View Full Blog</a>
+        </div>
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
       </div>
-      <div style="display: flex; align-items: center; gap: 6px;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-          <circle cx="12" cy="10" r="3"></circle>
-        </svg>
-        <strong>Location:</strong> ${postData.location || 'Not specified'}
+      <div class="action-buttons">
+        <button class="approve">Approve</button>
+        <button class="reject">Reject</button>
       </div>
-      <div style="display: flex; align-items: center; gap: 6px;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-          <line x1="16" y1="2" x2="16" y2="6"></line>
-          <line x1="8" y1="2" x2="8" y2="6"></line>
-          <line x1="3" y1="10" x2="21" y2="10"></line>
-        </svg>
-        <strong>Category:</strong> ${postData.category || 'General'}
+    </li>
+
+    <li>
+      <div class="vlog-info">
+        <img src="assets/images/yala.jpg" alt="Blog Preview">
+        <div class="vlog-details">
+          <h2>Wildlife Encounters in Yala National Park</h2>
+          <a href="viewblog?id=2" class="view-link">View Full Blog</a>
+        </div>
       </div>
+<<<<<<< HEAD
     `;
     
     // Display content
@@ -815,5 +828,128 @@
     document.getElementById('successModal').style.display = 'none';
   }
 </script>
+=======
+      <div class="action-buttons">
+        <button class="approve">Approve</button>
+        <button class="reject">Reject</button>
+      </div>
+    </li>
+
+    <li>
+      <div class="vlog-info">
+        <img src="assets/images/temple.jpg" alt="Blog Preview">
+        <div class="vlog-details">
+          <h2>Ancient Temples of the Cultural Triangle</h2>
+          <a href="viewblog?id=3" class="view-link">View Full Blog</a>
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button class="approve">Approve</button>
+        <button class="reject">Reject</button>
+      </div>
+    </li>
+
+    <li>
+      <div class="vlog-info">
+        <img src="assets/images/tea.png" alt="Blog Preview">
+        <div class="vlog-details">
+          <h2>Hiking Through Sri Lanka's Tea Country</h2>
+          <a href="viewblog?id=4" class="view-link">View Full Blog</a>
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button class="approve">Approve</button>
+        <button class="reject">Reject</button>
+      </div>
+    </li>
+
+    <li>
+      <div class="vlog-info">
+        <img src="assets/images/galle fort.jpg" alt="Blog Preview">
+        <div class="vlog-details">
+          <h2>Historic Galle Fort: A Dutch Colonial Legacy</h2>
+          <a href="viewblog?id=5" class="view-link">View Full Blog</a>
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button class="approve">Approve</button>
+        <button class="reject">Reject</button>
+      </div>
+    </li>
+
+    <li>
+      <div class="vlog-info">
+        <img src="assets/images/tuk tuk.jpg" alt="Blog Preview">
+        <div class="vlog-details">
+          <h2>Traveling Sri Lanka by Tuk-Tuk: A Local's Guide</h2>
+          <a href="viewblog?id=6" class="view-link">View Full Blog</a>
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button class="approve">Approve</button>
+        <button class="reject">Reject</button>
+      </div>
+    </li>
+
+    <li>
+      <div class="vlog-info">
+        <img src="assets/images/surfing.jpg" alt="Blog Preview">
+        <div class="vlog-details">
+          <h2>Best Surfing Spots on the Southern Coast</h2>
+          <a href="viewblog?id=7" class="view-link">View Full Blog</a>
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button class="approve">Approve</button>
+        <button class="reject">Reject</button>
+      </div>
+    </li>
+
+    <li>
+      <div class="vlog-info">
+        <img src="assets/images/street food.jpg" alt="Blog Preview">
+        <div class="vlog-details">
+          <h2>Sri Lankan Street Food: A Culinary Adventure</h2>
+          <a href="viewblog?id=8" class="view-link">View Full Blog</a>
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button class="approve">Approve</button>
+        <button class="reject">Reject</button>
+      </div>
+    </li>
+
+    <li>
+      <div class="vlog-info">
+        <img src="assets/images/ella.jpg" alt="Blog Preview">
+        <div class="vlog-details">
+          <h2>Ella: The Mountain Paradise of Sri Lanka</h2>
+          <a href="viewblog?id=9" class="view-link">View Full Blog</a>
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button class="approve">Approve</button>
+        <button class="reject">Reject</button>
+      </div>
+    </li>
+
+    <li>
+      <div class="vlog-info">
+        <img src="assets/images/sigiriya.jpg" alt="Blog Preview">
+        <div class="vlog-details">
+          <h2>Climbing Sigiriya Rock: The Lion's Fortress</h2>
+          <a href="viewblog?id=10" class="view-link">View Full Blog</a>
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button class="approve">Approve</button>
+        <button class="reject">Reject</button>
+      </div>
+    </li>
+  </ul>
+</div>
+
+</div>
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
 </body>
 </html>

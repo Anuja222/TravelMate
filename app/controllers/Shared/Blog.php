@@ -59,7 +59,6 @@ class Blog extends Controller{
                 'location' => $_POST['location'] ?? '',
                 'category' => $_POST['category'] ?? '',
                 'description' => $_POST['description'] ?? '',
-                'status' => 'pending', // Posts require admin approval
                 'image' => $imagePath,
                 'travel_date' => !empty($_POST['travelDate']) ? $_POST['travelDate'] : null,
                 'rating' => !empty($_POST['rating']) ? $_POST['rating'] : null,
@@ -69,7 +68,7 @@ class Blog extends Controller{
             if ($post->validate($data)) {
                 $result = $post->insert($data);
                 ob_end_clean();
-                echo json_encode(['success' => true, 'message' => 'Post submitted for approval']);
+                echo json_encode(['success' => true, 'message' => 'Post created successfully']);
                 exit;
             } else {
                 ob_end_clean();

@@ -1,9 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+<<<<<<< HEAD
   <title>Users Management - TravelMate</title>
   <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/Users.css">
   <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css">
+=======
+  <title>Delete Users</title>
+  <link rel="stylesheet" href="assets/css/Admin/Users.css?v=<?php echo time(); ?>">
+  <link rel="stylesheet" href="assets/css/Admin/common.css?v=<?php echo time(); ?>">
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
 </head>
 <body>
 
@@ -13,8 +19,8 @@
   <?php include 'sidebar.view.php'; ?>
 
     <div class="content">
-
       <div class="page-title">
+<<<<<<< HEAD
         <div class="page-title-content">
           <div class="page-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -32,16 +38,18 @@
         <?php if (isset($users) && count($users) > 0): ?>
           <p class="user-count">Total Users: <span><?php echo count($users); ?></span></p>
         <?php endif; ?>
+=======
+        <h1>Users</h1>
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
       </div>
 
       <div class="filter-bar">
-        <input type="text" id="searchBox" placeholder="Search users by name, email, phone...">
+        <input type="text" id="searchBox" placeholder="🔍 Search users by name, email, phone...">
         
         <select id="userTypeFilter">
           <option value="all">All User Types</option>
-          <option value="traveller">Travellers</option>
-          <option value="accommodation">Accommodation Providers</option>
-          <option value="transport">Transport Providers</option>
+          <option value="traveler">Travelers</option>
+          <option value="provider">Service Providers</option>
           <option value="admin">Administrators</option>
         </select>
 
@@ -52,9 +60,10 @@
           <option value="inactive">Inactive</option>
         </select>
 
-        <button id="applyFilter">Apply Filters</button>
+        <button id="applyFilter">Search</button>
       </div>
 
+<<<<<<< HEAD
       <div class="users-grid">
         <?php if (isset($users) && count($users) > 0): ?>
           <?php foreach ($users as $user): ?>
@@ -71,37 +80,35 @@
                   <?php else: ?>
                     <img src="<?= ROOT ?>/assets/images/profile.jpg" alt="User">
                   <?php endif; ?>
+=======
+      <div class="users-table-container">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Profile</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>User Type</th>
+              <th>Join Date</th>
+              <th>Status</th>
+              <th>Listings</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="profile-pic">
+                  <img src="assets/images/profile.jpg" alt="Lakmal">
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
                 </div>
-              </div>
-              
-              <div class="user-card-body">
-                <h3 class="user-card-name"><?php echo htmlspecialchars(($user->first_name ?? '') . ' ' . ($user->last_name ?? '')); ?></h3>
-                
-                <div class="user-card-info">
-                  <div class="info-item">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                    </svg>
-                    <span><?php echo htmlspecialchars($user->email ?? 'No email'); ?></span>
-                  </div>
-                  
-                  <div class="info-item">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-                    </svg>
-                    <span><?php echo htmlspecialchars($user->phone ?? 'No phone'); ?></span>
-                  </div>
-                  
-                  <div class="info-item">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                      <line x1="16" y1="2" x2="16" y2="6"></line>
-                      <line x1="8" y1="2" x2="8" y2="6"></line>
-                      <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                    <span>Joined: <?php echo isset($user->created_at) ? date('M d, Y', strtotime($user->created_at)) : 'N/A'; ?></span>
-                  </div>
+              </td>
+              <td>
+                <div class="user-name">
+                  <strong>Lakmal Perera</strong>
+                  <small>+94 77 123 4567</small>
                 </div>
+<<<<<<< HEAD
               </div>
               
               <div class="user-card-footer">
@@ -151,6 +158,124 @@
             <p>There are no users to display at the moment.</p>
           </div>
         <?php endif; ?>
+=======
+              </td>
+              <td>lakmal.perera@email.com</td>
+              <td><span class="user-type provider">Provider</span></td>
+              <td>2024-01-15</td>
+              <td><span class="status active">Active</span></td>
+              <td>3 Hotels</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-view" onclick="window.location.href='viewprovider';">View</button>
+                  <button class="btn-suspend" onclick="suspendUser(1, 'Lakmal Perera')">Suspend</button>
+                  <button class="btn-delete" onclick="deleteUser(1, 'Lakmal Perera')">Delete</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="profile-pic">
+                  <img src="assets/images/profile.jpg" alt="Anuja">
+                </div>
+              </td>
+              <td>
+                <div class="user-name">
+                  <strong>Anuja Silva</strong>
+                  <small>+94 71 987 6543</small>
+                </div>
+              </td>
+              <td>anuja.silva@email.com</td>
+              <td><span class="user-type provider">Provider</span></td>
+              <td>2024-02-03</td>
+              <td><span class="status active">Active</span></td>
+              <td>2 Vehicles</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-view" onclick="window.location.href='viewprovider';">View</button>
+                  <button class="btn-suspend" onclick="suspendUser(2, 'Anuja Silva')">Suspend</button>
+                  <button class="btn-delete" onclick="deleteUser(2, 'Anuja Silva')">Delete</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="profile-pic">
+                  <img src="assets/images/profile.jpg" alt="Saman">
+                </div>
+              </td>
+              <td>
+                <div class="user-name">
+                  <strong>Saman Wijeratne</strong>
+                  <small>+94 76 456 7890</small>
+                </div>
+              </td>
+              <td>saman.w@email.com</td>
+              <td><span class="user-type traveler">Traveler</span></td>
+              <td>2024-01-20</td>
+              <td><span class="status active">Active</span></td>
+              <td>0</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-view" onclick="window.location.href='viewtraveller';">View</button>
+                  <button class="btn-suspend" onclick="suspendUser(3, 'Saman Wijeratne')">Suspend</button>
+                  <button class="btn-delete" onclick="deleteUser(3, 'Saman Wijeratne')">Delete</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="profile-pic">
+                  <img src="assets/images/profile.jpg" alt="Minoli">
+                </div>
+              </td>
+              <td>
+                <div class="user-name">
+                  <strong>Minoli Fernando</strong>
+                  <small>+94 75 321 6547</small>
+                </div>
+              </td>
+              <td>minoli.fernando@email.com</td>
+              <td><span class="user-type provider">Provider</span></td>
+              <td>2024-01-28</td>
+              <td><span class="status suspended">Suspended</span></td>
+              <td>1 Hotel</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-view" onclick="window.location.href='viewprovider';">View</button>
+                  <button class="btn-suspend" onclick="activateUser(4, 'Minoli Fernando')">Suspend</button>
+                  <button class="btn-delete" onclick="deleteUser(4, 'Minoli Fernando')">Delete</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="profile-pic">
+                  <img src="assets/images/profile.jpg" alt="Rasika">
+                </div>
+              </td>
+              <td>
+                <div class="user-name">
+                  <strong>Rasika Jayasinghe</strong>
+                  <small>+94 77 789 1234</small>
+                </div>
+              </td>
+              <td>rasika.j@email.com</td>
+              <td><span class="user-type traveler">Traveler</span></td>
+              <td>2024-02-10</td>
+              <td><span class="status active">Active</span></td>
+              <td>0</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-view" onclick="window.location.href='viewtraveller';">View</button>
+                  <button class="btn-suspend" onclick="suspendUser(5, 'Rasika Jayasinghe')">Suspend</button>
+                  <button class="btn-delete" onclick="deleteUser(5, 'Rasika Jayasinghe')">Delete</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
       </div>
 
     </div>
@@ -160,13 +285,13 @@
   <div id="deleteModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>Confirm User Deletion</h3>
+        <h3>⚠️ Confirm User Deletion</h3>
         <span class="close" onclick="closeModal()">&times;</span>
       </div>
       <div class="modal-body">
         <p>Are you sure you want to delete user "<span id="userName"></span>"?</p>
         <div class="warning-box">
-          <p class="warning">This action will permanently:</p>
+          <p class="warning">⚠️ This action will permanently:</p>
           <ul>
             <li>Delete the user account and profile</li>
             <li>Remove all their listings and content</li>
@@ -187,7 +312,7 @@
   <div id="suspendModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>Suspend User Account</h3>
+        <h3>⏸️ Suspend User Account</h3>
         <span class="close" onclick="closeSuspendModal()">&times;</span>
       </div>
       <div class="modal-body">
@@ -204,6 +329,7 @@
     </div>
   </div>
 
+<<<<<<< HEAD
   <!-- Unsuspend Confirmation Modal -->
   <div id="unsuspendModal" class="modal">
     <div class="modal-content">
@@ -341,6 +467,8 @@
     </div>
   </div>
 
+=======
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
   <script>
     let userToDelete = null;
     let userToSuspend = null;
@@ -361,12 +489,10 @@
     function updateSelectedUsers() {
       const checkboxes = document.querySelectorAll('.user-checkbox:checked');
       selectedUsers = Array.from(checkboxes).map(cb => cb.dataset.userId);
-      const selectedCountEl = document.querySelector('.selected-count');
-      if (selectedCountEl) {
-        selectedCountEl.textContent = `${selectedUsers.length} users selected`;
-      }
+      document.querySelector('.selected-count').textContent = `${selectedUsers.length} users selected`;
     }
 
+<<<<<<< HEAD
     function viewUserDetails(user) {
       // Populate modal with user data
       document.getElementById('viewUserImage').src = user.profile_picture ? ('<?= ROOT ?>/' + user.profile_picture) : '<?= ROOT ?>/assets/images/profile.jpg';
@@ -413,20 +539,42 @@
       } else if (user.country) {
         addressText = user.country;
       }
+=======
+    // Filter functionality
+    function filterUsers() {
+      const searchText = document.getElementById('searchBox').value.toLowerCase();
+      const userTypeFilter = document.getElementById('userTypeFilter').value.toLowerCase();
+      const statusFilter = document.getElementById('statusFilter').value.toLowerCase();
       
-      if (addressText) {
-        document.getElementById('viewUserAddress').textContent = addressText;
-        document.getElementById('viewUserAddressSection').style.display = 'block';
-      } else {
-        document.getElementById('viewUserAddressSection').style.display = 'none';
-      }
-
-      // Show modal
-      document.getElementById('viewUserModal').style.display = 'block';
-    }
-
-    function closeViewUserModal() {
-      document.getElementById('viewUserModal').style.display = 'none';
+      const rows = document.querySelectorAll('.users-table tbody tr');
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
+      
+      rows.forEach(row => {
+        const name = row.querySelector('.user-name strong')?.textContent.toLowerCase() || '';
+        const email = row.querySelectorAll('td')[2]?.textContent.toLowerCase() || '';
+        const phone = row.querySelector('.user-name small')?.textContent.toLowerCase() || '';
+        const userType = row.querySelector('.user-type')?.textContent.toLowerCase() || '';
+        const status = row.querySelector('.status')?.textContent.toLowerCase() || '';
+        
+        // Check search text match
+        const matchesSearch = searchText === '' || 
+                            name.includes(searchText) || 
+                            email.includes(searchText) || 
+                            phone.includes(searchText);
+        
+        // Check user type filter
+        const matchesUserType = userTypeFilter === 'all' || userType.includes(userTypeFilter);
+        
+        // Check status filter
+        const matchesStatus = statusFilter === 'all' || status.includes(statusFilter);
+        
+        // Show or hide row
+        if (matchesSearch && matchesUserType && matchesStatus) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
     }
 
     // Add event listeners to checkboxes and filters
@@ -435,6 +583,7 @@
       checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', updateSelectedUsers);
       });
+<<<<<<< HEAD
 
       // Filter functionality
       const applyBtn = document.getElementById('applyFilter');
@@ -497,6 +646,31 @@
       if (searchBox) searchBox.addEventListener('input', filterUsers);
       if (typeFilter) typeFilter.addEventListener('change', filterUsers);
       if (statusFilter) statusFilter.addEventListener('change', filterUsers);
+=======
+      
+      // Add filter event listeners
+      const searchBox = document.getElementById('searchBox');
+      const userTypeFilter = document.getElementById('userTypeFilter');
+      const statusFilter = document.getElementById('statusFilter');
+      const applyFilter = document.getElementById('applyFilter');
+      
+      // Real-time search as user types
+      searchBox.addEventListener('input', filterUsers);
+      
+      // Filter on dropdown change
+      userTypeFilter.addEventListener('change', filterUsers);
+      statusFilter.addEventListener('change', filterUsers);
+      
+      // Filter on button click
+      applyFilter.addEventListener('click', filterUsers);
+      
+      // Filter on Enter key in search box
+      searchBox.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          filterUsers();
+        }
+      });
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
     });
 
     function viewUser(id) {
@@ -656,9 +830,12 @@
     window.onclick = function(event) {
       const deleteModal = document.getElementById('deleteModal');
       const suspendModal = document.getElementById('suspendModal');
+<<<<<<< HEAD
       const unsuspendModal = document.getElementById('unsuspendModal');
       const viewUserModal = document.getElementById('viewUserModal');
       const successModal = document.getElementById('successModal');
+=======
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
       
       if (event.target === deleteModal) {
         closeModal();
@@ -666,6 +843,7 @@
       if (event.target === suspendModal) {
         closeSuspendModal();
       }
+<<<<<<< HEAD
       if (event.target === unsuspendModal) {
         closeUnsuspendModal();
       }
@@ -675,6 +853,8 @@
       if (event.target === successModal) {
         closeSuccessModal();
       }
+=======
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
     }
   </script>
 

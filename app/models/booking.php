@@ -44,40 +44,19 @@ class Booking {
 
     // Create booking
     public function createBooking($conn, $data) {
-        // Check if accommodation_id column exists, if not, skip it
-        $accommodationIdField = isset($data['accommodation_id']) ? ', accommodation_id' : '';
-        $accommodationIdValue = isset($data['accommodation_id']) ? ', ?' : '';
-        
-        // Check if number_of_rooms is provided
-        $numberOfRoomsField = isset($data['number_of_rooms']) ? ', number_of_rooms' : '';
-        $numberOfRoomsValue = isset($data['number_of_rooms']) ? ', ?' : '';
-        
         $sql = "INSERT INTO bookings 
-                (user_id, booking_id{$accommodationIdField}, room_id, room_name{$numberOfRoomsField}, checkin_date, checkout_date, 
+                (user_id, booking_id, room_id, room_name, checkin_date, checkout_date, 
                  adults, children, nights, room_price, base_price, taxes, total_price, 
                  booking_status, payment_status, booking_date, created_at) 
                 VALUES 
-                (?, ?{$accommodationIdValue}, ?, ?{$numberOfRoomsValue}, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
         $stmt = $conn->prepare($sql);
-        
-        $params = [
+        return $stmt->execute([
             $data['user_id'],
-            $data['booking_id']
-        ];
-        
-        if (isset($data['accommodation_id'])) {
-            $params[] = $data['accommodation_id'];
-        }
-        
-        $params[] = $data['room_id'];
-        $params[] = $data['room_name'];
-        
-        if (isset($data['number_of_rooms'])) {
-            $params[] = $data['number_of_rooms'];
-        }
-        
-        $params = array_merge($params, [
+            $data['booking_id'],
+            $data['room_id'],
+            $data['room_name'],
             $data['checkin_date'],
             $data['checkout_date'],
             $data['adults'],
@@ -91,8 +70,6 @@ class Booking {
             $data['payment_status'],
             $data['booking_date']
         ]);
-        
-        return $stmt->execute($params);
     }
 
     // Get all bookings by user

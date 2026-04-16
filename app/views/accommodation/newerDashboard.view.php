@@ -4,24 +4,10 @@ if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
 
+//$propertyTitle = $_SESSION['accommodation_features']['title'] ?? '';
+
 // Check if user is logged in
 $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
-$role = $isLoggedIn ? ($_SESSION['user']['role'] ?? $_SESSION['role'] ?? '') : '';
-
-// Role-based redirect - this is an accommodation provider page
-if (!$isLoggedIn || $role !== 'accommodation') {
-    if ($role === 'admin') {
-        header('Location: ad_dashboard');
-        exit;
-    } elseif ($role === 'transport') {
-        header('Location: tr_dashboard');
-        exit;
-    } else {
-        header('Location: homet');
-        exit;
-    }
-}
-
 $firstName = $isLoggedIn ? $_SESSION['user']['first_name'] : '';
 $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
 $rootUrl = defined('ROOT') ? ROOT : '/TravelMate/public';
@@ -38,6 +24,7 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
   <link rel="stylesheet" href="/TravelMate/public/assets/css/Accommodation/property-cards.css">
   <link rel="stylesheet" href="/TravelMate/public/assets/css/Traveller/usermain.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<<<<<<< HEAD
   <style>
     .property-cards-grid {
       display: grid;
@@ -675,6 +662,8 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
       box-shadow: 0 6px 16px rgba(231, 76, 60, 0.4);
     }
   </style>
+=======
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
 </head>
 <body>
   <!-- Navbar -->
@@ -713,15 +702,112 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
       </div>
       <!-- Profile -->
       <div class="profile-section">
+<<<<<<< HEAD
   <img src="<?php echo htmlspecialchars($profileImage); ?>" alt="User" class="profile-pic" onerror="this.src='/TravelMate/public/assets/images/profile.jpg'">
+=======
+  <!-- <img src="/TravelMate/public/assets/images/profile.jpg" alt="User" class="profile-pic"> -->
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
         <div>
-          <h2><?php echo htmlspecialchars($firstName); ?> <?php echo htmlspecialchars($lastName); ?></h2>
+          <h2>Hello <?php echo htmlspecialchars($firstName); ?> <?php echo htmlspecialchars($lastName); ?></h2>
           <span class="profile-email"><?php echo htmlspecialchars($_SESSION['user']['email']); ?></span>
         </div>
       </div>
       <!-- Favourites -->
-      <!-- Activity Summary -->
+<<<<<<< HEAD
+=======
       <div class="activity-summary">
+        <h3>Activity Summary</h3>
+        <div class="summary-stats">
+          <div class="stat">
+            <span class="stat-num"><?php echo htmlspecialchars($listingsCount ?? 0); ?></span>
+            <span class="stat-label">Listings</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num"><?php echo htmlspecialchars($bookedCount ?? 0); ?></span>
+            <span class="stat-label">Booked</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num"><?php echo htmlspecialchars($bookingRecievedCount ?? 0); ?></span>
+            <span class="stat-label">Bookings Received</span>
+          </div>
+        </div>
+      </div>      
+
+     <section class="favourite">
+        <div class="section-header">
+          <h3>My Properties</h3>
+          <button class="btn-list-property" onclick="window.location.href='/TravelMate/public/propertyListingStart';">
+            <i class="fas fa-plus"></i> List Your Property
+          </button>
+        </div>
+
+        <div class="property-cards-grid">
+          <?php
+          global $pdo;
+          if(isset($_SESSION['user'])){
+            $userId = $_SESSION['user']['id'];
+
+            //fetch all accommodations for this user
+            $stmt = $pdo->prepare("
+            SELECT a.id, a.title, a.property_type, a.location, a.rooms, a.bathrooms, a.max_guests, a.status, (SELECT image_path FROM accommodation_images WHERE accommodation_id = a.id AND is_main = 1 LIMIT 1) as main_image 
+            FROM accommodations a
+            WHERE a.user_id = ?
+            ORDER BY a.created_at DESC
+            ");
+
+            $stmt->execute([$userId]);
+            $accommodations = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            if(!empty($accommodations)){
+              foreach ($accommodations as $property){
+                // Use main image if exists, otherwise use default
+                if ($property['main_image']) {
+                    // Image path from DB is relative to public folder: uploads/accommodations/...
+                    $imagePath = $property['main_image'];
+                } else {
+                    $imagePath = 'assets/images/default-property.jpg';
+                }
+                $statusClass = strtolower($property['status']) === 'active' ? 'status-active' : 'status-inactive';
+                ?>
+                <div class="property-card">
+                  <div class="property-card-header">
+                    <div class="property-status <?php echo htmlspecialchars($statusClass); ?>">
+                      <?php echo htmlspecialchars(strtoupper($property['status'])); ?>
+                    </div>
+                    <img src="/TravelMate/public/<?php echo htmlspecialchars($imagePath); ?>"
+                    alt="<?php echo htmlspecialchars($property['title']); ?>"
+                    class="property-image"
+                    onerror="this.src='/TravelMate/public/assets/images/default-property.jpg'">
+                  </div>
+                  <div class="property-card-content">
+                    <h3><?php echo htmlspecialchars($property['title']); ?></h3>
+                    <p class="property-type"><?php echo htmlspecialchars(ucfirst($property['property_type'])); ?></p>
+                    <p class="property-location"><?php echo htmlspecialchars($property['location']); ?></p>
+                    <div class="property-details">
+                      <span><?php echo htmlspecialchars($property['rooms']); ?> Rooms</span>
+                      <span><?php echo htmlspecialchars($property['bathrooms']); ?> Bathrooms</span>
+                      <span><?php echo htmlspecialchars($property['max_guests']); ?> Guests</span>
+                    </div>
+                    <div class="property-actions">
+                      <button type="button" class="view-btn" onclick="window.location.href='/TravelMate/public/viewProperty/<?php echo htmlspecialchars($property['id']); ?>';">View</button>
+                      <button type="button" class="edit-btn" onclick="window.location.href='/TravelMate/public/editAccommodationFeatures/<?php echo htmlspecialchars($property['id']); ?>';">Update</button>
+                      <button type="button" class="delete-btn" onclick="deleteProperty(<?php echo htmlspecialchars($property['id']); ?>)">Delete</button>
+                    </div>
+                  </div>
+                </div>
+                <?php
+              }
+            } else {
+              echo '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;"><p>No properties listed yet.</p></div>';
+            }
+          }
+          ?>
+           
+        </div>
+      </section>
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
+      <!-- Activity Summary -->
+      <!-- <div class="activity-summary">
         <h3>Activity Summary</h3>
         <div class="summary-stats">
           <div class="stat">
@@ -737,6 +823,7 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
             <span class="stat-label">Bookings Received</span>
           </div>
         </div>
+<<<<<<< HEAD
       </div>     
      <section class="favourite">
         <div class="section-header">
@@ -771,48 +858,11 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
             <span class="stat-label">Bookings Received</span>
           </div>
         </div>
+=======
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
       </div> -->
     </section>
   </main>
-  <!-- Status Toggle Modal -->
-  <div class="status-modal-overlay" id="statusModal">
-    <div class="status-modal">
-      <div class="status-icon-circle" id="statusIconCircle">
-        <i class="fas fa-check" id="statusIcon"></i>
-      </div>
-      <h2 id="statusModalTitle">Property Activated Successfully!</h2>
-      <p id="statusModalMessage">Your property is now visible to travelers and can receive bookings.</p>
-      <button class="status-modal-btn" onclick="closeStatusModal()">Got it</button>
-    </div>
-  </div>
-
-  <!-- Delete Success Modal -->
-  <div class="status-modal-overlay" id="deleteModal">
-    <div class="status-modal">
-      <div class="status-icon-circle" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
-        <i class="fas fa-trash-alt" style="font-size: 50px; color: white; position: relative; z-index: 1;"></i>
-      </div>
-      <h2>Property Deleted Successfully!</h2>
-      <p>The property has been permanently removed from your listings.</p>
-      <button class="status-modal-btn" onclick="closeDeleteModal()">Got it</button>
-    </div>
-  </div>
-
-  <!-- Delete Confirmation Modal -->
-  <div class="status-modal-overlay" id="confirmDeleteModal">
-    <div class="confirm-modal">
-      <div class="confirm-icon-circle">
-        <i class="fas fa-exclamation-triangle"></i>
-      </div>
-      <h2>Delete Property?</h2>
-      <p>Are you sure you want to delete this property? This action cannot be undone.</p>
-      <div class="confirm-modal-buttons">
-        <button class="confirm-modal-btn confirm-modal-btn-cancel" onclick="closeConfirmModal()">Cancel</button>
-        <button class="confirm-modal-btn confirm-modal-btn-delete" onclick="confirmDelete()">Delete</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Footer -->
    <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
   <!-- <footer>
@@ -849,99 +899,6 @@ $profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) ? $r
   <!-- Dashboard scripts -->
   <script src="/TravelMate/public/assets/js/accommodation.js"></script>
   <script>
-    // Status Modal Functions
-    function showStatusModal(isActive) {
-      const modal = document.getElementById('statusModal');
-      const iconCircle = document.getElementById('statusIconCircle');
-      const icon = document.getElementById('statusIcon');
-      const title = document.getElementById('statusModalTitle');
-      const message = document.getElementById('statusModalMessage');
-      
-      if (isActive) {
-        iconCircle.className = 'status-icon-circle active-status';
-        icon.className = 'fas fa-check';
-        title.textContent = 'Property Activated Successfully!';
-        message.textContent = 'Your property is now visible to travelers and can receive bookings.';
-      } else {
-        iconCircle.className = 'status-icon-circle inactive-status';
-        icon.className = 'fas fa-power-off';
-        title.textContent = 'Property Deactivated Successfully!';
-        message.textContent = 'Your property is now hidden from travelers and will not receive new bookings.';
-      }
-      
-      modal.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-    
-    function closeStatusModal() {
-      const modal = document.getElementById('statusModal');
-      modal.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-    
-    // Delete Modal Functions
-    function showDeleteModal() {
-      const modal = document.getElementById('deleteModal');
-      modal.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-    
-    function closeDeleteModal() {
-      const modal = document.getElementById('deleteModal');
-      modal.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-    
-    // Confirmation Modal Functions
-    let pendingDeleteId = null;
-    
-    function showConfirmDeleteModal(propertyId) {
-      pendingDeleteId = propertyId;
-      const modal = document.getElementById('confirmDeleteModal');
-      modal.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-    
-    function closeConfirmModal() {
-      pendingDeleteId = null;
-      const modal = document.getElementById('confirmDeleteModal');
-      modal.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-    
-    function confirmDelete() {
-      if (pendingDeleteId) {
-        // Trigger the actual delete by dispatching a custom event
-        const event = new CustomEvent('confirmDeleteProperty', { detail: { id: pendingDeleteId } });
-        document.dispatchEvent(event);
-        closeConfirmModal();
-      }
-    }
-    
-    // Close modal when clicking overlay
-    document.getElementById('statusModal').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeStatusModal();
-      }
-    });
-    
-    document.getElementById('deleteModal').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeDeleteModal();
-      }
-    });
-    
-    document.getElementById('confirmDeleteModal').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeConfirmModal();
-      }
-    });
-    
-    // Make functions globally available
-    window.showStatusModal = showStatusModal;
-    window.showDeleteModal = showDeleteModal;
-    window.showConfirmDeleteModal = showConfirmDeleteModal;
-    
     // ensure loader runs once script is available
     (function(){
       function tryRun(){

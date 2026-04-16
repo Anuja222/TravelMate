@@ -11,7 +11,6 @@ class Post {
         'location',
         'category',
         'description',
-        'status',
         'image',
         'travel_date',
         'rating',
@@ -56,9 +55,13 @@ class Post {
                     (SELECT vote_type FROM post_votes WHERE post_id = p.id AND user_id = :current_user_id LIMIT 1) as user_vote
                 FROM {$this->table} p
                 LEFT JOIN users u ON p.user_id = u.id
+<<<<<<< HEAD
                 WHERE p.status = 'approved'";
                 
         $params = ['current_user_id' => $currentUserId];
+=======
+                ORDER BY p.created_at DESC";
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
         
         if (!empty($category)) {
             $query .= " AND p.category = :category";
