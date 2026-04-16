@@ -549,7 +549,7 @@ class AccommodationController {
         }
     }
 
-    public function deleteByAdmin() {
+    public function deleteByAdmin() {//deletes accommodation and all related data (images, amenities)
         global $pdo;
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
