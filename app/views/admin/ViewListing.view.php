@@ -37,7 +37,7 @@
       </div>
 
       <!-- Filter Bar -->
-      <!-- <div class="filter-bar">
+      <div class="filter-bar">
         <input type="text" id="searchInput" placeholder="Search destinations..." />
         <select id="statusFilter">
           <option value="">All Status</option>
@@ -56,7 +56,7 @@
         <button id="btnApplyFilter">
           <i class="fas fa-filter"></i> Apply Filters
         </button>
-      </div> -->
+      </div>
 
       <!-- Statistics Summary -->
       <div class="stats-summary">
@@ -139,6 +139,7 @@
     </div>
   </div>
 
+<<<<<<< HEAD
   <!-- Success Modal -->
   <div id="successModal" class="success-modal" style="display: none;">
     <div class="success-modal-content">
@@ -281,6 +282,11 @@
       }
     });
 
+=======
+  <script src="../public/assets/js/destinations.js"></script>
+  
+  <script>
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
     // Enhanced functionality
     document.addEventListener('DOMContentLoaded', function() {
       // Modal handling
@@ -307,28 +313,59 @@
       }
       
       // Filter functionality
-      const applyFilterBtn = document.getElementById('btnApplyFilter');
-      if (applyFilterBtn) {
-        applyFilterBtn.addEventListener('click', function() {
-          const searchValue = document.getElementById('searchInput').value;
-          const statusValue = document.getElementById('statusFilter').value;
-          const regionValue = document.getElementById('regionFilter').value;
+      function filterDestinations() {
+        const searchValue = document.getElementById('searchInput').value.toLowerCase();
+        const statusValue = document.getElementById('statusFilter').value.toLowerCase();
+        const regionValue = document.getElementById('regionFilter').value.toLowerCase();
+        
+        const cards = document.querySelectorAll('.content-card');
+        
+        cards.forEach(card => {
+          const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
+          const description = card.querySelector('p')?.textContent.toLowerCase() || '';
           
-          // Call filter function from destinations.js
-          if (typeof filterDestinations === 'function') {
-            filterDestinations(searchValue, statusValue, regionValue);
+          // Check search match
+          const matchesSearch = !searchValue || title.includes(searchValue) || description.includes(searchValue);
+          
+          // For now, show all if filters are not fully implemented
+          // You can add status and region data attributes to cards later
+          const matchesStatus = true; // statusValue === '' || card.dataset.status === statusValue;
+          const matchesRegion = true; // regionValue === '' || card.dataset.region === regionValue;
+          
+          // Show or hide card
+          if (matchesSearch && matchesStatus && matchesRegion) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
           }
         });
       }
       
-      // Search on enter key
+      const applyFilterBtn = document.getElementById('btnApplyFilter');
       const searchInput = document.getElementById('searchInput');
+      const statusFilter = document.getElementById('statusFilter');
+      const regionFilter = document.getElementById('regionFilter');
+      
+      if (applyFilterBtn) {
+        applyFilterBtn.addEventListener('click', filterDestinations);
+      }
+      
+      // Real-time search as user types
       if (searchInput) {
+        searchInput.addEventListener('input', filterDestinations);
         searchInput.addEventListener('keypress', function(e) {
           if (e.key === 'Enter') {
-            applyFilterBtn.click();
+            filterDestinations();
           }
         });
+      }
+      
+      // Filter on dropdown change
+      if (statusFilter) {
+        statusFilter.addEventListener('change', filterDestinations);
+      }
+      if (regionFilter) {
+        regionFilter.addEventListener('change', filterDestinations);
       }
       
       // Update stats animation

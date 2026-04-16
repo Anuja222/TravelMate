@@ -24,22 +24,16 @@ class BookingController
     public function createBooking()
     {
         global $pdo;
-        
-        // Check authentication first
+        $data = json_decode(file_get_contents('php://input'), true);
+
         if (!isset($_SESSION['user']['id'])) {
             $this->sendResponse(false, ['auth' => 'Please login to complete booking']);
             return;
         }
-        
-        $data = json_decode(file_get_contents('php://input'), true);
-        
-        // Log the received data for debugging
-        error_log('Booking data received: ' . json_encode($data));
 
         // Validate required fields
         $errors = $this->validator->validateRequiredFields($data, [
             'bookingId',
-            'accommodationId',
             'roomId',
             'roomName',
             'checkinDate',
@@ -54,7 +48,6 @@ class BookingController
         ]);
 
         if (!empty($errors)) {
-            error_log('Validation errors: ' . json_encode($errors));
             $this->sendResponse(false, $errors);
             return;
         }
@@ -72,19 +65,16 @@ class BookingController
             $errors['totalPrice'] = 'Total price must be greater than 0';
 
         if (!empty($errors)) {
-            error_log('Business validation errors: ' . json_encode($errors));
             $this->sendResponse(false, $errors);
             return;
         }
 
         $booking = new Booking();
         $result = $booking->createBooking($pdo, [
-            'user_id' => $_SESSION['user']['id'], // Get from session, not from request
+            'user_id' => $data['userId'],
             'booking_id' => $data['bookingId'],
-            'accommodation_id' => $data['accommodationId'],
             'room_id' => $data['roomId'],
             'room_name' => $data['roomName'],
-            'number_of_rooms' => $data['numberOfRooms'] ?? 1,
             'checkin_date' => $data['checkinDate'],
             'checkout_date' => $data['checkoutDate'],
             'adults' => $data['adults'],

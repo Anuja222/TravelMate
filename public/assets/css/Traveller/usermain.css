@@ -47,7 +47,7 @@
   opacity: 1;
 }
 .explore-btn {
-  background: linear-gradient(135deg, #1abc5b 0%, #16a085 100%);
+  background: #1abc5b;
   color: white;
   padding: 0.8em 1.5em;
   border: none;
@@ -58,12 +58,10 @@
   margin-top: 1em;
   font-size: small;
   text-decoration: none;
-  box-shadow: 0 4px 12px rgba(26, 188, 91, 0.3);
 }
 .card:hover .explore-btn {
   transform: scale(1.05);
-  background: linear-gradient(135deg, #16a085 0%, #1abc5b 100%);
-  box-shadow: 0 6px 16px rgba(26, 188, 91, 0.4);
+  background: #169d4a;
 }
 .card-content {
   padding: 1.5em;
@@ -202,21 +200,14 @@ header {
 }
 
 .user-btn {
-  background: linear-gradient(135deg, #1abc5b 0%, #16a085 100%);
+  background: #1abc5b;
   color: #fff;
   border: none;
-  border-radius: 25px;
+  border-radius: 4px;
   padding: 0.7em 1.4em;
   cursor: pointer;
   font-weight: 600;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(26, 188, 91, 0.3);
-}
-
-.user-btn:hover {
-  background: linear-gradient(135deg, #16a085 0%, #1abc5b 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(26, 188, 91, 0.4);
+  transition: background 0.2s;
 }
 
 .user-icon{

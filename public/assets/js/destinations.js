@@ -61,52 +61,24 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // ...existing attachHandlers, escapeHtml...
-  let destinationToDelete = null;
-
   function attachHandlers() {
     document.querySelectorAll('.btn-edit').forEach(btn=>{
       btn.addEventListener('click', ()=> window.location.href = 'editDestination?id=' + btn.dataset.id);
     });
     document.querySelectorAll('.btn-view').forEach(btn=>{
-      btn.addEventListener('click', ()=> {
-        if (typeof showViewModal === 'function') {
-          showViewModal(btn.dataset.id);
-        } else {
-          window.location.href = 'beachdetail?dest=' + btn.dataset.id;
-        }
-      });
+      btn.addEventListener('click', ()=> window.location.href = 'beachdetail?dest=' + btn.dataset.id);
     });
     document.querySelectorAll('.btn-delete').forEach(btn=>{
       btn.addEventListener('click', function(){
-        destinationToDelete = btn.dataset.id;
-        document.getElementById('deleteModal').style.display = 'block';
+        if (!confirm('Delete this destination?')) return;
+        const fd = new FormData();
+        fd.append('id', btn.dataset.id);
+        fetch(baseApi + '/api/destination/delete', { method:'POST', body: fd, credentials:'same-origin' })
+          .then(r=>r.json()).then(resp=>{
+            if (resp.success) { alert('Deleted'); loadList(); }
+            else alert('Delete failed');
+          }).catch(()=> alert('Network error'));
       });
-    });
-  }
-
-  // Delete confirmation handler
-  const confirmDeleteBtn = document.getElementById('btnConfirmDelete');
-  if (confirmDeleteBtn) {
-    confirmDeleteBtn.addEventListener('click', function() {
-      if (!destinationToDelete) return;
-      
-      const fd = new FormData();
-      fd.append('id', destinationToDelete);
-      fetch(baseApi + '/api/destination/delete', { method:'POST', body: fd, credentials:'same-origin' })
-        .then(r=>r.json()).then(resp=>{
-          document.getElementById('deleteModal').style.display = 'none';
-          if (resp.success) { 
-            if (typeof showSuccessModal === 'function') {
-              showSuccessModal('Destination deleted successfully!');
-            } else {
-              alert('Deleted');
-            }
-            loadList();
-          }
-          else alert('Delete failed');
-        }).catch(()=> alert('Network error'));
-      
-      destinationToDelete = null;
     });
   }
 

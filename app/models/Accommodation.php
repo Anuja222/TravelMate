@@ -8,7 +8,10 @@ class Accommodation {
     public $title;
     public $description;
     public $location;
+<<<<<<< HEAD
     public $address;
+=======
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
     public $rooms;
     public $bathrooms;
     public $maxGuests;
@@ -16,6 +19,8 @@ class Accommodation {
     public $smoking;
     public $parties;
     public $pets;
+    public $pricePerNight;
+    public $pricePerGuest;
     public $checkInStart;
     public $checkInEnd;
     public $checkOutTime;
@@ -63,19 +68,28 @@ class Accommodation {
 
     public function create($conn) {
         $sql = "INSERT INTO accommodations (
+<<<<<<< HEAD
             user_id, property_type, title, description, location, address,
             rooms, bathrooms, max_guests, children_allowed,
+=======
+            user_id, property_type, title, description, location,
+            rooms, bathrooms, max_guests, price_per_night, price_per_guest,
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
             smoking, parties, pets, check_in_start, check_in_end,
             check_out_time, contact_name, contact_phone, contact_email,
             amenities, price_per_night, price_per_guest,
             breakfast, parking, status, created_at, updated_at
         ) VALUES (
+<<<<<<< HEAD
             ?, ?, ?, ?, ?, ?,
             ?, ?, ?, ?,
             ?, ?, ?, ?, ?, ?,
             ?, ?, ?,
             ?, ?, ?,
             ?, ?, ?, NOW(), NOW()
+=======
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
         )";
         
         $stmt = $conn->prepare($sql);
@@ -85,11 +99,19 @@ class Accommodation {
             $this->title,
             $this->description,
             $this->location,
+<<<<<<< HEAD
             $this->address,
             $this->rooms,
             $this->bathrooms,
             $this->maxGuests,
             $this->childrenAllowed,
+=======
+            $this->rooms,
+            $this->bathrooms,
+            $this->maxGuests,
+            $this->pricePerNight,
+            $this->pricePerGuest,
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
             $this->smoking,
             $this->parties,
             $this->pets,
@@ -115,6 +137,7 @@ class Accommodation {
     }
 
     public static function findByUser($conn, $userId) {
+<<<<<<< HEAD
         $ratingSelect = self::hasBookingRatingsTable($conn)
             ? self::ratingSelectClause('a')
             : "0 AS avg_rating, 0 AS rating_count";
@@ -137,12 +160,16 @@ class Accommodation {
                 FROM accommodations a
                 WHERE a.user_id = ?
                 ORDER BY a.created_at DESC";
+=======
+        $sql = "SELECT * FROM accommodations WHERE user_id = ? AND deleted_at IS NULL ORDER BY created_at DESC";
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
         $stmt = $conn->prepare($sql);
         $stmt->execute([$userId]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public static function findAll($conn) {
+<<<<<<< HEAD
         $ratingSelect = self::hasBookingRatingsTable($conn)
             ? self::ratingSelectClause('a')
             : "0 AS avg_rating, 0 AS rating_count";
@@ -159,6 +186,9 @@ class Accommodation {
             : "0 AS avg_rating, 0 AS rating_count";
 
         $sql = "SELECT a.*, {$ratingSelect} FROM accommodations a ORDER BY a.created_at DESC";
+=======
+        $sql = "SELECT * FROM accommodations WHERE status = 'active' AND deleted_at IS NULL ORDER BY created_at DESC";
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -166,11 +196,11 @@ class Accommodation {
 
     public static function findById($conn, $id, $userId = null) {
         if ($userId) {
-            $sql = "SELECT * FROM accommodations WHERE id = ? AND user_id = ?";
+            $sql = "SELECT * FROM accommodations WHERE id = ? AND user_id = ? AND deleted_at IS NULL";
             $stmt = $conn->prepare($sql);
             $stmt->execute([$id, $userId]);
         } else {
-            $sql = "SELECT * FROM accommodations WHERE id = ?";
+            $sql = "SELECT * FROM accommodations WHERE id = ? AND deleted_at IS NULL";
             $stmt = $conn->prepare($sql);
             $stmt->execute([$id]);
         }
@@ -187,7 +217,12 @@ class Accommodation {
                 rooms = ?,
                 bathrooms = ?,
                 max_guests = ?,
+<<<<<<< HEAD
                 children_allowed = ?,
+=======
+                price_per_night = ?,  
+                price_per_guest = ?,
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
                 smoking = ?,
                 parties = ?,
                 pets = ?,
@@ -216,7 +251,12 @@ class Accommodation {
             $this->rooms,
             $this->bathrooms,
             $this->maxGuests,
+<<<<<<< HEAD
             $this->childrenAllowed,
+=======
+            $this->pricePerNight,   
+            $this->pricePerGuest, 
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
             $this->smoking,
             $this->parties,
             $this->pets,
@@ -237,16 +277,18 @@ class Accommodation {
         ]);
     }
 
-    public static function deleteById($conn, $id, $userId) {
-        // First delete related images
-        $sql = "DELETE FROM accommodation_images WHERE accommodation_id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([$id]);
-        
-        // Then delete the accommodation
-        $sql = "DELETE FROM accommodations WHERE id = ? AND user_id = ?";
-        $stmt = $conn->prepare($sql);
-        return $stmt->execute([$id, $userId]);
+    public static function deleteById($conn, $id, $userId = null) {
+        // Soft delete - mark as deleted instead of removing
+        if ($userId) {
+            $sql = "UPDATE accommodations SET deleted_at = NOW(), updated_at = NOW() WHERE id = ? AND user_id = ? AND deleted_at IS NULL";
+            $stmt = $conn->prepare($sql);
+            return $stmt->execute([$id, $userId]);
+        } else {
+            // Admin delete (no user_id check)
+            $sql = "UPDATE accommodations SET deleted_at = NOW(), updated_at = NOW() WHERE id = ? AND deleted_at IS NULL";
+            $stmt = $conn->prepare($sql);
+            return $stmt->execute([$id]);
+        }
     }
 
     public static function addImage($conn, $accommodationId, $imagePath, $isMain = false) {
@@ -269,4 +311,5 @@ class Accommodation {
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result ? $result['image_path'] : null;
     }
+    
 }

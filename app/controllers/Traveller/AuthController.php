@@ -108,13 +108,18 @@ class AuthController
         $userId = $user->createUser($pdo);
 
         if ($userId) {
+            // Set default account_status to active for new users
+            $updateSql = "UPDATE users SET account_status = 'active' WHERE id = ?";
+            $updateStmt = $pdo->prepare($updateSql);
+            $updateStmt->execute([$userId]);
+            
             $this->sendResponse(true, [], ['userId' => $userId, 'role' => $role]);
         } else {
             $this->sendResponse(false, ['general' => 'Registration failed']);
         }
     }
 
-    // Login user
+    // Login user - FIXED VERSION with account_status
     public function loginUser()
     {
         global $pdo;
@@ -132,6 +137,7 @@ class AuthController
             return;
         }
 
+<<<<<<< HEAD:app/controllers/Traveller/AuthController.php
         if (isset($userData['status']) && $userData['status'] === 'suspended') {
             $reason = !empty($userData['suspend_reason']) ? $userData['suspend_reason'] : 'Violation of terms';
             $this->sendResponse(false, ['general' => 'Your account has been suspended by Admin. Reason: ' . htmlspecialchars($reason)]);
@@ -139,6 +145,16 @@ class AuthController
         }
 
         // Set session with user data
+=======
+        // CRITICAL FIX: Get the account_status from database
+        // If it's NULL or empty, set to 'active' as default
+        $accountStatus = $userData['account_status'] ?? 'active';
+        if (empty($accountStatus)) {
+            $accountStatus = 'active';
+        }
+
+        // Set session with ALL user data including account_status
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874:app/controllers/AuthController.php
         $_SESSION['user'] = [
             'id' => $userData['id'],
             'email' => $userData['email'],
@@ -148,7 +164,11 @@ class AuthController
             'gender' => $userData['gender'] ?? '',
             'dateOfBirth' => $userData['date_of_birth'] ?? '',
             'role' => $userData['role'],
+<<<<<<< HEAD:app/controllers/Traveller/AuthController.php
             'profile_image' => $userData['profile_image'] ?? 'assets/images/profile.jpg',
+=======
+            'account_status' => $accountStatus, // CRITICAL: Add this line - should be 'active' or 'deactivated'
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874:app/controllers/AuthController.php
             'logged_in' => true,
             'login_time' => time()
         ];
@@ -157,7 +177,8 @@ class AuthController
             'id' => $userData['id'],
             'email' => $userData['email'],
             'first_name' => $userData['first_name'],
-            'role' => $userData['role']
+            'role' => $userData['role'],
+            'account_status' => $accountStatus // Also return in response
         ]);
     }
 
@@ -194,7 +215,12 @@ class AuthController
     {
         // Redirect if already logged in
         if (isset($_SESSION['user']) && !empty($_SESSION['user'])) {
-            header('Location: homet');
+            // Check account status and redirect accordingly
+            if ($_SESSION['user']['role'] === 'transport') {
+                header('Location: tr_dashboard');
+            } else {
+                header('Location: homet');
+            }
             exit;
         }
         include __DIR__ . '/../../views/traveller/login.view.php';

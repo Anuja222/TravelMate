@@ -59,9 +59,62 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                 </div>
                 <a href="favactivity" class="see-all-btn">See All Activities</a>
             </div>
-            <div class="destinations-grid" id="popularActivities">
-                <!-- dynamic loaded -->
-                <p>Loading activities...</p>
+            <div class="destinations-grid">
+                <div class="card">
+                    <div class="card-image">
+                        <img src="assets/images/surfing.png" alt="Surfing">
+                        <div class="card-overlay">
+                            <a href="surfing" class="explore-btn">Explore</a>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Surfing</h3>
+                        <p>Catch the waves, feel the rhythm of the ocean — surfing is where balance meets pure freedom.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image">
+                        <img src="assets/images/waterafting.png" alt="Water Rafting">
+                        <div class="card-overlay">
+                            <button class="explore-btn">Explore</button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Water Rafting</h3>
+                        <p>Thrilling rapids, splashing waves, and pure adrenaline — water rafting is where adventure
+                            flows wild and free.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image">
+                        <img src="assets/images/birdwatching.png" alt="Bird Watching">
+                        <div class="card-overlay">
+                            <button class="explore-btn">Explore</button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Bird watching</h3>
+                        <p>Gentle trails, quiet moments, and wings in flight — bird watching is nature’s calmest
+                            spectacle.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image">
+                        <img src="assets/images/safari.png" alt="Safari">
+                        <div class="card-overlay">
+                            <button class="explore-btn">Explore</button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Safari</h3>
+                        <p>Golden plains, roaming wildlife, and untamed beauty — a safari is the closest you’ll get to
+                            nature’s wild heart.</p>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -74,9 +127,66 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                 </div>
                 <a href="accommodation" class="see-all-btn">See All Accommodations</a>
             </div>
-            <div class="accommodation-grid" id="featuredAccommodations">
-                <!-- dynamic loaded -->
-                <p>Loading accommodations...</p>
+            <div class="accommodation-grid">
+                <div class="card">
+                    <div class="card-image">
+                        <img src="assets/images/luxuryhotel.png" alt="Luxury Beach Resort">
+                        <div class="card-overlay">
+                            <a href="accommodationdetail" class="explore-btn">Book Now</a>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Luxury Beach Resort</h3>
+                        <p>5-star beachfront resort with private pools, spa services, and world-class dining.
+                            All-inclusive packages available.</p>
+                        <span class="price-tag">Rs.45000/night</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image">
+                        <img src="assets/images/boutiquehotel.png" alt="Boutique City Hotel">
+                        <div class="card-overlay">
+                            <button class="explore-btn">Book Now</button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Boutique City Hotel</h3>
+                        <p>Stylish hotel in the heart of the city. Modern amenities, rooftop bar, and walking distance
+                            to major attractions.</p>
+                        <span class="price-tag">Rs.18000/night</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image">
+                        <img src="assets/images/mountainlodge.png" alt="Mountain Lodge">
+                        <div class="card-overlay">
+                            <button class="explore-btn">Book Now</button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Mountain Lodge</h3>
+                        <p>Cozy lodge with stunning mountain views. Perfect for hiking enthusiasts and nature lovers
+                            seeking tranquility.</p>
+                        <span class="price-tag">Rs.12000/night</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image">
+                        <img src="assets/images/backpackerhostel.png" alt="Budget Hostel">
+                        <div class="card-overlay">
+                            <button class="explore-btn">Book Now</button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Backpacker Hostel</h3>
+                        <p>Clean, safe, and social environment for budget travelers. Free WiFi, kitchen facilities, and
+                            organized tours.</p>
+                        <span class="price-tag">Rs.18000/night</span>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -147,6 +257,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                     container.innerHTML = '<p>Error loading destinations</p>';
                 });
 
+<<<<<<< HEAD
             // Load Activities
             const activityContainer = document.getElementById('popularActivities');
 
@@ -367,6 +478,8 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                                         transportContainer.innerHTML = '<p>Error loading transport options</p>';
                                 });
 
+=======
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
             function escapeHtml(text) {
                 if (!text) return '';
                 return String(text).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": "&#039;" }[m]));

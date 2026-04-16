@@ -201,22 +201,25 @@
 
     <script>
         // Filter functionality
-        document.getElementById('applyFilter').addEventListener('click', function() {
+        function filterNotifications() {
             const searchTerm = document.getElementById('searchBox').value.toLowerCase();
-            const typeFilter = document.getElementById('typeFilter').value;
-            const statusFilter = document.getElementById('statusFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value.toLowerCase();
             
             const rows = document.querySelectorAll('tbody tr');
             
             rows.forEach(row => {
-                const title = row.cells[2].textContent.toLowerCase();
-                const message = row.cells[3].textContent.toLowerCase();
-                const type = row.cells[1].textContent.toLowerCase().trim();
-                const status = row.cells[5].textContent.toLowerCase().trim();
+                // Skip if it's an empty state row
+                if (row.cells.length < 7) return;
+                
+                const title = row.cells[2]?.textContent.toLowerCase() || '';
+                const message = row.cells[3]?.textContent.toLowerCase() || '';
+                const type = row.cells[1]?.textContent.toLowerCase().trim() || '';
+                const status = row.cells[5]?.textContent.toLowerCase().trim() || '';
                 
                 let showRow = true;
                 
-                // Search filter
+                // Search filter (check title and message)
                 if (searchTerm && !title.includes(searchTerm) && !message.includes(searchTerm)) {
                     showRow = false;
                 }
@@ -232,6 +235,31 @@
                 }
                 
                 row.style.display = showRow ? '' : 'none';
+            });
+        }
+
+        // Add event listeners when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchBox = document.getElementById('searchBox');
+            const typeFilter = document.getElementById('typeFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            const applyFilter = document.getElementById('applyFilter');
+            
+            // Real-time search as user types
+            searchBox.addEventListener('input', filterNotifications);
+            
+            // Filter on dropdown change
+            typeFilter.addEventListener('change', filterNotifications);
+            statusFilter.addEventListener('change', filterNotifications);
+            
+            // Filter on button click
+            applyFilter.addEventListener('click', filterNotifications);
+            
+            // Filter on Enter key in search box
+            searchBox.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    filterNotifications();
+                }
             });
         });
 

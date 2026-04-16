@@ -4,7 +4,11 @@ $db   = "travelmate";     // your database name
 $user = "root";           // XAMPP default user
 $pass = "";               // XAMPP default password (empty)
 $charset = 'utf8mb4';
+<<<<<<< HEAD
 $port = "3307";
+=======
+$port = "3306";
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
 
 $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset"; // create database connection
 $options = [

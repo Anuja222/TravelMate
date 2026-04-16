@@ -127,28 +127,26 @@ body {
 
 .listing-main {
     max-width: 1200px;
+<<<<<<< HEAD
     margin: 20px auto 60px;
     padding: 0 32px;
+=======
+    margin: 48px auto;
+    padding: 0 24px;
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
 }
 
 h1 {
-    font-size: 2rem;
+    font-size: 1.7rem;
     margin-bottom: 16px;
     text-align: center;
-    margin-top: 0;
-    color: #2c3e50;
-    font-weight: 700;
-    line-height: 1.3;
+    margin-top: 1.5px;
 }
 
 .subtitle {
     text-align: center;
     color: #666;
-    margin-bottom: 56px;
-    font-size: 1.1rem;
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-bottom: 48px;
 }
 
 .property-types {
@@ -161,134 +159,88 @@ h1 {
 
 .property-row {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 28px;
-    margin-bottom: 32px;
-    max-width: 1000px;
-    margin-left: auto;
-    margin-right: auto;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 50px;
+    margin-left: 5em;
 }
 
 .property-type {
     background: #fff;
-    border: 2px solid #e8e8e8;
-    border-radius: 12px;
-    padding: 32px 24px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 24px 16px 16px 16px;
     text-align: center;
-    min-height: 280px;
-    height: 280px;
+    width: 100%;
+    height: 220px;
     box-sizing: border-box;
-    transition: all 0.3s ease;
+    transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 16px;
-    position: relative;
-    overflow: hidden;
-}
-
-.property-type::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #1abc5b, #16a085);
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
+    justify-content: space-between;
 }
 
 .property-type:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 32px rgba(26, 188, 91, 0.15);
-    border-color: #1abc5b;
+    transform: scale(1.05);
+    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.15);
+    border-color:none;
+    z-index: 2;
 }
 
-.property-type:hover::before {
-    transform: scaleX(1);
+.property-type {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 24px;
+    text-align: center;
+    width: 250px;
+    height: 220px;
+    padding-top: 60px;
 }
 
 .icon {
-    width: 80px;
-    height: 80px;
-    min-width: 80px;
-    min-height: 80px;
-    margin: 0 auto 12px;
-    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    flex-shrink: 0;
-}
-
-.property-type:hover .icon {
-    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-    transform: scale(1.1);
+    width: 64px;
+    height: 64px;
+    margin: 10px auto 16px;
+    background: #f5f5f5;
+    border-radius: 8px;
 }
 
 .icon img {
-    width: 56px;
-    height: 56px;
-    max-width: 56px;
-    max-height: 56px;
+    width: 64px;
+    height: 64px;
     object-fit: contain;
+    border-radius: 8px;
     display: block;
+    margin: 0 auto;
 }
 
 .property-type h3 {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #2c3e50;
-    line-height: 1.4;
-    min-height: 2.8rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    margin: 16px 0 8px 0;
+    font-size: 18px;
 }
 
 .list-property-btn {
-    background: linear-gradient(135deg, #1abc5b 0%, #16a085 100%);
+    background: #22c55e;
     color: #fff;
     border: none;
-    padding: 10px 24px;
-    border-radius: 8px;
+    padding: 8px 16px;
+    border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
-    font-weight: 600;
-    width: 100%;
-    max-width: 140px;
-    min-width: 140px;
-    height: 40px;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(26, 188, 91, 0.2);
-    flex-shrink: 0;
-}
-
-.list-property-btn:hover {
-    background: linear-gradient(135deg, #16a085 0%, #1abc5b 100%);
-    box-shadow: 0 4px 12px rgba(26, 188, 91, 0.3);
-    transform: translateY(-2px);
-}
-
-.list-property-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 6px rgba(26, 188, 91, 0.2);
+    margin-top: 12px;
+    width: 120px;
 }
 
 .property-form {
     max-width: 800px;
     margin: 0 auto;
     background: #fff;
-    border: 2px solid #e8e8e8;
+    border: 1px solid #ddd;
     border-radius: 12px;
-    padding: 40px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    padding: 32px;
 }
 
 .form-group {
@@ -304,50 +256,28 @@ h1 {
 label {
     display: block;
     margin-bottom: 8px;
-    font-weight: 600;
-    color: #2c3e50;
-    font-size: 14px;
+    font-weight: 500;
 }
 
 .form-control {
     width: 100%;
-    padding: 12px 16px;
-    border: 2px solid #e8e8e8;
-    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
     font-size: 16px;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-}
-
-.form-control:focus {
-    outline: none;
-    border-color: #1abc5b;
-    box-shadow: 0 0 0 3px rgba(26, 188, 91, 0.1);
 }
 
 .continue-btn {
     width: 100%;
-    background: linear-gradient(135deg, #1abc5b 0%, #16a085 100%);
+    background: #22c55e;
     color: #fff;
     border: none;
     padding: 16px;
-    border-radius: 8px;
+    border-radius: 6px;
     font-size: 18px;
     font-weight: 600;
     cursor: pointer;
     margin-top: 16px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(26, 188, 91, 0.2);
-}
-
-.continue-btn:hover {
-    background: linear-gradient(135deg, #16a085 0%, #1abc5b 100%);
-    box-shadow: 0 6px 16px rgba(26, 188, 91, 0.3);
-    transform: translateY(-2px);
-}
-
-.continue-btn:active {
-    transform: translateY(0);
 }
 
 /* Footer Styles */
@@ -403,19 +333,12 @@ label {
 }
 
 .newsletter button {
-    background: linear-gradient(135deg, #1abc5b 0%, #16a085 100%);
+    background: #22c55e;
     color: #fff;
     border: none;
     padding: 8px 16px;
-    border-radius: 6px;
+    border-radius: 4px;
     cursor: pointer;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.newsletter button:hover {
-    background: linear-gradient(135deg, #16a085 0%, #1abc5b 100%);
-    box-shadow: 0 2px 8px rgba(26, 188, 91, 0.3);
 }
 
 .footer-bottom {
@@ -438,6 +361,7 @@ label {
     color: #fff;
     text-decoration: none;
 }
+<<<<<<< HEAD
 
 /* Responsive Design */
 @media (max-width: 992px) {
@@ -532,3 +456,5 @@ label {
         text-align: center;
     }
 }
+=======
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874

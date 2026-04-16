@@ -6,6 +6,7 @@
   <title>TravelMate - Transportation</title>
   <link rel="stylesheet" href="assets/css/Traveller/transport.css">
   <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
+<<<<<<< HEAD
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     /* Fix grid layout for single items */
@@ -191,6 +192,8 @@
       box-shadow: 0 6px 16px rgba(26, 188, 91, 0.3);
     }
   </style>
+=======
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
 </head>
 <body>
   <!-- Header/Navbar -->
