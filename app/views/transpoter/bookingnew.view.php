@@ -10,6 +10,16 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     /* specific overrides for transporter buttons inside accommodation grid */
+    .bookings-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    @media (max-width: 992px) {
+        .bookings-grid {
+            grid-template-columns: 1fr;
+        }
+    }
     .booking-btn-accept {
         background: linear-gradient(135deg, #1abc5b 0%, #16a085 100%);
         color: white;
