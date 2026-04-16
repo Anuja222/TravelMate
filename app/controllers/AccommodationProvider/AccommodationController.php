@@ -9,40 +9,40 @@ use App\Models\Accommodation;
 class AccommodationController {
     private $uploadDir;
 
-    public function __construct() {
+    public function __construct() { //start session. setup enviroenment
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        $this->uploadDir = __DIR__ . '/../../../public/uploads/accommodations';
+        $this->uploadDir = __DIR__ . '/../../../public/uploads/accommodations'; //setup upload directory for images
         if (!is_dir($this->uploadDir)) {
-            mkdir($this->uploadDir, 0777, true);
+            mkdir($this->uploadDir, 0777, true); //create directory if it deosnt exist. 
         }
     }
 
-    private function sendResponse($success, $errors = [], $data = null) {
+    private function sendResponse($success, $errors = [], $data = null) { //JSON API response handler
         header('Content-Type: application/json');
-        echo json_encode(['success' => $success, 'errors' => $errors, 'data' => $data]);
+        echo json_encode(['success' => $success, 'errors' => $errors, 'data' => $data]); //JSON format - success, errors, data
         exit;
     }
 
     public function create() {
-        global $pdo;
+        global $pdo;                                            //used to connect to the database
 
         error_log("=== Accommodation Create Called ===");
         error_log("POST Data: " . print_r($_POST, true));
         error_log("FILES Data: " . print_r($_FILES, true));
 
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {                //only POST data allowed
             $this->sendResponse(false, ['Invalid request method']);
         }
 
-        if (!isset($_SESSION['user'])) {
+        if (!isset($_SESSION['user'])) {                            //login check - auth
             $this->sendResponse(false, ['User not authenticated']);
         }
 
         $userId = $_SESSION['user']['id'];
         
-        // get accommodation details from POST data
+        // get accommodation details from POST data (form data)
         $propertyType = $_POST['property_type'] ?? '';
         $title = $_POST['title'] ?? '';
         $description = $_POST['description'] ?? '';
@@ -59,12 +59,12 @@ class AccommodationController {
         $checkOutTime = $_POST['check_out_time'] ?? '';
         $status = $_POST['status'] ?? 'active';
 
-        // Validate required fields
+        // validate required fields
         if (empty($propertyType) || empty($title) || empty($description)) {
-            $this->sendResponse(false, ['Missing required fields']);
+            $this->sendResponse(false, ['Missing required fields']); 
         }
 
-        $accommodation = new Accommodation([
+        $accommodation = new Accommodation([ //create model object
             'userId' => $userId,
             'propertyType' => $propertyType,
             'title' => $title,
@@ -84,24 +84,24 @@ class AccommodationController {
         ]);
 
         try {
-            $pdo->beginTransaction();
+            $pdo->beginTransaction(); //saves to database 
             
-            // Create accommodation record
-            $accommodationId = $accommodation->create($pdo);
+            // create accommodation record
+            $accommodationId = $accommodation->create($pdo); //saving to DB. call the model
             
-            // Handle image uploads
+            // handle image uploads
             if (isset($_FILES['images']) && !empty($_FILES['images']['name'][0])) {
                 $images = $_FILES['images'];
                 $totalFiles = count($images['name']);
                 
-                for ($i = 0; $i < $totalFiles; $i++) {
+                for ($i = 0; $i < $totalFiles; $i++) { //save images in a loop
                     if ($images['error'][$i] === UPLOAD_ERR_OK) {
                         $tmpName = $images['tmp_name'][$i];
                         $originalName = $images['name'][$i];
                         $filePath = $this->saveFile($tmpName, $originalName);
                         
                         if ($filePath) {
-                            // Set first image as main image
+                            // set first image as main image
                             Accommodation::addImage($pdo, $accommodationId, $filePath, $i === 0);
                         }
                     }
@@ -109,16 +109,23 @@ class AccommodationController {
             }
             
             $pdo->commit();
-            $this->sendResponse(true, [], ['id' => $accommodationId]);
+            $this->sendResponse(true, [], ['id' => $accommodationId]); //return accommodation ID when success.
             
         } catch (\Exception $e) {
-            $pdo->rollBack();
+            $pdo->rollBack(); //jump to preveious step
             error_log("Error creating accommodation: " . $e->getMessage());
-            $this->sendResponse(false, ['Failed to create accommodation']);
+            $this->sendResponse(false, ['Failed to create accommodation']);//send JSON response while creating the error log file
         }
-    }
+    } 
+    //upto now,
+    //get data from the form
+    //validate data
+    //pass to the model
+    //save in the DB
+    //upload images
+    //return JSON response
 
-    // Temporary upload endpoint used by client-side uploaders (returns JSON)
+    // temporary upload endpoint used by client-side uploaders (returns JSON)
     public function uploadTemp() {
         // Accept POST file uploads and return JSON with saved paths
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -136,7 +143,7 @@ class AccommodationController {
             }
 
             foreach ($_FILES as $field => $fileInfo) {
-                // handle multiple files in one field
+                // handle multiple files in one field - accept multiple file uploads
                 if (is_array($fileInfo['name'])) {
                     for ($i = 0; $i < count($fileInfo['name']); $i++) {
                         if ($fileInfo['error'][$i] === UPLOAD_ERR_OK) {
@@ -156,7 +163,7 @@ class AccommodationController {
                 }
             }
 
-            $this->sendResponse(true, [], ['files' => $saved]);
+            $this->sendResponse(true, [], ['files' => $saved]); //return paths for all uploaded files in JSON format
         } catch (\Exception $e) {
             error_log('uploadTemp error: ' . $e->getMessage());
             $this->sendResponse(false, ['Upload failed']);
@@ -165,17 +172,17 @@ class AccommodationController {
 
     private function saveFile($tmpPath, $originalName) {
         $extension = pathinfo($originalName, PATHINFO_EXTENSION);
-        $newFileName = uniqid() . '_' . time() . '.' . $extension;
+        $newFileName = uniqid() . '_' . time() . '.' . $extension; //genarate unique filename using uniqid()
         $targetPath = $this->uploadDir . '/' . $newFileName;
         
-        if (move_uploaded_file($tmpPath, $targetPath)) {
-            return 'uploads/accommodations/' . $newFileName;
+        if (move_uploaded_file($tmpPath, $targetPath)) { //moves uploaded files from temp to permanent location
+            return 'uploads/accommodations/' . $newFileName;  
         }
         
         return false;
     }
 
-    public function listByUser() {
+    public function listByUser() { 
         global $pdo;
         
         if (!isset($_SESSION['user'])) {
@@ -183,11 +190,11 @@ class AccommodationController {
         }
         
         try {
-            $accommodations = Accommodation::findByUser($pdo, $_SESSION['user']['id']);
+            $accommodations = Accommodation::findByUser($pdo, $_SESSION['user']['id']); //retrieves all accommodations for the logged-in user
             
             // get main image for each accommodation
             foreach ($accommodations as &$accommodation) {
-                $accommodation['main_image'] = Accommodation::getMainImage($pdo, $accommodation['id']);
+                $accommodation['main_image'] = Accommodation::getMainImage($pdo, $accommodation['id']); //include main images for each accommodation
             }
             
             $this->sendResponse(true, [], $accommodations);
@@ -198,13 +205,13 @@ class AccommodationController {
         }
     }
 
-    public function listAll() {
+    public function listAll() { //retrieves all accommodations in the system
         global $pdo;
         
         try {
             $accommodations = Accommodation::findAll($pdo);
             
-            // Get main image and all images for each accommodation
+            // get main image and all images for each accommodation
             foreach ($accommodations as &$accommodation) {
                 $accommodation['main_image'] = Accommodation::getMainImage($pdo, $accommodation['id']);
                 $accommodation['images'] = Accommodation::getImages($pdo, $accommodation['id']);
@@ -218,7 +225,7 @@ class AccommodationController {
         }
     }
 
-    public function get() {
+    public function get() { //retrieves a single accommodation by ID
         global $pdo;
         
         $id = $_GET['id'] ?? null;
@@ -232,7 +239,7 @@ class AccommodationController {
                 $this->sendResponse(false, ['Accommodation not found']);
             }
             
-            // Get all images for the accommodation
+            // get all images for the accommodation
             $accommodation['images'] = Accommodation::getImages($pdo, $id);
             
             $this->sendResponse(true, [], $accommodation);
@@ -243,32 +250,32 @@ class AccommodationController {
         }
     }
 
-    public function update() {
+    public function update() { //update accommodation details
         global $pdo;
         
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { 
             $this->sendResponse(false, ['Invalid request method']);
         }
         
-        if (!isset($_SESSION['user'])) {
+        if (!isset($_SESSION['user'])) { //validate ownership
             $this->sendResponse(false, ['User not authenticated']);
         }
         
-        $id = $_POST['id'] ?? null;
+        $id = $_POST['id'] ?? null; //
         if (!$id) {
             $this->sendResponse(false, ['Accommodation ID not provided']);
         }
         
         try {
-            $existing = Accommodation::findById($pdo, $id, $_SESSION['user']['id']);
+            $existing = Accommodation::findById($pdo, $id, $_SESSION['user']['id']);//retrieve existing accommodatin from DB
             if (!$existing) {
                 $this->sendResponse(false, ['Accommodation not found or unauthorized']);
             }
             
-            $accommodation = new Accommodation([
+            $accommodation = new Accommodation([ //create new object before update
                 'id' => $id,
                 'userId' => $_SESSION['user']['id'],
-                'propertyType' => $_POST['property_type'] ?? $existing['property_type'],
+                'propertyType' => $_POST['property_type'] ?? $existing['property_type'],//if POST data available then update with that, else use existing data
                 'title' => $_POST['title'] ?? $existing['title'],
                 'description' => $_POST['description'] ?? $existing['description'],
                 'location' => $_POST['location'] ?? ($existing['location'] ?? ''),
@@ -276,7 +283,7 @@ class AccommodationController {
                 'bathrooms' => $_POST['bathrooms'] ?? $existing['bathrooms'],
                 'maxGuests' => $_POST['max_guests'] ?? $existing['max_guests'],
                 'pricePerNight' => $_POST['price_per_night'] ?? ($existing['price_per_night'] ?? 0),
-                // Accept explicit 0/1 values for checkboxes (form should send 0 when unchecked)
+                // accept explicit 0/1 values for checkboxes (form should send 0 when unchecked)
                 'smoking' => isset($_POST['smoking']) ? intval($_POST['smoking']) : $existing['smoking'],
                 'parties' => isset($_POST['parties']) ? intval($_POST['parties']) : $existing['parties'],
                 'pets' => $_POST['pets'] ?? $existing['pets'],
@@ -286,13 +293,13 @@ class AccommodationController {
                 'status' => $_POST['status'] ?? $existing['status']
             ]);
             
-            $pdo->beginTransaction();
+            $pdo->beginTransaction(); //to safe DB operation - if error then rollback() else commit()
             
-            if ($accommodation->update($pdo)) {
+            if ($accommodation->update($pdo)) { //update accommdoation data
                 // allow deletion of existing images (delete_images[])
-                if (!empty($_POST['delete_images'])) {
+                if (!empty($_POST['delete_images'])) { //check whether have images that user choose to delete
                     $delIds = is_array($_POST['delete_images']) ? $_POST['delete_images'] : explode(',', $_POST['delete_images']);
-                    foreach ($delIds as $imgId) {
+                    foreach ($delIds as $imgId) { //delete images
                         $imgId = intval($imgId);
                         if ($imgId <= 0) continue;
                         // get path
@@ -359,7 +366,7 @@ class AccommodationController {
         }
     }
 
-    public function delete() {
+    public function delete() { //delete and accommodation provider owns
         global $pdo;
         
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -370,13 +377,13 @@ class AccommodationController {
             $this->sendResponse(false, ['User not authenticated']);
         }
         
-        $id = $_POST['id'] ?? null;
+        $id = $_POST['id'] ?? null; 
         if (!$id) {
             $this->sendResponse(false, ['Accommodation ID not provided']);
         }
         
         try {
-            if (Accommodation::deleteById($pdo, $id, $_SESSION['user']['id'])) {
+            if (Accommodation::deleteById($pdo, $id, $_SESSION['user']['id'])) { //delete using accommodation id
                 $this->sendResponse(true);
             } else {
                 $this->sendResponse(false, ['Failed to delete accommodation']);
@@ -387,7 +394,7 @@ class AccommodationController {
         }
     }
 
-    public function toggleStatus() {
+    public function toggleStatus() { //changes accommodation status between active and inactive
         global $pdo;
         
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -414,7 +421,7 @@ class AccommodationController {
             $result = $stmt->execute([$status, $id, $_SESSION['user']['id']]);
             
             if ($result && $stmt->rowCount() > 0) {
-                $this->sendResponse(true, [], ['status' => $status]);
+                $this->sendResponse(true, [], ['status' => $status]); //vip point
             } else {
                 $this->sendResponse(false, ['Failed to update property status']);
             }
@@ -435,26 +442,30 @@ class AccommodationController {
         }
         
         try {
-            // Get total rooms from accommodation
-            $stmt = $pdo->prepare("SELECT rooms FROM accommodations WHERE id = ?");
-            $stmt->execute([$id]);
-            $accommodation = $stmt->fetch(\PDO::FETCH_ASSOC);
-            
+            // get total rooms from accommodation
+            $stmt = $pdo->prepare("SELECT rooms FROM accommodations WHERE id = ?"); //prepare sql query with excuting
+            $stmt->execute([$id]); //execute with replacing $id -> ?
+            $accommodation = $stmt->fetch(\PDO::FETCH_ASSOC); //gets result as associative array
+            // $accommodation = [
+            //     "rooms" => 3
+            // ];
+
             if (!$accommodation) {
-                $this->sendResponse(false, ['Accommodation not found']);
+                $this->sendResponse(false, ['Accommodation not found']); 
                 return;
             }
             
-            $totalRooms = (int)$accommodation['rooms'];
+            $totalRooms = (int)$accommodation['rooms']; //get rooms count
             
-            // Get booked rooms (only active/confirmed bookings that haven't been completed or cancelled)
+            // get booked rooms (only active/confirmed bookings that haven't been completed or cancelled)
             $stmt = $pdo->prepare("
                 SELECT COALESCE(SUM(number_of_rooms), 0) as booked_rooms 
                 FROM bookings 
                 WHERE accommodation_id = ? 
                 AND booking_status IN ('confirmed', 'pending')
-                AND checkout_date >= CURDATE()
+                AND checkout_date >= CURDATE() 
             ");
+            //'booked_rooms' is an alias to represent the result of the query
             $stmt->execute([$id]);
             $result = $stmt->fetch(\PDO::FETCH_ASSOC);
             
@@ -473,38 +484,41 @@ class AccommodationController {
         }
     }
 
-    public function approveByAdmin() {
+//admin methods -> approveByAdmin() , rejectByAdmin() , deleteByAdmin()
+    public function approveByAdmin() { //set accommodatino status to active by admin
         global $pdo;
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->sendResponse(false, ['Invalid request method']);
         }
 
-        if (!isset($_SESSION['user']) || ($_SESSION['user']['role'] ?? '') !== 'admin') {
+        //check user is logged in or user role is admin
+        if (!isset($_SESSION['user']) || ($_SESSION['user']['role'] ?? '') !== 'admin') { //check admin authorization
             $this->sendResponse(false, ['Unauthorized']);
         }
 
-        $id = $_POST['id'] ?? null;
+        $id = $_POST['id'] ?? null; //get ID from request
         if (!$id) {
             $this->sendResponse(false, ['Accommodation ID not provided']);
         }
 
         try {
-            $stmt = $pdo->prepare("UPDATE accommodations SET status = 'active', updated_at = NOW() WHERE id = ?");
+            $stmt = $pdo->prepare("UPDATE accommodations SET status = 'active', updated_at = NOW() WHERE id = ?");//updatet status and updated time
             $result = $stmt->execute([$id]);
 
-            if ($result && $stmt->rowCount() > 0) {
+            if ($result && $stmt->rowCount() > 0) {//check whether query excuted succesfuly /at least 1 row updated
                 $this->sendResponse(true, [], ['status' => 'active']);
+            }else{  
+                $this->sendResponse(false, ['Failed to approve accommodation']);
             }
 
-            $this->sendResponse(false, ['Failed to approve accommodation']);
         } catch (\Exception $e) {
             error_log("Error approving accommodation: " . $e->getMessage());
             $this->sendResponse(false, ['Failed to approve accommodation']);
         }
     }
 
-    public function rejectByAdmin() {
+    public function rejectByAdmin() {//set accommodation status to inactive by admin
         global $pdo;
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -526,9 +540,9 @@ class AccommodationController {
 
             if ($result && $stmt->rowCount() > 0) {
                 $this->sendResponse(true, [], ['status' => 'inactive']);
+            }else{
+                $this->sendResponse(false, ['Failed to reject accommodation']);
             }
-
-            $this->sendResponse(false, ['Failed to reject accommodation']);
         } catch (\Exception $e) {
             error_log("Error rejecting accommodation: " . $e->getMessage());
             $this->sendResponse(false, ['Failed to reject accommodation']);
