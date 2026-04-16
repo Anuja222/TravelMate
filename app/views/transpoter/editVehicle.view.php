@@ -19,7 +19,7 @@
       <h1 class="page-title">Edit Vehicle Details</h1>
       <p class="page-subtitle">Update your vehicle information</p>
 
-      <form id="edit-vehicle-form">
+      <form id="edit-vehicle-form" enctype="multipart/form-data">
         <input type="hidden" id="vehicle-id" name="id">
 
         <div class="section">
@@ -103,6 +103,14 @@
               <div class="error-message" id="vehicle-number-error"></div>
             </div>
           </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cost-per-km">Cost per 1Km (Rs) <span class="required-asterisk">*</span></label>
+              <input type="number" id="cost-per-km" name="cost_per_km" placeholder="e.g., 150" min="1" step="0.01" required>
+              <div class="error-message" id="cost-per-km-error"></div>
+            </div>
+          </div>
         </div>
 
         <div class="divider"></div>
@@ -170,6 +178,126 @@
   </div>
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
+
+  <!-- Vehicle Update Success Modal -->
+  <div id="vehicleUpdateSuccessModal" class="vehicle-update-modal">
+    <div class="vehicle-update-content">
+      <div class="success-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+      </div>
+      <h2>Vehicle Updated Successfully!</h2>
+      <p>Your vehicle information has been updated and saved to your account.</p>
+      <button onclick="goToDashboard()" class="btn-go-dashboard">Go to Dashboard</button>
+    </div>
+  </div>
+
+  <style>
+    .vehicle-update-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 10000;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .vehicle-update-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      text-align: center;
+      max-width: 450px;
+      width: 90%;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      animation: slideUp 0.4s ease-out;
+    }
+
+    .vehicle-update-modal .success-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: scaleIn 0.5s ease-out 0.2s both;
+    }
+
+    .vehicle-update-modal .success-icon svg {
+      width: 45px;
+      height: 45px;
+      color: white;
+    }
+
+    .vehicle-update-content h2 {
+      font-size: 24px;
+      color: #1f2937;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .vehicle-update-content p {
+      font-size: 15px;
+      color: #6b7280;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    .btn-go-dashboard {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      padding: 12px 32px;
+      font-size: 16px;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-go-dashboard:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -40%);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+  </style>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -252,8 +380,7 @@
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            alert('Vehicle updated successfully!');
-            window.location.href = 'tr_dashboard';
+            showVehicleUpdateSuccessModal();
           } else {
             alert('Failed to update vehicle: ' + (data.errors?.error || 'Unknown error'));
             continueBtn.innerHTML = 'Update Vehicle <i class="fas fa-check-circle"></i>';
@@ -300,6 +427,7 @@
         if (vehicle.vehicle_year) document.getElementById('vehicle-year').value = vehicle.vehicle_year;
         if (vehicle.vehicle_color) document.getElementById('vehicle-color').value = vehicle.vehicle_color;
         if (vehicle.vehicle_number) document.getElementById('vehicle-number').value = vehicle.vehicle_number;
+        if (vehicle.cost_per_km) document.getElementById('cost-per-km').value = vehicle.cost_per_km;
         if (vehicle.passenger_count) document.getElementById('passenger-count').value = vehicle.passenger_count;
         if (vehicle.status) document.getElementById('vehicle-status').value = vehicle.status;
         
@@ -315,6 +443,18 @@
         }
       }
     });
+    
+    // Modal functions
+    function showVehicleUpdateSuccessModal() {
+      const modal = document.getElementById('vehicleUpdateSuccessModal');
+      if (modal) {
+        modal.style.display = 'block';
+      }
+    }
+    
+    function goToDashboard() {
+      window.location.href = 'tr_dashboard';
+    }
   </script>
 </body>
 

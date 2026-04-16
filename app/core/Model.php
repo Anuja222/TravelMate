@@ -10,7 +10,7 @@ Trait Model{
     public $errors = [];
 
 
-    public function first($data,$data_not = []){
+    public function first($data,$data_not = []){ //return the first record where matching the condtiotion
 
         $keys = array_keys($data);
         $keys_not = array_keys($data_not);
@@ -38,7 +38,7 @@ Trait Model{
         return false;
 
     }
-    public function findAll(){
+    public function findAll(){ //return the all records of the table into a order
 
         $query="SELECT * FROM $this->table ";
 
@@ -47,7 +47,7 @@ Trait Model{
         return $this->query($query);
 
     }
-    public function where($data,$data_not = []){
+    public function where($data,$data_not = []){// return all records where matching the conditoins
 
         $keys = array_keys($data);
         $keys_not = array_keys($data_not);
@@ -70,7 +70,7 @@ Trait Model{
         return $this->query($query,$data);
 
     }
-    public function insert($data){
+    public function insert($data){ //add data to the database
 
         if(!empty($this->allowedColumns)){
             foreach($data as $key => $value){
@@ -88,7 +88,7 @@ Trait Model{
         return false;
     }
 
-    public function update($id,$data,$id_column = 'id'){
+    public function update($id,$data,$id_column = 'id'){ //modify data
         
         if(!empty($this->allowedColumns)){
             foreach($data as $key => $value){
@@ -115,7 +115,7 @@ Trait Model{
         return false;
     }
 
-    public function delete($id,$id_column = 'id'){
+    public function delete($id,$id_column = 'id'){ //remove records
        
         $data[$id_column] = $id;
         $query="DELETE FROM $this->table WHERE $id_column = :$id_column ";

@@ -1,4 +1,8 @@
 <?php
+// Populate property type from session if it exists
+$propertyType = $_SESSION['accommodation_features']['property_type'] ?? '';
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // You can process form data here if needed
     header('Location: services.view.php');
@@ -22,8 +26,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
     <!-- Page Content -->
-    <h2>What can guests use at your place?</h2>
-    <form class="features-form" id="featuresForm">
+    <form class="features-form" method="POST" action="/TravelMate/public/saveFeatures">
+        <fieldset>
+            <legend><h2>Property Information</h2></legend>
+            <div class="form-group">
+                <label for="property_type">Property Type *</label>
+                <input type="text" id="property_type" name="property_type" value="<?php echo htmlspecialchars($propertyType); ?>" placeholder="Property Type" readonly style="background-color: #f0f0f0;">
+                <!-- Hidden field to ensure property_type is submitted in POST -->
+                <input type="hidden" name="property_type" value="<?php echo htmlspecialchars($propertyType); ?>">
+            </div>
+            <div class="form-group">
+                <label for="title">Accommodation Name *</label>
+                <input type="text" id="title" name="title" placeholder="Accommodation Name" required>
+            </div>
+            <div class="form-group">
+                <label for="location">Location *</label>
+                <input type="text" id="location" name="location" placeholder="Address" required>
+            </div>
+        </fieldset>
+
+        <h2>What can guests use at your place?</h2>
         <fieldset>
             <legend>General</legend>
             <label><input type="checkbox" name="feature_air_conditioning" value="1"> Air conditioning</label>

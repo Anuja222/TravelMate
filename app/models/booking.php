@@ -74,7 +74,58 @@ class Booking {
 
     // Get all bookings by user
     public function getBookingsByUserId($conn, $userId) {
-        $sql = "SELECT * FROM bookings WHERE user_id = ? ORDER BY created_at DESC";
+        $hasRatingsTable = false;
+
+        try {
+            $tableCheck = $conn->query("SHOW TABLES LIKE 'booking_ratings'");
+            $hasRatingsTable = $tableCheck && $tableCheck->fetch(PDO::FETCH_NUM);
+        } catch (\Exception $e) {
+            $hasRatingsTable = false;
+        }
+
+        if ($hasRatingsTable) {
+            $sql = "SELECT 
+                        b.*,
+                        (
+                            SELECT ai.image_path
+                            FROM accommodation_images ai
+                            WHERE ai.accommodation_id = b.accommodation_id
+                            ORDER BY ai.is_main DESC, ai.id ASC
+                            LIMIT 1
+                        ) AS accommodation_photo,
+                        br.rating AS user_rating,
+                        br.review AS user_review,
+                        br.created_at AS rating_created_at
+                    FROM bookings b
+                    LEFT JOIN booking_ratings br
+                        ON BINARY br.booking_id = BINARY b.booking_id
+                        AND br.user_id = b.user_id
+                        AND (
+                            (br.accommodation_id IS NULL AND b.accommodation_id IS NULL)
+                            OR br.accommodation_id = b.accommodation_id
+                        )
+                    WHERE b.user_id = ?
+                    ORDER BY b.created_at DESC";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([$userId]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        $sql = "SELECT 
+                    b.*,
+                    (
+                        SELECT ai.image_path
+                        FROM accommodation_images ai
+                        WHERE ai.accommodation_id = b.accommodation_id
+                        ORDER BY ai.is_main DESC, ai.id ASC
+                        LIMIT 1
+                    ) AS accommodation_photo,
+                    NULL AS user_rating,
+                    NULL AS user_review,
+                    NULL AS rating_created_at
+                FROM bookings b
+                WHERE b.user_id = ?
+                ORDER BY b.created_at DESC";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -208,5 +259,36 @@ class Booking {
         $searchParam = '%' . $searchTerm . '%';
         $stmt->execute([$userId, $searchParam, $searchParam]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function saveBookingRating($conn, $bookingId, $userId, $accommodationId, $rating, $review = null) {
+        $hasRatingsTable = false;
+
+        try {
+            $tableCheck = $conn->query("SHOW TABLES LIKE 'booking_ratings'");
+            $hasRatingsTable = $tableCheck && $tableCheck->fetch(PDO::FETCH_NUM);
+        } catch (\Exception $e) {
+            $hasRatingsTable = false;
+        }
+
+        if (!$hasRatingsTable) {
+            return false;
+        }
+
+        $sql = "INSERT INTO booking_ratings (booking_id, user_id, accommodation_id, rating, review, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, NOW(), NOW())
+                ON DUPLICATE KEY UPDATE
+                    rating = VALUES(rating),
+                    review = VALUES(review),
+                    updated_at = NOW()";
+
+        $stmt = $conn->prepare($sql);
+        return $stmt->execute([
+            $bookingId,
+            $userId,
+            $accommodationId,
+            $rating,
+            $review
+        ]);
     }
 }

@@ -1,56 +1,97 @@
+/* Page Title */
+.page-title {
+  margin-bottom: 25px;
+}
+
+.page-title h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
 /* Filter Bar */
 .filter-bar {
   display: flex;
   flex-wrap: wrap;
+<<<<<<< HEAD
   gap: 15px;
   align-items: center;
   margin-bottom: 30px;
-  padding: 15px 20px;
+  padding: 20px 25px;
   background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* User Count Badge */
+.user-count {
+  margin: 0;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+=======
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 25px;
+  padding: 20px;
+  background: #ffffff;
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .filter-bar input,
 .filter-bar select {
   flex: 1;
-  min-width: 200px;
-  padding: 12px 15px;
+  min-width: 220px;
+  padding: 11px 16px;
   border-radius: 8px;
-  border: 1px solid #dcdcdc;
+  border: 1px solid #e0e0e0;
   font-size: 14px;
-  transition: border 0.3s ease, box-shadow 0.3s ease;
+  font-family: 'Inter', Arial, sans-serif;
+  transition: all 0.3s ease;
+  background: #fafafa;
 }
 
 .filter-bar input:focus,
 .filter-bar select:focus {
   border-color: #1abc5b;
-  box-shadow: 0 0 5px rgba(26, 188, 91, 0.3);
+  box-shadow: 0 0 0 3px rgba(26, 188, 91, 0.1);
   outline: none;
+  background: #fff;
+}
+
+.filter-bar input::placeholder {
+  font-size: 14px;
+  color: #888;
 }
 
 .filter-bar button {
   background: #1abc5b;
   color: #fff;
-  padding: 12px 24px;
+  padding: 11px 28px;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(26, 188, 91, 0.2);
 }
 
 .filter-bar button:hover {
   background: #159c49;
-  transform: translateY(-2px);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(26, 188, 91, 0.25);
 }
 
 /* Users Table */
 .users-table-container {
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   overflow: hidden;
   margin-bottom: 25px;
 }
@@ -62,37 +103,42 @@
 
 .users-table th,
 .users-table td {
-  padding: 15px 12px;
+  padding: 16px 14px;
   text-align: left;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f5f5f5;
+  font-size: 14px;
+  vertical-align: middle;
 }
 
 .users-table th {
-  background: #f8f9fa;
+  background: #fafafa;
   font-weight: 600;
-  color: #333;
-  font-size: 0.9rem;
+  color: #555;
+  font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  border-bottom: 2px solid #eee;
 }
 
 .users-table tbody tr {
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .users-table tbody tr:hover {
-  background: #f8f9fa;
+  background: #f9fafb;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
 /* Profile Picture */
 .profile-pic {
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 2px solid #f0f0f0;
 }
 
 .profile-pic img {
@@ -104,24 +150,26 @@
 /* User Name Column */
 .user-name strong {
   display: block;
-  font-size: 0.95rem;
-  color: #222;
-  margin-bottom: 2px;
+  font-size: 14.5px;
+  color: #2c3e50;
+  margin-bottom: 3px;
+  font-weight: 600;
 }
 
 .user-name small {
-  color: #666;
-  font-size: 0.8rem;
+  color: #7f8c8d;
+  font-size: 13px;
 }
 
 /* User Type Badges */
 .user-type {
-  padding: 4px 12px;
+  padding: 5px 14px;
   border-radius: 20px;
-  font-size: 0.8rem;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   color: #fff;
+  display: inline-block;
 }
 
 .user-type.traveler {
@@ -138,11 +186,12 @@
 
 /* Status Badges */
 .status {
-  padding: 4px 12px;
+  padding: 5px 14px;
   border-radius: 20px;
-  font-size: 0.8rem;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
+  display: inline-block;
 }
 
 .status.active {
@@ -163,21 +212,22 @@
 /* Action Buttons */
 .action-buttons {
   display: flex;
-  gap: 8px;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .btn-view,
 .btn-suspend,
 .btn-activate,
 .btn-delete {
-  width: 60px;
-  height: 35px;
+  padding: 8px 16px;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
+  transition: all 0.2s ease;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 }
@@ -188,8 +238,9 @@
 }
 
 .btn-view:hover {
-  background: #565e64;
-  transform: scale(1.1);
+  background: #545b62;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(108, 117, 125, 0.3);
 }
 
 .btn-suspend {
@@ -199,7 +250,8 @@
 
 .btn-suspend:hover {
   background: #e0a800;
-  transform: scale(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(255, 193, 7, 0.3);
 }
 
 .btn-activate {
@@ -209,7 +261,8 @@
 
 .btn-activate:hover {
   background: #218838;
-  transform: scale(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(40, 167, 69, 0.3);
 }
 
 .btn-delete {
@@ -219,7 +272,8 @@
 
 .btn-delete:hover {
   background: #c82333;
-  transform: scale(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(220, 53, 69, 0.3);
 }
 
 /* Bulk Actions */
@@ -447,6 +501,14 @@
     padding: 20px;
   }
   
+<<<<<<< HEAD
+  .user-count {
+    align-self: stretch;
+    text-align: center;
+  }
+  
+=======
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
   .filter-bar {
     flex-direction: column;
     align-items: stretch;

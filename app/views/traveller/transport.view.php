@@ -6,6 +6,194 @@
   <title>TravelMate - Transportation</title>
   <link rel="stylesheet" href="assets/css/Traveller/transport.css">
   <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
+<<<<<<< HEAD
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Fix grid layout for single items */
+    .transportation-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+    
+    .transport-card {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      min-height: 500px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .transport-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .transport-card .card-image {
+      height: 240px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .transport-card .card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .transport-card:hover .card-image img {
+      transform: scale(1.05);
+    }
+
+    .transport-card .card-status-badge {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: linear-gradient(135deg, #1abc5b 0%, #16a085 100%);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: capitalize;
+      box-shadow: 0 3px 10px rgba(26, 188, 91, 0.3);
+      z-index: 2;
+    }
+
+    .transport-card .card-status-badge.pending {
+      background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+      box-shadow: 0 3px 10px rgba(243, 156, 18, 0.3);
+    }
+
+    .transport-card .card-status-badge.inactive {
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
+    }
+
+    .transport-card .card-content {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .transport-card .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0;
+      gap: 10px;
+    }
+
+    .transport-card .card-content h3 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      color: #2c3e50;
+      line-height: 1.2;
+      min-height: 52px;
+    }
+
+    .transport-card .route {
+      margin: 0;
+      font-size: 14px;
+      color: #666;
+      min-height: 22px;
+    }
+
+    .transport-card .description {
+      margin: 0;
+      min-height: 20px;
+      color: #666;
+    }
+
+    .transport-card .card-rating {
+      margin: 0;
+      min-height: 22px;
+      font-size: 13px;
+      color: #6b7280;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .transport-card .card-rating .rating-stars {
+      color: #f59e0b;
+      display: inline-flex;
+      gap: 2px;
+      line-height: 1;
+    }
+
+    .transport-card .card-features {
+      margin: 0;
+      min-height: 24px;
+    }
+
+    .transport-card .feature {
+      background: #f1f5f9;
+      color: #475569;
+      border-radius: 999px;
+      padding: 0.3em 0.7em;
+    }
+
+    .transport-card .card-footer {
+      margin-top: auto;
+      border-top: 1px solid #e8e8e8;
+      padding-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .transport-card .price {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 0;
+    }
+
+    .transport-card .price-amount {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1abc5b;
+      line-height: 1;
+    }
+
+    .transport-card .price-period {
+      font-size: 12px;
+      color: #999;
+      margin: 0;
+    }
+
+    .transport-card .view-btn {
+      background: linear-gradient(135deg, #1abc5b 0%, #16a085 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      padding: 11px 20px;
+      min-width: 140px;
+      box-shadow: 0 4px 12px rgba(26, 188, 91, 0.2);
+    }
+
+    .transport-card .view-btn:hover {
+      background: linear-gradient(135deg, #16a085 0%, #1abc5b 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(26, 188, 91, 0.3);
+    }
+  </style>
+=======
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
 </head>
 <body>
   <!-- Header/Navbar -->
@@ -406,6 +594,175 @@
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-  <script src="assets/js/transportation.js"></script>
+  <script>
+    // Load vehicles dynamically
+    document.addEventListener('DOMContentLoaded', function() {
+      loadVehicles();
+    });
+
+    function getBaseUrl() {
+      const path = window.location.pathname;
+      if (path.includes('/TravelMate')) {
+        return '/TravelMate/public';
+      }
+      return '';
+    }
+
+    async function loadVehicles() {
+      try {
+        const baseUrl = getBaseUrl();
+        const response = await fetch(baseUrl + '/api/vehicle/listAll');
+        
+        if (!response.ok) {
+          console.error('Failed to fetch vehicles:', response.status);
+          return;
+        }
+
+        const result = await response.json();
+        
+        if (result.success && result.data && result.data.length > 0) {
+          displayVehicles(result.data);
+        } else {
+          console.log('No vehicles found');
+        }
+      } catch (error) {
+        console.error('Error loading vehicles:', error);
+      }
+    }
+
+    function displayVehicles(vehicles) {
+      const grid = document.getElementById('transportationGrid');
+      if (!grid) return;
+
+      // Clear existing static content
+      grid.innerHTML = '';
+
+      vehicles.forEach(vehicle => {
+        const card = createVehicleCard(vehicle);
+        grid.appendChild(card);
+      });
+    }
+
+    function createVehicleCard(vehicle) {
+      const card = document.createElement('div');
+      card.className = 'transport-card';
+      card.setAttribute('data-type', vehicle.vehicle_type || '');
+      card.setAttribute('data-route', vehicle.working_district || '');
+      
+      const imageUrl = vehicle.main_image 
+        ? getBaseUrl() + vehicle.main_image 
+        : 'assets/images/default-vehicle.png';
+      
+      const acBadge = vehicle.ac_type === 'ac' ? '❄️ AC' : '';
+      const vehicleTypeIcon = getVehicleIcon(vehicle.vehicle_type);
+      const status = (vehicle.status || 'active').toLowerCase();
+      const statusLabel = status === 'inactive' ? 'Inactive' : status === 'pending' ? 'Pending' : 'Active';
+      const costPerKm = Number(vehicle.cost_per_km || 0);
+      const formattedCost = costPerKm > 0 ? costPerKm.toFixed(2) : '0.00';
+      const ratingCount = parseInt(vehicle.rating_count || 0, 10) || 0;
+      const avgRatingValue = parseFloat(vehicle.avg_rating || 0);
+      const ratingStarsHtml = (() => {
+        let stars = '';
+        for (let index = 1; index <= 5; index++) {
+          if (avgRatingValue >= index) {
+            stars += '<i class="fa-solid fa-star"></i>';
+          } else if (avgRatingValue >= index - 0.5) {
+            stars += '<i class="fa-solid fa-star-half-stroke"></i>';
+          } else {
+            stars += '<i class="fa-regular fa-star"></i>';
+          }
+        }
+        return stars;
+      })();
+      const ratingText = ratingCount > 0 ? `${avgRatingValue.toFixed(1)} (${ratingCount})` : 'Not yet rated';
+      
+      card.innerHTML = `
+        <div class="card-image">
+          <div class="card-status-badge ${status}">${statusLabel}</div>
+          <img src="${imageUrl}" alt="${escapeHtml(vehicle.vehicle_model || vehicle.vehicle_type)}" onerror="this.src='assets/images/default-vehicle.png'">
+        </div>
+        <div class="card-content">
+          <div class="card-header">
+            <h3>${escapeHtml(vehicle.vehicle_model || vehicle.vehicle_type)}</h3>
+            <div class="transport-type">
+              <span class="type-icon">${vehicleTypeIcon}</span>
+              <span class="type-text">${escapeHtml(vehicle.vehicle_type || 'Vehicle')}</span>
+            </div>
+          </div>
+          <p class="route">📍 ${escapeHtml(vehicle.working_district || 'Sri Lanka')}</p>
+          <p class="description">${vehicle.vehicle_year ? vehicle.vehicle_year + ' Model' : ''} ${vehicle.vehicle_color ? '• ' + vehicle.vehicle_color : ''}</p>
+          <p class="card-rating"><span class="rating-stars">${ratingStarsHtml}</span><span>${escapeHtml(ratingText)}</span></p>
+          <div class="card-features">
+            <span class="feature">👥 ${vehicle.passenger_count || 0} Passengers</span>
+            ${acBadge ? '<span class="feature">' + acBadge + '</span>' : ''}
+            ${vehicle.vehicle_number ? '<span class="feature">🚗 ' + escapeHtml(vehicle.vehicle_number) + '</span>' : ''}
+          </div>
+          <div class="card-footer">
+            <div class="price">
+              <span class="price-amount">LKR ${formattedCost}</span>
+              <span class="price-period">per 1km</span>
+            </div>
+            <button class="btn-primary view-btn" onclick="viewVehicleDetails(${vehicle.id})">View Details</button>
+          </div>
+        </div>
+      `;
+      
+      return card;
+    }
+
+    function getVehicleIcon(type) {
+      const icons = {
+        'car': '🚗',
+        'van': '🚐',
+        'bus': '🚌',
+        'tuk-tuk': '🛺',
+        'bike': '🏍️',
+        'suv': '🚙',
+        'luxury': '🚘',
+        'taxi': '🚕'
+      };
+      return icons[type?.toLowerCase()] || '🚗';
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text || '';
+      return div.innerHTML;
+    }
+
+    function bookTransport(vehicleId) {
+      window.location.href = 'transportdetails?id=' + vehicleId;
+    }
+
+    function viewVehicleDetails(vehicleId) {
+      window.location.href = 'transportdetails?id=' + vehicleId;
+    }
+
+    function applyFilters() {
+      const route = document.getElementById('route').value.toLowerCase();
+      const type = document.getElementById('transport-type').value.toLowerCase();
+      const priceRange = document.getElementById('price-range').value;
+      const duration = document.getElementById('duration').value;
+      
+      const cards = document.querySelectorAll('.transport-card');
+      
+      cards.forEach(card => {
+        const cardRoute = card.getAttribute('data-route').toLowerCase();
+        const cardType = card.getAttribute('data-type').toLowerCase();
+        
+        let show = true;
+        
+        if (route && !cardRoute.includes(route)) {
+          show = false;
+        }
+        
+        if (type && !cardType.includes(type)) {
+          show = false;
+        }
+        
+        card.style.display = show ? 'block' : 'none';
+      });
+    }
+  </script>
 </body>
 </html>

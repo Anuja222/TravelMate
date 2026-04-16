@@ -218,6 +218,66 @@ header {
   cursor: pointer;
 }
 
+.page-direction-wrap {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(90deg, rgba(26, 188, 91, 0.12) 0%, rgba(22, 160, 133, 0.06) 100%);
+}
+
+.page-direction {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.55em 2em;
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  flex-wrap: wrap;
+}
+
+.direction-label {
+  color: #a7f3d0;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.direction-path {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: 0.9rem;
+}
+
+.direction-link {
+  color: #d1fae5;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.direction-link:hover {
+  color: #1abc5b;
+}
+
+.direction-separator {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.direction-current {
+  color: #fff;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .page-direction {
+    padding: 0.5em 1em;
+  }
+
+  .direction-path {
+    font-size: 0.84rem;
+    gap: 0.35em;
+  }
+}
+
 .hero-section {
   height: 100vh;
   position: relative;
@@ -257,7 +317,7 @@ header {
   text-align: center;
   color: white;
   max-width: 800px;
-  padding: 0 2em;
+  padding: 4em 2em;
   animation: fadeInUp 1s ease-out;
   /* align-items: center; */
 }

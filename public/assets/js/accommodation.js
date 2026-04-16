@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
     window.getBaseUrl = getBaseUrl;
     console.log('accommodation.js loaded, baseUrl=', baseUrl);
 
-    // ========== PROPERTY LISTING START PAGE ==========
+<<<<<<< HEAD
+    //  PROPERTY LISTING START PAGE 
     const propertyTypes = document.querySelectorAll('.property-type');
     if (propertyTypes.length > 0) {
         propertyTypes.forEach(type => {
@@ -35,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ========== ACCOMMODATION FEATURES PAGE ==========
+    //  ACCOMMODATION FEATURES PAGE 
     const featuresForm = document.querySelector('.features-form');
     if (featuresForm) {
         const features = {};
@@ -74,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ========== PROPERTY DETAILS PAGE ==========
+    //  PROPERTY DETAILS PAGE 
     const detailsForm = document.querySelector('.property-details-form');
     if (detailsForm) {
         // Load any existing data
@@ -105,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ========== PHOTO UPLOAD PAGE ==========
+    //  PHOTO UPLOAD PAGE 
     const photoForm = document.querySelector('.photo-upload-form');
     if (photoForm) {
         const imagesList = [];
@@ -155,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // ========== HOUSE RULES PAGE ==========
+    //  HOUSE RULES PAGE 
     const rulesForm = document.querySelector('.house-rules-form');
     if (rulesForm) {
         rulesForm.addEventListener('submit', async function(e) {
@@ -244,7 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ========== DASHBOARD - LIST PROPERTIES ==========
+    //  DASHBOARD - LIST PROPERTIES 
     const propertyListContainer = document.querySelector('.property-cards-grid');
     if (propertyListContainer) {
         // Function to load user's properties
@@ -277,8 +278,23 @@ document.addEventListener('DOMContentLoaded', function() {
         function displayProperties(properties) {
             propertyListContainer.innerHTML = '';
             
+            // Update the listings count in activity summary
+            const listingsCountElement = document.querySelector('.activity-summary .stat:first-child .stat-num');
+            if (listingsCountElement) {
+                listingsCountElement.textContent = properties.length;
+            }
+            
             if (properties.length === 0) {
-                propertyListContainer.innerHTML = '<p>No properties listed yet.</p>';
+                propertyListContainer.innerHTML = `
+                    <div class="no-properties-message">
+                        <i class="fas fa-home"></i>
+                        <h3>No Properties Yet</h3>
+                        <p>Start listing your properties to reach more guests and grow your business.</p>
+                        <button onclick="window.location.href='${baseUrl}/index.php?url=Accomodation_provider/propertyListingStep1'">
+                            <i class="fas fa-plus"></i> List Your First Property
+                        </button>
+                    </div>
+                `;
                 return;
             }
             
@@ -292,35 +308,83 @@ document.addEventListener('DOMContentLoaded', function() {
             const card = document.createElement('div');
             card.className = 'property-card';
             
-            const statusClass = property.status === 'active' ? 'status-active' : 'status-inactive';
+            const statusClass = property.status === 'active' ? '' : property.status;
             const imagePath = property.main_image || 'assets/images/default-property.jpg';
             
+            // Format price with commas
+            const formattedPrice = property.price_per_night ? 
+                parseFloat(property.price_per_night).toLocaleString('en-US') : '0';
+            
+            // Truncate description if too long
+            const description = property.description || 'No description available';
+            const shortDescription = description.length > 120 ? 
+                description.substring(0, 120) + '...' : description;
+            
+            // Format property type for display
+            const propertyType = property.property_type ? 
+                property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1).replace(/_/g, ' ') : '';
+            
+            const detailUrl = `${baseUrl}/index.php?url=Accomodation_provider/detailsProperty&id=${property.id}`;
+
             card.innerHTML = `
-                <div class="property-card-header">
-                    <div class="property-status ${statusClass}">
-                        ${property.status.toUpperCase()}
-                    </div>
+                <div class="property-card-image" style="cursor:pointer" data-href="${detailUrl}">
                     <img src="${baseUrl}/${imagePath}" alt="${property.title}" 
-                         class="property-image" onerror="this.src='${baseUrl}/assets/images/default-property.jpg'">
+                         onerror="this.src='${baseUrl}/assets/images/default-property.jpg'">
+                    <div class="property-card-badge">${propertyType}</div>
+                    <button type="button" class="property-card-btn-toggle toggle-btn ${property.status === 'active' ? 'active' : ''}" data-id="${property.id}" data-status="${property.status}">
+                        <i class="fas fa-power-off"></i> ${property.status === 'active' ? 'Active' : 'Inactive'}
+                    </button>
                 </div>
                 <div class="property-card-content">
-                    <h3>${property.title}</h3>
-                    <p class="property-type">${property.property_type}</p>
-                    <p class="property-location">${property.location}</p>
-                    <div class="property-details">
-                        <span>${property.rooms} Rooms</span>
-                        <span>${property.bathrooms} Bathrooms</span>
-                        <span>Max ${property.max_guests} Guests</span>
+                    <h3 class="property-card-title" style="cursor:pointer" data-href="${detailUrl}">${property.title}</h3>
+                    
+                    <div class="property-card-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>${property.location}</span>
                     </div>
-                    <div class="property-price">
-                    </div>
-                    <div class="property-actions">
-                        <button type="button" class="view-btn" data-id="${property.id}">View</button>
-                        <button type="button" class="edit-btn" data-id="${property.id}">Update</button>
-                        <button type="button" class="delete-btn" data-id="${property.id}">Delete</button>
+                    
+                    <p class="property-card-description">${shortDescription}</p>
+                    
+                    <div class="property-card-footer">
+                        <div class="property-card-price-row">
+                            <div class="property-card-price">
+                                <div class="property-card-price-amount">
+                                    <span class="currency">LKR</span>
+                                    <span>${formattedPrice}</span>
+                                </div>
+                                <span class="property-card-price-label">per night</span>
+                            </div>
+                        </div>
+                        <div class="property-card-actions">
+                            <button type="button" class="property-card-btn property-card-btn-view view-btn" data-id="${property.id}">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <button type="button" class="property-card-btn property-card-btn-edit" data-id="${property.id}">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button type="button" class="property-card-btn property-card-btn-delete delete-btn" data-id="${property.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
+            
+            // Click on image or title → view details (but not if toggle button clicked)
+            card.querySelector('.property-card-image').addEventListener('click', function(e) {
+                if (e.target.closest('.property-card-btn-toggle')) return;
+                window.location.href = detailUrl;
+            });
+            card.querySelector('.property-card-title').addEventListener('click', function() {
+                window.location.href = detailUrl;
+            });
+
+            // Add click handler to edit button
+            const editBtn = card.querySelector('.property-card-btn-edit');
+            editBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                window.location.href = `${baseUrl}/index.php?url=Accomodation_provider/updateProperty&id=${property.id}`;
+            });
             
             return card;
         }
@@ -356,44 +420,155 @@ document.addEventListener('DOMContentLoaded', function() {
         if (delBtn) {
             const id = delBtn.dataset.id;
             if (!id) return;
-            if (!confirm('Are you sure you want to delete this property?')) return;
-            // call delete API and remove card on success
+            
+            // Show custom confirmation modal instead of browser confirm
+            if (typeof window.showConfirmDeleteModal === 'function') {
+                window.showConfirmDeleteModal(id);
+            } else {
+                // Fallback to browser confirm
+                if (!confirm('Are you sure you want to delete this property?')) return;
+                performDelete(id, delBtn);
+            }
+            return;
+        }
+
+        const toggleBtn = e.target.closest('.toggle-btn');
+        if (toggleBtn) {
+            const id = toggleBtn.dataset.id;
+            const currentStatus = toggleBtn.dataset.status;
+            if (!id) return;
+            
+            const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+            
+            // call toggle API
             (async function(){
                 try {
-                    const res = await fetch(`${getBaseUrl()}/api/accommodation/delete`, {
+                    const res = await fetch(`${getBaseUrl()}/api/accommodation/toggleStatus`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: `id=${encodeURIComponent(id)}`
+                        body: `id=${encodeURIComponent(id)}&status=${encodeURIComponent(newStatus)}`
                     });
                     const ct = res.headers.get('content-type') || '';
                     if (ct.includes('application/json')) {
                         const json = await res.json();
                         if (json.success) {
-                            // remove card from DOM
-                            const card = delBtn.closest('.property-card');
-                            if (card) card.remove();
-                            alert('Property deleted');
+                            // Update button appearance and status
+                            toggleBtn.dataset.status = newStatus;
+                            if (newStatus === 'active') {
+                                toggleBtn.classList.add('active');
+                                toggleBtn.innerHTML = '<i class="fas fa-power-off"></i> Active';
+                            } else {
+                                toggleBtn.classList.remove('active');
+                                toggleBtn.innerHTML = '<i class="fas fa-power-off"></i> Inactive';
+                            }
+                            
+                            // Update status badge
+                            const card = toggleBtn.closest('.property-card');
+                            if (card) {
+                                const statusBadge = card.querySelector('.property-card-status');
+                                if (newStatus === 'active') {
+                                    if (statusBadge) statusBadge.remove();
+                                } else {
+                                    if (!statusBadge) {
+                                        const imageDiv = card.querySelector('.property-card-image');
+                                        const badge = document.createElement('div');
+                                        badge.className = `property-card-status ${newStatus}`;
+                                        badge.textContent = newStatus.toUpperCase();
+                                        imageDiv.appendChild(badge);
+                                    } else {
+                                        statusBadge.className = `property-card-status ${newStatus}`;
+                                        statusBadge.textContent = newStatus.toUpperCase();
+                                    }
+                                }
+                            }
+                            
+                            // Show success modal
+                            if (typeof window.showStatusModal === 'function') {
+                                window.showStatusModal(newStatus === 'active');
+                            } else {
+                                alert(`Property ${newStatus === 'active' ? 'activated' : 'deactivated'} successfully!`);
+                            }
                         } else {
-                            alert('Failed to delete property: ' + (json.errors || json.data || 'unknown'));
+                            alert('Failed to update status: ' + (json.errors || json.data || 'unknown'));
                         }
                     } else {
                         const text = await res.text();
-                        console.error('Delete non-json response:', text);
-                        alert('Failed to delete property. See console for details.');
+                        console.error('Toggle non-json response:', text);
+                        alert('Failed to update status. See console for details.');
                     }
                 } catch (err) {
-                    console.error('Delete error', err);
-                    alert('Failed to delete property. See console.');
+                    console.error('Toggle error', err);
+                    alert('Failed to update status. See console.');
                 }
             })();
             return;
         }
     });
 
+// Function to perform the actual delete operation
+async function performDelete(id, buttonElement) {
+    try {
+        const res = await fetch(`${getBaseUrl()}/api/accommodation/delete`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `id=${encodeURIComponent(id)}`
+        });
+        const ct = res.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+            const json = await res.json();
+            if (json.success) {
+                // remove card from DOM
+                const card = buttonElement ? buttonElement.closest('.property-card') : document.querySelector(`[data-id="${id}"]`)?.closest('.property-card');
+                if (card) card.remove();
+                
+                // Update the listings count in activity summary
+                const listingsCountElement = document.querySelector('.activity-summary .stat:first-child .stat-num');
+                if (listingsCountElement) {
+                    const currentCount = parseInt(listingsCountElement.textContent) || 0;
+                    listingsCountElement.textContent = Math.max(0, currentCount - 1);
+                }
+                
+                // Show success modal
+                if (typeof window.showDeleteModal === 'function') {
+                    window.showDeleteModal();
+                } else {
+                    alert('Property deleted');
+                }
+            } else {
+                alert('Failed to delete property: ' + (json.errors || json.data || 'unknown'));
+            }
+        } else {
+            const text = await res.text();
+            console.error('Delete non-json response:', text);
+            alert('Failed to delete property. See console for details.');
+        }
+    } catch (err) {
+        console.error('Delete error', err);
+        alert('Failed to delete property. See console.');
+    }
+}
+
+// Listen for custom delete confirmation event
+document.addEventListener('confirmDeleteProperty', function(e) {
+    if (e.detail && e.detail.id) {
+        performDelete(e.detail.id, null);
+    }
+});
+
 // Global functions for property actions
 function editProperty(id) {
     window.location.href = `${getBaseUrl()}/updateProperty?id=${id}`;
 }
+=======
+    // Helper function to capitalize first letter
+    function capitalizeFirst(str) {
+        if (!str) return '';
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    }
+});
+
+// Global function for property deletion
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
 
 async function deleteProperty(id) {
     if (!confirm('Are you sure you want to delete this property?')) {

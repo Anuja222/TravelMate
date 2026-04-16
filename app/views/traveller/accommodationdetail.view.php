@@ -6,6 +6,7 @@
   <title>TravelMate - Hotel Details</title>
   <link rel="stylesheet" href="assets/css/Traveller/accommodationdetail.css">
   <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
@@ -61,6 +62,29 @@
             <p id="hotelDescription">
               Experience the ultimate in luxury at our beachfront resort in Bentota. With pristine beaches, world-class amenities, and exceptional service, this resort offers an unforgettable stay in paradise. Our spacious rooms and suites feature modern amenities and stunning ocean views.
             </p>
+          </div>
+
+          <div class="hotel-amenities">
+            <h3>Room Availability</h3>
+            <div class="room-availability-section" style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                <div style="background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                  <div style="font-size: 14px; color: #666; margin-bottom: 8px;">Total Rooms</div>
+                  <div id="totalRooms" style="font-size: 32px; font-weight: 700; color: #2c3e50;">-</div>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                  <div style="font-size: 14px; color: #666; margin-bottom: 8px;">Available Rooms</div>
+                  <div id="availableRooms" style="font-size: 32px; font-weight: 700; color: #1abc5b;">-</div>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                  <div style="font-size: 14px; color: #666; margin-bottom: 8px;">Booked Rooms</div>
+                  <div id="unavailableRooms" style="font-size: 32px; font-weight: 700; color: #e74c3c;">-</div>
+                </div>
+              </div>
+              <div id="availabilityMessage" style="margin-top: 15px; padding: 12px; background: white; border-radius: 8px; text-align: center; font-size: 14px; color: #666; display: none;">
+                <!-- Availability message will be shown here -->
+              </div>
+            </div>
           </div>
 
           <div class="hotel-amenities">
@@ -146,6 +170,16 @@
               </select>
             </div>
 
+<<<<<<< HEAD
+            <div class="room-selection">
+              <label>Number of Rooms</label>
+              <select id="numberOfRooms" required>
+                <option value="">Loading...</option>
+              </select>
+            </div>
+
+=======
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
             <div class="booking-summary" id="bookingSummary" style="display: none;">
               <div class="summary-row">
                 <span>Nights:</span>
@@ -214,6 +248,37 @@
       </div>
     </div>
   </div>  -->
+
+  <!-- Validation Error Modal -->
+  <div id="mapModal" class="map-modal">
+    <div class="map-modal-content">
+      <div class="map-modal-header">
+        <h3 id="mapModalTitle">Accommodation Location</h3>
+        <button type="button" class="map-modal-close" onclick="closeMapModal()">&times;</button>
+      </div>
+      <div class="map-modal-body">
+        <iframe id="mapFrame" title="Accommodation Location Map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <div class="map-modal-fallback">
+          <a id="mapExternalLink" href="#" target="_blank" rel="noopener noreferrer">Open in Google Maps</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="validationModal" class="validation-modal">
+    <div class="validation-modal-content">
+      <div class="validation-icon">
+        <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="30" cy="30" r="28" stroke="#f59e0b" stroke-width="3" fill="#fffbeb"/>
+          <path d="M30 20V32" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="30" cy="40" r="2" fill="#f59e0b"/>
+        </svg>
+      </div>
+      <h2>Incomplete Information</h2>
+      <p id="validationMessage">Please fill in all required fields</p>
+      <button class="btn-close-validation" onclick="document.getElementById('validationModal').classList.remove('show')">Got it</button>
+    </div>
+  </div>
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 

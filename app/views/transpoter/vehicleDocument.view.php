@@ -89,6 +89,21 @@
 
         <div class="section">
           <h2 class="section-title">
+            <i class="fas fa-money-bill-wave"></i>
+            Pricing
+          </h2>
+
+          <div class="form-group">
+            <label for="cost-per-km">Cost per 1km (LKR) <span class="required-asterisk">*</span></label>
+            <input type="number" id="cost-per-km" name="cost_per_km" min="0.01" step="0.01" placeholder="e.g., 120.00" required>
+            <div class="error-message" id="cost-per-km-error"></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section">
+          <h2 class="section-title">
             <i class="fas fa-snowflake"></i>
             Air Conditioning
           </h2>
@@ -242,6 +257,122 @@
   </div>
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
+
+  <!-- Vehicle Registration Success Modal -->
+  <div id="vehicleSuccessModal" class="vehicle-success-modal">
+    <div class="vehicle-success-content">
+      <div class="success-icon">
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="40" cy="40" r="38" stroke="#10b981" stroke-width="3" fill="#ecfdf5"/>
+          <path d="M25 40L35 50L55 30" stroke="#10b981" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2>Vehicle Registered Successfully!</h2>
+      <p>Your vehicle has been registered and is under review. You will be notified once it's approved.</p>
+      <button class="btn-go-dashboard" onclick="goToDashboard()">Go to Dashboard</button>
+    </div>
+  </div>
+
+  <style>
+    /* Vehicle Success Modal */
+    .vehicle-success-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 9999;
+      animation: fadeIn 0.3s ease;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .vehicle-success-modal.show {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .vehicle-success-content {
+      background: white;
+      border-radius: 20px;
+      padding: 48px 40px 40px 40px;
+      text-align: center;
+      max-width: 480px;
+      width: 90%;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+      animation: slideUp 0.4s ease;
+    }
+
+    .vehicle-success-content .success-icon {
+      margin-bottom: 28px;
+      animation: scaleIn 0.6s ease 0.2s both;
+    }
+
+    .vehicle-success-content h2 {
+      color: #10b981;
+      font-size: 32px;
+      margin: 0 0 16px 0;
+      font-weight: 700;
+    }
+
+    .vehicle-success-content p {
+      color: #6b7280;
+      font-size: 16px;
+      margin: 0 0 32px 0;
+      line-height: 1.6;
+    }
+
+    .btn-go-dashboard {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 14px 36px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .btn-go-dashboard:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    }
+  </style>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -535,8 +666,9 @@
                 if (data.success) {
                   sessionStorage.clear();
                   localStorage.removeItem('vehicleDetailsDraft');
-                  alert('Vehicle registered successfully!');
-                  window.location.href = 'tr_dashboard';
+                  
+                  // Show success modal
+                  showVehicleSuccessModal();
                 } else {
                   const errorMsg = data.errors && data.errors.error ? data.errors.error : 'Failed to save vehicle';
                   console.error('API Error:', data.errors);
@@ -642,6 +774,15 @@
           }
         }
 
+        if (field.id === 'cost-per-km' && field.value) {
+          const cost = parseFloat(field.value);
+          if (isNaN(cost) || cost <= 0) {
+            if (errorElement) errorElement.textContent = 'Please enter a valid amount greater than 0';
+            field.style.borderColor = '#e74c3c';
+            return false;
+          }
+        }
+
         if (errorElement) errorElement.textContent = '';
         field.style.borderColor = '#ddd';
         return true;
@@ -658,6 +799,7 @@
           document.getElementById('vehicle-year')?.value,
           document.getElementById('vehicle-color')?.value,
           document.getElementById('vehicle-number')?.value,
+          document.getElementById('cost-per-km')?.value,
           document.getElementById('revenue-license')?.files.length,
           document.getElementById('insurance')?.files.length,
           document.getElementById('registration')?.files.length,
@@ -706,6 +848,19 @@
       handleResponsive();
       window.addEventListener('resize', handleResponsive);
     });
+
+    // Show vehicle registration success modal
+    function showVehicleSuccessModal() {
+      const modal = document.getElementById('vehicleSuccessModal');
+      if (modal) {
+        modal.classList.add('show');
+      }
+    }
+
+    // Redirect to dashboard
+    function goToDashboard() {
+      window.location.href = 'tr_dashboard';
+    }
   </script>
 </body>
 

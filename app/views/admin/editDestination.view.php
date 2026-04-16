@@ -10,9 +10,30 @@
 <body>
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
+<<<<<<< HEAD
+  <div class="page-container">
+    <?php include 'sidebar.view.php'; ?>
+
+    <div class="content">
+      <div class="page-title">
+        <div class="page-title-content">
+          <div class="page-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+          </div>
+          <div class="page-title-text">
+            <h1>Edit Destination</h1>
+            <p class="page-subtitle">Update destination details and manage places</p>
+          </div>
+        </div>
+      </div>
+=======
   <div class="page-containerr">
     <div class="content">
       <h1>Edit Destination</h1>
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
 
       <form id="editDestForm">
         <input type="hidden" name="id" id="id">
@@ -62,9 +83,37 @@
             <label>Description</label>
             <textarea name="description" id="place_description"></textarea>
           </div>
+<<<<<<< HEAD
+
+          <div class="form-group">
+            <label class="form-label">Location</label>
+            <input type="text" name="location" id="place_location" class="form-input">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Best Time to Visit</label>
+            <input type="text" name="best_time" id="place_best_time" class="form-input">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Image</label>
+            <div class="file-upload-wrapper">
+              <input type="file" name="image" id="place_image" class="file-input" accept="image/*">
+              <label for="place_image" class="file-upload-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                Choose Image
+              </label>
+              <span class="file-name" id="place_image-name">No file chosen</span>
+            </div>
+=======
           <div>
             <label>Image</label>
             <input type="file" name="image" id="place_image">
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
           </div>
           <div>
             <button type="submit" class="btn-primary">Add Place</button>
@@ -120,6 +169,8 @@
         fd.append('title', document.getElementById('place_title').value);
         fd.append('slug', document.getElementById('place_slug').value);
         fd.append('description', document.getElementById('place_description').value);
+        fd.append('location', document.getElementById('place_location').value);
+        fd.append('best_time', document.getElementById('place_best_time').value);
         const img = document.getElementById('place_image').files[0];
         if (img) fd.append('image', img);
 
@@ -175,18 +226,30 @@
           const title = escapeHtml(p.title);
           const desc = escapeHtml(p.description || '');
           const slug = escapeHtml(p.slug || '');
+          const location = escapeHtml(p.location || '');
+          const bestTime = escapeHtml(p.best_time || '');
           const imgAttr = p.image ? p.image : '';
           return `
           <div class="place-item" data-id="${p.id}"
                data-title="${title}"
                data-slug="${slug}"
                data-description="${desc}"
+<<<<<<< HEAD
+               data-location="${location}"
+               data-best-time="${bestTime}"
+               data-image="${imgAttr}">
+            ${imgHtml}
+            <div class="place-info">
+              <h4 class="place-title">${title}</h4>
+              <p class="place-desc">${desc || 'No description provided'}</p>
+=======
                data-image="${imgAttr}"
                style="display:flex;align-items:center;margin-bottom:12px;">
             <div style="margin-right:12px">${img}</div>
             <div style="flex:1">
               <strong>${title}</strong><br>
               <small>${desc}</small>
+>>>>>>> 3ae9d687beaa3bed7cd8b0600e2b949001449874
             </div>
             <div>
               <button class="btn-edit-place" data-id="${p.id}">Edit</button>
@@ -222,6 +285,8 @@
             document.getElementById('place_title').value = item.dataset.title || '';
             document.getElementById('place_slug').value = item.dataset.slug || '';
             document.getElementById('place_description').value = item.dataset.description || '';
+            document.getElementById('place_location').value = item.dataset.location || '';
+            document.getElementById('place_best_time').value = item.dataset.bestTime || '';
             // image cannot be prefilled into file input; show preview or leave as-is
             addPlaceBtn.textContent = 'Update Place';
             const heading = document.getElementById('addPlaceHeading');
@@ -247,6 +312,8 @@
         document.getElementById('place_title').value = '';
         document.getElementById('place_slug').value = '';
         document.getElementById('place_description').value = '';
+        document.getElementById('place_location').value = '';
+        document.getElementById('place_best_time').value = '';
         document.getElementById('place_image').value = '';
         addPlaceBtn.textContent = 'Add Place';
         const heading = document.getElementById('addPlaceHeading');

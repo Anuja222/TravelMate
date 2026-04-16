@@ -1,9 +1,3 @@
-/* Content Styles */
-.page-title h1 {
-    font-size: 1.8rem;
-    color: black;
-}
-
 /* Settings Sections */
 .settings-grid {
     display: grid;
