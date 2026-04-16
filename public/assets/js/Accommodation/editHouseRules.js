@@ -1,4 +1,4 @@
-// JS for house rules page
+// jS for house rules page
 document.querySelector('.rules-form')?.addEventListener('submit', function(e) {
     e.preventDefault();
     // prevent default form submit — we handle saving via JS
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (e) {
             console.warn('Failed to persist house rules to sessionStorage', e);
         }
-        // Redirect using MVC route
+        // redirect using MVC route
         window.location.href = '/TravelMate/Accomodation_provider/viewProperty';
     });
 });

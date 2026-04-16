@@ -1,10 +1,10 @@
 <?php
-// Start session if not already started
+// start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is logged in
+// check if user is logged in
 $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
 $firstName = $isLoggedIn ? $_SESSION['user']['first_name'] : '';
 $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
@@ -101,7 +101,7 @@ $maskedPhone = $phone ? substr($phone, 1) : '';
         </form>
     </div>
 
-    <script src="/TravelMate/public/assets/js/booking_details.js"></script>
+    <script src="/TravelMate/public/assets/js/booking_details.js?v=<?php echo time(); ?>"></script>
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 </body>
 </html>

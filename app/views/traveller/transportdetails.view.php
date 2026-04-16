@@ -11,13 +11,13 @@
 
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-  <!-- Transportation Hero Section -->
+  <!-- transportation Hero Section -->
   <section class="transport-hero">
     <div class="hero-gallery">
       <div class="main-image">
         <img id="mainTransportImage" src="assets/images/car.png" alt="Transport Main Image">
         <div class="image-counter">
-          <span id="imageCounter">1 / 4</span>
+          <span id="imageCounter">0 / 0</span>
         </div>
         <div class="gallery-nav">
           <button class="nav-btn prev" onclick="previousImage()">‹</button>
@@ -25,20 +25,20 @@
         </div>
       </div>
       <div class="thumbnail-gallery" id="thumbnailGallery">
-        <!-- Thumbnails will be populated by JavaScript -->
+        <!-- thumbnails will be populated by JavaScript -->
       </div>
     </div>
   </section>
 
-  <!-- Transportation Details Section -->
+  <!-- transportation Details Section -->
   <section class="transport-details-section">
     <div class="container">
       <div class="details-grid">
-        <!-- Left Column - Transport Info -->
+        <!-- left Column - Transport Info -->
         <div class="transport-info">
           <div class="transport-header">
             <div class="transport-title">
-              <h1 id="transportTitle">Premium SUV - Toyota Land Cruiser</h1>
+              <h1 id="transportTitle">Loading transport details...</h1>
               <div class="transport-badges" id="transportBadges">
                 <!-- <span class="badge luxury">Luxury</span> -->
               </div>
@@ -47,35 +47,35 @@
 
           <div class="transport-location">
             <span class="location-icon">📍</span>
-            <span id="defaultLocation">Colombo International Airport</span>
+            <span id="defaultLocation">Loading location...</span>
             <button class="map-btn" onclick="showMap()">View on Map</button>
           </div>
 
           <div class="transport-description">
             <h3>About This Vehicle</h3>
             <p id="transportDescription">
-              Experience comfortable and reliable transportation with our premium SUV service. Perfect for families or groups, this spacious vehicle offers luxury, safety, and convenience throughout your journey in Sri Lanka. Equipped with modern amenities and driven by professional, experienced chauffeurs.
+              Transport details are loading. Please wait...
             </p>
           </div>
 
           <div class="transport-features">
             <h3>Vehicle Features & Amenities</h3>
             <div class="features-grid" id="featuresGrid">
-              <!-- Features will be populated by JavaScript -->
+              <!-- features will be populated by JavaScript -->
             </div>
           </div>
 
           <div class="transport-specifications">
             <h3>Vehicle Specifications</h3>
             <div class="specs-grid" id="specsGrid">
-              <!-- Specifications will be populated by JavaScript -->
+              <!-- specifications will be populated by JavaScript -->
             </div>
           </div>
 
           <div class="transport-pricing">
             <h3>Pricing Options</h3>
             <div class="pricing-grid" id="pricingGrid">
-              <!-- Pricing options will be populated by JavaScript -->
+              <!-- pricing options will be populated by JavaScript -->
             </div>
           </div>
 
@@ -87,21 +87,21 @@
                 <div class="rating-label">Excellent</div>
               </div>
               <div class="rating-breakdown" id="ratingBreakdown">
-                <!-- Rating breakdown will be populated by JavaScript -->
+                <!-- rating breakdown will be populated by JavaScript -->
               </div>
             </div>
             <div class="reviews-list" id="reviewsList">
-              <!-- Reviews will be populated by JavaScript -->
+              <!-- reviews will be populated by JavaScript -->
             </div>
           </div>
         </div>
 
-        <!-- Right Column - Booking Widget -->
+        <!-- right Column - Booking Widget -->
         <div class="booking-widget">
           <div class="widget-header">
             <div class="price-display">
-              <span class="price-amount" id="priceAmount">Rs.12,500</span>
-              <span class="price-period">/ day</span>
+              <span class="price-amount" id="priceAmount">Rs.0</span>
+              <span class="price-period">/ 1km</span>
             </div>
             <div class="price-note">Prices may vary by duration and destination</div>
           </div>
@@ -205,15 +205,31 @@
               <p>✓ Fuel & tolls included</p>
               <p>✓ 24/7 customer support</p>
             </div>
-          </form>
+                        </div>
+            </form>
+          </div>
+
+          <!-- provider Profile Widget -->
+          <div class="booking-widget" style="margin-top: 20px;">
+            <div class="widget-header">
+              <h3 style="margin:0; font-size: 1.2rem;">Transport Provider</h3>
+            </div>
+            <div class="provider-profile" style="padding: 15px; display: flex; align-items: center; gap: 15px;">
+              <img id="providerImage" src="assets/images/default-profile.png" alt="Provider" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+              <div style="flex: 1; min-width: 0;">
+                <h4 id="providerName" style="margin: 0 0 5px 0;">Loading...</h4>
+                <p id="providerPhone" style="margin: 0; font-size: 0.9rem; color: #666; word-break: break-all;">Loading...</p>
+                <p id="providerEmail" style="margin: 5px 0 0; font-size: 0.9rem; color: #666; word-break: break-all;">Loading...</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-  <!-- Transport Booking Success Modal -->
+  <!-- transport Booking Success Modal -->
   <div id="bookingSuccessModal" class="booking-success-modal">
     <div class="booking-success-content">
       <div class="success-icon">
@@ -222,13 +238,13 @@
           <polyline points="22 4 12 14.01 9 11.01"></polyline>
         </svg>
       </div>
-      <h2>Booking Confirmed!</h2>
-      <p>Your transport booking has been successfully confirmed.</p>
+      <h2>Request Submitted!</h2>
+      <p>Your transport booking request is pending transporter approval.</p>
       <div class="booking-id-display">
         <span class="label">Booking ID:</span>
         <span class="booking-id" id="modalBookingId">TB12345678</span>
       </div>
-      <p class="confirmation-note">A confirmation email has been sent to your registered email address.</p>
+      <p class="confirmation-note">You’ll be notified once the transporter approves your request.</p>
       <div class="modal-actions">
         <button onclick="goToTransportBookings()" class="btn-view-bookings">
           <i class="fas fa-list"></i> View My Bookings
@@ -236,6 +252,23 @@
         <button onclick="closeBookingModal()" class="btn-close-modal">
           Close
         </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="dateUnavailableModal" class="booking-success-modal">
+    <div class="booking-success-content">
+      <div class="success-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
+      <h2>Dates Not Available</h2>
+      <p id="dateUnavailableMessage">Dates are not available. Please choose different pickup and return dates.</p>
+      <div class="modal-actions">
+        <button onclick="closeDateUnavailableModal()" class="btn-close-modal">OK</button>
       </div>
     </div>
   </div>
@@ -414,9 +447,9 @@
     }
   </style>
 
-  <script src="assets/js/transportdetails.js"></script>
+  <script src="assets/js/transportdetails.js?v=<?php echo file_exists(__DIR__ . '/../../../public/assets/js/transportdetails.js') ? filemtime(__DIR__ . '/../../../public/assets/js/transportdetails.js') : time(); ?>"></script>
   <script>
-    // Modal helper functions
+    // modal helper functions
     function showBookingSuccessModal(bookingId) {
       const modal = document.getElementById('bookingSuccessModal');
       const bookingIdEl = document.getElementById('modalBookingId');
@@ -430,7 +463,7 @@
       const modal = document.getElementById('bookingSuccessModal');
       if (modal) {
         modal.style.display = 'none';
-        // Reset form
+        // reset form
         document.getElementById('bookingForm').reset();
         document.getElementById('bookingSummary').style.display = 'none';
         document.querySelector('.book-now-btn').style.display = 'block';
@@ -440,6 +473,22 @@
 
     function goToTransportBookings() {
       window.location.href = 'mytransportbookings';
+    }
+
+    function showDateUnavailableModal(message) {
+      const modal = document.getElementById('dateUnavailableModal');
+      const messageEl = document.getElementById('dateUnavailableMessage');
+      if (modal && messageEl) {
+        messageEl.textContent = message || 'Dates are not available. Please choose different pickup and return dates.';
+        modal.style.display = 'block';
+      }
+    }
+
+    function closeDateUnavailableModal() {
+      const modal = document.getElementById('dateUnavailableModal');
+      if (modal) {
+        modal.style.display = 'none';
+      }
     }
   </script>
 </body>

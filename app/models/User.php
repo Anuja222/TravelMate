@@ -10,8 +10,10 @@ class User
     public $dateOfBirth;
     public $gender;
     public $password;
+    public $role;
+    public $profile_image;
 
-    public function __construct($firstName, $lastName, $email, $phone, $dateOfBirth, $gender, $password)
+    public function __construct($firstName, $lastName, $email, $phone, $dateOfBirth, $gender, $password, $profile_image = null)
     {
         $this->firstName = $firstName;
         $this->lastName = $lastName;
@@ -20,13 +22,14 @@ class User
         $this->dateOfBirth = $dateOfBirth;
         $this->gender = $gender;
         $this->password = $password;
+        $this->profile_image = $profile_image;
     }
 
     public function createUser($conn)
     {
         try {
-            $sql = "INSERT INTO users (first_name, last_name, email, phone, date_of_birth, gender, password, role) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO users (first_name, last_name, email, phone, date_of_birth, gender, password, role, profile_image) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
             $hashedPassword = password_hash($this->password, PASSWORD_DEFAULT);
             $stmt->execute([
@@ -37,9 +40,10 @@ class User
                 $this->dateOfBirth,
                 $this->gender,
                 $hashedPassword,
-                $this->role ?? 'traveller'
+                $this->role ?? 'traveller',
+                $this->profile_image
             ]);
-            return $conn->lastInsertId(); // Return the new user's ID
+            return $conn->lastInsertId(); // return the new user's ID
         } catch (\PDOException $e) {
             return false;
         }
@@ -56,19 +60,19 @@ class User
     public static function updateUser($userId, $data)
     {
         try {
-            // Load database connection
+            // load database connection
             require_once '../config/database.php';
             
-            // Create PDO connection directly
+            // create PDO connection directly
             $dsn = "mysql:host=" . DBHOST . ";dbname=" . DBNAME . ";charset=utf8mb4";
             $conn = new \PDO($dsn, DBUSER, DBPASS);
             $conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
             
-            // Build update query dynamically based on provided data
+            // build update query dynamically based on provided data
             $updates = [];
             $params = [];
             
-            $allowedFields = ['first_name', 'last_name', 'email', 'phone', 'date_of_birth', 'gender', 'bio', 'country', 'city', 'timezone', 'travel_style', 'budget', 'interests'];
+            $allowedFields = ['first_name', 'last_name', 'email', 'phone', 'date_of_birth', 'gender', 'bio', 'country', 'city', 'timezone', 'travel_style', 'budget', 'interests', 'profile_image'];
             
             foreach ($data as $key => $value) {
                 if (in_array($key, $allowedFields)) {
@@ -81,7 +85,7 @@ class User
                 return false;
             }
             
-            $params[] = $userId; // Add user ID at the end for WHERE clause
+            $params[] = $userId; // add user ID at the end for WHERE clause
             
             $sql = "UPDATE users SET " . implode(', ', $updates) . " WHERE id = ?";
             $stmt = $conn->prepare($sql);

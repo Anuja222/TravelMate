@@ -14,10 +14,10 @@ class Preference {
 
     public function savePreferences($conn) {
         try {
-            // Start transaction
+            // start transaction
             $conn->beginTransaction();
 
-            // Delete existing preferences for this user
+            // delete existing preferences for this user
             $sql = "DELETE FROM user_environments WHERE user_id = ?";
             $stmt = $conn->prepare($sql);
             $stmt->execute([$this->userId]);
@@ -26,21 +26,21 @@ class Preference {
             $stmt = $conn->prepare($sql);
             $stmt->execute([$this->userId]);
 
-            // Insert environments
+            // insert environments
             foreach ($this->environments as $environment) {
                 $sql = "INSERT INTO user_environments (user_id, environment_name) VALUES (?, ?)";
                 $stmt = $conn->prepare($sql);
                 $stmt->execute([$this->userId, $environment]);
             }
 
-            // Insert activities
+            // insert activities
             foreach ($this->activities as $activity) {
                 $sql = "INSERT INTO user_activities (user_id, activity_name) VALUES (?, ?)";
                 $stmt = $conn->prepare($sql);
                 $stmt->execute([$this->userId, $activity]);
             }
 
-            // Commit transaction
+            // commit transaction
             $conn->commit();
             return true;
         } catch (\Exception $e) {

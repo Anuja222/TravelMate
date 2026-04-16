@@ -9,17 +9,28 @@
 
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
       
-  <!-- Content Area -->
+  <!-- content Area -->
  <div class="page-container">
 
  <?php include 'sidebar.view.php'; ?>
 
   <div class="content">
-    <div class="page-title">  
-      <h1>Settings</h1>
+    <div class="page-title">
+      <div class="page-title-content">
+        <div class="page-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M12 1v6m0 6v6m10-7h-6m-6 0H4m15.364 6.364l-4.243-4.243m-6.364 0l-4.243 4.243M19.071 4.929l-4.243 4.243m-6.364 0L4.222 4.93"></path>
+          </svg>
+        </div>
+        <div class="page-title-text">
+          <h1>System Settings</h1>
+          <p class="page-subtitle">Configure and manage platform settings</p>
+        </div>
+      </div>
     </div>
 
-    <!-- Stats Cards -->
+    <!-- stats Cards -->
     <div class="stats-container">
       <div class="stat-card">
         <div class="stat-label">Total Users</div>
@@ -40,10 +51,10 @@
       </div>
      </div>
 
-    <!-- Settings Grid -->
+    <!-- settings Grid -->
     <div class="settings-grid">
 
-      <!-- About & Terms Section -->
+      <!-- about & Terms Section -->
       <section class="settings-section">
         <div class="section-header">
           <h2>About & Legal</h2>
@@ -59,7 +70,7 @@
         </form>
       </section>
 
-        <!-- User Management -->
+        <!-- user Management -->
         <section class="settings-section">
           <div class="section-header">
             <h2>User Management</h2>
@@ -84,7 +95,7 @@
           </div>
         </section>
 
-        <!-- Database Management -->
+        <!-- database Management -->
         <section class="settings-section">
           <div class="section-header">
             <h2>Database Management</h2>
@@ -113,7 +124,7 @@
           </div>
         </section>
 
-        <!-- Security Settings -->
+        <!-- security Settings -->
         <section class="settings-section">
           <div class="section-header">
             <h2>Security</h2>

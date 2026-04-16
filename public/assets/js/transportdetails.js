@@ -1,157 +1,187 @@
-// Transportation Detail Page JavaScript
-
-// Sample data structure - replace with actual API calls
-const transportData = {
-    id: 1,
-    name: "Premium SUV - Toyota Land Cruiser",
-    type: "SUV",
-    category: "luxury",
-    location: "Colombo International Airport",
-    description: "Experience comfortable and reliable transportation with our premium SUV service. Perfect for families or groups, this spacious vehicle offers luxury, safety, and convenience throughout your journey in Sri Lanka. Equipped with modern amenities and driven by professional, experienced chauffeurs.",
-    basePrice: 12500,
-    pricePerKm: 150,
-    images: [
-        "assets/images/car1.png",
-        "assets/images/car2.png",
-        "assets/images/luxurycar3.png",
-        "assets/images/luxurycar4.png"
-    ],
-    features: [
-        { icon: "❄️", text: "Air Conditioning" },
-        { icon: "📡", text: "GPS Navigation" },
-        { icon: "📱", text: "Phone Charging" },
-        { icon: "🎵", text: "Bluetooth Audio" },
-        { icon: "💺", text: "Leather Seats" },
-        { icon: "🛡️", text: "Insurance Included" },
-        { icon: "🧳", text: "Spacious Luggage" },
-        { icon: "👨‍✈️", text: "Professional Driver" }
-    ],
-    specifications: [
-        { label: "Capacity", value: "7 Passengers" },
-        { label: "Luggage", value: "5 Large Bags" },
-        { label: "Fuel Type", value: "Diesel" },
-        { label: "Transmission", value: "Automatic" },
-        { label: "Year", value: "2023" },
-        { label: "Mileage", value: "12 km/L" }
-    ],
-    pricingOptions: [
-        {
-            name: "Airport Transfer",
-            price: "Rs.8,500",
-            description: "One-way transfer from airport to your destination",
-            features: [
-                "Meet & Greet service",
-                "Flight tracking",
-                "Free waiting time: 60 mins",
-                "All tolls included"
-            ],
-            popular: false
-        },
-        {
-            name: "Daily Rental",
-            price: "Rs.12,500/day",
-            description: "Full day rental with driver (8 hours, 80km)",
-            features: [
-                "Professional chauffeur",
-                "Fuel included",
-                "Extra hours: Rs.1,500/hr",
-                "Extra km: Rs.150/km"
-            ],
-            popular: true
-        },
-        {
-            name: "Tour Package",
-            price: "Rs.45,000",
-            description: "3-day tour package covering major attractions",
-            features: [
-                "Customizable itinerary",
-                "Hotel pickup/drop-off",
-                "All fuel & tolls",
-                "Driver accommodation"
-            ],
-            popular: false
-        }
-    ],
-    reviews: [
-        {
-            name: "John Smith",
-            avatar: "JS",
-            rating: 5,
-            date: "2 weeks ago",
-            text: "Excellent service! The driver was professional and punctual. The vehicle was clean and comfortable. Highly recommended for anyone traveling in Sri Lanka."
-        },
-        {
-            name: "Sarah Johnson",
-            avatar: "SJ",
-            rating: 5,
-            date: "1 month ago",
-            text: "Perfect for our family trip. The SUV was spacious and well-maintained. Our driver was knowledgeable about the area and very helpful."
-        },
-        {
-            name: "Michael Chen",
-            avatar: "MC",
-            rating: 4,
-            date: "2 months ago",
-            text: "Great experience overall. The booking process was smooth and the vehicle arrived on time. Would use this service again."
-        }
-    ],
-    overallRating: 4.9,
-    ratingBreakdown: [
-        { category: "Cleanliness", value: 5.0 },
-        { category: "Comfort", value: 4.9 },
-        { category: "Driver", value: 5.0 },
-        { category: "Value", value: 4.7 }
-    ]
-};
-
-// Current image index
+let currentVehicle = null;
 let currentImageIndex = 0;
+let vehicleImages = [];
+let calculatedBooking = null;
 
-// Initialize page
-document.addEventListener('DOMContentLoaded', function() {
-    loadTransportDetails();
-    initializeImageGallery();
+document.addEventListener('DOMContentLoaded', async function () {
+    await loadTransportDetails();
     setupDateRestrictions();
     setupFormListeners();
 });
 
-// Load transport details
-function loadTransportDetails() {
-    // Update title and basic info
-    document.getElementById('transportTitle').textContent = transportData.name;
-    document.getElementById('pickupLocation').textContent = transportData.location;
-    document.getElementById('transportDescription').textContent = transportData.description;
-    document.getElementById('priceAmount').textContent = `Rs.${transportData.basePrice.toLocaleString()}`;
-
-    // Add badge
-    const badgesContainer = document.getElementById('transportBadges');
-    badgesContainer.innerHTML = `<span class="badge ${transportData.category}">${transportData.category}</span>`;
-
-    // Load features
-    loadFeatures();
-
-    // Load specifications
-    loadSpecifications();
-
-    // Load pricing options
-    loadPricingOptions();
-
-    // Load reviews
-    loadReviews();
-
-    // Load rating breakdown
-    loadRatingBreakdown();
+function getBaseUrl() {
+    const path = window.location.pathname;
+    if (path.includes('/TravelMate/public')) return '/TravelMate/public';
+    if (path.includes('/public')) {
+        const parts = path.split('/');
+        const publicIdx = parts.indexOf('public');
+        return parts.slice(0, publicIdx + 1).join('/');
+    }
+    return '/TravelMate/public';
 }
 
-// Initialize image gallery
-function initializeImageGallery() {
-    const thumbnailGallery = document.getElementById('thumbnailGallery');
-    thumbnailGallery.innerHTML = '';
+function getVehicleIdFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const id = parseInt(params.get('id'), 10);
+    return Number.isFinite(id) ? id : null;
+}
 
-    transportData.images.forEach((image, index) => {
+function formatCurrency(value) {
+    return `Rs.${Number(value || 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+}
+
+function parseDocsImages(vehicle) {
+    const baseUrl = getBaseUrl();
+    const images = [];
+
+    if (vehicle.main_image) {
+        images.push(vehicle.main_image.startsWith('/') ? baseUrl + vehicle.main_image : vehicle.main_image);
+    }
+
+    if (Array.isArray(vehicle.documents)) {
+        vehicle.documents
+            .filter(doc => doc.doc_type === 'vehicle_photos' && doc.file_path)
+            .forEach(doc => {
+                const full = doc.file_path.startsWith('/') ? baseUrl + doc.file_path : doc.file_path;
+                if (!images.includes(full)) images.push(full);
+            });
+    }
+
+    if (images.length === 0) images.push('assets/images/default-vehicle.png');
+    return images;
+}
+
+function getServiceMultiplier(serviceType) {
+    switch (serviceType) {
+        case 'airport':
+            return 1.0;
+        case 'tour':
+            return 1.2;
+        case 'custom':
+            return 1.1;
+        case 'daily':
+        default:
+            return 1.0;
+    }
+}
+
+function getTransportCategory(vehicleType) {
+    const type = (vehicleType || '').toLowerCase();
+    if (['luxury', 'suv'].includes(type)) return 'luxury';
+    if (['bus', 'van'].includes(type)) return 'express';
+    if (['tuk', 'tuk-tuk', 'three-wheeler'].includes(type)) return 'cultural';
+    return 'scenic';
+}
+
+async function loadTransportDetails() {
+    const vehicleId = getVehicleIdFromUrl();
+    const baseUrl = getBaseUrl();
+
+    try {
+        const response = await fetch(`${baseUrl}/api/vehicle/listAll`, { credentials: 'same-origin' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const result = await response.json();
+        if (!result.success || !Array.isArray(result.data) || result.data.length === 0) {
+            alert('No transport data available.');
+            return;
+        }
+
+        currentVehicle = vehicleId
+            ? result.data.find(v => Number(v.id) === Number(vehicleId))
+            : result.data[0];
+
+        if (!currentVehicle) {
+            alert('Selected transport not found.');
+            return;
+        }
+
+        vehicleImages = parseDocsImages(currentVehicle);
+        currentImageIndex = 0;
+
+        renderBasicDetails();
+        renderGallery();
+        renderFeatures();
+        renderSpecifications();
+        renderPricingOptions();
+        renderReviews();
+    } catch (error) {
+        console.error('Failed to load transport details:', error);
+        alert('Failed to load transport details. Please try again.');
+    }
+}
+
+function renderBasicDetails() {
+    if (!currentVehicle) return;
+
+    const model = currentVehicle.vehicle_model || 'Vehicle';
+    const type = currentVehicle.vehicle_type || 'Transport';
+    const district = currentVehicle.working_district || 'Sri Lanka';
+    const year = currentVehicle.vehicle_year || 'N/A';
+    const color = currentVehicle.vehicle_color || 'N/A';
+    const ac = currentVehicle.ac_type === 'ac' ? 'A/C' : 'Non-A/C';
+    const passengers = currentVehicle.passenger_count || 'N/A';
+    const rate = Number(currentVehicle.cost_per_km || 0);
+
+    document.getElementById('transportTitle').textContent = `${model} - ${type}`;
+    document.getElementById('defaultLocation').textContent = district;
+    document.getElementById('transportDescription').textContent =
+        `Book ${model} (${year}, ${color}) with ${passengers} passenger capacity and ${ac}. Pricing is specific to this vehicle and your total updates automatically based on booked days.`;
+
+    document.getElementById('priceAmount').textContent = formatCurrency(rate);
+    document.querySelector('.price-period').textContent = '/ day';
+
+    const badgesContainer = document.getElementById('transportBadges');
+    const category = getTransportCategory(type);
+    badgesContainer.innerHTML = `<span class="badge ${category}">${type}</span>`;
+
+    // provider Details
+    const providerName = currentVehicle.first_name ? `${currentVehicle.first_name} ${currentVehicle.last_name || ''}`.trim() : 'N/A';
+    const providerPhone = currentVehicle.phone || 'N/A';
+    const providerEmail = currentVehicle.email || 'N/A';
+    let providerImage = currentVehicle.profile_image || 'assets/images/default-profile.png';
+    
+    // ensure correct path if it doesn't start with http or /
+    if (providerImage && providerImage !== 'assets/images/default-profile.png' && !providerImage.startsWith('http') && !providerImage.startsWith('/')) {
+        const base = window.location.pathname.substring(0, window.location.pathname.indexOf('/TransportDetails'));
+        providerImage = base + '/' + providerImage;
+    }
+
+    const nameEl = document.getElementById('providerName');
+    if (nameEl) nameEl.textContent = providerName;
+    
+    const phoneEl = document.getElementById('providerPhone');
+    if (phoneEl) {
+         phoneEl.innerHTML = `<i class="fas fa-phone"></i> ${providerPhone}`;
+    }
+    
+    const emailEl = document.getElementById('providerEmail');
+    if (emailEl) {
+         emailEl.innerHTML = `<i class="fas fa-envelope"></i> ${providerEmail}`;
+    }
+
+    const imgEl = document.getElementById('providerImage');
+    if (imgEl && currentVehicle.profile_image) {
+         const base = getBaseUrl();
+         imgEl.src = base + '/' + currentVehicle.profile_image;
+         imgEl.onerror = function() { this.src = 'assets/images/default-profile.png'; };
+    }
+}
+
+function renderGallery() {
+    const mainImage = document.getElementById('mainTransportImage');
+    const thumbnailGallery = document.getElementById('thumbnailGallery');
+
+    if (!mainImage || !thumbnailGallery || vehicleImages.length === 0) return;
+
+    mainImage.src = vehicleImages[currentImageIndex];
+    mainImage.onerror = function () { this.src = 'assets/images/default-vehicle.png'; };
+
+    thumbnailGallery.innerHTML = '';
+    vehicleImages.forEach((image, index) => {
         const thumbnail = document.createElement('div');
-        thumbnail.className = `thumbnail ${index === 0 ? 'active' : ''}`;
-        thumbnail.innerHTML = `<img src="${image}" alt="Transport Image ${index + 1}">`;
+        thumbnail.className = `thumbnail ${index === currentImageIndex ? 'active' : ''}`;
+        thumbnail.innerHTML = `<img src="${image}" alt="Transport ${index + 1}" onerror="this.src='assets/images/default-vehicle.png'">`;
         thumbnail.onclick = () => showImage(index);
         thumbnailGallery.appendChild(thumbnail);
     });
@@ -159,13 +189,15 @@ function initializeImageGallery() {
     updateImageCounter();
 }
 
-// Show specific image
 function showImage(index) {
+    if (!vehicleImages.length) return;
     currentImageIndex = index;
-    const mainImage = document.getElementById('mainHotelImage');
-    mainImage.src = transportData.images[index];
+    const mainImage = document.getElementById('mainTransportImage');
+    if (mainImage) {
+        mainImage.src = vehicleImages[index];
+        mainImage.onerror = function () { this.src = 'assets/images/default-vehicle.png'; };
+    }
 
-    // Update thumbnails
     document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
         thumb.classList.toggle('active', i === index);
     });
@@ -173,143 +205,155 @@ function showImage(index) {
     updateImageCounter();
 }
 
-// Previous image
 function previousImage() {
-    currentImageIndex = (currentImageIndex - 1 + transportData.images.length) % transportData.images.length;
+    if (!vehicleImages.length) return;
+    currentImageIndex = (currentImageIndex - 1 + vehicleImages.length) % vehicleImages.length;
     showImage(currentImageIndex);
 }
 
-// Next image
 function nextImage() {
-    currentImageIndex = (currentImageIndex + 1) % transportData.images.length;
+    if (!vehicleImages.length) return;
+    currentImageIndex = (currentImageIndex + 1) % vehicleImages.length;
     showImage(currentImageIndex);
 }
 
-// Update image counter
 function updateImageCounter() {
-    document.getElementById('imageCounter').textContent = 
-        `${currentImageIndex + 1} / ${transportData.images.length}`;
+    const counter = document.getElementById('imageCounter');
+    if (!counter) return;
+    counter.textContent = `${currentImageIndex + 1} / ${Math.max(vehicleImages.length, 1)}`;
 }
 
-// Load features
-function loadFeatures() {
+function renderFeatures() {
+    if (!currentVehicle) return;
     const featuresGrid = document.getElementById('featuresGrid');
-    featuresGrid.innerHTML = '';
+    if (!featuresGrid) return;
 
-    transportData.features.forEach(feature => {
-        const featureItem = document.createElement('div');
-        featureItem.className = 'feature-item';
-        featureItem.innerHTML = `
+    const features = [
+        { icon: '👥', text: `${currentVehicle.passenger_count || 'N/A'} Passengers` },
+        { icon: currentVehicle.ac_type === 'ac' ? '❄️' : '🌤️', text: currentVehicle.ac_type === 'ac' ? 'Air Conditioning' : 'Non-A/C' },
+        { icon: '🧾', text: 'Licensed Vehicle' },
+        { icon: '🛡️', text: 'Safety Verified' },
+        { icon: '⏰', text: 'On-time Service' },
+        { icon: '👨‍✈️', text: 'Experienced Driver' }
+    ];
+
+    featuresGrid.innerHTML = features.map(feature => `
+        <div class="feature-item">
             <span class="feature-icon">${feature.icon}</span>
             <span class="feature-text">${feature.text}</span>
-        `;
-        featuresGrid.appendChild(featureItem);
-    });
+        </div>
+    `).join('');
 }
 
-// Load specifications
-function loadSpecifications() {
+function renderSpecifications() {
+    if (!currentVehicle) return;
     const specsGrid = document.getElementById('specsGrid');
-    specsGrid.innerHTML = '';
+    if (!specsGrid) return;
 
-    transportData.specifications.forEach(spec => {
-        const specItem = document.createElement('div');
-        specItem.className = 'spec-item';
-        specItem.innerHTML = `
+    const specs = [
+        { label: 'Vehicle Type', value: currentVehicle.vehicle_type || 'N/A' },
+        { label: 'Model', value: currentVehicle.vehicle_model || 'N/A' },
+        { label: 'Year', value: currentVehicle.vehicle_year || 'N/A' },
+        { label: 'Color', value: currentVehicle.vehicle_color || 'N/A' },
+        { label: 'Vehicle Number', value: currentVehicle.vehicle_number || 'N/A' },
+        { label: 'Base Location', value: currentVehicle.working_district || 'N/A' }
+    ];
+
+    specsGrid.innerHTML = specs.map(spec => `
+        <div class="spec-item">
             <div class="spec-label">${spec.label}</div>
             <div class="spec-value">${spec.value}</div>
-        `;
-        specsGrid.appendChild(specItem);
-    });
+        </div>
+    `).join('');
 }
 
-// Load pricing options
-function loadPricingOptions() {
+function renderPricingOptions() {
+    if (!currentVehicle) return;
     const pricingGrid = document.getElementById('pricingGrid');
-    pricingGrid.innerHTML = '';
+    if (!pricingGrid) return;
 
-    transportData.pricingOptions.forEach(option => {
-        const pricingOption = document.createElement('div');
-        pricingOption.className = `pricing-option ${option.popular ? 'popular' : ''}`;
-        
-        const featuresHTML = option.features.map(feature => 
-            `<div class="pricing-feature">${feature}</div>`
-        ).join('');
+    const rate = Number(currentVehicle.cost_per_km || 0);
+    const dayRate = rate;
+    const threeDay = dayRate * 3;
+    const weekRate = dayRate * 7;
 
-        pricingOption.innerHTML = `
+    const options = [
+        {
+            name: 'Daily Booking',
+            price: `${formatCurrency(dayRate)}/day`,
+            description: 'Best for short trips and city travel',
+            features: ['Price from selected vehicle', 'Driver included', 'Day-based billing'],
+            popular: true
+        },
+        {
+            name: '3-Day Package',
+            price: `${formatCurrency(threeDay)}`,
+            description: 'Great for weekend tours',
+            features: ['3-day estimate', 'Flexible schedule', 'Suitable for outstation trips'],
+            popular: false
+        },
+        {
+            name: 'Weekly Estimate',
+            price: `${formatCurrency(weekRate)}`,
+            description: 'For extended travel plans',
+            features: ['7-day estimate', 'Consistent pricing', 'Long trip ready'],
+            popular: false
+        }
+    ];
+
+    pricingGrid.innerHTML = options.map(option => `
+        <div class="pricing-option ${option.popular ? 'popular' : ''}">
             <div class="pricing-header">
                 <div class="pricing-name">${option.name}</div>
                 <div class="pricing-price">${option.price}</div>
             </div>
             <div class="pricing-description">${option.description}</div>
             <div class="pricing-features">
-                ${featuresHTML}
+                ${option.features.map(feature => `<div class="pricing-feature">${feature}</div>`).join('')}
             </div>
-        `;
-        pricingGrid.appendChild(pricingOption);
-    });
+        </div>
+    `).join('');
 }
 
-// Load reviews
-function loadReviews() {
+function renderReviews() {
+    const overallRating = document.getElementById('overallRating');
+    const ratingBreakdown = document.getElementById('ratingBreakdown');
     const reviewsList = document.getElementById('reviewsList');
-    reviewsList.innerHTML = '';
 
-    document.getElementById('overallRating').textContent = transportData.overallRating;
+    if (!overallRating || !ratingBreakdown || !reviewsList) return;
 
-    transportData.reviews.forEach(review => {
-        const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
-        
-        const reviewItem = document.createElement('div');
-        reviewItem.className = 'review-item';
-        reviewItem.innerHTML = `
+    overallRating.textContent = '4.8';
+    ratingBreakdown.innerHTML = `
+        <div class="rating-item"><span class="rating-category">Vehicle Condition</span><div class="rating-bar"><div class="rating-fill" style="width: 96%"></div></div><span class="rating-value">4.8</span></div>
+        <div class="rating-item"><span class="rating-category">Comfort</span><div class="rating-bar"><div class="rating-fill" style="width: 94%"></div></div><span class="rating-value">4.7</span></div>
+        <div class="rating-item"><span class="rating-category">Driver Service</span><div class="rating-bar"><div class="rating-fill" style="width: 98%"></div></div><span class="rating-value">4.9</span></div>
+    `;
+
+    reviewsList.innerHTML = `
+        <div class="review-item">
             <div class="review-header">
                 <div class="reviewer-info">
-                    <div class="reviewer-avatar">${review.avatar}</div>
-                    <div class="reviewer-details">
-                        <h4>${review.name}</h4>
-                        <p>${review.date}</p>
-                    </div>
+                    <div class="reviewer-avatar">TR</div>
+                    <div class="reviewer-details"><h4>TravelMate User</h4><p>Recent booking</p></div>
                 </div>
-                <div class="review-rating">
-                    <span class="review-stars">${stars}</span>
-                </div>
+                <div class="review-rating"><span class="review-stars">★★★★★</span></div>
             </div>
-            <div class="review-text">${review.text}</div>
-        `;
-        reviewsList.appendChild(reviewItem);
-    });
+            <div class="review-text">Clean vehicle, punctual pickup, and smooth booking process.</div>
+        </div>
+    `;
 }
 
-// Load rating breakdown
-function loadRatingBreakdown() {
-    const ratingBreakdown = document.getElementById('ratingBreakdown');
-    ratingBreakdown.innerHTML = '';
-
-    transportData.ratingBreakdown.forEach(rating => {
-        const ratingItem = document.createElement('div');
-        ratingItem.className = 'rating-item';
-        ratingItem.innerHTML = `
-            <span class="rating-category">${rating.category}</span>
-            <div class="rating-bar">
-                <div class="rating-fill" style="width: ${(rating.value / 5) * 100}%"></div>
-            </div>
-            <span class="rating-value">${rating.value}</span>
-        `;
-        ratingBreakdown.appendChild(ratingItem);
-    });
-}
-
-// Setup date restrictions
 function setupDateRestrictions() {
     const today = new Date().toISOString().split('T')[0];
     const pickupDate = document.getElementById('pickupDate');
     const returnDate = document.getElementById('returnDate');
 
+    if (!pickupDate || !returnDate) return;
+
     pickupDate.min = today;
     returnDate.min = today;
 
-    pickupDate.addEventListener('change', function() {
+    pickupDate.addEventListener('change', function () {
         returnDate.min = this.value;
         if (returnDate.value && returnDate.value < this.value) {
             returnDate.value = this.value;
@@ -317,55 +361,38 @@ function setupDateRestrictions() {
     });
 }
 
-// Setup form listeners
 function setupFormListeners() {
     const serviceType = document.getElementById('serviceType');
     const pickupDate = document.getElementById('pickupDate');
     const returnDate = document.getElementById('returnDate');
 
-    serviceType.addEventListener('change', updatePriceDisplay);
-    pickupDate.addEventListener('change', validateDates);
-    returnDate.addEventListener('change', validateDates);
+    if (serviceType) serviceType.addEventListener('change', updatePriceDisplay);
+    if (pickupDate) pickupDate.addEventListener('change', validateDates);
+    if (returnDate) returnDate.addEventListener('change', validateDates);
 }
 
-// Update price display based on service type
 function updatePriceDisplay() {
+    if (!currentVehicle) return;
+
     const serviceType = document.getElementById('serviceType').value;
+    const rate = Number(currentVehicle.cost_per_km || 0);
     const priceAmount = document.getElementById('priceAmount');
     const pricePeriod = document.querySelector('.price-period');
 
-    switch(serviceType) {
-        case 'airport':
-            priceAmount.textContent = 'Rs.8,500';
-            pricePeriod.textContent = '/ transfer';
-            break;
-        case 'daily':
-            priceAmount.textContent = 'Rs.12,500';
-            pricePeriod.textContent = '/ day';
-            break;
-        case 'tour':
-            priceAmount.textContent = 'Rs.45,000';
-            pricePeriod.textContent = '/ 3 days';
-            break;
-        case 'custom':
-            priceAmount.textContent = 'Contact Us';
-            pricePeriod.textContent = '';
-            break;
-        default:
-            priceAmount.textContent = 'Rs.12,500';
-            pricePeriod.textContent = '/ day';
-    }
+    const multiplier = getServiceMultiplier(serviceType);
+    const displayRate = rate * multiplier;
+
+    if (priceAmount) priceAmount.textContent = formatCurrency(displayRate);
+    if (pricePeriod) pricePeriod.textContent = '/ day';
 }
 
-// Validate dates
 function validateDates() {
     const pickupDate = document.getElementById('pickupDate').value;
     const returnDate = document.getElementById('returnDate').value;
 
     if (pickupDate && returnDate) {
-        const pickup = new Date(pickupDate);
-        const returnD = new Date(returnDate);
-
+        const pickup = new Date(`${pickupDate}T00:00:00`);
+        const returnD = new Date(`${returnDate}T00:00:00`);
         if (returnD < pickup) {
             alert('Return date must be after pickup date');
             document.getElementById('returnDate').value = '';
@@ -373,8 +400,12 @@ function validateDates() {
     }
 }
 
-// Calculate price
 function calculatePrice() {
+    if (!currentVehicle) {
+        alert('Transport details not loaded yet.');
+        return;
+    }
+
     const serviceType = document.getElementById('serviceType').value;
     const pickupDate = document.getElementById('pickupDate').value;
     const returnDate = document.getElementById('returnDate').value;
@@ -383,89 +414,53 @@ function calculatePrice() {
     const pickupLocation = document.getElementById('pickupLocationInput').value;
     const dropoffLocation = document.getElementById('dropoffLocationInput').value;
 
-    // Validation
     if (!serviceType || serviceType === '0') {
         alert('Please select a service type');
         return;
     }
-
     if (!pickupDate || !returnDate) {
         alert('Please select pickup and return dates');
         return;
     }
-
     if (!pickupTime || !returnTime) {
         alert('Please select pickup and return times');
         return;
     }
-
     if (!pickupLocation || !dropoffLocation) {
         alert('Please enter pickup and drop-off locations');
         return;
     }
 
-    // Calculate duration
-    const pickup = new Date(pickupDate);
-    const returnD = new Date(returnDate);
-    const duration = Math.ceil((returnD - pickup) / (1000 * 60 * 60 * 24)) + 1;
+    const pickup = new Date(`${pickupDate}T${pickupTime}`);
+    const returnD = new Date(`${returnDate}T${returnTime}`);
 
-    // Calculate price based on service type
-    let basePrice = 0;
-    switch(serviceType) {
-        case 'airport':
-            basePrice = 8500;
-            break;
-        case 'daily':
-            basePrice = 12500 * duration;
-            break;
-        case 'tour':
-            basePrice = 45000;
-            break;
-        case 'custom':
-            basePrice = 15000 * duration;
-            break;
+    if (returnD <= pickup) {
+        alert('Return date/time must be after pickup date/time');
+        return;
     }
 
-    const serviceCharge = Math.round(basePrice * 0.1); // 10% service charge
+    const duration = Math.ceil((returnD - pickup) / (1000 * 60 * 60 * 24));
+    const days = Math.max(1, duration);
+
+    const unitRate = Number(currentVehicle.cost_per_km || 0);
+    const multiplier = getServiceMultiplier(serviceType);
+    const effectiveRate = unitRate * multiplier;
+
+    const basePrice = Math.round(effectiveRate * days);
+    const serviceCharge = Math.round(basePrice * 0.1);
     const totalPrice = basePrice + serviceCharge;
 
-    // Update summary
-    document.getElementById('durationCount').textContent = `${duration} day${duration > 1 ? 's' : ''}`;
-    document.getElementById('basePrice').textContent = `Rs.${basePrice.toLocaleString()}`;
-    document.getElementById('serviceCharge').textContent = `Rs.${serviceCharge.toLocaleString()}`;
-    document.getElementById('totalPrice').textContent = `Rs.${totalPrice.toLocaleString()}`;
+    document.getElementById('durationCount').textContent = `${days} day${days > 1 ? 's' : ''}`;
+    document.getElementById('basePrice').textContent = formatCurrency(basePrice);
+    document.getElementById('serviceCharge').textContent = formatCurrency(serviceCharge);
+    document.getElementById('totalPrice').textContent = formatCurrency(totalPrice);
 
-    // Show summary and confirm button
     document.getElementById('bookingSummary').style.display = 'block';
     document.querySelector('.book-now-btn').style.display = 'none';
     document.querySelector('.confirm-booking-btn').style.display = 'block';
-}
 
-// Confirm booking - Redirect to booking process
-async function confirmBooking() {
-    const serviceType = document.getElementById('serviceType').value;
-    const pickupDate = document.getElementById('pickupDate').value;
-    const returnDate = document.getElementById('returnDate').value;
-    const pickupTime = document.getElementById('pickupTime').value;
-    const returnTime = document.getElementById('returnTime').value;
-    const pickupLocation = document.getElementById('pickupLocationInput').value;
-    const dropoffLocation = document.getElementById('dropoffLocationInput').value;
-    const passengers = document.getElementById('passengers').value;
-    const luggage = document.getElementById('luggage').value;
-    const specialRequirements = document.getElementById('specialRequirements').value;
-    
-    // Get prices from UI
-    const basePriceText = document.getElementById('basePrice').textContent.replace(/Rs\.| /g, '').replace(/,/g, '');
-    const serviceChargeText = document.getElementById('serviceCharge').textContent.replace(/Rs\.| /g, '').replace(/,/g, '');
-    const totalPriceText = document.getElementById('totalPrice').textContent.replace(/Rs\.| /g, '').replace(/,/g, '');
-
-    // Get vehicle ID from URL or data
-    const urlParams = new URLSearchParams(window.location.search);
-    const vehicleId = urlParams.get('id') || transportData.id;
-
-    // Create booking object
-    const bookingData = {
-        vehicle_id: vehicleId,
+    calculatedBooking = {
+        vehicle_id: currentVehicle.id,
         service_type: serviceType,
         pickup_date: pickupDate,
         pickup_time: pickupTime,
@@ -473,68 +468,64 @@ async function confirmBooking() {
         return_time: returnTime,
         pickup_location: pickupLocation,
         dropoff_location: dropoffLocation,
-        passengers: parseInt(passengers),
-        luggage: parseInt(luggage),
-        special_requirements: specialRequirements,
-        base_price: parseFloat(basePriceText),
-        service_charge: parseFloat(serviceChargeText),
-        total_price: parseFloat(totalPriceText)
+        passengers: parseInt(document.getElementById('passengers').value, 10),
+        luggage: parseInt(document.getElementById('luggage').value, 10),
+        special_requirements: document.getElementById('specialRequirements').value,
+        base_price: basePrice,
+        service_charge: serviceCharge,
+        total_price: totalPrice
     };
+}
 
-    console.log('Booking data:', bookingData);
+async function confirmBooking() {
+    if (!calculatedBooking) {
+        alert('Please calculate the price first.');
+        return;
+    }
+
+    const baseUrl = getBaseUrl();
+    const confirmBtn = document.querySelector('.confirm-booking-btn');
 
     try {
-        // Disable button
-        const confirmBtn = document.querySelector('.confirm-booking-btn');
         confirmBtn.disabled = true;
-        confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        confirmBtn.textContent = 'Processing...';
 
-        // Save booking data to session and redirect to booking details page
-        const response = await fetch('/TravelMate/public/api/transport-booking/init-booking', {
+        const response = await fetch(`${baseUrl}/api/transport-booking/create`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(bookingData),
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(calculatedBooking),
             credentials: 'same-origin'
         });
 
         const result = await response.json();
-        console.log('Init booking result:', result);
-
         if (result.success) {
-            // Redirect to booking details page
-            window.location.href = '/TravelMate/public/transport-booking-details';
-        } else {
-            const errorMsg = result.errors?.general || 
-                           result.errors?.auth || 
-                           result.errors?.availability ||
-                           result.errors?.date ||
-                           'Failed to initialize booking';
-            alert('Error: ' + errorMsg);
-            confirmBtn.disabled = false;
-            confirmBtn.innerHTML = 'Confirm Booking';
+            const bookingId = result?.data?.booking_id || result?.data?.bookingId || 'Pending';
+            showBookingSuccessModal(bookingId);
+            return;
         }
+
+        if (result.errors?.availability) {
+            showDateUnavailableModal('Dates are not available. Please choose different pickup and return dates.');
+            return;
+        }
+
+        const errorMsg = result.errors?.general || result.errors?.auth || result.errors?.availability || result.errors?.date || 'Failed to initialize booking';
+        alert(`Error: ${errorMsg}`);
     } catch (error) {
         console.error('Booking error:', error);
         alert('An error occurred while processing your booking. Please try again.');
-        const confirmBtn = document.querySelector('.confirm-booking-btn');
+    } finally {
         confirmBtn.disabled = false;
-        confirmBtn.innerHTML = 'Confirm Booking';
+        confirmBtn.textContent = 'Confirm Booking';
     }
 }
 
-// Show map (placeholder function)
 function showMap() {
-    alert('Map functionality coming soon!\nLocation: ' + transportData.location);
-    // Implement Google Maps or other map integration here
+    const locationText = document.getElementById('defaultLocation')?.textContent || 'Location unavailable';
+    alert(`Map functionality coming soon!\nLocation: ${locationText}`);
 }
 
-// Keyboard navigation for image gallery
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'ArrowLeft') {
-        previousImage();
-    } else if (e.key === 'ArrowRight') {
-        nextImage();
-    }
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft') previousImage();
+    if (e.key === 'ArrowRight') nextImage();
 });

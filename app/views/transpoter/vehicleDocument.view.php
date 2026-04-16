@@ -89,6 +89,21 @@
 
         <div class="section">
           <h2 class="section-title">
+            <i class="fas fa-money-bill-wave"></i>
+            Pricing
+          </h2>
+
+          <div class="form-group">
+            <label for="cost-per-km">Cost per 1km (LKR) <span class="required-asterisk">*</span></label>
+            <input type="number" id="cost-per-km" name="cost_per_km" min="0.01" step="0.01" placeholder="e.g., 120.00" required>
+            <div class="error-message" id="cost-per-km-error"></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section">
+          <h2 class="section-title">
             <i class="fas fa-snowflake"></i>
             Air Conditioning
           </h2>
@@ -243,7 +258,7 @@
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-  <!-- Vehicle Registration Success Modal -->
+  <!-- vehicle Registration Success Modal -->
   <div id="vehicleSuccessModal" class="vehicle-success-modal">
     <div class="vehicle-success-content">
       <div class="success-icon">
@@ -259,7 +274,7 @@
   </div>
 
   <style>
-    /* Vehicle Success Modal */
+    /* vehicle Success Modal */
     .vehicle-success-modal {
       display: none;
       position: fixed;
@@ -361,12 +376,12 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      // Form elements
+      // form elements
       const form = document.getElementById('vehicle-docs-form');
       const continueBtn = document.querySelector('.continue-btn');
       const saveBtn = document.querySelector('.save-btn');
 
-      // Get base URL
+      // get base URL
       function getBaseUrl() {
         const path = window.location.pathname;
         const parts = path.split('/');
@@ -378,7 +393,7 @@
       }
       const baseUrl = getBaseUrl();
 
-      // AC type selection
+      // aC type selection
       const acOption = document.getElementById('ac-option');
       const nonAcOption = document.getElementById('non-ac-option');
       const acInput = document.getElementById('ac');
@@ -402,7 +417,7 @@
         });
       }
 
-      // Passenger count update
+      // passenger count update
       const passengerCount = document.getElementById('passenger-count');
       if (passengerCount) {
         passengerCount.addEventListener('change', function () {
@@ -412,7 +427,7 @@
         });
       }
 
-      // File input change handlers
+      // file input change handlers
       document.querySelectorAll('input[type="file"]').forEach(input => {
         input.addEventListener('change', function (e) {
           const file = this.files[0];
@@ -421,7 +436,7 @@
           const errorElement = document.getElementById(this.id + '-error');
 
           if (file) {
-            // Validate file size (max 5MB)
+            // validate file size (max 5MB)
             if (file.size > 5 * 1024 * 1024) {
               if (errorElement) errorElement.textContent = 'File size must be less than 5MB';
               this.value = '';
@@ -434,7 +449,7 @@
               return;
             }
 
-            // Validate file type
+            // validate file type
             let validTypes = [];
             if (this.id === 'vehicle-photos') {
               validTypes = ['image/jpeg', 'image/png'];
@@ -458,16 +473,16 @@
               return;
             }
 
-            // For multiple file uploads (vehicle photos)
+            // for multiple file uploads (vehicle photos)
             if (this.id === 'vehicle-photos' && this.files.length < 2) {
               if (errorElement) errorElement.textContent = 'Please upload at least 2 photos';
               return;
             }
 
-            // Clear any previous error
+            // clear any previous error
             if (errorElement) errorElement.textContent = '';
 
-            // Update UI
+            // update UI
             let fileName = file.name;
             if (fileName.length > 25) {
               fileName = fileName.substring(0, 22) + '...';
@@ -480,13 +495,13 @@
               if (uploadIcon) uploadIcon.innerHTML = '<i class="fas fa-check-circle" style="color: #1abc5b;"></i>';
             }
 
-            // Update preview status
+            // update preview status
             updatePreviewStatus();
           }
         });
       });
 
-      // Drag and drop functionality
+      // drag and drop functionality
       document.querySelectorAll('.upload-box').forEach(box => {
         box.addEventListener('dragover', function (e) {
           e.preventDefault();
@@ -527,7 +542,7 @@
         });
       });
 
-      // Input validation
+      // input validation
       document.querySelectorAll('input[type="text"], input[type="number"], select').forEach(input => {
         input.addEventListener('blur', function () {
           validateField(this);
@@ -544,7 +559,7 @@
         });
       });
 
-      // Form submission - THIS IS THE IMPORTANT PART
+      // form submission - THIS IS THE IMPORTANT PART
       if (form) {
         form.addEventListener('submit', function (e) {
           e.preventDefault();
@@ -553,7 +568,7 @@
 
           let isValid = true;
 
-          // Validate all required fields
+          // validate all required fields
           const requiredFields = this.querySelectorAll('[required]');
           requiredFields.forEach(field => {
             if (!validateField(field)) {
@@ -561,7 +576,7 @@
             }
           });
 
-          // Validate vehicle number format
+          // validate vehicle number format
           const vehicleNumber = document.getElementById('vehicle-number');
           if (vehicleNumber && vehicleNumber.value && !validateVehicleNumber(vehicleNumber.value)) {
             const errorEl = document.getElementById('vehicle-number-error');
@@ -570,7 +585,7 @@
             isValid = false;
           }
 
-          // Validate at least 2 vehicle photos
+          // validate at least 2 vehicle photos
           const vehiclePhotos = document.getElementById('vehicle-photos');
           if (vehiclePhotos && vehiclePhotos.files.length < 2) {
             const errorEl = document.getElementById('vehicle-photos-error');
@@ -583,24 +598,24 @@
             if (firstError) {
               firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
-            return; // STOP HERE IF INVALID
+            return; // sTOP HERE IF INVALID
           }
 
-          // Show loading state
+          // show loading state
           if (continueBtn) {
             continueBtn.innerHTML = 'Processing... <i class="fas fa-spinner fa-spin"></i>';
             continueBtn.disabled = true;
           }
 
-          // Build FormData with ALL data
+          // build FormData with ALL data
           const fd = new FormData();
 
-          // Add stored session data
+          // add stored session data
           fd.append('vehicle_type', sessionStorage.getItem('vehicleType') || '');
           fd.append('working_district', sessionStorage.getItem('working_district') || '');
           fd.append('ac_type', sessionStorage.getItem('ac_type') || 'non-ac');
 
-          // Add fields from current form
+          // add fields from current form
           const inputs = this.querySelectorAll('input, select, textarea');
           inputs.forEach(input => {
             if (input.type === 'file') {
@@ -622,7 +637,7 @@
             }
           });
 
-          // Log what we're sending
+          // log what we're sending
           console.log('Sending data to API:', baseUrl + '/api/vehicle/create');
           for (let [key, value] of fd.entries()) {
             if (value instanceof File) {
@@ -632,7 +647,7 @@
             }
           }
 
-          // REPLACE THE ENTIRE fetch() CALL WITH THIS:
+          // rEPLACE THE ENTIRE fetch() CALL WITH THIS:
           fetch(baseUrl + '/api/vehicle/create', {
             method: 'POST',
             body: fd,
@@ -652,7 +667,7 @@
                   sessionStorage.clear();
                   localStorage.removeItem('vehicleDetailsDraft');
                   
-                  // Show success modal
+                  // show success modal
                   showVehicleSuccessModal();
                 } else {
                   const errorMsg = data.errors && data.errors.error ? data.errors.error : 'Failed to save vehicle';
@@ -685,7 +700,7 @@
         });
       }
 
-      // Save draft functionality
+      // save draft functionality
       if (saveBtn) {
         saveBtn.addEventListener('click', function () {
           const formData = new FormData(form);
@@ -710,7 +725,7 @@
         });
       }
 
-      // Load draft if exists
+      // load draft if exists
       const draft = localStorage.getItem('vehicleDetailsDraft');
       if (draft) {
         try {
@@ -731,7 +746,7 @@
         }
       }
 
-      // Helper functions
+      // helper functions
       function validateField(field) {
         if (!field) return true;
 
@@ -759,6 +774,15 @@
           }
         }
 
+        if (field.id === 'cost-per-km' && field.value) {
+          const cost = parseFloat(field.value);
+          if (isNaN(cost) || cost <= 0) {
+            if (errorElement) errorElement.textContent = 'Please enter a valid amount greater than 0';
+            field.style.borderColor = '#e74c3c';
+            return false;
+          }
+        }
+
         if (errorElement) errorElement.textContent = '';
         field.style.borderColor = '#ddd';
         return true;
@@ -775,6 +799,7 @@
           document.getElementById('vehicle-year')?.value,
           document.getElementById('vehicle-color')?.value,
           document.getElementById('vehicle-number')?.value,
+          document.getElementById('cost-per-km')?.value,
           document.getElementById('revenue-license')?.files.length,
           document.getElementById('insurance')?.files.length,
           document.getElementById('registration')?.files.length,
@@ -798,10 +823,10 @@
         }
       }
 
-      // Initial preview status update
+      // initial preview status update
       updatePreviewStatus();
 
-      // Responsive adjustments
+      // responsive adjustments
       function handleResponsive() {
         if (window.innerWidth < 768) {
           document.querySelectorAll('.section-title').forEach(title => {
@@ -824,7 +849,7 @@
       window.addEventListener('resize', handleResponsive);
     });
 
-    // Show vehicle registration success modal
+    // show vehicle registration success modal
     function showVehicleSuccessModal() {
       const modal = document.getElementById('vehicleSuccessModal');
       if (modal) {
@@ -832,7 +857,7 @@
       }
     }
 
-    // Redirect to dashboard
+    // redirect to dashboard
     function goToDashboard() {
       window.location.href = 'tr_dashboard';
     }

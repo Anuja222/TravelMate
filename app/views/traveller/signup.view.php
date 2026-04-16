@@ -7,10 +7,10 @@
   <link rel="stylesheet" href="assets/css/Traveller/loginSignup.css">
 </head>
 <body>
-  <!-- Auth Section -->
+  <!-- auth Section -->
   <section class="auth-section">
     <div class="auth-container">
-      <!-- Left Side - Form -->
+      <!-- left Side - Form -->
       <div class="auth-form-section">
         <div class="auth-form-container">
           <div class="auth-header">
@@ -19,7 +19,7 @@
           </div>
 
           <form class="auth-form" id="signupForm">
-            <!-- Profile Photo Upload -->
+            <!-- profile Photo Upload -->
             <div class="form-group">
               <label>Profile Photo</label>
               <div class="profile-photo-upload">
@@ -72,7 +72,7 @@
               <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
             </div>
 
-            <!-- Date of Birth and Gender Row -->
+            <!-- date of Birth and Gender Row -->
             <div class="form-row">
               <div class="form-group">
                 <label for="dateOfBirth">Date of Birth</label>
@@ -147,7 +147,7 @@
         </div>
       </div>
 
-      <!-- Right Side - Image -->
+      <!-- right Side - Image -->
       <div class="auth-image-section">
         <div class="auth-image signup-image">
           <div class="image-overlay">
@@ -186,7 +186,7 @@
     </div>
   </section>
 
-  <!-- Success Modal -->
+  <!-- success Modal -->
   <div id="successModal" class="modal">
     <div class="modal-content">
       <div class="modal-icon success">
@@ -210,14 +210,14 @@
       password: !!document.getElementById('password')
     });
     
-    // Password toggle functionality
+    // password toggle functionality
     function togglePassword(fieldId) {
       const field = document.getElementById(fieldId);
       const type = field.getAttribute('type') === 'password' ? 'text' : 'password';
       field.setAttribute('type', type);
     }
 
-    // Photo upload functionality
+    // photo upload functionality
     document.getElementById('profilePhoto').addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (file) {
@@ -236,7 +236,7 @@
       }
     });
 
-    // Remove photo functionality
+    // remove photo functionality
     document.getElementById('removePhoto').addEventListener('click', function() {
       document.getElementById('profilePhoto').value = '';
       const preview = document.getElementById('photoPreview');
@@ -249,7 +249,7 @@
       this.style.display = 'none';
     });
 
-    // Password strength checker
+    // password strength checker
     document.getElementById('password').addEventListener('input', function(e) {
       const password = e.target.value;
       const strengthFill = document.querySelector('.strength-fill');
@@ -286,12 +286,12 @@
       strengthText.textContent = strengthLabel;
     });
 
-    // Set max date for date of birth (18 years ago)
+    // set max date for date of birth (18 years ago)
     const today = new Date();
     const maxDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
     document.getElementById('dateOfBirth').max = maxDate.toISOString().split('T')[0];
 
-    // Form submission handler
+    // form submission handler
     const signupForm = document.getElementById('signupForm');
     if (signupForm) {
       console.log('Form found, attaching submit handler');
@@ -300,18 +300,18 @@
         e.preventDefault();
         console.log('Form submitted!');
         
-        // Get form values
+        // get form values
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
         const agreeTerms = document.getElementById('agreeTerms').checked;
         
-        // Validate passwords match
+        // validate passwords match
         if (password !== confirmPassword) {
           alert('Passwords do not match!');
           return;
         }
         
-        // Validate terms agreement
+        // validate terms agreement
         if (!agreeTerms) {
           alert('Please agree to the Terms of Service and Privacy Policy');
           return;
@@ -319,15 +319,15 @@
         
         console.log('Validation passed');
         
-        // Get user role from localStorage or default to traveller
+        // get user role from localStorage or default to traveller
         let userRole = localStorage.getItem('selectedUserRole') || 'traveller';
         console.log('User role:', userRole);
         
-        // Create FormData
+        // create FormData
         const formData = new FormData(signupForm);
         formData.append('role', userRole);
         
-        // Log form data
+        // log form data
         console.log('Sending registration request...');
         for (let pair of formData.entries()) {
           if (pair[0] !== 'password' && pair[0] !== 'confirmPassword') {
@@ -335,7 +335,7 @@
           }
         }
         
-        // Send request
+        // send request
         fetch('auth.php?action=register', {
           method: 'POST',
           body: formData
@@ -356,16 +356,16 @@
             if (data.success) {
               console.log('Registration successful!');
               
-              // Store user ID
+              // store user ID
               if (data.user && data.user.userId) {
                 localStorage.setItem('userId', data.user.userId);
                 console.log('User ID stored:', data.user.userId);
               }
               
-              // Show modal and redirect
+              // show modal and redirect
               showSuccessModal(userRole);
               
-              // Remove role from storage
+              // remove role from storage
               localStorage.removeItem('selectedUserRole');
             } else {
               console.error('Registration failed:', data.errors);
@@ -392,7 +392,7 @@
       console.error('Form not found!');
     }
     
-    // Modal functions
+    // modal functions
     window.showSuccessModal = function(userRole) {
       console.log('showSuccessModal called');
       const modal = document.getElementById('successModal');
@@ -435,7 +435,7 @@
         userRole = localStorage.getItem('selectedUserRole') || 'traveller';
       }
       
-      let redirectUrl = 'preference'; // Default to preference for traveller
+      let redirectUrl = 'preference'; // default to preference for traveller
       
       if (userRole === 'transport') {
         redirectUrl = 'login';

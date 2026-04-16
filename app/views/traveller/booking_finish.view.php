@@ -1,10 +1,10 @@
 <?php
-// Start session if not already started
+// start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is logged in
+// check if user is logged in
 $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
 $id = $isLoggedIn ? $_SESSION['user']['id'] : '';
 ?>
@@ -91,7 +91,7 @@ $id = $isLoggedIn ? $_SESSION['user']['id'] : '';
         </div>
     </div>
 
-    <!-- Booking Confirmation Modal -->
+    <!-- booking Confirmation Modal -->
     <div id="confirmationModal" class="confirmation-modal">
         <div class="confirmation-modal-content">
             <div class="confirmation-icon">
@@ -108,7 +108,7 @@ $id = $isLoggedIn ? $_SESSION['user']['id'] : '';
         </div>
     </div>
 
-    <script src="/TravelMate/public/assets/js/booking_finish.js"></script>
+    <script src="/TravelMate/public/assets/js/booking_finish.js?v=<?php echo time(); ?>"></script>
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 </body>
 

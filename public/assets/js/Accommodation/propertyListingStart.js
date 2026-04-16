@@ -1,4 +1,4 @@
-// Property Listing Start Page JavaScript
+// property Listing Start Page JavaScript
 document.addEventListener('DOMContentLoaded', function() {
     function getBaseUrl() {
         const path = window.location.pathname;
@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const listingButtons = document.querySelectorAll('.list-property-btn');
     const continueButton = document.querySelector('.continue-btn');
 
-    // Show property form when a property type is selected
+    // show property form when a property type is selected
     listingButtons.forEach(button => {
         button.addEventListener('click', function() {
             propertyTypes.forEach(type => {
@@ -27,10 +27,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Handle form submission
+    // handle form submission
     continueButton.addEventListener('click', function(e) {
         e.preventDefault();
-        // Get form values
+        // get form values
     const propertyNameInput = document.querySelector('input[placeholder="Enter your property name"]');
     const propertyName = propertyNameInput ? propertyNameInput.value : '';
         const location = document.querySelector('input[placeholder="Enter location"]').value;
@@ -39,13 +39,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const city = document.querySelector('input[placeholder="Enter city"]').value;
         const postalCode = document.querySelector('input[placeholder="Enter postal code"]').value;
 
-        // Validate form
+        // validate form
         if (!propertyName || !location || !country || !city) {
             alert('Please fill in all required fields');
             return;
         }
 
-        // Submit form data
+        // submit form data
         console.log('Form submitted:', {
             propertyName,
             location,
@@ -55,9 +55,9 @@ document.addEventListener('DOMContentLoaded', function() {
             postalCode
         });
         
-    // Save property title to localStorage for later steps
+    // save property title to localStorage for later steps
     if (propertyName) localStorage.setItem('property_title', propertyName);
-    // Redirect to next step (you can change this URL as needed)
+    // redirect to next step (you can change this URL as needed)
     window.location.href = baseUrl + '/accommodation-provider/property-details';
     });
 });

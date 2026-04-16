@@ -1,4 +1,4 @@
-<!-- Bed Room Page -->
+<!-- bed Room Page -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
-    <!-- Header -->
+    <!-- header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
     <?php
@@ -42,11 +42,11 @@
         </div>
         <button type="button" class="save-btn">Continue</button>
     </form>
-    <!-- Footer -->
+    <!-- footer -->
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
     <script src="/TravelMate/public/assets/js/Accommodation/bedRoom.js"></script>
     <script>
-    // Redirect back to propertyDetails with selected bed info
+    // redirect back to propertyDetails with selected bed info
     (function(){
         const bedNumber = <?php echo (int) $bedNumber; ?>;
         document.querySelector('.save-btn').addEventListener('click', function(e){
@@ -59,20 +59,20 @@
             params.set('bed', bedNumber);
             params.set('type', type);
             params.set('count', count);
-            // Try multiple redirect fallbacks to work across different setups.
+            // try multiple redirect fallbacks to work across different setups.
             const relPath = 'public/index.php?url=Accommodation/propertyDetails&' + params.toString();
             const absPath = '/TravelMate/public/index.php?url=Accommodation/propertyDetails&' + params.toString();
             console.log('Attempting redirect (relative):', relPath);
-            // First try relative path (works when site is served from /TravelMate/)
+            // first try relative path (works when site is served from /TravelMate/)
             try {
                 window.location.href = encodeURI(relPath);
-                // Give browser a tick to start navigation; if it doesn't navigate (rare), fallback below
+                // give browser a tick to start navigation; if it doesn't navigate (rare), fallback below
                 setTimeout(function(){
-                    // If still on page after 500ms, try absolute path and show manual link
+                    // if still on page after 500ms, try absolute path and show manual link
                     if (location.href.indexOf('editBedrooms') === -1) {
                         console.log('Relative redirect may have failed; trying absolute path', absPath);
                         window.location.href = encodeURI(absPath);
-                        // Insert visible manual link as last resort
+                        // insert visible manual link as last resort
                         insertManualFallback(absPath);
                     }
                 }, 500);

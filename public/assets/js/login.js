@@ -14,11 +14,11 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                // Show success modal
+                // show success modal
                 const modal = document.getElementById('successModal');
                 modal.classList.add('show');
                 
-                // Redirect after 1.5 seconds
+                // redirect after 1.5 seconds
                 setTimeout(() => {
                     if (data.user.role === 'transport') {
                         window.location.href = 'tr_dashboard';
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }, 1500);
             }else {
-                // Show error modal
+                // show error modal
                 const errorModal = document.getElementById('errorModal');
                 const errorMessage = document.getElementById('errorMessage');
                 

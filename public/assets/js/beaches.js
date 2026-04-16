@@ -1,6 +1,6 @@
-// Wait for DOM to be fully loaded
+// wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Smooth scrolling for navigation links
+    // smooth scrolling for navigation links
     const navLinks = document.querySelectorAll('.nav-links a');
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Newsletter subscription
+    // newsletter subscription
     const subscribeBtn = document.querySelector('.subscribe-btn');
     const emailInput = document.querySelector('.email-input');
     
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Allow Enter key to submit
+        // allow Enter key to submit
         emailInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 subscribeBtn.click();
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Read more button functionality
+    // read more button functionality
     const readMoreBtns = document.querySelectorAll('.read-more-btn');
     readMoreBtns.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 paragraph.classList.add('expanded');
                 this.textContent = 'Read less';
-                // Add expanded content
+                // add expanded content
                 if (!paragraph.querySelector('.expanded-content')) {
                     const expandedContent = document.createElement('span');
                     expandedContent.className = 'expanded-content';
@@ -64,25 +64,25 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // See accommodations button
+    // see accommodations button
     const accommodationsBtn = document.querySelector('.see-accommodations-btn');
     if (accommodationsBtn) {
         accommodationsBtn.addEventListener('click', function() {
             showNotification('Redirecting to accommodations...', 'info');
-            // Simulate navigation delay
+            // simulate navigation delay
             setTimeout(() => {
-                // In a real application, you would navigate to accommodations page
+                // in a real application, you would navigate to accommodations page
                 console.log('Navigate to accommodations page');
             }, 1000);
         });
     }
 
-    // See all reviews button
+    // see all reviews button
     const reviewsBtn = document.querySelector('.see-all-reviews');
     if (reviewsBtn) {
         reviewsBtn.addEventListener('click', function() {
             showNotification('Loading all reviews...', 'info');
-            // Simulate loading more reviews
+            // simulate loading more reviews
             setTimeout(() => {
                 this.textContent = 'Showing all reviews';
                 this.disabled = true;
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Contact Us button
+    // contact Us button
     const contactBtn = document.querySelector('.user-btn');
     if (contactBtn) {
         contactBtn.addEventListener('click', function() {
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Add scroll effect to header
+    // add scroll effect to header
     let lastScrollTop = 0;
     const header = document.querySelector('header');
     
@@ -106,17 +106,17 @@ document.addEventListener('DOMContentLoaded', function() {
         let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         
         if (scrollTop > lastScrollTop && scrollTop > 100) {
-            // Scrolling down
+            // scrolling down
             header.style.transform = 'translateY(-100%)';
         } else {
-            // Scrolling up
+            // scrolling up
             header.style.transform = 'translateY(0)';
         }
         
         lastScrollTop = scrollTop;
     });
 
-    // Add animation on scroll for articles
+    // add animation on scroll for articles
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, observerOptions);
 
-    // Observe all article cards
+    // observe all article cards
     const articleCards = document.querySelectorAll('.article-card');
     articleCards.forEach(card => {
         card.style.opacity = '0';
@@ -141,23 +141,23 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Utility functions
+// utility functions
 function validateEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
 }
 
 function showNotification(message, type = 'info') {
-    // Remove existing notifications
+    // remove existing notifications
     const existingNotifications = document.querySelectorAll('.notification');
     existingNotifications.forEach(notification => notification.remove());
 
-    // Create notification element
+    // create notification element
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     notification.textContent = message;
     
-    // Style the notification
+    // style the notification
     Object.assign(notification.style, {
         position: 'fixed',
         top: '20px',
@@ -172,7 +172,7 @@ function showNotification(message, type = 'info') {
         maxWidth: '300px'
     });
 
-    // Set background color based on type
+    // set background color based on type
     switch(type) {
         case 'success':
             notification.style.background = '#1abc5b';
@@ -185,15 +185,15 @@ function showNotification(message, type = 'info') {
             notification.style.background = '#3498db';
     }
 
-    // Add to DOM
+    // add to DOM
     document.body.appendChild(notification);
 
-    // Animate in
+    // animate in
     setTimeout(() => {
         notification.style.transform = 'translateX(0)';
     }, 10);
 
-    // Remove after delay
+    // remove after delay
     setTimeout(() => {
         notification.style.transform = 'translateX(400px)';
         setTimeout(() => {
@@ -203,7 +203,7 @@ function showNotification(message, type = 'info') {
 }
 
 function showContactModal() {
-    // Create modal overlay
+    // create modal overlay
     const modalOverlay = document.createElement('div');
     modalOverlay.className = 'modal-overlay';
     Object.assign(modalOverlay.style, {
@@ -221,7 +221,7 @@ function showContactModal() {
         transition: 'opacity 0.3s ease'
     });
 
-    // Create modal content
+    // create modal content
     const modalContent = document.createElement('div');
     modalContent.className = 'modal-content';
     Object.assign(modalContent.style, {
@@ -266,13 +266,13 @@ function showContactModal() {
     modalOverlay.appendChild(modalContent);
     document.body.appendChild(modalOverlay);
 
-    // Animate in
+    // animate in
     setTimeout(() => {
         modalOverlay.style.opacity = '1';
         modalContent.style.transform = 'scale(1)';
     }, 10);
 
-    // Close modal function
+    // close modal function
     function closeModal() {
         modalOverlay.style.opacity = '0';
         modalContent.style.transform = 'scale(0.9)';
@@ -281,7 +281,7 @@ function showContactModal() {
         }, 300);
     }
 
-    // Close button event
+    // close button event
     const closeBtn = modalContent.querySelector('.close-modal-btn');
     closeBtn.addEventListener('click', closeModal);
     closeBtn.addEventListener('mouseenter', function() {
@@ -291,14 +291,14 @@ function showContactModal() {
         this.style.background = '#1abc5b';
     });
 
-    // Close on overlay click
+    // close on overlay click
     modalOverlay.addEventListener('click', function(e) {
         if (e.target === modalOverlay) {
             closeModal();
         }
     });
 
-    // Close on Escape key
+    // close on Escape key
     document.addEventListener('keydown', function escapeClose(e) {
         if (e.key === 'Escape') {
             closeModal();
@@ -307,13 +307,13 @@ function showContactModal() {
     });
 }
 
-// Mobile menu toggle (for future implementation)
+// mobile menu toggle (for future implementation)
 function toggleMobileMenu() {
     const navLinks = document.querySelector('.nav-links');
     navLinks.classList.toggle('mobile-active');
 }
 
-// Add mobile menu styles dynamically
+// add mobile menu styles dynamically
 const style = document.createElement('style');
 style.textContent = `
     @media (max-width: 768px) {

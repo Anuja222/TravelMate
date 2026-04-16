@@ -1,4 +1,4 @@
-<!-- Edit Availability Page -->
+<!-- edit Availability Page -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/TravelMate/public/assets/css/main.css">
 </head>
 <body>
-    <!-- Header -->
+    <!-- header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
     <div class="edit-availability-container">
         <h1>Edit Availability</h1>
@@ -29,10 +29,10 @@
             <button type="submit" class="update-btn">Update</button>
         </form>
     </div>
-    <!-- Footer -->
+    <!-- footer -->
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
     <script>
-        // Counter logic
+        // counter logic
         const decrementBtn = document.getElementById('decrementBtn');
         const incrementBtn = document.getElementById('incrementBtn');
         const bedroomValue = document.getElementById('bedroomValue');
@@ -45,10 +45,10 @@
             let val = parseInt(bedroomValue.value, 10);
             if (val < maxBedrooms) bedroomValue.value = val + 1;
         });
-        // Prevent form submit (demo only)
+        // prevent form submit (demo only)
         document.getElementById('editBedroomsForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            // You can add your update logic here
+            // you can add your update logic here
         });
     </script>
 </body>

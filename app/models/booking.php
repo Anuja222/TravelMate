@@ -42,21 +42,42 @@ class Booking {
         }
     }
 
-    // Create booking
+    // create booking
     public function createBooking($conn, $data) {
+        // check if accommodation_id column exists, if not, skip it
+        $accommodationIdField = isset($data['accommodation_id']) ? ', accommodation_id' : '';
+        $accommodationIdValue = isset($data['accommodation_id']) ? ', ?' : '';
+        
+        // check if number_of_rooms is provided
+        $numberOfRoomsField = isset($data['number_of_rooms']) ? ', number_of_rooms' : '';
+        $numberOfRoomsValue = isset($data['number_of_rooms']) ? ', ?' : '';
+        
         $sql = "INSERT INTO bookings 
-                (user_id, booking_id, room_id, room_name, checkin_date, checkout_date, 
+                (user_id, booking_id{$accommodationIdField}, room_id, room_name{$numberOfRoomsField}, checkin_date, checkout_date, 
                  adults, children, nights, room_price, base_price, taxes, total_price, 
                  booking_status, payment_status, booking_date, created_at) 
                 VALUES 
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                (?, ?{$accommodationIdValue}, ?, ?{$numberOfRoomsValue}, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
         $stmt = $conn->prepare($sql);
-        return $stmt->execute([
+        
+        $params = [
             $data['user_id'],
-            $data['booking_id'],
-            $data['room_id'],
-            $data['room_name'],
+            $data['booking_id']
+        ];
+        
+        if (isset($data['accommodation_id'])) {
+            $params[] = $data['accommodation_id'];
+        }
+        
+        $params[] = $data['room_id'];
+        $params[] = $data['room_name'];
+        
+        if (isset($data['number_of_rooms'])) {
+            $params[] = $data['number_of_rooms'];
+        }
+        
+        $params = array_merge($params, [
             $data['checkin_date'],
             $data['checkout_date'],
             $data['adults'],
@@ -70,17 +91,70 @@ class Booking {
             $data['payment_status'],
             $data['booking_date']
         ]);
+        
+        return $stmt->execute($params);
     }
 
-    // Get all bookings by user
+    // get all bookings by user
     public function getBookingsByUserId($conn, $userId) {
-        $sql = "SELECT * FROM bookings WHERE user_id = ? ORDER BY created_at DESC";
+        $hasRatingsTable = false;
+
+        try {
+            $tableCheck = $conn->query("SHOW TABLES LIKE 'booking_ratings'");
+            $hasRatingsTable = $tableCheck && $tableCheck->fetch(PDO::FETCH_NUM);
+        } catch (\Exception $e) {
+            $hasRatingsTable = false;
+        }
+
+        if ($hasRatingsTable) {
+            $sql = "SELECT 
+                        b.*,
+                        (
+                            SELECT ai.image_path
+                            FROM accommodation_images ai
+                            WHERE ai.accommodation_id = b.accommodation_id
+                            ORDER BY ai.is_main DESC, ai.id ASC
+                            LIMIT 1
+                        ) AS accommodation_photo,
+                        br.rating AS user_rating,
+                        br.review AS user_review,
+                        br.created_at AS rating_created_at
+                    FROM bookings b
+                    LEFT JOIN booking_ratings br
+                        ON BINARY br.booking_id = BINARY b.booking_id
+                        AND br.user_id = b.user_id
+                        AND (
+                            (br.accommodation_id IS NULL AND b.accommodation_id IS NULL)
+                            OR br.accommodation_id = b.accommodation_id
+                        )
+                    WHERE b.user_id = ?
+                    ORDER BY b.created_at DESC";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([$userId]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        $sql = "SELECT 
+                    b.*,
+                    (
+                        SELECT ai.image_path
+                        FROM accommodation_images ai
+                        WHERE ai.accommodation_id = b.accommodation_id
+                        ORDER BY ai.is_main DESC, ai.id ASC
+                        LIMIT 1
+                    ) AS accommodation_photo,
+                    NULL AS user_rating,
+                    NULL AS user_review,
+                    NULL AS rating_created_at
+                FROM bookings b
+                WHERE b.user_id = ?
+                ORDER BY b.created_at DESC";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Get single booking
+    // get single booking
     public function getBookingById($conn, $bookingId, $userId) {
         $sql = "SELECT * FROM bookings WHERE booking_id = ? AND user_id = ? LIMIT 1";
         $stmt = $conn->prepare($sql);
@@ -88,7 +162,7 @@ class Booking {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Update booking status
+    // update booking status
     public function updateBookingStatus($conn, $bookingId, $status, $userId) {
         $sql = "UPDATE bookings 
                 SET booking_status = ?, updated_at = NOW() 
@@ -97,7 +171,7 @@ class Booking {
         return $stmt->execute([$status, $bookingId, $userId]);
     }
 
-    // Update booking details
+    // update booking details
     public function updateBooking($conn, $bookingId, $userId, $data) {
         $sql = "UPDATE bookings 
                 SET checkin_date = ?, checkout_date = ?, adults = ?, children = ?, 
@@ -120,7 +194,7 @@ class Booking {
         ]);
     }
 
-    // Cancel booking
+    // cancel booking
     public function cancelBooking($conn, $bookingId, $userId) {
         $sql = "UPDATE bookings 
                 SET booking_status = 'cancelled', updated_at = NOW() 
@@ -129,14 +203,14 @@ class Booking {
         return $stmt->execute([$bookingId, $userId]);
     }
 
-    // Delete booking
+    // delete booking
     public function deleteBooking($conn, $bookingId, $userId) {
         $sql = "DELETE FROM bookings WHERE booking_id = ? AND user_id = ?";
         $stmt = $conn->prepare($sql);
         return $stmt->execute([$bookingId, $userId]);
     }
 
-    // Get bookings by status
+    // get bookings by status
     public function getBookingsByStatus($conn, $userId, $status) {
         $sql = "SELECT * FROM bookings 
                 WHERE user_id = ? AND booking_status = ? 
@@ -146,7 +220,7 @@ class Booking {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Get upcoming bookings
+    // get upcoming bookings
     public function getUpcomingBookings($conn, $userId) {
         $sql = "SELECT * FROM bookings 
                 WHERE user_id = ? 
@@ -158,7 +232,7 @@ class Booking {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Get past bookings
+    // get past bookings
     public function getPastBookings($conn, $userId) {
         $sql = "SELECT * FROM bookings 
                 WHERE user_id = ? 
@@ -169,7 +243,7 @@ class Booking {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Get current bookings (active)
+    // get current bookings (active)
     public function getCurrentBookings($conn, $userId) {
         $sql = "SELECT * FROM bookings 
                 WHERE user_id = ? 
@@ -182,7 +256,7 @@ class Booking {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Get booking statistics
+    // get booking statistics
     public function getBookingStats($conn, $userId) {
         $sql = "SELECT 
                     COUNT(*) as total_bookings,
@@ -198,7 +272,7 @@ class Booking {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Search bookings
+    // search bookings
     public function searchBookings($conn, $userId, $searchTerm) {
         $sql = "SELECT * FROM bookings 
                 WHERE user_id = ? 
@@ -208,5 +282,36 @@ class Booking {
         $searchParam = '%' . $searchTerm . '%';
         $stmt->execute([$userId, $searchParam, $searchParam]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function saveBookingRating($conn, $bookingId, $userId, $accommodationId, $rating, $review = null) {
+        $hasRatingsTable = false;
+
+        try {
+            $tableCheck = $conn->query("SHOW TABLES LIKE 'booking_ratings'");
+            $hasRatingsTable = $tableCheck && $tableCheck->fetch(PDO::FETCH_NUM);
+        } catch (\Exception $e) {
+            $hasRatingsTable = false;
+        }
+
+        if (!$hasRatingsTable) {
+            return false;
+        }
+
+        $sql = "INSERT INTO booking_ratings (booking_id, user_id, accommodation_id, rating, review, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, NOW(), NOW())
+                ON DUPLICATE KEY UPDATE
+                    rating = VALUES(rating),
+                    review = VALUES(review),
+                    updated_at = NOW()";
+
+        $stmt = $conn->prepare($sql);
+        return $stmt->execute([
+            $bookingId,
+            $userId,
+            $accommodationId,
+            $rating,
+            $review
+        ]);
     }
 }

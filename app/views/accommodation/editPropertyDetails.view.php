@@ -1,4 +1,4 @@
-<!-- Edit Your Property Details Page -->
+<!-- edit Your Property Details Page -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/TravelMate/public/assets/css/main.css">
 </head>
 <body>
-    <!-- Header -->
+    <!-- header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
     <h1>Edit Your Property Details</h1>
     <form class="property-details-form" action="photoUpload.view.php" method="get">
@@ -48,7 +48,7 @@
         </div>
     <button type="button" class="save-btn">Save & Continue</button>
     </form>
-    <!-- Footer -->
+    <!-- footer -->
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
     <script src="/TravelMate/public/assets/js/Accomodation_provider/propertyDetails.js"></script>
     <script>
@@ -106,7 +106,7 @@
             const arr = readStored(); arr.push(null); writeStored(arr);
         });
 
-        // Delegate remove click (works when clicking span or the image inside it)
+        // delegate remove click (works when clicking span or the image inside it)
         bedroomList.addEventListener('click', function(e) {
             const removeBtn = e.target.closest('.remove-bed');
             if (removeBtn) {
@@ -128,7 +128,7 @@
     // load any persisted bedroom info
     loadStoredBedrooms();
 
-    // If redirected back from bedRoom page with details, update the corresponding slot
+    // if redirected back from bedRoom page with details, update the corresponding slot
     (function applyIncomingBedData(){
             const params = new URLSearchParams(window.location.search);
             const bed = params.get('bed');
@@ -138,13 +138,13 @@
             const bedIndex = parseInt(bed, 10);
             if (isNaN(bedIndex) || bedIndex < 1) return;
 
-            // Ensure there are enough slots
+            // ensure there are enough slots
             while (bedroomCount < bedIndex) {
                 bedroomCount++;
                 bedroomList.appendChild(createBedroomSlot(bedroomCount));
             }
 
-            // Update the target slot label and subtitle
+            // update the target slot label and subtitle
             const slots = bedroomList.querySelectorAll('.bedroom-slot');
             const target = slots[bedIndex - 1];
             if (target) {
@@ -157,7 +157,7 @@
                 if (subtitle) subtitle.textContent = sub;
             }
 
-            // Update bedroomCount in case new slots were added
+            // update bedroomCount in case new slots were added
             bedroomCount = bedroomList.querySelectorAll('.bedroom-slot').length;
             // persist the updated info into sessionStorage
             const stored = readStored();
@@ -165,14 +165,14 @@
             stored[bedIndex - 1] = (type || count) ? { subtitle: `${type ? type : ''}${type && count ? ' ' : ''}${count ? `(${count})` : ''}` } : null;
             writeStored(stored);
 
-            // Remove query params from URL to avoid re-applying on refresh
+            // remove query params from URL to avoid re-applying on refresh
             if (window.history && window.history.replaceState) {
                 const cleanUrl = window.location.pathname + window.location.hash;
                 window.history.replaceState({}, document.title, cleanUrl);
             }
         })();
 
-        // Intercept Save & Continue button to sync storage and redirect to viewProperty
+        // intercept Save & Continue button to sync storage and redirect to viewProperty
         const form = document.querySelector('.property-details-form');
         const saveBtn = document.querySelector('.save-btn');
         saveBtn.addEventListener('click', function(e){
@@ -183,7 +183,7 @@
             const childrenRadio = document.querySelector('input[name="children"]:checked');
             const children = childrenRadio ? childrenRadio.value : '';
 
-            // Build property details object and persist to sessionStorage for preview
+            // build property details object and persist to sessionStorage for preview
             const prop = {
                 guests: guests,
                 bathrooms: bathrooms,
@@ -191,11 +191,11 @@
             };
             try { sessionStorage.setItem('tm_propertyDetails', JSON.stringify(prop)); } catch (err) { console.warn('Could not save property details to sessionStorage', err); }
 
-            // Choose the working route: probe the pretty route and fall back to front-controller if it 404s
+            // choose the working route: probe the pretty route and fall back to front-controller if it 404s
             (function chooseAndNavigate(){
                 const pretty = '/TravelMate/Accomodation_provider/viewProperty';
                 const fallback = '/TravelMate/public/index.php?url=Accomodation_provider/viewProperty';
-                // Use a HEAD request to check existence without downloading the full page
+                // use a HEAD request to check existence without downloading the full page
                 fetch(pretty, { method: 'HEAD' }).then(resp => {
                     if (resp && resp.ok) {
                         window.location.assign(pretty);

@@ -66,12 +66,12 @@ class Destination
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    // Places (child items)
-    public static function createPlace($conn, $destinationId, $title, $slug, $description, $image)
+    // places (child items)
+    public static function createPlace($conn, $destinationId, $title, $slug, $description, $image, $location = null, $best_time = null)
     {
-        $sql = "INSERT INTO destination_places (destination_id, title, slug, description, image, created_at) VALUES (?, ?, ?, ?, ?, NOW())";
+        $sql = "INSERT INTO destination_places (destination_id, title, slug, description, image, location, best_time, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
         $stmt = $conn->prepare($sql);
-        $res = $stmt->execute([$destinationId, $title, $slug, $description, $image]);
+        $res = $stmt->execute([$destinationId, $title, $slug, $description, $image, $location, $best_time]);
         return $res ? $conn->lastInsertId() : false;
     }
 
@@ -98,16 +98,18 @@ class Destination
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public static function updatePlace($conn, $id, $title, $slug, $description, $image)
+    public static function updatePlace($conn, $id, $title, $slug, $description, $image, $location = null, $best_time = null)
     {
         // removed 'updated_at' column to match database schema
-        $sql = "UPDATE destination_places SET title = ?, slug = ?, description = ?, image = ? WHERE id = ?";
+        $sql = "UPDATE destination_places SET title = ?, slug = ?, description = ?, image = ?, location = ?, best_time = ? WHERE id = ?";
         $stmt = $conn->prepare($sql);
         return $stmt->execute([
             $title,
             $slug,
             $description,
             $image,
+            $location,
+            $best_time,
             $id
         ]);
     }

@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Popular Destinations - TravelMate Admin</title>
-  <link rel="stylesheet" href="assets/css/Admin/ViewListing.css">
-  <link rel="stylesheet" href="assets/css/Admin/common.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/ViewListing.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/assets/css/Admin/common.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -17,19 +17,27 @@
     <?php include 'sidebar.view.php'; ?>
 
     <div class="content">
-      <!-- Page Header -->
+      <!-- page Header -->
       <div class="page-title">
-        <div class="title-section">
-          <h1><i class="fas fa-map-marked-alt"></i> Popular Destinations</h1>
-          <p class="subtitle">Manage and showcase top travel destinations</p>
+        <div class="page-title-content">
+          <div class="page-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+          </div>
+          <div class="page-title-text">
+            <h1>Popular Destinations</h1>
+            <p class="page-subtitle">Manage and showcase top travel destinations</p>
+          </div>
         </div>
         <button id="btnCreate" class="btn-primary" onclick="window.location.href='createDestination'">
           <i class="fas fa-plus"></i> Create Destination
         </button>
       </div>
 
-      <!-- Filter Bar -->
-      <div class="filter-bar">
+      <!-- filter Bar -->
+      <!-- <div class="filter-bar">
         <input type="text" id="searchInput" placeholder="Search destinations..." />
         <select id="statusFilter">
           <option value="">All Status</option>
@@ -48,9 +56,9 @@
         <button id="btnApplyFilter">
           <i class="fas fa-filter"></i> Apply Filters
         </button>
-      </div>
+      </div> -->
 
-      <!-- Statistics Summary -->
+      <!-- statistics Summary -->
       <div class="stats-summary">
         <div class="stat-card">
           <div class="stat-icon" style="background: #1abc5b;">
@@ -90,7 +98,7 @@
         </div>
       </div>
 
-      <!-- Destinations Grid -->
+      <!-- destinations Grid -->
       <div id="destList" class="content-grid">
         <div class="loading-container">
           <i class="fas fa-spinner fa-spin" style="font-size: 32px; color: #1abc5b;"></i>
@@ -98,7 +106,7 @@
         </div>
       </div>
 
-      <!-- Empty State -->
+      <!-- empty State -->
       <div id="emptyState" class="empty-state" style="display: none;">
         <i class="fas fa-map-marked-alt"></i>
         <h3>No Destinations Found</h3>
@@ -111,7 +119,7 @@
     </div>
   </div>
 
-  <!-- Delete Confirmation Modal -->
+  <!-- delete Confirmation Modal -->
   <div id="deleteModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -131,12 +139,151 @@
     </div>
   </div>
 
-  <script src="../public/assets/js/destinations.js"></script>
+  <!-- success Modal -->
+  <div id="successModal" class="success-modal" style="display: none;">
+    <div class="success-modal-content">
+      <div class="success-modal-icon">
+        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+      </div>
+      <h3 id="successMessage" class="success-modal-message">Success!</h3>
+      <button onclick="closeSuccessModal()" class="success-modal-btn">OK</button>
+    </div>
+  </div>
+
+  <!-- view Destination Modal -->
+  <div id="viewModal" class="view-modal" style="display: none;">
+    <div class="view-modal-content">
+      <div class="view-modal-header">
+        <h2 id="viewModalTitle">Destination Details</h2>
+        <span class="view-modal-close" onclick="closeViewModal()">&times;</span>
+      </div>
+      <div class="view-modal-body">
+        <div class="view-destination-info">
+          <div class="view-destination-image">
+            <img id="viewDestImage" src="" alt="Destination">
+          </div>
+          <div class="view-destination-details">
+            <h3 id="viewDestTitle"></h3>
+            <p id="viewDestDescription"></p>
+          </div>
+        </div>
+        <div class="view-places-section">
+          <h3 class="view-places-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            Places in this Destination
+          </h3>
+          <div id="viewPlacesList" class="view-places-grid">
+            <!-- places will be loaded here -->
+          </div>
+        </div>
+      </div>
+      <div class="view-modal-footer">
+        <button class="btn-edit-dest" id="viewModalEditBtn" onclick="editFromModal()">
+          <i class="fas fa-edit"></i> Edit Destination
+        </button>
+        <button class="btn-close-modal" onclick="closeViewModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="<?= ROOT ?>/assets/js/destinations.js"></script>
   
   <script>
-    // Enhanced functionality
+    // success Modal Functions
+    function showSuccessModal(message) {
+      document.getElementById('successMessage').textContent = message;
+      document.getElementById('successModal').style.display = 'flex';
+    }
+
+    function closeSuccessModal() {
+      document.getElementById('successModal').style.display = 'none';
+    }
+
+    // view Modal Functions
+    let currentViewDestinationId = null;
+
+    function showViewModal(destinationId) {
+      currentViewDestinationId = destinationId;
+      const modal = document.getElementById('viewModal');
+      modal.style.display = 'flex';
+      
+      // fetch destination details
+      const baseApi = window.location.origin + '/TravelMate/public';
+      fetch(baseApi + '/api/destination/get?id=' + destinationId, { credentials: 'same-origin' })
+        .then(r => r.json())
+        .then(resp => {
+          if (resp.success) {
+            const dest = resp.data;
+            const baseUrl = window.location.origin + '/TravelMate/public/';
+            
+            document.getElementById('viewModalTitle').textContent = dest.title || 'Destination Details';
+            document.getElementById('viewDestTitle').textContent = dest.title || '';
+            document.getElementById('viewDestDescription').textContent = dest.description || 'No description available';
+            
+            const imgSrc = dest.image ? baseUrl + dest.image : '<?= ROOT ?>/assets/images/default-dest.png';
+            document.getElementById('viewDestImage').src = imgSrc;
+            
+            // display places
+            const placesList = document.getElementById('viewPlacesList');
+            if (dest.places && dest.places.length > 0) {
+              placesList.innerHTML = dest.places.map(place => {
+                const placeImg = place.image ? baseUrl + place.image : '<?= ROOT ?>/assets/images/default-place.png';
+                return `
+                  <div class="view-place-card">
+                    <div class="view-place-image">
+                      <img src="${placeImg}" alt="${place.title}">
+                    </div>
+                    <div class="view-place-info">
+                      <h4>${place.title}</h4>
+                      <p>${place.description ? place.description.substring(0, 100) : 'No description'}${place.description && place.description.length > 100 ? '...' : ''}</p>
+                    </div>
+                  </div>
+                `;
+              }).join('');
+            } else {
+              placesList.innerHTML = `
+                <div class="view-no-places">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                  <p>No places added yet</p>
+                </div>
+              `;
+            }
+          }
+        })
+        .catch(err => console.error('Error fetching destination:', err));
+    }
+
+    function closeViewModal() {
+      document.getElementById('viewModal').style.display = 'none';
+      currentViewDestinationId = null;
+    }
+
+    function editFromModal() {
+      if (currentViewDestinationId) {
+        window.location.href = 'editDestination?id=' + currentViewDestinationId;
+      }
+    }
+
+    // close modal when clicking outside
+    window.addEventListener('click', function(event) {
+      const viewModal = document.getElementById('viewModal');
+      if (event.target === viewModal) {
+        closeViewModal();
+      }
+    });
+
+    // enhanced functionality
     document.addEventListener('DOMContentLoaded', function() {
-      // Modal handling
+      // modal handling
       const modal = document.getElementById('deleteModal');
       const closeBtn = document.querySelector('.close');
       const cancelBtn = document.getElementById('btnCancelDelete');
@@ -159,7 +306,7 @@
         }
       }
       
-      // Filter functionality
+      // filter functionality
       const applyFilterBtn = document.getElementById('btnApplyFilter');
       if (applyFilterBtn) {
         applyFilterBtn.addEventListener('click', function() {
@@ -167,14 +314,14 @@
           const statusValue = document.getElementById('statusFilter').value;
           const regionValue = document.getElementById('regionFilter').value;
           
-          // Call filter function from destinations.js
+          // call filter function from destinations.js
           if (typeof filterDestinations === 'function') {
             filterDestinations(searchValue, statusValue, regionValue);
           }
         });
       }
       
-      // Search on enter key
+      // search on enter key
       const searchInput = document.getElementById('searchInput');
       if (searchInput) {
         searchInput.addEventListener('keypress', function(e) {
@@ -184,7 +331,7 @@
         });
       }
       
-      // Update stats animation
+      // update stats animation
       function animateValue(element, start, end, duration) {
         if (!element) return;
         
@@ -200,7 +347,7 @@
         window.requestAnimationFrame(step);
       }
       
-      // Example: Update stats (replace with actual data)
+      // example: Update stats (replace with actual data)
       setTimeout(() => {
         animateValue(document.getElementById('activeCount'), 0, 12, 1000);
         animateValue(document.getElementById('pendingCount'), 0, 3, 1000);

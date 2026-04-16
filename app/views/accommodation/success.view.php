@@ -1,4 +1,4 @@
-<!-- Success/Thank You Page -->
+<!-- success/Thank You Page -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/TravelMate/public/assets/css/main.css">
 </head>
 <body>
-    <!-- Header -->
+    <!-- header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
     <div class="main-success-wrapper">
         <div class="success-card">
@@ -32,7 +32,7 @@
             </div>
         </div>
     </div>
-    <!-- Footer -->
+    <!-- footer -->
 
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
     <script></script>

@@ -1,72 +1,94 @@
-<!-- Bookings Page -->
+<!-- bookings Page -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bookings</title>
-    <link rel="stylesheet" href="/TravelMate/public/assets/css/Accomodation_provider/bookings.css">
+    <title>Bookings - TravelMate</title>
+    <link rel="stylesheet" href="/TravelMate/public/assets/css/Accommodation/bookings.css">
+    <link rel="stylesheet" href="/TravelMate/public/assets/css/Accommodation/dashboard.css">
     <link rel="stylesheet" href="/TravelMate/public/assets/css/Traveller/usermain.css">
     <link rel="stylesheet" href="/TravelMate/public/assets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Header -->
+    <!-- header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
-    <div class="bookings-container">
-        <h1>Bookings</h1>
-        <div class="booking-card">
-            <img src="/TravelMate/public/assets/images/home1.jpg" alt="Sun Land Villa" class="booking-img">
-            <div class="booking-details">
-                <div class="booking-title">Sun Land Villa</div>
-                <div class="booking-type">One-Bedroom House</div>
-                <div class="booking-desc">Entire vacation home | 1 bedroom | 1 living room | 2 bathrooms | 1 kitchen | 4 beds</div>
-                <div class="booking-dates">
-                    <span class="booking-date-icon">&#128197;</span>
-                    <span>Mon, Sep 8</span> &mdash; <span>Tue, Sep 9</span>
+    
+    <main>
+        <!-- sidebar -->
+        <?php 
+        $active_page = 'bookings';
+        include __DIR__ . '/sidebar.view.php'; 
+        ?>
+        
+        <!-- main Content -->
+        <section class="dashboard-content">
+            <div class="bookings-container">
+                <!-- new Booking Notification Banner -->
+                <div id="newBookingNotification" class="notification-banner" style="display: none;">
+                    <div class="notification-content">
+                        <i class="fas fa-bell"></i>
+                        <div class="notification-text">
+                            <strong>New Bookings!</strong>
+                            <p id="notificationMessage">You have new bookings while you were away.</p>
+                        </div>
+                    </div>
+                    <button class="notification-close" onclick="dismissNotification()">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
-                <div class="booking-user">Booked by Mrs. Minoli Isakya<br>Contact : +94713344100</div>
-            </div>
-            <div class="booking-meta">
-                <div class="booking-guests">1 night | 2 adults</div>
-                <div class="booking-price">LKR 12,030</div>
-            </div>
-        </div>
-        <div class="booking-card">
-            <img src="/TravelMate/public/assets/images/home1.jpg" alt="Sun Land Villa" class="booking-img">
-            <div class="booking-details">
-                <div class="booking-title">Sun Land Villa</div>
-                <div class="booking-type">One-Bedroom House</div>
-                <div class="booking-desc">Entire vacation home | 1 bedroom | 1 living room | 2 bathrooms | 1 kitchen | 4 beds</div>
-                <div class="booking-dates">
-                    <span class="booking-date-icon">&#128197;</span>
-                    <span>Mon, Sep 8</span> &mdash; <span>Tue, Sep 9</span>
+                
+                <div class="page-header">
+                    <h1><i class="fas fa-calendar-check"></i> Bookings</h1>
+                    <p>Manage all your property bookings in one place</p>
                 </div>
-                <div class="booking-user">Booked by Mrs. Minoli Isakya<br>Contact : +94713344100</div>
-            </div>
-            <div class="booking-meta">
-                <div class="booking-guests">1 night | 2 adults</div>
-                <div class="booking-price">LKR 12,030</div>
-            </div>
-        </div>
-        <div class="booking-card">
-            <img src="/TravelMate/public/assets/images/home1.jpg" alt="Sun Land Villa" class="booking-img">
-            <div class="booking-details">
-                <div class="booking-title">Sun Land Villa</div>
-                <div class="booking-type">One-Bedroom House</div>
-                <div class="booking-desc">Entire vacation home | 1 bedroom | 1 living room | 2 bathrooms | 1 kitchen | 4 beds</div>
-                <div class="booking-dates">
-                    <span class="booking-date-icon">&#128197;</span>
-                    <span>Mon, Sep 8</span> &mdash; <span>Tue, Sep 9</span>
+
+                <div class="bookings-section">
+                    <div class="bookings-section-header">
+                        <h2><i class="fas fa-calendar-day"></i> Current Bookings</h2>
+                    </div>
+                    <div class="bookings-grid" id="currentBookingsGrid">
+                        <!-- current bookings will be dynamically loaded here -->
+                    </div>
                 </div>
-                <div class="booking-user">Booked by Mrs. Minoli Isakya<br>Contact : +94713344100</div>
+
+                <div class="bookings-section bookings-section-expired">
+                    <div class="bookings-section-header">
+                        <h2><i class="fas fa-history"></i> Expired Bookings</h2>
+                    </div>
+                    <div class="bookings-grid" id="expiredBookingsGrid">
+                        <!-- expired bookings will be dynamically loaded here -->
+                    </div>
+                </div>
             </div>
-            <div class="booking-meta">
-                <div class="booking-guests">1 night | 2 adults</div>
-                <div class="booking-price">LKR 12,030</div>
+        </section>
+    </main>
+    
+    <!-- booking Details Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2 class="modal-title">Booking Details</h2>
+            <div class="modal-body" id="modalBody">
+                <!-- details will be loaded here -->
             </div>
         </div>
     </div>
-    <!-- Footer -->
+
+    <!-- contact Modal -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content contact-modal-content">
+            <span class="modal-close" onclick="closeContactModal()">&times;</span>
+            <h2 class="modal-title">Contact Guest</h2>
+            <div class="modal-body" id="contactModalBody">
+                <!-- contact options will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- footer -->
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
+    <script src="/TravelMate/public/assets/js/providerbookings.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>

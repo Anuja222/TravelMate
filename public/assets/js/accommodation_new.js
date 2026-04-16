@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Helper function to get base URL
+    // helper function to get base URL
     function getBaseUrl() {
         return '/TravelMate';
     }
@@ -11,16 +11,16 @@ document.addEventListener('DOMContentLoaded', function() {
     if (propertyTypes.length > 0) {
         propertyTypes.forEach(type => {
             type.addEventListener('click', function() {
-                // Remove active class from all types
+                // remove active class from all types
                 propertyTypes.forEach(t => t.classList.remove('active'));
-                // Add active class to clicked type
+                // add active class to clicked type
                 this.classList.add('active');
                 
-                // Store property type in localStorage
+                // store property type in localStorage
                 const propertyType = this.querySelector('h3').textContent.trim().toLowerCase();
                 localStorage.setItem('property_type', propertyType);
                 
-                // Navigate to next page
+                // navigate to next page
                 window.location.href = baseUrl + '/accommodationFeatures';
             });
         });
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (featuresForm) {
         const features = {};
         
-        // Load any existing data
+        // load any existing data
         const savedFeatures = localStorage.getItem('property_features');
         if (savedFeatures) {
             const parsedFeatures = JSON.parse(savedFeatures);
@@ -50,16 +50,16 @@ document.addEventListener('DOMContentLoaded', function() {
         featuresForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Collect all form data
+            // collect all form data
             const formData = new FormData(this);
             formData.forEach((value, key) => {
                 features[key] = value;
             });
             
-            // Store in localStorage
+            // store in localStorage
             localStorage.setItem('property_features', JSON.stringify(features));
             
-            // Navigate to next page
+            // navigate to next page
             window.location.href = baseUrl + '/propertyDetails';
         });
     }
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ========== PROPERTY DETAILS PAGE ==========
     const detailsForm = document.querySelector('.property-details-form');
     if (detailsForm) {
-        // Load any existing data
+        // load any existing data
         const savedDetails = localStorage.getItem('property_details');
         if (savedDetails) {
             const parsedDetails = JSON.parse(savedDetails);
@@ -80,17 +80,17 @@ document.addEventListener('DOMContentLoaded', function() {
         detailsForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Collect form data
+            // collect form data
             const details = {};
             const formData = new FormData(this);
             formData.forEach((value, key) => {
                 details[key] = value;
             });
             
-            // Store in localStorage
+            // store in localStorage
             localStorage.setItem('property_details', JSON.stringify(details));
             
-            // Navigate to next page
+            // navigate to next page
             window.location.href = baseUrl + '/photoUpload';
         });
     }
@@ -112,11 +112,11 @@ document.addEventListener('DOMContentLoaded', function() {
         photoForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Store description in localStorage
+            // store description in localStorage
             const description = document.getElementById('propertyDescription').value;
             localStorage.setItem('property_description', description);
             
-            // Navigate to next page
+            // navigate to next page
             window.location.href = baseUrl + '/houseRules';
         });
 
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 reader.readAsDataURL(file);
             });
             
-            // Replace existing previews
+            // replace existing previews
             const existing = document.querySelector('.image-previews');
             if (existing) existing.remove();
             photoForm.insertBefore(previewContainer, photoForm.querySelector('button'));
@@ -150,25 +150,25 @@ document.addEventListener('DOMContentLoaded', function() {
         rulesForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Collect all data from localStorage
+            // collect all data from localStorage
             const propertyType = localStorage.getItem('property_type');
             const features = JSON.parse(localStorage.getItem('property_features') || '{}');
             const details = JSON.parse(localStorage.getItem('property_details') || '{}');
             const description = localStorage.getItem('property_description');
             
-            // Collect house rules data
+            // collect house rules data
             const formData = new FormData(this);
             const rules = {};
             formData.forEach((value, key) => {
                 rules[key] = value;
             });
             
-            // Create final FormData object
+            // create final FormData object
             const finalFormData = new FormData();
             finalFormData.append('property_type', propertyType);
             finalFormData.append('description', description);
             
-            // Add all collected data
+            // add all collected data
             Object.keys(features).forEach(key => {
                 finalFormData.append(key, features[key]);
             });
@@ -190,13 +190,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 const result = await response.json();
                 
                 if (result.success) {
-                    // Clear localStorage
+                    // clear localStorage
                     localStorage.removeItem('property_type');
                     localStorage.removeItem('property_features');
                     localStorage.removeItem('property_details');
                     localStorage.removeItem('property_description');
                     
-                    // Navigate to success page
+                    // navigate to success page
                     window.location.href = baseUrl + '/accommodation/success';
                 } else {
                     alert('Failed to create property: ' + (result.errors ? result.errors.join(', ') : 'Unknown error'));

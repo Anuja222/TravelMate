@@ -202,44 +202,44 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Get DOM elements
+      // get DOM elements
       const alertBox = document.getElementById('alertBox');
       const confirmBtn = document.getElementById('confirm-booking');
       const rejectBtn = document.getElementById('reject-booking');
       const counterOffer = document.getElementById('counter-offer');
       const counterDisplay = document.getElementById('counter-display');
       
-      // Format counter offer value as user types
+      // format counter offer value as user types
       counterOffer.addEventListener('input', function() {
         const value = this.value ? parseInt(this.value).toLocaleString() : '';
         counterDisplay.textContent = value;
         updateSummary();
       });
       
-      // Show alert function
+      // show alert function
       function showAlert(message, type) {
         alertBox.textContent = message;
         alertBox.className = `alert alert-${type}`;
         alertBox.style.display = 'block';
         
-        // Hide alert after 5 seconds
+        // hide alert after 5 seconds
         setTimeout(() => {
           alertBox.style.display = 'none';
         }, 5000);
       }
       
-      // Update summary
+      // update summary
       function updateSummary() {
-        // In a real app, this would calculate based on distance, vehicle type, etc.
-        const baseFare = 50; // This would normally be calculated
+        // in a real app, this would calculate based on distance, vehicle type, etc.
+        const baseFare = 50; // this would normally be calculated
         document.getElementById('summary-basefare').textContent = `$${baseFare}.00`;
         
-        // Calculate total (base fare + $5 fees)
+        // calculate total (base fare + $5 fees)
         const total = baseFare + 5;
         document.getElementById('summary-total').textContent = `$${total}.00`;
       }
       
-      // Confirm booking
+      // confirm booking
       confirmBtn.addEventListener('click', function() {
         const providerNote = document.getElementById('provider-note').value;
         const counterPrice = document.getElementById('counter-offer').value;
@@ -249,21 +249,21 @@
           return;
         }
         
-        // Show loading state
+        // show loading state
         confirmBtn.disabled = true;
         rejectBtn.disabled = true;
         confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
         
-        // Simulate API call
+        // simulate API call
         setTimeout(() => {
           showAlert('Booking confirmed successfully! The customer has been notified.', 'success');
           
-          // Update UI to show confirmed status
+          // update UI to show confirmed status
           document.querySelector('.request-status').innerHTML = 'Status: <span>Confirmed</span>';
           document.querySelector('.request-status').classList.remove('pending');
           document.querySelector('.request-status').classList.add('confirmed');
           
-          // Reset button after success
+          // reset button after success
           setTimeout(() => {
             confirmBtn.disabled = false;
             rejectBtn.disabled = false;
@@ -272,32 +272,32 @@
         }, 1500);
       });
       
-      // Reject booking
+      // reject booking
       rejectBtn.addEventListener('click', function() {
         const rejectReason = prompt('Please provide a reason for rejecting this booking:');
         
-        if (rejectReason === null) return; // User cancelled
+        if (rejectReason === null) return; // user cancelled
           
         if (!rejectReason.trim()) {
           showAlert('Please provide a reason for rejection', 'error');
           return;
         }
         
-        // Show loading state
+        // show loading state
         confirmBtn.disabled = true;
         rejectBtn.disabled = true;
         rejectBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
         
-        // Simulate API call
+        // simulate API call
         setTimeout(() => {
           showAlert('Booking request rejected. The customer has been notified.', 'success');
           
-          // Update UI to show rejected status
+          // update UI to show rejected status
           document.querySelector('.request-status').innerHTML = 'Status: <span>Rejected</span>';
           document.querySelector('.request-status').classList.remove('pending');
           document.querySelector('.request-status').classList.add('rejected');
           
-          // Reset button after success
+          // reset button after success
           setTimeout(() => {
             confirmBtn.disabled = false;
             rejectBtn.disabled = false;
@@ -306,10 +306,10 @@
         }, 1500);
       });
       
-      // Initialize summary
+      // initialize summary
       updateSummary();
       
-      // Responsive adjustments
+      // responsive adjustments
       function handleResize() {
         if (window.innerWidth < 900) {
           document.querySelector('.detail-summary').style.position = 'relative';
@@ -318,10 +318,10 @@
         }
       }
       
-      // Listen for window resize
+      // listen for window resize
       window.addEventListener('resize', handleResize);
       
-      // Initial call
+      // initial call
       handleResize();
     });
   </script>

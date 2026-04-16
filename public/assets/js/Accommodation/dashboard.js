@@ -1,5 +1,5 @@
-// JS for dashboard page
-// Add event listeners for Edit/Delete buttons, List Property, etc.
+// jS for dashboard page
+// add event listeners for Edit/Delete buttons, List Property, etc.
 document.querySelectorAll('.listing-actions button').forEach(btn => {
     btn.addEventListener('click', function() {
         alert('This is a demo action.');

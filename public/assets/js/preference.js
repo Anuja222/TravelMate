@@ -23,11 +23,11 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Get selected environments
+        // get selected environments
         const selectedEnvironments = Array.from(document.querySelectorAll('.category-card.selected'))
             .map(card => card.dataset.category);
 
-        // Get selected activities
+        // get selected activities
         const selectedActivities = Array.from(document.querySelectorAll('.activity-card.selected'))
             .map(card => card.dataset.activity);
 

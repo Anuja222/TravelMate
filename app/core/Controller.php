@@ -4,7 +4,7 @@ class Controller{
 
     public function view($name,$data = []){
         
-        // Extract data array to variables
+        // extract data array to variables
         if(!empty($data)){
             extract($data);
         }

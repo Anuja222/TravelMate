@@ -1,4 +1,4 @@
-<!-- Edit Your Property Details Page -->
+<!-- edit Your Property Details Page -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
-    <!-- Header -->
+    <!-- header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
     <h1>Your Property Details</h1>
     <form class="property-details-form" action="photoUpload" method="get">
@@ -31,7 +31,7 @@
                 <span class="count">2</span>
                 <button type="button" class="increment">+</button>
             </div>
-            <!-- Hidden input to persist guests count for form submission / JS -->
+            <!-- hidden input to persist guests count for form submission / JS -->
             <input type="hidden" name="max_guests" class="input-max-guests" value="2">
         </div>
         <div class="property-bathrooms">
@@ -41,7 +41,7 @@
                 <span class="count">1</span>
                 <button type="button" class="increment">+</button>
             </div>
-            <!-- Hidden input to persist bathrooms count for form submission / JS -->
+            <!-- hidden input to persist bathrooms count for form submission / JS -->
             <input type="hidden" name="bathrooms" class="input-bathrooms" value="1">
         </div>
         </fieldset>
@@ -52,7 +52,7 @@
         </div>
         <button type="submit" class="save-btn">Continue</button>
     </form>
-    <!-- Footer -->
+    <!-- footer -->
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
     <script></script>
     <script>
@@ -110,7 +110,7 @@
             const arr = readStored(); arr.push(null); writeStored(arr);
         });
 
-        // Delegate remove click (works when clicking span or the image inside it)
+        // delegate remove click (works when clicking span or the image inside it)
         bedroomList.addEventListener('click', function(e) {
             const removeBtn = e.target.closest('.remove-bed');
             if (removeBtn) {
@@ -132,7 +132,7 @@
     // load any persisted bedroom info
     loadStoredBedrooms();
 
-    // If redirected back from bedRoom page with details, update the corresponding slot
+    // if redirected back from bedRoom page with details, update the corresponding slot
     (function applyIncomingBedData(){
             const params = new URLSearchParams(window.location.search);
             const bed = params.get('bed');
@@ -142,13 +142,13 @@
             const bedIndex = parseInt(bed, 10);
             if (isNaN(bedIndex) || bedIndex < 1) return;
 
-            // Ensure there are enough slots
+            // ensure there are enough slots
             while (bedroomCount < bedIndex) {
                 bedroomCount++;
                 bedroomList.appendChild(createBedroomSlot(bedroomCount));
             }
 
-            // Update the target slot label and subtitle
+            // update the target slot label and subtitle
             const slots = bedroomList.querySelectorAll('.bedroom-slot');
             const target = slots[bedIndex - 1];
             if (target) {
@@ -161,7 +161,7 @@
                 if (subtitle) subtitle.textContent = sub;
             }
 
-            // Update bedroomCount in case new slots were added
+            // update bedroomCount in case new slots were added
             bedroomCount = bedroomList.querySelectorAll('.bedroom-slot').length;
             // persist the updated info into sessionStorage
             const stored = readStored();
@@ -169,16 +169,16 @@
             stored[bedIndex - 1] = (type || count) ? { subtitle: `${type ? type : ''}${type && count ? ' ' : ''}${count ? `(${count})` : ''}` } : null;
             writeStored(stored);
 
-            // Remove query params from URL to avoid re-applying on refresh
+            // remove query params from URL to avoid re-applying on refresh
             if (window.history && window.history.replaceState) {
                 const cleanUrl = window.location.pathname + window.location.hash;
                 window.history.replaceState({}, document.title, cleanUrl);
             }
         })();
 
-        // Intercept form submit to sync storage and redirect to photoUpload
+        // intercept form submit to sync storage and redirect to photoUpload
         const form = document.querySelector('.property-details-form');
-        // Counter initialization and handlers
+        // counter initialization and handlers
         (function initCounters(){
             // helpers
             function setCounter(container, value){
@@ -201,7 +201,7 @@
                 setCounter(container, val);
             }
 
-            // Load saved counts from localStorage (property_details)
+            // load saved counts from localStorage (property_details)
             let savedDetails = {};
             try { savedDetails = JSON.parse(localStorage.getItem('property_details') || '{}'); } catch(e){ savedDetails = {}; }
 
@@ -227,20 +227,20 @@
             // sync bedroom info from sessionStorage
             syncStorageFromDOM();
 
-            // Build property_details object
+            // build property_details object
             const details = {};
             const formData = new FormData(form);
             formData.forEach((value, key) => {
                 details[key] = value;
             });
 
-            // Include numeric counts from hidden inputs
+            // include numeric counts from hidden inputs
             const maxGuestsEl = document.querySelector('.input-max-guests');
             const bathroomsEl = document.querySelector('.input-bathrooms');
             if (maxGuestsEl) details.max_guests = parseInt(maxGuestsEl.value, 10) || 1;
             if (bathroomsEl) details.bathrooms = parseInt(bathroomsEl.value, 10) || 1;
 
-            // Include bedroom details from sessionStorage (tm_bedrooms)
+            // include bedroom details from sessionStorage (tm_bedrooms)
             try {
                 const bedrooms = JSON.parse(sessionStorage.getItem('tm_bedrooms') || '[]');
                 details.bedrooms = bedrooms;

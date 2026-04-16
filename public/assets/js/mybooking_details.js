@@ -2,11 +2,11 @@ const BASE_PATH = window.location.pathname.includes('/TravelMate/')
     ? '/TravelMate/public'
     : '';
 
-// Get booking ID from URL
+// get booking ID from URL
 const urlParams = new URLSearchParams(window.location.search);
 const bookingId = urlParams.get('id');
 
-// Load booking details
+// load booking details
 async function loadBookingDetails() {
     if (!bookingId) {
         showError('No booking ID provided');
@@ -21,7 +21,7 @@ async function loadBookingDetails() {
             }
         });
 
-        // Debug: Check response type
+        // debug: Check response type
         const contentType = response.headers.get('content-type');
         console.log('Load Response Content-Type:', contentType);
 
@@ -45,18 +45,18 @@ async function loadBookingDetails() {
     }
 }
 
-// Store original booking data
+// store original booking data
 let originalBooking = null;
 
-// Populate form with booking details
+// populate form with booking details
 function populateForm(booking) {
-    // Store the original booking data
+    // store the original booking data
     originalBooking = booking;
     
     document.getElementById('bookingId').value = booking.booking_id;
     document.getElementById('roomName').value = booking.room_name;
     
-    // Handle date formatting - extract just the date part
+    // handle date formatting - extract just the date part
     const checkinDate = booking.checkin_date.split(' ')[0];
     const checkoutDate = booking.checkout_date.split(' ')[0];
     
@@ -68,7 +68,7 @@ function populateForm(booking) {
     document.getElementById('totalPrice').value = parseFloat(booking.total_price).toLocaleString();
 }
 
-// Calculate nights based on check-in and check-out dates
+// calculate nights based on check-in and check-out dates
 function calculateNights() {
     const checkinInput = document.getElementById('checkinDate').value;
     const checkoutInput = document.getElementById('checkoutDate').value;
@@ -83,7 +83,7 @@ function calculateNights() {
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         document.getElementById('nights').value = diffDays;
         
-        // Recalculate total price based on new nights
+        // recalculate total price based on new nights
         recalculatePrice(diffDays);
     } else if (checkout <= checkin) {
         showError('Check-out date must be after check-in date');
@@ -91,17 +91,17 @@ function calculateNights() {
     }
 }
 
-// Recalculate total price when nights change
+// recalculate total price when nights change
 function recalculatePrice(nights) {
     if (!originalBooking) return;
     
-    // Calculate price per night from original booking
+    // calculate price per night from original booking
     const pricePerNight = parseFloat(originalBooking.room_price);
     const basePrice = pricePerNight * nights;
     const taxes = parseFloat(originalBooking.taxes);
     const totalPrice = basePrice + taxes;
     
-    // Update the display
+    // update the display
     document.getElementById('totalPrice').value = totalPrice.toLocaleString();
     
     console.log('Price recalculated:', {
@@ -113,11 +113,11 @@ function recalculatePrice(nights) {
     });
 }
 
-// Form submission
+// form submission
 document.getElementById('bookingForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
-    // Get current total price without formatting
+    // get current total price without formatting
     const totalPriceText = document.getElementById('totalPrice').value.replace(/,/g, '');
     const totalPrice = parseFloat(totalPriceText);
 
@@ -128,7 +128,7 @@ document.getElementById('bookingForm').addEventListener('submit', async function
         adults: parseInt(document.getElementById('adults').value),
         children: parseInt(document.getElementById('children').value),
         nights: parseInt(document.getElementById('nights').value),
-        // Include pricing information
+        // include pricing information
         roomPrice: parseFloat(originalBooking.room_price),
         basePrice: parseFloat(originalBooking.room_price) * parseInt(document.getElementById('nights').value),
         taxes: parseFloat(originalBooking.taxes),
@@ -137,7 +137,7 @@ document.getElementById('bookingForm').addEventListener('submit', async function
 
     console.log('Submitting booking update:', data);
 
-    // Client-side validation
+    // client-side validation
     if (!data.checkinDate || !data.checkoutDate) {
         showError('Check-in and check-out dates are required');
         return;
@@ -179,11 +179,11 @@ document.getElementById('bookingForm').addEventListener('submit', async function
 
         console.log('Response status:', response.status);
         
-        // Debug: Check response content type
+        // debug: Check response content type
         const contentType = response.headers.get('content-type');
         console.log('Update Response Content-Type:', contentType);
 
-        // If response is not JSON, log the actual response
+        // if response is not JSON, log the actual response
         if (!contentType || !contentType.includes('application/json')) {
             const text = await response.text();
             console.error('Update Response is not JSON. Full response:', text);
@@ -209,16 +209,16 @@ document.getElementById('bookingForm').addEventListener('submit', async function
     }
 });
 
-// Update nights when dates change
+// update nights when dates change
 document.getElementById('checkinDate').addEventListener('change', calculateNights);
 document.getElementById('checkoutDate').addEventListener('change', calculateNights);
 
-// Go back to bookings list
+// go back to bookings list
 function goBack() {
     window.location.href = `${BASE_PATH}/mybookings`;
 }
 
-// Show error message
+// show error message
 function showError(message) {
     const errorDiv = document.getElementById('errorMessage');
     const successDiv = document.getElementById('successMessage');
@@ -227,11 +227,11 @@ function showError(message) {
     errorDiv.style.display = 'block';
     successDiv.style.display = 'none';
     
-    // Scroll to message
+    // scroll to message
     errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-// Show success message
+// show success message
 function showSuccess(message) {
     const successDiv = document.getElementById('successMessage');
     const errorDiv = document.getElementById('errorMessage');
@@ -240,11 +240,11 @@ function showSuccess(message) {
     successDiv.style.display = 'block';
     errorDiv.style.display = 'none';
     
-    // Scroll to message
+    // scroll to message
     successDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-// Show update success modal
+// show update success modal
 function showUpdateSuccessModal() {
     const modal = document.getElementById('updateSuccessModal');
     if (modal) {
@@ -252,10 +252,10 @@ function showUpdateSuccessModal() {
     }
 }
 
-// Navigate to my bookings page
+// navigate to my bookings page
 function goToMyBookings() {
     window.location.href = `${BASE_PATH}/mybookings`;
 }
 
-// Load booking details on page load
+// load booking details on page load
 document.addEventListener('DOMContentLoaded', loadBookingDetails);

@@ -13,6 +13,7 @@ class Vehicle
     public $year;
     public $color;
     public $number;
+    public $costPerKm;
     public $status;
 
     public function __construct($data = [])
@@ -25,8 +26,8 @@ class Vehicle
 
     public function create($conn)
     {
-        $sql = "INSERT INTO vehicles (user_id, vehicle_type, working_district, passenger_count, ac_type, vehicle_model, vehicle_year, vehicle_color, vehicle_number, status, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+        $sql = "INSERT INTO vehicles (user_id, vehicle_type, working_district, passenger_count, ac_type, vehicle_model, vehicle_year, vehicle_color, vehicle_number, cost_per_km, status, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
         $stmt = $conn->prepare($sql);
         $result = $stmt->execute([
             $this->userId,
@@ -38,7 +39,8 @@ class Vehicle
             $this->year,
             $this->color,
             $this->number,
-            $this->status ?? 'active'
+            $this->costPerKm,
+            $this->status ?? 'pending'
         ]);
         
         if (!$result) {
@@ -59,6 +61,7 @@ class Vehicle
                 vehicle_year = ?, 
                 vehicle_color = ?, 
                 vehicle_number = ?, 
+                cost_per_km = ?,
                 status = ?,
                 updated_at = NOW()
                 WHERE id = ? AND user_id = ?";
@@ -72,7 +75,8 @@ class Vehicle
             $this->year,
             $this->color,
             $this->number,
-            $this->status ?? 'active',
+            $this->costPerKm,
+            $this->status ?? 'pending',
             $this->id,
             $this->userId
         ]);
@@ -82,12 +86,12 @@ class Vehicle
 
     public static function deleteById($conn, $id, $userId)
     {
-        // First delete related documents
+        // first delete related documents
         $sql = "DELETE FROM vehicle_documents WHERE vehicle_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$id]);
         
-        // Then delete the vehicle
+        // then delete the vehicle
         $sql = "DELETE FROM vehicles WHERE id = ? AND user_id = ?";
         $stmt = $conn->prepare($sql);
         return $stmt->execute([$id, $userId]);
@@ -95,7 +99,19 @@ class Vehicle
 
     public static function findByUser($conn, $userId)
     {
-        $sql = "SELECT * FROM vehicles WHERE user_id = ? ORDER BY created_at DESC";
+        if (self::hasTransportRatingsTable($conn)) {
+            $sql = "SELECT v.*, u.first_name, u.last_name, u.email, u.phone, u.profile_image, 
+                    COALESCE((SELECT ROUND(AVG(tbr.rating), 1) FROM transport_booking_ratings tbr WHERE tbr.vehicle_id = v.id), 0) AS avg_rating,
+                    COALESCE((SELECT COUNT(*) FROM transport_booking_ratings tbr WHERE tbr.vehicle_id = v.id), 0) AS rating_count
+                    FROM vehicles v LEFT JOIN users u ON v.user_id = u.id
+                    WHERE v.user_id = ?
+                    ORDER BY v.created_at DESC";
+        } else {
+            $sql = "SELECT v.*, u.first_name, u.last_name, u.email, u.phone, u.profile_image, 0 AS avg_rating, 0 AS rating_count
+                    FROM vehicles v LEFT JOIN users u ON v.user_id = u.id
+                    WHERE v.user_id = ?
+                    ORDER BY v.created_at DESC";
+        }
         $stmt = $conn->prepare($sql);
         $stmt->execute([$userId]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -103,7 +119,37 @@ class Vehicle
 
     public static function findAll($conn)
     {
-        $sql = "SELECT * FROM vehicles WHERE status = 'active' ORDER BY created_at DESC";
+        if (self::hasTransportRatingsTable($conn)) {
+            $sql = "SELECT v.*, u.first_name, u.last_name, u.email, u.phone, u.profile_image, 
+                    COALESCE((SELECT ROUND(AVG(tbr.rating), 1) FROM transport_booking_ratings tbr WHERE tbr.vehicle_id = v.id), 0) AS avg_rating,
+                    COALESCE((SELECT COUNT(*) FROM transport_booking_ratings tbr WHERE tbr.vehicle_id = v.id), 0) AS rating_count
+                    FROM vehicles v LEFT JOIN users u ON v.user_id = u.id
+                    WHERE v.status = 'active'
+                    ORDER BY v.created_at DESC";
+        } else {
+            $sql = "SELECT v.*, u.first_name, u.last_name, u.email, u.phone, u.profile_image, 0 AS avg_rating, 0 AS rating_count
+                    FROM vehicles v LEFT JOIN users u ON v.user_id = u.id
+                    WHERE v.status = 'active'
+                    ORDER BY v.created_at DESC";
+        }
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public static function findAllForAdmin($conn)
+    {
+        if (self::hasTransportRatingsTable($conn)) {
+            $sql = "SELECT v.*, u.first_name, u.last_name, u.email, u.phone, u.profile_image, 
+                    COALESCE((SELECT ROUND(AVG(tbr.rating), 1) FROM transport_booking_ratings tbr WHERE tbr.vehicle_id = v.id), 0) AS avg_rating,
+                    COALESCE((SELECT COUNT(*) FROM transport_booking_ratings tbr WHERE tbr.vehicle_id = v.id), 0) AS rating_count
+                    FROM vehicles v LEFT JOIN users u ON v.user_id = u.id
+                    ORDER BY v.created_at DESC";
+        } else {
+            $sql = "SELECT v.*, u.first_name, u.last_name, u.email, u.phone, u.profile_image, 0 AS avg_rating, 0 AS rating_count
+                    FROM vehicles v LEFT JOIN users u ON v.user_id = u.id
+                    ORDER BY v.created_at DESC";
+        }
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -123,7 +169,7 @@ class Vehicle
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    // Document helpers
+    // document helpers
     public static function addDocument($conn, $vehicleId, $docType, $filePath)
     {
         $sql = "INSERT INTO vehicle_documents (vehicle_id, doc_type, file_path, created_at) 
@@ -145,5 +191,15 @@ class Vehicle
         $sql = "DELETE FROM vehicle_documents WHERE id = ?";
         $stmt = $conn->prepare($sql);
         return $stmt->execute([$id]);
+    }
+
+    private static function hasTransportRatingsTable($conn)
+    {
+        try {
+            $tableCheck = $conn->query("SHOW TABLES LIKE 'transport_booking_ratings'");
+            return $tableCheck && $tableCheck->fetch(\PDO::FETCH_NUM);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }

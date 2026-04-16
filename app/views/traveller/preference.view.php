@@ -9,9 +9,9 @@
 </head>
 <body>
 
-    <!-- Main Content -->
+    <!-- main Content -->
     <main class="main-content">
-        <!-- Greeting Section -->
+        <!-- greeting Section -->
         <section class="greeting-section">
             <div class="container">
                 <div class="greeting-content">
@@ -22,12 +22,12 @@
                     </div> -->
                 </div>
                 
-                <!-- Categories Selection -->
+                <!-- categories Selection -->
                 <div class="categories-section">
                     <p class="categories-intro">Select by environment:</p>
                     
                     <div class="categories-grid">
-                        <!-- Beach Side -->
+                        <!-- beach Side -->
                         <div class="category-card" data-category="beach">
                             <div class="card-image">
                                 <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=300&h=200&fit=crop" alt="Beach Side">
@@ -37,7 +37,7 @@
                             </div>
                         </div>
 
-                        <!-- Country Side -->
+                        <!-- country Side -->
                         <div class="category-card" data-category="country">
                             <div class="card-image">
                                 <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop" alt="Country Side">
@@ -47,7 +47,7 @@
                             </div>
                         </div>
 
-                        <!-- Hill Side -->
+                        <!-- hill Side -->
                         <div class="category-card" data-category="hill">
                             <div class="card-image">
                                 <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop" alt="Hill Side">
@@ -57,7 +57,7 @@
                             </div>
                         </div>
 
-                        <!-- Mountains -->
+                        <!-- mountains -->
                         <div class="category-card" data-category="mountains">
                             <div class="card-image">
                                 <img src="https://images.unsplash.com/photo-1464822759844-d150baec0494?w=300&h=200&fit=crop" alt="Mountains">
@@ -67,7 +67,7 @@
                             </div>
                         </div>
 
-                        <!-- Culture -->
+                        <!-- culture -->
                         <div class="category-card" data-category="culture">
                             <div class="card-image">
                                 <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=200&fit=crop" alt="Culture">
@@ -77,7 +77,7 @@
                             </div>
                         </div>
 
-                        <!-- Historical -->
+                        <!-- historical -->
                         <div class="category-card" data-category="historical">
                             <div class="card-image">
                                 <img src="https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?w=300&h=200&fit=crop" alt="Historical">
@@ -87,7 +87,7 @@
                             </div>
                         </div>
 
-                        <!-- City Tours -->
+                        <!-- city Tours -->
                         <div class="category-card" data-category="city">
                             <div class="card-image">
                                 <img src="https://images.unsplash.com/photo-1551918120-9739cb430c6d?w=300&h=200&fit=crop" alt="City Tours">
@@ -97,7 +97,7 @@
                             </div>
                         </div>
 
-                        <!-- Forests -->
+                        <!-- forests -->
                         <div class="category-card" data-category="forests">
                             <div class="card-image">
                                 <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=300&h=200&fit=crop" alt="Forests">
@@ -107,7 +107,7 @@
                             </div>
                         </div>
 
-                        <!-- NaturePark -->
+                        <!-- naturePark -->
                         <div class="category-card" data-category="naturepark">
                             <div class="card-image">
                                 <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop" alt="Nature Park">
@@ -117,7 +117,7 @@
                             </div>
                         </div>
 
-                        <!-- Rivers -->
+                        <!-- rivers -->
                         <div class="category-card" data-category="rivers">
                             <div class="card-image">
                                 <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop" alt="Rivers">
@@ -127,7 +127,7 @@
                             </div>
                         </div>
 
-                        <!-- Habitat -->
+                        <!-- habitat -->
                         <div class="category-card" data-category="habitat">
                             <div class="card-image">
                                 <img src="https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=300&h=200&fit=crop" alt="Habitat">
@@ -137,7 +137,7 @@
                             </div>
                         </div>
 
-                        <!-- Business -->
+                        <!-- business -->
                         <div class="category-card" data-category="business">
                             <div class="card-image">
                                 <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=300&h=200&fit=crop" alt="Business">
@@ -148,12 +148,12 @@
                         </div>
                     </div>
 
-                    <!-- Activities Section -->
+                    <!-- activities Section -->
                     <div class="activities-section">
                         <p class="activities-intro">Select by Activities and interests:</p>
                         
                         <div class="activities-grid">
-                            <!-- Water Rafting -->
+                            <!-- water Rafting -->
                             <div class="activity-card" data-activity="rafting">
                                 <div class="card-image">
                                     <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop" alt="Water Rafting">
@@ -163,7 +163,7 @@
                                 </div>
                             </div>
 
-                            <!-- Hiking -->
+                            <!-- hiking -->
                             <div class="activity-card" data-activity="hiking">
                                 <div class="card-image">
                                     <img src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=300&h=200&fit=crop" alt="Hiking">
@@ -173,7 +173,7 @@
                                 </div>
                             </div>
 
-                            <!-- Bird watching -->
+                            <!-- bird watching -->
                             <div class="activity-card" data-activity="birdwatching">
                                 <div class="card-image">
                                     <img src="https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=300&h=200&fit=crop" alt="Bird watching">
@@ -183,7 +183,7 @@
                                 </div>
                             </div>
 
-                            <!-- Safari -->
+                            <!-- safari -->
                             <div class="activity-card" data-activity="safari">
                                 <div class="card-image">
                                     <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?w=300&h=200&fit=crop" alt="Safari">
@@ -193,7 +193,7 @@
                                 </div>
                             </div>
 
-                            <!-- Photography -->
+                            <!-- photography -->
                             <div class="activity-card" data-activity="photography">
                                 <div class="card-image">
                                     <img src="https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=300&h=200&fit=crop" alt="Photography">
@@ -203,7 +203,7 @@
                                 </div>
                             </div>
 
-                            <!-- Discovery -->
+                            <!-- discovery -->
                             <div class="activity-card" data-activity="discovery">
                                 <div class="card-image">
                                     <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop" alt="Discovery">
@@ -215,7 +215,7 @@
                         </div>
                     </div>
 
-                    <!-- Next Button -->
+                    <!-- next Button -->
                     <div class="action-section">
                         <button class="next-btn">Submit</button>
                     </div>
@@ -224,7 +224,7 @@
         </section>
     </main>
 
-    <!-- Success Modal -->
+    <!-- success Modal -->
     <div id="preferenceSuccessModal" class="preference-success-modal">
         <div class="preference-success-content">
             <div class="success-icon">
@@ -255,12 +255,12 @@
     </script>
     </body>
     <style>
-            /* Unify navbar link style with other pages */
+            /* unify navbar link style with other pages */
             .nav-links li a {
                 font-size: 1em;
                 font-weight: normal;
             }
-        /* Make cards look selectable */
+        /* make cards look selectable */
         .category-card, .activity-card {
             cursor: pointer;
             transition: box-shadow 0.2s, border-color 0.2s;
@@ -299,7 +299,7 @@
             color: #1abc5b;
         }
         
-        /* Modal Styles - Matching Project Design */
+        /* modal Styles - Matching Project Design */
         .preference-success-modal {
             display: none;
             position: fixed;
@@ -434,7 +434,7 @@
             transform: translateY(0);
         }
         
-        /* Responsive Design */
+        /* responsive Design */
         @media (max-width: 768px) {
             .preference-success-content {
                 padding: 30px 20px;

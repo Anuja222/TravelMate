@@ -27,7 +27,7 @@
         </p>
       </div>
 
-      <!-- Vehicle details for confirmation -->
+      <!-- vehicle details for confirmation -->
       <div class="vehicle-details" id="vehicle-details">
         <div class="loading">Loading vehicle details...</div>
       </div>
@@ -47,7 +47,7 @@
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-  <!-- Delete Confirmation Modal -->
+  <!-- delete Confirmation Modal -->
   <div id="deleteConfirmModal" class="delete-modal">
     <div class="delete-modal-content">
       <div class="warning-icon">
@@ -66,7 +66,7 @@
     </div>
   </div>
 
-  <!-- Delete Success Modal -->
+  <!-- delete Success Modal -->
   <div id="deleteSuccessModal" class="delete-success-modal">
     <div class="delete-success-content">
       <div class="success-icon">
@@ -82,7 +82,7 @@
   </div>
 
   <style>
-    /* Delete Confirmation Modal */
+    /* delete Confirmation Modal */
     .delete-modal {
       display: none;
       position: fixed;
@@ -182,7 +182,7 @@
       box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
     }
 
-    /* Delete Success Modal */
+    /* delete Success Modal */
     .delete-success-modal {
       display: none;
       position: fixed;
@@ -296,7 +296,7 @@
       window.location.href = 'tr_dashboard';
     }
 
-    // Fetch vehicle details
+    // fetch vehicle details
     async function loadVehicleDetails() {
       try {
         const response = await fetch(`/TravelMate/public/api/vehicle/get?id=${vehicleId}`, {
@@ -377,7 +377,7 @@
 
     loadVehicleDetails();
     
-    // Modal functions
+    // modal functions
     function showDeleteConfirmModal() {
       const modal = document.getElementById('deleteConfirmModal');
       if (modal) {

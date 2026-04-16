@@ -7,10 +7,10 @@
   <link rel="stylesheet" href="assets/css/Transpoter/loginsignup.css">
 </head>
 <body>
-  <!-- Auth Section -->
+  <!-- auth Section -->
   <section class="auth-section">
     <div class="auth-container">
-      <!-- Left Side - Form -->
+      <!-- left Side - Form -->
       <div class="auth-form-section">
         <div class="auth-form-container">
           <div class="auth-header">
@@ -19,7 +19,7 @@
           </div>
 
           <form class="auth-form" id="signupForm">
-            <!-- Profile Photo Upload -->
+            <!-- profile Photo Upload -->
             <div class="form-group">
               <label>Profile Photo</label>
               <div class="profile-photo-upload">
@@ -72,7 +72,7 @@
               <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
             </div>
 
-            <!-- Date of Birth and Gender Row -->
+            <!-- date of Birth and Gender Row -->
             <div class="form-row">
               <div class="form-group">
                 <label for="dateOfBirth">Date of Birth</label>
@@ -148,7 +148,7 @@
         </div>
       </div>
 
-      <!-- Right Side - Image -->
+      <!-- right Side - Image -->
       <div class="auth-image-section">
         <div class="auth-image signup-image">
           <div class="image-overlay">
@@ -188,14 +188,14 @@
   </section>
 
   <script>
-    // Password toggle functionality
+    // password toggle functionality
     function togglePassword(fieldId) {
       const field = document.getElementById(fieldId);
       const type = field.getAttribute('type') === 'password' ? 'text' : 'password';
       field.setAttribute('type', type);
     }
 
-    // Photo upload functionality
+    // photo upload functionality
     document.getElementById('profilePhoto').addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (file) {
@@ -214,7 +214,7 @@
       }
     });
 
-    // Remove photo functionality
+    // remove photo functionality
     document.getElementById('removePhoto').addEventListener('click', function() {
       document.getElementById('profilePhoto').value = '';
       const preview = document.getElementById('photoPreview');
@@ -227,7 +227,7 @@
       this.style.display = 'none';
     });
 
-    // Password strength checker
+    // password strength checker
     document.getElementById('password').addEventListener('input', function(e) {
       const password = e.target.value;
       const strengthFill = document.querySelector('.strength-fill');
@@ -264,12 +264,12 @@
       strengthText.textContent = strengthLabel;
     });
 
-    // Set max date for date of birth (18 years ago)
+    // set max date for date of birth (18 years ago)
     const today = new Date();
     const maxDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
     document.getElementById('dateOfBirth').max = maxDate.toISOString().split('T')[0];
 
-    // Form submission
+    // form submission
     document.getElementById('signupForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
@@ -281,7 +281,7 @@
         return;
       }
       
-      // Here you would typically send the form data to your server
+      // here you would typically send the form data to your server
       console.log('Form submitted successfully!');
       alert('Account created successfully!');
     });

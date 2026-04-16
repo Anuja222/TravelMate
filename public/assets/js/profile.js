@@ -1,7 +1,7 @@
 console.log('Profile page loaded');
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Tab switching functionality
+    // tab switching functionality
     const tabBtns = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
     
@@ -9,17 +9,17 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', function() {
             const targetTab = this.dataset.tab;
             
-            // Remove active class from all tabs
+            // remove active class from all tabs
             tabBtns.forEach(b => b.classList.remove('active'));
             tabContents.forEach(c => c.classList.remove('active'));
             
-            // Add active class to clicked tab
+            // add active class to clicked tab
             this.classList.add('active');
             document.getElementById(`${targetTab}-tab`).classList.add('active');
         });
     });
     
-    // Follow button functionality
+    // follow button functionality
     const followBtn = document.getElementById('followBtn');
     if (followBtn) {
         followBtn.addEventListener('click', function() {
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </svg>
                     Follow
                 `;
-                // TODO: Make API call to unfollow
+                // tODO: Make API call to unfollow
             } else {
                 this.classList.add('following');
                 this.innerHTML = `
@@ -45,12 +45,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     </svg>
                     Following
                 `;
-                // TODO: Make API call to follow
+                // tODO: Make API call to follow
             }
         });
     }
     
-    // Like button functionality for posts
+    // like button functionality for posts
     const likeButtons = document.querySelectorAll('.post-action-btn');
     likeButtons.forEach(btn => {
         btn.addEventListener('click', function(e) {
@@ -63,33 +63,33 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (path.getAttribute('fill') === 'none') {
                         path.setAttribute('fill', 'red');
                         path.setAttribute('stroke', 'red');
-                        // TODO: Make API call to like post
+                        // tODO: Make API call to like post
                     } else {
                         path.setAttribute('fill', 'none');
                         path.setAttribute('stroke', 'currentColor');
-                        // TODO: Make API call to unlike post
+                        // tODO: Make API call to unlike post
                     }
                 }
             }
         });
     });
     
-    // Photo gallery modal (optional enhancement)
+    // photo gallery modal (optional enhancement)
     const photoItems = document.querySelectorAll('.photo-item');
     photoItems.forEach(item => {
         item.addEventListener('click', function() {
             const imgSrc = this.querySelector('img').src;
-            // TODO: Open image in modal/lightbox
+            // tODO: Open image in modal/lightbox
             console.log('Photo clicked:', imgSrc);
         });
     });
     
-    // More button dropdown (placeholder)
+    // more button dropdown (placeholder)
     const moreBtn = document.querySelector('.btn-more');
     if (moreBtn) {
         moreBtn.addEventListener('click', function(e) {
             e.stopPropagation();
-            // TODO: Show dropdown menu with options like Share, Report, etc.
+            // tODO: Show dropdown menu with options like Share, Report, etc.
             console.log('More options clicked');
         });
     }

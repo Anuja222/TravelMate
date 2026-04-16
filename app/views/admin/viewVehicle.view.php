@@ -124,7 +124,7 @@
   <script>
     function editContent() {
       alert('Edit functionality would open a form to update vehicle details');
-      // Implement edit functionality
+      // implement edit functionality
     }
     
     function goBack() {

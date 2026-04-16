@@ -1,4 +1,4 @@
-<!-- Accommodation Features Page -->
+<!-- accommodation Features Page -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,10 +10,10 @@
     <link rel="stylesheet" href="/TravelMate/public/assets/css/main.css">
 </head>
 <body>
-    <!-- Header -->
+    <!-- header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-    <!-- Page Content -->
+    <!-- page Content -->
     <h1>Edit what can guests use at your place?</h1>
     <form class="features-form">
         <fieldset>
@@ -47,7 +47,7 @@
     <a href="viewProperty.view.php"><button type="button" class="save-btn">Save & Continue</button></a>
     </form>
 
-    <!-- Footer -->
+    <!-- footer -->
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
     <script src="/TravelMate/public/assets/js/Accomodation_provider/accommodationFeatures.js"></script>
 </body>

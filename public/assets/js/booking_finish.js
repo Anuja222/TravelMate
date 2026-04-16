@@ -1,11 +1,11 @@
-// Initialize page on load
+// initialize page on load
 document.addEventListener('DOMContentLoaded', function() {
     checkBookingData();
     loadPriceSummary();
     setupCompleteBooking();
 });
 
-// Check if booking data exists and payment was completed
+// check if booking data exists and payment was completed
 function checkBookingData() {
     const bookingData = localStorage.getItem('currentBooking') ? 
         JSON.parse(localStorage.getItem('currentBooking')) : null;
@@ -19,24 +19,24 @@ function checkBookingData() {
     }
 }
 
-// Load and display price summary
+// load and display price summary
 function loadPriceSummary() {
     const bookingData = localStorage.getItem('currentBooking') ? 
         JSON.parse(localStorage.getItem('currentBooking')) : null;
     
     if (!bookingData) return;
     
-    // Calculate prices
+    // calculate prices
     const totalPrice = bookingData.totalPrice;
     const discount = bookingData.discount || 0.3;
     const originalPrice = Math.round(totalPrice / (1 - discount));
     const discountAmount = originalPrice - totalPrice;
     const taxes = bookingData.taxes || Math.round(totalPrice * 0.15);
     
-    // Convert to USD (approximate rate: 1 USD = 300 LKR)
+    // convert to USD (approximate rate: 1 USD = 300 LKR)
     const usdAmount = Math.round(totalPrice / 300);
     
-    // Update display
+    // update display
     const elements = {
         originalPrice: document.getElementById('originalPrice'),
         discountAmount: document.getElementById('discountAmount'),
@@ -52,7 +52,7 @@ function loadPriceSummary() {
     if (elements.usdAmount) elements.usdAmount.textContent = `US$${usdAmount}`;
 }
 
-// Setup complete booking button
+// setup complete booking button
 function setupCompleteBooking() {
     const completeBtn = document.getElementById('completeBookingBtn');
     
@@ -63,7 +63,7 @@ function setupCompleteBooking() {
     }
 }
 
-// Complete the booking
+// complete the booking
 async function completeBooking() {
     const bookingData = localStorage.getItem('currentBooking') ? 
         JSON.parse(localStorage.getItem('currentBooking')) : null;
@@ -74,20 +74,35 @@ async function completeBooking() {
     const marketingConsent = document.getElementById('marketing') ? 
         document.getElementById('marketing').checked : false;
     
+    console.log('Booking data from localStorage:', bookingData);
+    console.log('User details:', userDetails);
+    console.log('Payment details:', paymentDetails);
+    
     if (!bookingData || !userDetails || !paymentDetails) {
         alert('Booking information is incomplete. Please try again.');
         return;
     }
     
-    // Generate booking confirmation number
-    const bookingId = 'BK' + Date.now() + Math.floor(Math.random() * 1000);
+    // validate required booking fields
+    if (!bookingData.accommodationId) {
+        alert('Accommodation ID is missing. Please start the booking process again.');
+        localStorage.removeItem('currentBooking');
+        localStorage.removeItem('userDetails');
+        localStorage.removeItem('paymentDetails');
+        window.location.href = 'homet';
+        return;
+    }
     
-    // Prepare data for database (only required fields)
+    // generate booking confirmation number
+    const bookingId = 'BKG' + Date.now() + Math.floor(Math.random() * 1000);
+    
+    // prepare data for database (only required fields)
     const bookingDataForDB = {
         bookingId: bookingId,
-		userId: loggedInUserId,
+        accommodationId: bookingData.accommodationId,
         roomId: bookingData.roomId,
         roomName: bookingData.roomName,
+        numberOfRooms: bookingData.numberOfRooms || 1,
         checkinDate: bookingData.checkinDate,
         checkoutDate: bookingData.checkoutDate,
         adults: bookingData.adults,
@@ -102,8 +117,10 @@ async function completeBooking() {
         bookingDate: new Date().toISOString()
     };
     
+    console.log('Sending booking data to API:', bookingDataForDB);
+    
     try {
-        // Send booking to database
+        // send booking to database
         const response = await fetch('/TravelMate/public/api/booking/create', {
             method: 'POST',
             headers: {
@@ -112,36 +129,38 @@ async function completeBooking() {
             body: JSON.stringify(bookingDataForDB)
         });
 
+        console.log('Response status:', response.status);
         const result = await response.json();
+        console.log('Response data:', result);
 
         if (result.success && result.data) {
-            // Create full booking object for localStorage
+            // create full booking object for localStorage
             const finalBooking = {
                 bookingId: bookingId,
                 bookingStatus: 'confirmed',
                 bookingDate: new Date().toISOString(),
                 
-                // Accommodation details
+                // accommodation details
                 accommodationId: bookingData.accommodationId,
                 accommodationName: bookingData.accommodationName,
                 roomId: bookingData.roomId,
                 roomName: bookingData.roomName,
                 
-                // Stay details
+                // stay details
                 checkinDate: bookingData.checkinDate,
                 checkoutDate: bookingData.checkoutDate,
                 nights: bookingData.nights,
                 adults: bookingData.adults,
                 children: bookingData.children,
                 
-                // Pricing
+                // pricing
                 roomPrice: bookingData.roomPrice,
                 basePrice: bookingData.basePrice,
                 taxes: bookingData.taxes,
                 totalPrice: bookingData.totalPrice,
                 discount: bookingData.discount,
                 
-                // Guest details
+                // guest details
                 guestDetails: {
                     firstName: userDetails.firstName,
                     lastName: userDetails.lastName,
@@ -153,7 +172,7 @@ async function completeBooking() {
                     country: userDetails.country
                 },
                 
-                // Payment details
+                // payment details
                 paymentInfo: {
                     paymentMethod: paymentDetails.paymentMethod,
                     cardNumberMasked: paymentDetails.cardNumberMasked,
@@ -161,32 +180,37 @@ async function completeBooking() {
                     paymentDate: paymentDetails.paymentCompletedAt
                 },
                 
-                // Marketing consent
+                // marketing consent
                 marketingConsent: marketingConsent,
                 
-                // Timestamps
+                // timestamps
                 createdAt: bookingData.reservedAt || new Date().toISOString(),
                 completedAt: new Date().toISOString()
             };
             
-            // Save to confirmed booking in localStorage
+            // save to confirmed booking in localStorage
             localStorage.setItem('confirmedBooking', JSON.stringify(finalBooking));
             
-            // Clear current booking and temporary data
+            // clear current booking and temporary data
             localStorage.removeItem('currentBooking');
             localStorage.removeItem('userDetails');
             localStorage.removeItem('paymentDetails');
             
-            // Show success modal with booking ID
+            // show success modal with booking ID
             showConfirmationModal(bookingId, userDetails.email);
             
         } else {
-            // Handle error
+            // handle error
+            console.error('Booking creation failed:', result);
             let errorMsg = 'Failed to complete booking. ';
             if (result.errors) {
-                for (const key in result.errors) {
-                    errorMsg += result.errors[key] + ' ';
+                if (typeof result.errors === 'object') {
+                    errorMsg += Object.values(result.errors).join('. ');
+                } else {
+                    errorMsg += result.errors;
                 }
+            } else if (result.message) {
+                errorMsg += result.message;
             }
             alert(errorMsg);
         }
@@ -197,7 +221,7 @@ async function completeBooking() {
     }
 }
 
-// Show confirmation modal
+// show confirmation modal
 function showConfirmationModal(bookingId, email) {
     const modal = document.getElementById('confirmationModal');
     const bookingIdElement = document.getElementById('modalBookingId');

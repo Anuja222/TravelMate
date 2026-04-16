@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/TravelMate/public/assets/css/Traveller/usermain.css">
 </head>
 <body>
-    <!-- Header/Navbar -->
+    <!-- header/Navbar -->
     <header>
         <nav class="navbar">
             <div class="logo-container">
@@ -159,7 +159,7 @@
         </div>
     </div>
 
-    <!-- Footer -->
+    <!-- footer -->
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
     <!-- <footer>
         <div class="footer-content">

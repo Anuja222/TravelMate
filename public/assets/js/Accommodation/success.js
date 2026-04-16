@@ -1,5 +1,5 @@
 // success.js
-// JS for Success/Thank You page
+// jS for Success/Thank You page
 
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('.dashboard-btn').addEventListener('click', function() {

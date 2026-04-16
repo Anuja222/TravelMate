@@ -1,13 +1,26 @@
 <?php
-// Start session if not already started
+// start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is logged in
+// check if user is logged in
 $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
 $firstName = $isLoggedIn ? $_SESSION['user']['first_name'] : '';
 $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
+$profileImage = ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) 
+    ? 'assets/' . $_SESSION['user']['profile_image'] 
+    : 'assets/images/profile.jpg';
+
+// in case the path already starts with assets or uploads
+if ($isLoggedIn && !empty($_SESSION['user']['profile_image'])) {
+    $img = $_SESSION['user']['profile_image'];
+    $profileImage = (strpos($img, 'http') === 0 || strpos($img, '/') === 0) ? $img : $img;
+    // ensure relative path works from public
+    if (strpos($profileImage, 'uploads/') === 0) {
+        $profileImage = $profileImage; // relative from public
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -20,7 +33,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
   <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
 </head>
 <body>
-  <!-- Navbar -->
+  <!-- navbar -->
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
   <main>
@@ -59,21 +72,47 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
       </ul>
     </aside>
     <section class="dashboard-content">
-      <!-- Cover -->
+      <!-- cover -->
       <div class="cover">
         <img src="assets/images/cover.jpg" alt="Travel Cover" class="cover-img">
         <span class="cover-text">TRAVEL <span class="cover-sub">more</span></span>
       </div>
-      <!-- Profile -->
+      <!-- profile -->
       <div class="profile-section">
-        <img src="assets/images/profile.jpg" alt="User" class="profile-pic">
+        <?php 
+        $rootUrl = defined('ROOT') ? ROOT : '/TravelMate/public';
+        $profileImg = !empty($_SESSION['user']['profile_image']) ? $rootUrl . '/' . $_SESSION['user']['profile_image'] : 'assets/images/profile.jpg';
+        ?>
+        <img src="<?php echo htmlspecialchars($profileImg); ?>" alt="User" class="profile-pic">
         <div>
           <h2 class="profile-name"><?php echo htmlspecialchars($firstName); ?> <?php echo htmlspecialchars($lastName); ?></h2>
           <span class="profile-email"><?php echo htmlspecialchars($_SESSION['user']['email']); ?></span>
+          <?php if (!empty($userBio)): ?>
+          <p class="profile-bio" style="margin-top: 10px; color: #555; font-size: 14px; max-width: 600px;"><?php echo nl2br(htmlspecialchars($userBio)); ?></p>
+          <?php endif; ?>
         </div>
       </div>
 
-      <!-- My Posts Section -->
+      <!-- activity Summary -->
+      <div class="activity-summary" style="margin-top: 30px;">
+        <h3>Activity Summary</h3>
+        <div class="summary-stats">
+          <div class="stat">
+            <span class="stat-num"><?php echo isset($accBookingsCount) ? $accBookingsCount : 0; ?></span>
+            <span class="stat-label">Accommodation Bookings</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num"><?php echo isset($transBookingsCount) ? $transBookingsCount : 0; ?></span>
+            <span class="stat-label">Transport Bookings</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num"><?php echo isset($posts) ? count($posts) : 0; ?></span>
+            <span class="stat-label">Posts Shared</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- my Posts Section -->
       <div class="my-posts-section" style="margin-top: 30px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
           <h2>Shared Posts (<?php echo isset($posts) && is_array($posts) ? count($posts) : 0; ?> posts)</h2>
@@ -81,7 +120,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
         </div>
         
         <?php 
-        // Debug posts
+        // debug posts
         if (isset($posts) && is_array($posts) && count($posts) > 0) {
             error_log("Dashboard - Number of posts: " . count($posts));
             foreach ($posts as $idx => $post) {
@@ -137,79 +176,12 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
           </div>
         <?php endif; ?>
       </div>
-
-      <!-- Favourites -->
-      <div class="favourites">
-        <h2>Favourite Destinations</h2>
-        <div class="fav-cards">
-          <div class="fav-card">
-            <img src="assets/egypt.jpg" alt="Egypt" class="fav-img">
-            <div class="fav-info">
-              <h3>Galle</h3>
-              <!-- <div class="fav-rating">
-                <span>★★★★★</span>
-                <span>(13 reviews)</span>
-              </div>
-              <div class="fav-details">
-                <span>6 Nights, 6 days</span>
-                <span>From: $1500</span>
-              </div> -->
-            </div>
-          </div>
-          <div class="fav-card">
-            <img src="assets/usa.jpg" alt="USA" class="fav-img">
-            <div class="fav-info">
-              <h3>Anuradhapura</h3>
-              <!-- <div class="fav-rating">
-                <span>★★★★★</span>
-                <span>(8 reviews)</span>
-              </div>
-              <div class="fav-details">
-                <span>7 Nights, 8 days</span>
-                <span>From: $2200</span>
-              </div> -->
-            </div>
-          </div>
-          <div class="fav-card">
-            <img src="assets/spain.jpg" alt="Spain" class="fav-img">
-            <div class="fav-info">
-              <h3>Nuwaraeliya</h3>
-              <div class="fav-rating">
-                <!-- <span>★★★★☆</span>
-                <span>(9 reviews)</span>
-              </div>
-              <div class="fav-details">
-                <span>6 Nights, 6 days</span>
-                <span>From: $900</span>
-              </div> -->
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Activity Summary -->
-      <div class="activity-summary">
-        <h3>Activity Summary</h3>
-        <div class="summary-stats">
-          <div class="stat">
-            <span class="stat-num">4</span>
-            <span class="stat-label">Number of bookings made</span>
-          </div>
-          <div class="stat">
-            <span class="stat-num">3</span>
-            <span class="stat-label">Trips Planned</span>
-          </div>
-          <div class="stat">
-            <span class="stat-num"><?php echo isset($posts) ? count($posts) : 0; ?></span>
-            <span class="stat-label">Posts Shared</span>
-          </div>
-        </div>
-      </div>
     </section>
   </main>
   
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-  <!-- Delete Confirmation Modal -->
+  <!-- delete Confirmation Modal -->
   <div id="deleteConfirmModal" class="delete-modal">
     <div class="delete-modal-content">
       <div class="delete-icon">
@@ -227,7 +199,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
     </div>
   </div>
 
-  <!-- Delete Success Modal -->
+  <!-- delete Success Modal -->
   <div id="deleteSuccessModal" class="delete-modal">
     <div class="delete-modal-content">
       <div class="success-icon">
@@ -245,7 +217,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
   </div>
 
   <style>
-    /* Modal Styles */
+    /* modal Styles */
     .delete-modal {
       display: none;
       position: fixed;
@@ -406,17 +378,17 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
         return;
       }
 
-      // Store the ID before closing modal (which resets it)
+      // store the ID before closing modal (which resets it)
       const postId = postIdToDelete;
       closeDeleteConfirmModal();
       
       console.log('Deleting post ID:', postId);
       
-      // Create form data
+      // create form data
       const formData = new FormData();
       formData.append('post_id', postId);
       
-      // Send delete request
+      // send delete request
       fetch('blog/delete', {
         method: 'POST',
         body: formData

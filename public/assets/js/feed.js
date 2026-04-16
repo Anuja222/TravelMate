@@ -1,19 +1,19 @@
-// Feed Page Interactions
+// feed Page Interactions
 document.addEventListener('DOMContentLoaded', function() {
-    // Filter Tabs Functionality
+    // filter Tabs Functionality
     const filterTabs = document.querySelectorAll('.tab-btn');
     const posts = document.querySelectorAll('.post-card');
 
     filterTabs.forEach(tab => {
         tab.addEventListener('click', function() {
-            // Remove active class from all tabs
+            // remove active class from all tabs
             filterTabs.forEach(t => t.classList.remove('active'));
-            // Add active class to clicked tab
+            // add active class to clicked tab
             this.classList.add('active');
 
             const filter = this.dataset.filter;
 
-            // Filter posts
+            // filter posts
             posts.forEach(post => {
                 if (filter === 'all') {
                     post.style.display = 'block';
@@ -28,25 +28,62 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Like Button Functionality
-    const likeBtns = document.querySelectorAll('.like-btn');
-    likeBtns.forEach(btn => {
+    // vote Button Functionality
+    const voteBtns = document.querySelectorAll('.vote-btn');
+    voteBtns.forEach(btn => {
         btn.addEventListener('click', function() {
-            this.classList.toggle('liked');
-            const svg = this.querySelector('.action-icon svg');
-            if (this.classList.contains('liked')) {
-                this.style.color = '#e74c3c';
-                svg.setAttribute('fill', '#e74c3c');
-                svg.setAttribute('stroke', '#e74c3c');
-            } else {
-                this.style.color = '#65676b';
-                svg.setAttribute('fill', 'none');
-                svg.setAttribute('stroke', 'currentColor');
-            }
+            const postId = this.dataset.id;
+            const type = this.dataset.type; // 'upvote' or 'downvote'
+            const postActions = this.closest('.post-actions');
+            
+            // send AJAX request to update database
+            const formData = new FormData();
+            formData.append('post_id', postId);
+            formData.append('type', type);
+            
+            // get base URL to ensure proper endpoint mapping safely provided by PHP
+            const baseUrl = window.AppConfig && window.AppConfig.baseUrl ? window.AppConfig.baseUrl : '';
+            
+            fetch(baseUrl + '/blog/vote', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // update UI counters
+                    postActions.querySelector('.upvote .count').textContent = data.upvotes;
+                    postActions.querySelector('.downvote .count').textContent = data.downvotes;
+                    
+                    // toggle active state classes
+                    const isCurrentlyActive = this.classList.contains('active');
+                    
+                    // reset both buttons
+                    postActions.querySelectorAll('.vote-btn').forEach(b => {
+                        b.classList.remove('active');
+                        b.style.removeProperty('color');
+                    });
+                    
+                    // re-apply to clicked if it wasn't just toggled off
+                    if (!isCurrentlyActive) {
+                        this.classList.add('active');
+                    }
+                } else {
+                    console.error('Vote failed:', data.message);
+                    alert("Failed to record vote: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Network error. Please try again.");
+            });
         });
     });
 
-    // Save Button Functionality
+    // save Button Functionality
     const saveBtns = document.querySelectorAll('.save-btn');
     saveBtns.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -60,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Comment Input Focus
+    // comment Input Focus
     const commentInputs = document.querySelectorAll('.comment-input');
     commentInputs.forEach(input => {
         input.addEventListener('focus', function() {
@@ -71,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Send Comment
+    // send Comment
     const sendBtns = document.querySelectorAll('.send-comment-btn');
     sendBtns.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -83,16 +120,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Image Click to Enlarge (Simple version)
+    // image Click to Enlarge (Simple version)
     const postImages = document.querySelectorAll('.post-image');
     postImages.forEach(img => {
         img.addEventListener('click', function() {
-            // Could implement lightbox here
+            // could implement lightbox here
             console.log('Image clicked:', this.src);
         });
     });
 
-    // Post Menu Button
+    // post Menu Button
     const menuBtns = document.querySelectorAll('.post-menu-btn');
     menuBtns.forEach(btn => {
         btn.addEventListener('click', function(e) {
@@ -101,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // View More Comments
+    // view More Comments
     const viewMoreBtns = document.querySelectorAll('.view-more-comments');
     viewMoreBtns.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -109,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Follow Button
+    // follow Button
     const followBtns = document.querySelectorAll('.follow-btn');
     followBtns.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -126,20 +163,20 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Toggle post menu
+// toggle post menu
 function toggleMenu(postId) {
     const menu = document.getElementById('menu-' + postId);
-    // Close all other menus
+    // close all other menus
     document.querySelectorAll('.post-menu-dropdown').forEach(m => {
         if (m.id !== 'menu-' + postId) {
             m.style.display = 'none';
         }
     });
-    // Toggle current menu
+    // toggle current menu
     menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
 }
 
-// Close menus when clicking outside
+// close menus when clicking outside
 document.addEventListener('click', function(event) {
     if (!event.target.closest('.post-menu')) {
         document.querySelectorAll('.post-menu-dropdown').forEach(m => {

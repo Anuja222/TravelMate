@@ -1,11 +1,11 @@
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // You can process form data here if needed
+    // you can process form data here if needed
     header('Location: services.view.php');
     exit();
 }
 ?>
-<!-- Accommodation Features Page -->
+<!-- accommodation Features Page -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,10 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="/TravelMate/public/assets/js/accommodation.js" defer></script>
 </head>
 <body>
-    <!-- Header -->
+    <!-- header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-    <!-- Page Content -->
+    <!-- page Content -->
     <h2>What can guests use at your place?</h2>
     <form class="features-form" id="featuresForm">
         <fieldset>
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <button type="submit" class="save-btn">Continue</button>
     </form>
 
-    <!-- Footer -->
+    <!-- footer -->
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
     <script></script>
 </body>

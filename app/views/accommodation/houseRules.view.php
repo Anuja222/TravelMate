@@ -1,4 +1,4 @@
-<!-- House Rules Page -->
+<!-- house Rules Page -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +11,7 @@
     <script src="/TravelMate/public/assets/js/propertyListing.js" defer></script>
 </head>
 <body>
-    <!-- Header -->
+    <!-- header -->
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
     <h1>House Rules</h1>
     <form class="house-rules-form" action="success" method="get">
@@ -63,11 +63,11 @@
         </div>
         <button type="submit" class="save-btn">Continue</button>
     </form>
-    <!-- Footer -->
+    <!-- footer -->
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
     <script></script>
     <script>
-    // Minimal required-fields check: show a simple message if not completed
+    // minimal required-fields check: show a simple message if not completed
     (function(){
         const form = document.querySelector('.house-rules-form');
         if (!form) return;

@@ -15,7 +15,18 @@
 
     <div class="content">
         <div class="page-title">
-            <h1>Notifications</h1>
+            <div class="page-title-content">
+                <div class="page-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                </div>
+                <div class="page-title-text">
+                    <h1>Notifications</h1>
+                    <p class="page-subtitle">Manage system notifications and alerts</p>
+                </div>
+            </div>
         </div>
 
         <div class="filter-bar">
@@ -189,7 +200,7 @@
 </div>
 
     <script>
-        // Filter functionality
+        // filter functionality
         document.getElementById('applyFilter').addEventListener('click', function() {
             const searchTerm = document.getElementById('searchBox').value.toLowerCase();
             const typeFilter = document.getElementById('typeFilter').value;
@@ -205,17 +216,17 @@
                 
                 let showRow = true;
                 
-                // Search filter
+                // search filter
                 if (searchTerm && !title.includes(searchTerm) && !message.includes(searchTerm)) {
                     showRow = false;
                 }
                 
-                // Type filter
+                // type filter
                 if (typeFilter !== 'all' && !type.includes(typeFilter)) {
                     showRow = false;
                 }
                 
-                // Status filter
+                // status filter
                 if (statusFilter !== 'all' && !status.includes(statusFilter)) {
                     showRow = false;
                 }
@@ -224,12 +235,12 @@
             });
         });
 
-        // Clear all functionality
+        // clear all functionality
         document.getElementById('clearAll').addEventListener('click', function() {
             if (confirm('Are you sure you want to clear all notifications?')) {
                 document.querySelector('tbody').innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: #666;">No notifications found</td></tr>';
                 
-                // Update stats
+                // update stats
                 document.querySelector('.stat-card:nth-child(1) .stat-value').textContent = '0';
                 document.querySelector('.stat-card:nth-child(2) .stat-value').textContent = '0';
                 document.querySelector('.stat-card:nth-child(3) .stat-value').textContent = '0';
@@ -237,19 +248,19 @@
             }
         });
 
-        // Dismiss individual notifications
+        // dismiss individual notifications
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('dismiss-btn')) {
                 if (confirm('Are you sure you want to dismiss this notification?')) {
                     const row = e.target.closest('tr');
                     row.remove();
                     
-                    // Update total count
+                    // update total count
                     const totalElement = document.querySelector('.stat-card:nth-child(1) .stat-value');
                     const currentTotal = parseInt(totalElement.textContent);
                     totalElement.textContent = Math.max(0, currentTotal - 1);
                     
-                    // Update unread count if needed
+                    // update unread count if needed
                     if (row.classList.contains('unread')) {
                         const unreadElement = document.querySelector('.stat-card:nth-child(2) .stat-value');
                         const currentUnread = parseInt(unreadElement.textContent);
@@ -259,7 +270,7 @@
             }
         });
 
-        // Mark as read on view
+        // mark as read on view
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('view-btn')) {
                 const row = e.target.closest('tr');
@@ -268,7 +279,7 @@
                     const statusCell = row.cells[5];
                     statusCell.innerHTML = '<span class="status read">Read</span>';
                     
-                    // Update unread count
+                    // update unread count
                     const unreadElement = document.querySelector('.stat-card:nth-child(2) .stat-value');
                     const currentUnread = parseInt(unreadElement.textContent);
                     unreadElement.textContent = Math.max(0, currentUnread - 1);

@@ -32,7 +32,7 @@ Trait Database{
             error_log('Query: ' . $query);
             error_log('Data: ' . print_r($data, true));
             
-            // Store error for debugging
+            // store error for debugging
             if (property_exists($this, 'errors')) {
                 $this->errors['database'] = $e->getMessage();
             }

@@ -11,10 +11,10 @@
 <body>
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-    <!-- Main Content -->
+    <!-- main Content -->
     <div class="main-content">
         <div class="booking-details-container">
-            <!-- Page Header -->
+            <!-- page Header -->
             <div class="page-header">
                 <div class="header-content">
                     <!-- <button onclick="window.history.back()" class="back-button">
@@ -25,10 +25,10 @@
                 </div>
             </div>
 
-            <!-- Booking Form Card -->
+            <!-- booking Form Card -->
             <div class="booking-card">
                 <form class="details-form" id="bookingForm">
-                    <!-- Row 1: Booking ID & Room Name -->
+                    <!-- row 1: Booking ID & Room Name -->
                     <div class="form-row">
                         <div class="form-group">
                             <label for="bookingId"><i class="fas fa-hashtag"></i> Booking ID</label>
@@ -40,7 +40,7 @@
                         </div>
                     </div>
 
-                    <!-- Row 2: Check-in & Check-out Dates -->
+                    <!-- row 2: Check-in & Check-out Dates -->
                     <div class="form-row">
                         <div class="form-group">
                             <label for="checkinDate"><i class="fas fa-calendar-check"></i> Check-in Date</label>
@@ -52,7 +52,7 @@
                         </div>
                     </div>
 
-                    <!-- Row 3: Adults & Children -->
+                    <!-- row 3: Adults & Children -->
                     <div class="form-row">
                         <div class="form-group">
                             <label for="adults"><i class="fas fa-user"></i> Adults</label>
@@ -64,7 +64,7 @@
                         </div>
                     </div>
 
-                    <!-- Row 4: Nights & Total Price -->
+                    <!-- row 4: Nights & Total Price -->
                     <div class="form-row">
                         <div class="form-group">
                             <label for="nights"><i class="fas fa-moon"></i> Nights</label>
@@ -76,11 +76,11 @@
                         </div>
                     </div>
 
-                    <!-- Messages -->
+                    <!-- messages -->
                     <div class="error-message" id="errorMessage"></div>
                     <div class="success-message" id="successMessage"></div>
 
-                    <!-- Form Actions -->
+                    <!-- form Actions -->
                     <div class="form-actions">
                         <button type="button" onclick="window.history.back()" class="btn btn-secondary">
                             <i class="fas fa-times"></i> Cancel
@@ -96,7 +96,7 @@
 
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-    <!-- Booking Update Success Modal -->
+    <!-- booking Update Success Modal -->
     <div id="updateSuccessModal" class="update-success-modal">
         <div class="update-success-content">
             <div class="success-icon">

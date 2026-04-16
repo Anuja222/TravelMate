@@ -47,13 +47,13 @@ class TransportBooking {
             $this->basePrice           = $data['base_price'] ?? 0;
             $this->serviceCharge       = $data['service_charge'] ?? 0;
             $this->totalPrice          = $data['total_price'] ?? 0;
-            $this->bookingStatus       = $data['booking_status'] ?? 'confirmed';
+            $this->bookingStatus       = $data['booking_status'] ?? 'pending';
             $this->paymentStatus       = $data['payment_status'] ?? 'pending';
             $this->bookingDate         = $data['booking_date'] ?? date('Y-m-d H:i:s');
         }
     }
 
-    // Create transport booking
+    // create transport booking
     public function createBooking($conn, $data) {
         try {
             error_log('TransportBooking Model: Starting createBooking');
@@ -94,7 +94,7 @@ class TransportBooking {
                 $data['base_price'],
                 $data['service_charge'],
                 $data['total_price'],
-                $data['booking_status'] ?? 'confirmed',
+                $data['booking_status'] ?? 'pending',
                 $data['payment_status'] ?? 'pending',
                 $data['booking_date']
             ]);
@@ -114,12 +114,35 @@ class TransportBooking {
         }
     }
 
-    // Get all transport bookings by user
+    // get all transport bookings by user
     public function getBookingsByUserId($conn, $userId) {
         try {
-            $sql = "SELECT tb.*, v.vehicle_model, v.vehicle_type, v.vehicle_number, v.ac_type, v.passenger_count
+            $hasRatingsTable = $this->hasTransportRatingsTable($conn);
+
+            $ratingFieldsSql = $hasRatingsTable
+                ? ", tbr.rating AS user_rating, tbr.review AS user_review, tbr.created_at AS rating_created_at"
+                : ", NULL AS user_rating, NULL AS user_review, NULL AS rating_created_at";
+
+            $ratingJoinSql = $hasRatingsTable
+                ? " LEFT JOIN transport_booking_ratings tbr
+                    ON BINARY tbr.booking_id = BINARY tb.booking_id
+                    AND tbr.user_id = tb.user_id
+                    AND (
+                        (tbr.vehicle_id IS NULL AND tb.vehicle_id IS NULL)
+                        OR tbr.vehicle_id = tb.vehicle_id
+                    )"
+                : "";
+
+                    $sql = "SELECT tb.*, v.vehicle_model, v.vehicle_type, v.vehicle_number, v.ac_type, v.passenger_count,
+                           (SELECT vd.file_path
+                            FROM vehicle_documents vd
+                            WHERE vd.vehicle_id = v.id AND vd.doc_type = 'vehicle_photos'
+                            ORDER BY vd.id DESC
+                            LIMIT 1) AS vehicle_photo
+                            {$ratingFieldsSql}
                     FROM transport_bookings tb
                     LEFT JOIN vehicles v ON tb.vehicle_id = v.id
+                    {$ratingJoinSql}
                     WHERE tb.user_id = ? 
                     ORDER BY tb.created_at DESC";
             $stmt = $conn->prepare($sql);
@@ -131,10 +154,38 @@ class TransportBooking {
         }
     }
 
-    // Get single transport booking
+    public function getBookingsByProviderId($conn, $providerId) {
+        try {
+            $sql = "SELECT tb.*, v.vehicle_model, v.vehicle_type, v.vehicle_number,
+                           u.first_name, u.last_name, u.email, u.phone,
+                           (SELECT vd.file_path
+                            FROM vehicle_documents vd
+                            WHERE vd.vehicle_id = v.id AND vd.doc_type = 'vehicle_photos'
+                            ORDER BY vd.id ASC
+                            LIMIT 1) AS vehicle_image
+                    FROM transport_bookings tb
+                    INNER JOIN vehicles v ON tb.vehicle_id = v.id
+                    LEFT JOIN users u ON tb.user_id = u.id
+                    WHERE v.user_id = ?
+                    ORDER BY tb.created_at DESC";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([$providerId]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log('Get provider transport bookings error: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    // get single transport booking
     public function getBookingById($conn, $bookingId, $userId) {
         try {
-            $sql = "SELECT tb.*, v.vehicle_model, v.vehicle_type, v.vehicle_number, v.ac_type, v.passenger_count, v.working_district
+                    $sql = "SELECT tb.*, v.vehicle_model, v.vehicle_type, v.vehicle_number, v.ac_type, v.passenger_count, v.working_district,
+                           (SELECT vd.file_path
+                            FROM vehicle_documents vd
+                            WHERE vd.vehicle_id = v.id AND vd.doc_type = 'vehicle_photos'
+                            ORDER BY vd.id DESC
+                            LIMIT 1) AS vehicle_photo
                     FROM transport_bookings tb
                     LEFT JOIN vehicles v ON tb.vehicle_id = v.id
                     WHERE tb.booking_id = ? AND tb.user_id = ? 
@@ -148,7 +199,7 @@ class TransportBooking {
         }
     }
 
-    // Update booking status
+    // update booking status
     public function updateBookingStatus($conn, $bookingId, $status, $userId) {
         try {
             $sql = "UPDATE transport_bookings 
@@ -162,7 +213,39 @@ class TransportBooking {
         }
     }
 
-    // Update booking details
+    public function updateBookingStatusByProvider($conn, $bookingId, $providerId, $status) {
+        try {
+            $sql = "UPDATE transport_bookings tb
+                    INNER JOIN vehicles v ON tb.vehicle_id = v.id
+                    SET tb.booking_status = ?, tb.updated_at = NOW()
+                    WHERE tb.booking_id = ? AND v.user_id = ? AND tb.booking_status = 'pending'";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([$status, $bookingId, $providerId]);
+            return $stmt->rowCount() > 0;
+        } catch (Exception $e) {
+            error_log('Update provider transport booking status error: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function payApprovedBooking($conn, $bookingId, $userId) {
+        try {
+            $sql = "UPDATE transport_bookings
+                    SET payment_status = 'paid', updated_at = NOW()
+                    WHERE booking_id = ?
+                    AND user_id = ?
+                    AND booking_status = 'confirmed'
+                    AND payment_status = 'pending'";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([$bookingId, $userId]);
+            return $stmt->rowCount() > 0;
+        } catch (Exception $e) {
+            error_log('Pay approved transport booking error: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    // update booking details
     public function updateBooking($conn, $bookingId, $userId, $data) {
         try {
             $sql = "UPDATE transport_bookings 
@@ -195,7 +278,7 @@ class TransportBooking {
         }
     }
 
-    // Cancel booking
+    // cancel booking
     public function cancelBooking($conn, $bookingId, $userId) {
         try {
             $sql = "UPDATE transport_bookings 
@@ -209,7 +292,7 @@ class TransportBooking {
         }
     }
 
-    // Delete booking
+    // delete booking
     public function deleteBooking($conn, $bookingId, $userId) {
         try {
             $sql = "DELETE FROM transport_bookings WHERE booking_id = ? AND user_id = ?";
@@ -221,7 +304,7 @@ class TransportBooking {
         }
     }
 
-    // Get bookings by status
+    // get bookings by status
     public function getBookingsByStatus($conn, $userId, $status) {
         try {
             $sql = "SELECT tb.*, v.vehicle_model, v.vehicle_type, v.vehicle_number
@@ -238,7 +321,7 @@ class TransportBooking {
         }
     }
 
-    // Get upcoming bookings
+    // get upcoming bookings
     public function getUpcomingBookings($conn, $userId) {
         try {
             $sql = "SELECT tb.*, v.vehicle_model, v.vehicle_type, v.vehicle_number
@@ -257,7 +340,7 @@ class TransportBooking {
         }
     }
 
-    // Get past bookings
+    // get past bookings
     public function getPastBookings($conn, $userId) {
         try {
             $sql = "SELECT tb.*, v.vehicle_model, v.vehicle_type, v.vehicle_number
@@ -275,7 +358,7 @@ class TransportBooking {
         }
     }
 
-    // Get current bookings (active)
+    // get current bookings (active)
     public function getCurrentBookings($conn, $userId) {
         try {
             $sql = "SELECT tb.*, v.vehicle_model, v.vehicle_type, v.vehicle_number
@@ -295,7 +378,7 @@ class TransportBooking {
         }
     }
 
-    // Get booking statistics
+    // get booking statistics
     public function getBookingStats($conn, $userId) {
         try {
             $sql = "SELECT 
@@ -316,7 +399,7 @@ class TransportBooking {
         }
     }
 
-    // Check vehicle availability
+    // check vehicle availability
     public static function checkAvailability($conn, $vehicleId, $pickupDate, $returnDate, $excludeBookingId = null) {
         try {
             error_log('=== Checking Vehicle Availability ===');
@@ -328,7 +411,7 @@ class TransportBooking {
             $sql = "SELECT COUNT(*) as conflicts 
                     FROM transport_bookings 
                     WHERE vehicle_id = ? 
-                    AND booking_status NOT IN ('cancelled', 'completed')
+                    AND booking_status NOT IN ('cancelled', 'completed', 'rejected')
                     AND (
                         (pickup_date BETWEEN ? AND ?) OR
                         (return_date BETWEEN ? AND ?) OR
@@ -371,5 +454,38 @@ class TransportBooking {
             error_log('Stack trace: ' . $e->getTraceAsString());
             return false;
         }
+    }
+
+    private function hasTransportRatingsTable($conn)
+    {
+        try {
+            $tableCheck = $conn->query("SHOW TABLES LIKE 'transport_booking_ratings'");
+            return $tableCheck && $tableCheck->fetch(PDO::FETCH_NUM);
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    public function saveTransportBookingRating($conn, $bookingId, $userId, $vehicleId, $rating, $review = null)
+    {
+        if (!$this->hasTransportRatingsTable($conn)) {
+            return false;
+        }
+
+        $sql = "INSERT INTO transport_booking_ratings (booking_id, user_id, vehicle_id, rating, review, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, NOW(), NOW())
+                ON DUPLICATE KEY UPDATE
+                    rating = VALUES(rating),
+                    review = VALUES(review),
+                    updated_at = NOW()";
+
+        $stmt = $conn->prepare($sql);
+        return $stmt->execute([
+            $bookingId,
+            $userId,
+            $vehicleId,
+            $rating,
+            $review
+        ]);
     }
 }

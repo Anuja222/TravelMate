@@ -1,0 +1,213 @@
+<?php
+namespace App\Controllers;
+
+// manually include dependencies
+require_once __DIR__ . '/../../models/User.php';
+require_once __DIR__ . '/../../Validation/Validator.php';
+require_once __DIR__ . '/../../../config/database.php';
+
+use App\Models\User;
+use App\Validation\Validator;
+
+class AuthController
+{
+    private $validator;
+
+    public function __construct()
+    {
+        $this->validator = new Validator();
+        // start session if not already started
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+    }
+
+    // register user
+    public function registerUser()
+    {
+        global $pdo;
+        $data = $_POST;
+
+        // validate required fields
+        $errors = $this->validator->validateRequiredFields($data, [
+            'firstName',
+            'lastName',
+            'email',
+            'phone',
+            'dateOfBirth',
+            'gender',
+            'password',
+            'confirmPassword',
+        ]);
+        if (!empty($errors)) {
+            $this->sendResponse(false, $errors);
+            return;
+        }
+
+        // email format
+        if (!$this->validator->validateEmail($data['email'])) {
+            $this->sendResponse(false, ['email' => 'Invalid email format']);
+            return;
+        }
+
+        // password match
+        if ($data['password'] !== $data['confirmPassword']) {
+            $this->sendResponse(false, ['confirmPassword' => 'Passwords do not match']);
+            return;
+        }
+
+        // password strength
+        if (!$this->validator->validatePassword($data['password'])) {
+            $this->sendResponse(false, ['password' => 'Password must be at least 6 characters']);
+            return;
+        }
+
+        // email exists
+        if (User::findUserByEmail($pdo, $data['email'])) {
+            $this->sendResponse(false, ['email' => 'Email already registered']);
+            return;
+        }
+
+        // handle profile picture upload
+        $profileImagePath = null;
+        if (isset($_FILES['profilePhoto']) && $_FILES['profilePhoto']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = __DIR__ . '/../../../public/uploads/profile_images/';
+            
+            // create directory if it doesn't exist
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            
+            $fileExtension = strtolower(pathinfo($_FILES['profilePhoto']['name'], PATHINFO_EXTENSION));
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+            
+            if (in_array($fileExtension, $allowedExtensions)) {
+                $fileName = uniqid('profile_') . '.' . $fileExtension;
+                $destination = $uploadDir . $fileName;
+                
+                if (move_uploaded_file($_FILES['profilePhoto']['tmp_name'], $destination)) {
+                    $profileImagePath = 'uploads/profile_images/' . $fileName;
+                }
+            }
+        }
+
+        // create user
+        $user = new User(
+            $data['firstName'],
+            $data['lastName'],
+            $data['email'],
+            $data['phone'],
+            $data['dateOfBirth'],
+            $data['gender'],
+            $data['password'],
+            $profileImagePath
+        );
+        $role = $data['role'] ?? 'traveller';
+        $user->role = $role;
+        
+        $userId = $user->createUser($pdo);
+
+        if ($userId) {
+            $this->sendResponse(true, [], ['userId' => $userId, 'role' => $role]);
+        } else {
+            $this->sendResponse(false, ['general' => 'Registration failed']);
+        }
+    }
+
+    // login user
+    public function loginUser()
+    {
+        global $pdo;
+        $data = $_POST;
+
+        $errors = $this->validator->validateRequiredFields($data, ['email', 'password']);
+        if (!empty($errors)) {
+            $this->sendResponse(false, $errors);
+            return;
+        }
+
+        $userData = User::findUserByEmail($pdo, $data['email']);
+        if (!$userData || !password_verify($data['password'], $userData['password'])) {
+            $this->sendResponse(false, ['general' => 'Invalid email or password']);
+            return;
+        }
+
+        if (isset($userData['status']) && $userData['status'] === 'suspended') {
+            $reason = !empty($userData['suspend_reason']) ? $userData['suspend_reason'] : 'Violation of terms';
+            $this->sendResponse(false, ['general' => 'Your account has been suspended by Admin. Reason: ' . htmlspecialchars($reason)]);
+            return;
+        }
+
+        // set session with user data
+        $_SESSION['user'] = [
+            'id' => $userData['id'],
+            'email' => $userData['email'],
+            'first_name' => $userData['first_name'],
+            'last_name' => $userData['last_name'] ?? '',
+            'phone' => $userData['phone'] ?? '',
+            'gender' => $userData['gender'] ?? '',
+            'dateOfBirth' => $userData['date_of_birth'] ?? '',
+            'role' => $userData['role'],
+            'profile_image' => $userData['profile_image'] ?? 'assets/images/profile.jpg',
+            'logged_in' => true,
+            'login_time' => time()
+        ];
+
+        $this->sendResponse(true, [], [
+            'id' => $userData['id'],
+            'email' => $userData['email'],
+            'first_name' => $userData['first_name'],
+            'role' => $userData['role']
+        ]);
+    }
+
+    // logout user
+    public function logoutUser()
+    {
+        $_SESSION = [];
+
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params["path"],
+                $params["domain"],
+                $params["secure"],
+                $params["httponly"]
+            );
+        }
+
+        session_destroy();
+
+        header('Location: home');
+        exit;
+    }
+
+    public function showSignup()
+    {
+        include __DIR__ . '/../../views/traveller/signup.view.php';
+    }
+
+    public function showLogin()
+    {
+        // redirect if already logged in
+        if (isset($_SESSION['user']) && !empty($_SESSION['user'])) {
+            header('Location: homet');
+            exit;
+        }
+        include __DIR__ . '/../../views/traveller/login.view.php';
+    }
+
+    private function sendResponse($success, $errors = [], $user = null)
+    {
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => $success,
+            'errors' => $errors,
+            'user' => $user
+        ]);
+        exit;
+    }
+}

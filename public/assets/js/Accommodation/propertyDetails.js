@@ -1,8 +1,8 @@
 // propertyDetails.js
-// JS for Property Details page
+// jS for Property Details page
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Counter logic for guests and bathrooms
+    // counter logic for guests and bathrooms
     document.querySelectorAll('.counter').forEach(function(counter) {
         const decrement = counter.querySelector('.decrement');
         const increment = counter.querySelector('.increment');
@@ -17,5 +17,5 @@ document.addEventListener('DOMContentLoaded', function() {
             countSpan.textContent = count;
         });
     });
-    // Bedroom add/remove handled inline in the view to avoid duplicate behavior.
+    // bedroom add/remove handled inline in the view to avoid duplicate behavior.
 });

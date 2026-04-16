@@ -5,17 +5,17 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Terms & Conditions — TravelMate</title>
 
-  <!-- Google Font (similar to screenshot) -->
+  <!-- google Font (similar to screenshot) -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-  <!-- Link to external stylesheet -->
+  <!-- link to external stylesheet -->
   <link rel="stylesheet" href="assets/css/termsandcondition.css">
 </head>
 <body>
 
 <?php include __DIR__ . '../Traveller/header.view.php'; ?>
 
-  <!-- Header -->
+  <!-- header -->
   <!-- <header class="site-header" role="banner">
     <div class="container header-inner">
       <div class="brand">
@@ -41,7 +41,7 @@
     </div>
   </header> -->
 
-  <!-- Hero / Page Title -->
+  <!-- hero / Page Title -->
   <section class="hero-terms">
     <div class="container">
       <div class="hero-inner">
@@ -51,7 +51,7 @@
     </div>
   </section>
 
-  <!-- Terms content -->
+  <!-- terms content -->
   <main class="container page-content" id="content" role="main">
     <article class="terms-card">
       <section>
@@ -142,7 +142,7 @@
 
 <?php include __DIR__ . '../Traveller/footer.view.php'; ?>
 
-  <!-- Footer -->
+  <!-- footer -->
   <!-- <footer class="site-footer" role="contentinfo">
     <div class="container footer-grid">
       <div class="footer-col">

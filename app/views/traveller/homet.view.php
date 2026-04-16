@@ -1,10 +1,10 @@
 <?php
-// Start session if not already started
+// start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is logged in
+// check if user is logged in
 $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
 $firstName = $isLoggedIn ? $_SESSION['user']['first_name'] : '';
 $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
@@ -19,22 +19,23 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
     <title>Home - Travel Mate</title>
     <link rel="stylesheet" href="assets/css/Traveller/homet.css">
     <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
 
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-    <!-- Main Content -->
+    <!-- main Content -->
     <main class="main-content">
-        <!-- Welcome Section -->
+        <!-- welcome Section -->
         <div class="welcome-section">
             <h1>Welcome back, <?php echo htmlspecialchars($firstName); ?>!</h1>
             <p>Ready for your next adventure? Discover amazing destinations, book comfortable stays, and find the best
                 transport options.</p>
         </div>
 
-        <!-- Popular Destinations Section -->
+        <!-- popular Destinations Section -->
         <section class="destinations-section">
             <div class="section-header">
                 <div class="title-area">
@@ -58,66 +59,13 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                 </div>
                 <a href="favactivity" class="see-all-btn">See All Activities</a>
             </div>
-            <div class="destinations-grid">
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/surfing.png" alt="Surfing">
-                        <div class="card-overlay">
-                            <a href="surfing" class="explore-btn">Explore</a>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Surfing</h3>
-                        <p>Catch the waves, feel the rhythm of the ocean — surfing is where balance meets pure freedom.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/waterafting.png" alt="Water Rafting">
-                        <div class="card-overlay">
-                            <button class="explore-btn">Explore</button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Water Rafting</h3>
-                        <p>Thrilling rapids, splashing waves, and pure adrenaline — water rafting is where adventure
-                            flows wild and free.</p>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/birdwatching.png" alt="Bird Watching">
-                        <div class="card-overlay">
-                            <button class="explore-btn">Explore</button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Bird watching</h3>
-                        <p>Gentle trails, quiet moments, and wings in flight — bird watching is nature’s calmest
-                            spectacle.</p>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/safari.png" alt="Safari">
-                        <div class="card-overlay">
-                            <button class="explore-btn">Explore</button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Safari</h3>
-                        <p>Golden plains, roaming wildlife, and untamed beauty — a safari is the closest you’ll get to
-                            nature’s wild heart.</p>
-                    </div>
-                </div>
+            <div class="destinations-grid" id="popularActivities">
+                <!-- dynamic loaded -->
+                <p>Loading activities...</p>
             </div>
         </section>
 
-        <!-- Accommodation Section -->
+        <!-- accommodation Section -->
         <section class="accommodation-section">
             <div class="section-header">
                 <div class="title-area">
@@ -126,70 +74,13 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                 </div>
                 <a href="accommodation" class="see-all-btn">See All Accommodations</a>
             </div>
-            <div class="accommodation-grid">
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/luxuryhotel.png" alt="Luxury Beach Resort">
-                        <div class="card-overlay">
-                            <a href="accommodationdetail" class="explore-btn">Book Now</a>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Luxury Beach Resort</h3>
-                        <p>5-star beachfront resort with private pools, spa services, and world-class dining.
-                            All-inclusive packages available.</p>
-                        <span class="price-tag">Rs.45000/night</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/boutiquehotel.png" alt="Boutique City Hotel">
-                        <div class="card-overlay">
-                            <button class="explore-btn">Book Now</button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Boutique City Hotel</h3>
-                        <p>Stylish hotel in the heart of the city. Modern amenities, rooftop bar, and walking distance
-                            to major attractions.</p>
-                        <span class="price-tag">Rs.18000/night</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/mountainlodge.png" alt="Mountain Lodge">
-                        <div class="card-overlay">
-                            <button class="explore-btn">Book Now</button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Mountain Lodge</h3>
-                        <p>Cozy lodge with stunning mountain views. Perfect for hiking enthusiasts and nature lovers
-                            seeking tranquility.</p>
-                        <span class="price-tag">Rs.12000/night</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/backpackerhostel.png" alt="Budget Hostel">
-                        <div class="card-overlay">
-                            <button class="explore-btn">Book Now</button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Backpacker Hostel</h3>
-                        <p>Clean, safe, and social environment for budget travelers. Free WiFi, kitchen facilities, and
-                            organized tours.</p>
-                        <span class="price-tag">Rs.18000/night</span>
-                    </div>
-                </div>
+            <div class="accommodation-grid" id="featuredAccommodations">
+                <!-- dynamic loaded -->
+                <p>Loading accommodations...</p>
             </div>
         </section>
 
-        <!-- Transport Section -->
+        <!-- transport Section -->
         <section class="transport-section">
             <div class="section-header">
                 <div class="title-area">
@@ -198,67 +89,8 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                 </div>
                 <a href="transport" class="see-all-btn">See All Transport</a>
             </div>
-            <div class="transport-grid">
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/van.png" alt="Van Rental">
-                        <div class="card-overlay">
-                            <button class="explore-btn">Search Vans</button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Van Rental</h3>
-                        <div class="rating">⭐⭐⭐⭐⭐ 4.7 (3,421 reviews)</div>
-                        <p>Spacious vans perfect for families or small groups. Available in economy and premium models for any journey.</p>
-                        <span class="price-tag">Best Deals</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/car.png" alt="Car Rental">
-                        <div class="card-overlay">
-                            <button class="explore-btn">Rent Car</button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Car Rental</h3>
-                        <div class="rating">⭐⭐⭐⭐ 4.5 (1,876 reviews)</div>
-                        <p>Wide selection of vehicles from economy to luxury. Pick up at airports or city locations
-                            worldwide.</p>
-                        <span class="price-tag">From $25/day</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/wheel.png" alt="Wheel Rental">
-                        <div class="card-overlay">
-                            <button class="explore-btn">Book Wheel</button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Wheel Rental</h3>
-                        <div class="rating">⭐⭐⭐⭐ 4.4 (982 reviews)</div>
-                        <p>Easy and affordable rides for city exploration. Choose from scooters or bikes for quick and flexible travel.</p>
-                        <span class="price-tag">From $45</span>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/images/bus.png" alt="Bus Travel">
-                        <div class="card-overlay">
-                            <button class="explore-btn">Book Bus</button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3>Bus Rental</h3>
-                        <div class="rating">⭐⭐⭐⭐ 4.2 (654 reviews)</div>
-                        <p>Comfortable buses for group travel. Ideal for tours, events, and airport transfers with professional drivers.</p>
-                        <span class="price-tag">From $15</span>
-                    </div>
-                </div>
+            <div class="transport-grid" id="transportOptions">
+                <p>Loading transport options...</p>
             </div>
         </section>
     </main>
@@ -315,13 +147,233 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                     container.innerHTML = '<p>Error loading destinations</p>';
                 });
 
+            // load Activities
+            const activityContainer = document.getElementById('popularActivities');
+
+            fetch(baseApi + '/api/activity/list', { credentials: 'same-origin' })
+                .then(r => r.json())
+                .then(resp => {
+                    if (!resp.success) { activityContainer.innerHTML = '<p>Failed to load activities</p>'; return; }
+                    const activities = resp.data || [];
+                    if (activities.length === 0) {
+                        activityContainer.innerHTML = '<p>No activities available</p>';
+                        return;
+                    }
+                    activityContainer.style.display = 'grid';
+                    activityContainer.style.gridTemplateColumns = 'repeat(auto-fill, minmax(280px, 1fr))';
+                    activityContainer.style.gap = '2rem';
+                    activityContainer.innerHTML = activities.slice(0, 4).map(a => {
+                        const baseUrl = window.location.origin + '/TravelMate/public';
+                        const img = a.image ? baseUrl + a.image : 'assets/images/default-activity.png';
+                        return `
+            <div class="card" style="width: 100%; max-width: 100%;">
+              <div class="card-image">
+                <img src="${img}" alt="${escapeHtml(a.title)}">
+                <div class="card-overlay">
+                  <a href="activityview?id=${a.id}" class="explore-btn">Explore</a>
+                </div>
+              </div>
+              <div class="card-content">
+                <h3>${escapeHtml(a.title)}</h3>
+                <p>${escapeHtml((a.description || '').substring(0, 120))}</p>
+              </div>
+            </div>
+          `;
+                    }).join('');
+                }).catch(err => {
+                    console.error(err);
+                    activityContainer.innerHTML = '<p>Error loading activities</p>';
+                });
+
+            // load Accommodations
+            const accommodationContainer = document.getElementById('featuredAccommodations');
+
+            fetch(baseApi + '/api/accommodation/listAll', { credentials: 'same-origin' })
+                .then(r => r.json())
+                .then(resp => {
+                    if (!resp.success) { accommodationContainer.innerHTML = '<p>Failed to load accommodations</p>'; return; }
+                    const accommodations = resp.data || [];
+                    if (accommodations.length === 0) {
+                        accommodationContainer.innerHTML = '<p>No accommodations available</p>';
+                        return;
+                    }
+                    accommodationContainer.style.display = 'grid';
+                    accommodationContainer.style.gridTemplateColumns = 'repeat(auto-fill, minmax(280px, 1fr))';
+                    accommodationContainer.style.gap = '2rem';
+                    accommodationContainer.innerHTML = accommodations.slice(0, 4).map(acc => {
+                        const baseUrl = window.location.origin + '/TravelMate/public';
+                        const img = acc.main_image ? baseUrl + '/' + acc.main_image : 'assets/images/default-accommodation.png';
+                        const price = acc.price_per_night || 0;
+                        const formattedPrice = parseFloat(price).toLocaleString('en-US');
+                        const description = acc.description || 'Experience comfort and luxury at this amazing property';
+                                                const ratingCount = parseInt(acc.rating_count || 0, 10) || 0;
+                                                const avgRatingValue = parseFloat(acc.avg_rating || 0);
+                                                const ratingStarsHtml = (() => {
+                                                    let stars = '';
+                                                    for (let index = 1; index <= 5; index++) {
+                                                        if (avgRatingValue >= index) {
+                                                            stars += '<i class="fas fa-star"></i>';
+                                                        } else if (avgRatingValue >= index - 0.5) {
+                                                            stars += '<i class="fas fa-star-half-alt"></i>';
+                                                        } else {
+                                                            stars += '<i class="far fa-star"></i>';
+                                                        }
+                                                    }
+                                                    return stars;
+                                                })();
+                                                const ratingText = ratingCount > 0 ? `${avgRatingValue.toFixed(1)} (${ratingCount})` : 'Not yet rated';
+                        return `
+            <div class="card" style="width: 100%; max-width: 100%;">
+              <div class="card-image">
+                <img src="${img}" alt="${escapeHtml(acc.title)}" onerror="this.src='assets/images/default-accommodation.png'">
+                <div class="card-overlay">
+                  <a href="accommodationdetail?id=${acc.id}" class="explore-btn">Book Now</a>
+                </div>
+              </div>
+              <div class="card-content">
+                <h3>${escapeHtml(acc.title)}</h3>
+                <p>${escapeHtml(description.substring(0, 120))}${description.length > 120 ? '...' : ''}</p>
+                                <p style="margin:0 0 8px 0; font-size:13px; color:#6b7280; font-weight:600; display:flex; align-items:center; gap:8px;"><span style="color:#f59e0b; display:inline-flex; gap:2px;">${ratingStarsHtml}</span> ${escapeHtml(ratingText)}</p>
+                <span class="price-tag">Rs.${formattedPrice}/night</span>
+              </div>
+            </div>
+          `;
+                    }).join('');
+                }).catch(err => {
+                    console.error(err);
+                    accommodationContainer.innerHTML = '<p>Error loading accommodations</p>';
+                });
+
+                        // load Transports
+                        const transportContainer = document.getElementById('transportOptions');
+
+                        fetch(baseApi + '/api/vehicle/listAll', { credentials: 'same-origin' })
+                                .then(r => r.json())
+                                .then(resp => {
+                                        if (!resp.success) {
+                                                transportContainer.innerHTML = '<p>Failed to load transport options</p>';
+                                                return;
+                                        }
+
+                                        const vehicles = (resp.data || []).filter(v => (v.status || '').toLowerCase() === 'active');
+                                        if (vehicles.length === 0) {
+                                                transportContainer.innerHTML = `
+                        <div class="card" style="width: 100%; max-width: 100%;">
+                            <div class="card-image">
+                                <img src="assets/images/default-vehicle.jpg" alt="Transport option">
+                            </div>
+                            <div class="card-content">
+                                <h3>More Transport Options Soon</h3>
+                                <p>New trusted transport partners will appear here shortly.</p>
+                                <span class="price-tag">Coming Soon</span>
+                            </div>
+                        </div>
+                        <div class="card" style="width: 100%; max-width: 100%;">
+                            <div class="card-image">
+                                <img src="assets/images/default-vehicle.jpg" alt="Transport option">
+                            </div>
+                            <div class="card-content">
+                                <h3>More Transport Options Soon</h3>
+                                <p>New trusted transport partners will appear here shortly.</p>
+                                <span class="price-tag">Coming Soon</span>
+                            </div>
+                        </div>
+                        <div class="card" style="width: 100%; max-width: 100%;">
+                            <div class="card-image">
+                                <img src="assets/images/default-vehicle.jpg" alt="Transport option">
+                            </div>
+                            <div class="card-content">
+                                <h3>More Transport Options Soon</h3>
+                                <p>New trusted transport partners will appear here shortly.</p>
+                                <span class="price-tag">Coming Soon</span>
+                            </div>
+                        </div>
+                        <div class="card" style="width: 100%; max-width: 100%;">
+                            <div class="card-image">
+                                <img src="assets/images/default-vehicle.jpg" alt="Transport option">
+                            </div>
+                            <div class="card-content">
+                                <h3>More Transport Options Soon</h3>
+                                <p>New trusted transport partners will appear here shortly.</p>
+                                <span class="price-tag">Coming Soon</span>
+                            </div>
+                        </div>`;
+                                                return;
+                                        }
+
+                                        const transportCards = vehicles.slice(0, 4).map(v => {
+                                                const baseUrl = window.location.origin + '/TravelMate/public';
+                                                const img = v.main_image ? (baseUrl + v.main_image) : 'assets/images/default-vehicle.jpg';
+                                                const model = v.vehicle_model || 'Vehicle';
+                                                const type = v.vehicle_type || 'Transport';
+                                                const district = v.working_district || 'Sri Lanka';
+                                                const seats = parseInt(v.passenger_count || 0, 10) || 0;
+                                                const acType = (v.ac_type || 'non-ac').toUpperCase();
+                                                const costPerKm = parseFloat(v.cost_per_km || 0);
+                                                const priceTag = costPerKm > 0 ? `LKR ${costPerKm.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / 1km` : 'Price on request';
+                                                const ratingCount = parseInt(v.rating_count || 0, 10) || 0;
+                                                const avgRatingValue = parseFloat(v.avg_rating || 0);
+                                                const ratingStarsHtml = (() => {
+                                                    let stars = '';
+                                                    for (let index = 1; index <= 5; index++) {
+                                                        if (avgRatingValue >= index) {
+                                                            stars += '<i class="fa-solid fa-star"></i>';
+                                                        } else if (avgRatingValue >= index - 0.5) {
+                                                            stars += '<i class="fa-solid fa-star-half-stroke"></i>';
+                                                        } else {
+                                                            stars += '<i class="fa-regular fa-star"></i>';
+                                                        }
+                                                    }
+                                                    return stars;
+                                                })();
+                                                const ratingText = ratingCount > 0 ? `${avgRatingValue.toFixed(1)} (${ratingCount})` : 'Not yet rated';
+
+                                                return `
+                        <div class="card" style="width: 100%; max-width: 100%;">
+                            <div class="card-image">
+                                <img src="${img}" alt="${escapeHtml(model)}" onerror="this.src='assets/images/default-vehicle.jpg'">
+                                <div class="card-overlay">
+                                    <a href="transportdetails?id=${v.id}" class="explore-btn">Book Now</a>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <h3>${escapeHtml(model)}</h3>
+                                <p>${escapeHtml(type)} • ${escapeHtml(district)} • ${seats} Seats • ${escapeHtml(acType)}</p>
+                                <p style="margin:0 0 8px 0; font-size:13px; color:#6b7280; font-weight:600; display:flex; align-items:center; gap:8px;"><span style="color:#f59e0b; display:inline-flex; gap:2px;">${ratingStarsHtml}</span> ${escapeHtml(ratingText)}</p>
+                                <span class="price-tag">${escapeHtml(priceTag)}</span>
+                            </div>
+                        </div>
+                    `;
+                                        }).join('');
+
+                                        const placeholdersNeeded = Math.max(0, 4 - Math.min(vehicles.length, 4));
+                                        const placeholderCards = Array.from({ length: placeholdersNeeded }).map(() => `
+                        <div class="card" style="width: 100%; max-width: 100%;">
+                            <div class="card-image">
+                                <img src="assets/images/default-vehicle.jpg" alt="Transport option">
+                            </div>
+                            <div class="card-content">
+                                <h3>More Transport Options Soon</h3>
+                                <p>New trusted transport partners will appear here shortly.</p>
+                                <span class="price-tag">Coming Soon</span>
+                            </div>
+                        </div>
+                    `).join('');
+
+                                        transportContainer.innerHTML = transportCards + placeholderCards;
+                                })
+                                .catch(err => {
+                                        console.error(err);
+                                        transportContainer.innerHTML = '<p>Error loading transport options</p>';
+                                });
+
             function escapeHtml(text) {
                 if (!text) return '';
                 return String(text).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": "&#039;" }[m]));
             }
         });
 
-        // Add interactivity to cards and see all buttons
+        // add interactivity to cards and see all buttons
         document.addEventListener('DOMContentLoaded', function () {
             const cards = document.querySelectorAll('.card');
             const actionCards = document.querySelectorAll('.action-card');
@@ -332,7 +384,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                     const button = this.querySelector('.explore-btn');
                     if (button) {
                         console.log('Clicked:', button.textContent);
-                        // Add navigation logic here
+                        // add navigation logic here
                     }
                 });
             });
@@ -341,7 +393,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                 card.addEventListener('click', function () {
                     const title = this.querySelector('h4').textContent;
                     console.log('Quick action:', title);
-                    // Add quick action logic here
+                    // add quick action logic here
                 });
             });
 
@@ -350,7 +402,7 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
                     // e.preventDefault();
                     const href = this.getAttribute('href');
                     console.log('See all clicked:', href);
-                    // Add navigation logic here
+                    // add navigation logic here
                     // window.location.href = href;
                 });
             });

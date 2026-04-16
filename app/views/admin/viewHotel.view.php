@@ -108,7 +108,7 @@
   <script>
     function editContent() {
       alert('Edit functionality would open a form to update hotel details');
-      // Implement edit functionality
+      // implement edit functionality
     }
     
     function goBack() {

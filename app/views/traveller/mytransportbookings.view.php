@@ -6,25 +6,58 @@
     <title>My Transport Bookings - TravelMate</title>
     <link rel="stylesheet" href="assets/css/Traveller/mybookings.css">
     <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="transport-bookings-page">
     <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-    <!-- Main Content -->
-    <div class="main-content">
+    <main class="bookings-layout">
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="mybookings" class="sidebar-link">
+                        <span class="sidebar-text">Accommodation Bookings</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="mytransportbookings" class="sidebar-link active">
+                        <span class="sidebar-text">Transport Bookings</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="feed" class="sidebar-link">
+                        <span class="sidebar-text">Vlogs</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="profile_setting" class="sidebar-link">
+                        <span class="sidebar-text">Settings</span>
+                    </a>
+                </li>
+                <li class="sidebar-item sidebar-logout">
+                    <a href="logout.php" class="sidebar-link logout-link">
+                        <span class="sidebar-text">Log Out</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+    <!-- main Content -->
+    <section class="main-content">
         <div class="page-header">
             <h1>My Transport Bookings</h1>
             <p>Manage and view all your transport reservations</p>
         </div>
 
-        <!-- Filter Tabs -->
+        <!-- filter Tabs -->
         <div class="filter-tabs">
             <div class="filter-tab active" data-filter="all">All Bookings</div>
+            <div class="filter-tab" data-filter="pending">Pending</div>
             <div class="filter-tab" data-filter="confirmed">Confirmed</div>
             <div class="filter-tab" data-filter="cancelled">Cancelled</div>
         </div>
 
-        <!-- Search Section -->
+        <!-- search Section -->
         <div class="controls-section" style="margin-bottom: 2em; display: none;">
             <input type="text" class="search-box" placeholder="Search bookings by vehicle or booking ID..." id="bookingSearch">
             <select class="sort-dropdown" id="sortBookings">
@@ -35,28 +68,48 @@
             </select>
         </div>
 
-        <!-- Loading State -->
+        <!-- loading State -->
         <div class="loading-container" style="text-align: center; padding: 3em; display: none;">
             <div class="loading-spinner" style="display: inline-block; width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #1abc5b; border-radius: 50%; animation: spin 1s linear infinite;"></div>
             <p style="margin-top: 1em; color: #666;">Loading your bookings...</p>
         </div>
 
         <div class="bookings-container">
-            <!-- Transport Section -->
+            <!-- pending Section -->
+            <div class="booking-section" data-category="pending">
+                <div class="section-header">
+                    <div class="section-icon"><i class="fas fa-hourglass-half" aria-hidden="true"></i></div>
+                    <h2 class="section-title">Pending Bookings</h2>
+                </div>
+
+                <!-- pending bookings will be dynamically loaded here -->
+            </div>
+
+            <!-- active Transport Section -->
             <div class="booking-section" data-category="transport">
                 <div class="section-header">
-                    <div class="section-icon">🚗</div>
+                    <div class="section-icon"><i class="fas fa-car-side" aria-hidden="true"></i></div>
                     <h2 class="section-title">Transport Bookings</h2>
                 </div>
                 
-                <!-- Bookings will be dynamically loaded here -->
+                <!-- active transport bookings will be dynamically loaded here -->
+            </div>
+
+            <!-- history Section -->
+            <div class="booking-section" data-category="history">
+                <div class="section-header">
+                    <div class="section-icon"><i class="fas fa-clock-rotate-left" aria-hidden="true"></i></div>
+                    <h2 class="section-title">History</h2>
+                </div>
+
+                <!-- history bookings will be dynamically loaded here -->
             </div>
         </div>
 
-        <!-- Summary Section -->
+        <!-- summary Section -->
         <div class="booking-section" style="margin-top: 2em;">
             <div class="section-header">
-                <div class="section-icon">📊</div>
+                <div class="section-icon"><i class="fas fa-chart-simple" aria-hidden="true"></i></div>
                 <h2 class="section-title">Booking Summary</h2>
             </div>
             <div id="bookingStats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5em;">
@@ -78,20 +131,21 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+    </main>
 
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-    <!-- Booking Details Modal -->
+    <!-- booking Details Modal -->
     <div id="bookingDetailsModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6);">
         <div class="modal-content" style="background-color: #fefefe; margin: 5% auto; padding: 2.5em; border-radius: 20px; width: 90%; max-width: 650px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
             <span class="close" style="color: #aaa; float: right; font-size: 32px; font-weight: bold; cursor: pointer; line-height: 20px; transition: all 0.3s ease;">&times;</span>
-            <h2 style="margin-bottom: 1.5em; color: #1abc5b; font-size: 28px; font-weight: 700;">🚗 Transport Booking Details</h2>
+            <h2 style="margin-bottom: 1.5em; color: #1abc5b; font-size: 28px; font-weight: 700;"><i class="fas fa-car-side" aria-hidden="true"></i> Transport Booking Details</h2>
             <div id="modalContent" style="color: #333;"></div>
         </div>
     </div>
 
-    <!-- Cancel Confirmation Modal -->
+    <!-- cancel Confirmation Modal -->
     <div id="cancelConfirmModal" class="cancel-confirm-modal">
         <div class="cancel-confirm-content">
             <div class="cancel-icon">
@@ -110,7 +164,7 @@
         </div>
     </div>
 
-    <!-- Cancel Success Modal -->
+    <!-- cancel Success Modal -->
     <div id="cancelSuccessModal" class="cancel-success-modal">
         <div class="cancel-success-content">
             <div class="success-icon">
@@ -125,7 +179,7 @@
         </div>
     </div>
 
-    <!-- Error Modal -->
+    <!-- error Modal -->
     <div id="errorModal" class="error-modal">
         <div class="error-modal-content">
             <div class="error-icon">
@@ -141,7 +195,7 @@
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
+    <!-- delete Confirmation Modal -->
     <div id="deleteConfirmModal" class="delete-confirm-modal">
         <div class="delete-confirm-content">
             <div class="delete-icon">
@@ -160,7 +214,7 @@
         </div>
     </div>
 
-    <!-- Delete Success Modal -->
+    <!-- delete Success Modal -->
     <div id="deleteSuccessModal" class="delete-success-modal">
         <div class="delete-success-content">
             <div class="success-icon">
@@ -207,7 +261,7 @@
             }
         }
 
-        /* Cancel Confirmation Modal */
+        /* cancel Confirmation Modal */
         .cancel-confirm-modal {
             display: none;
             position: fixed;
@@ -335,7 +389,7 @@
             box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
         }
 
-        /* Success Modal */
+        /* success Modal */
         .cancel-success-modal, .delete-success-modal {
             display: none;
             position: fixed;
@@ -401,7 +455,7 @@
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
 
-        /* Error Modal */
+        /* error Modal */
         .error-modal {
             display: none;
             position: fixed;
@@ -467,7 +521,7 @@
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
 
-        /* Delete Modal */
+        /* delete Modal */
         .delete-confirm-modal {
             display: none;
             position: fixed;
@@ -515,7 +569,7 @@
             line-height: 1.6;
         }
 
-        /* Enhanced Booking Details Modal */
+        /* enhanced Booking Details Modal */
         .modal .close:hover,
         .modal .close:focus {
             color: #1abc5b;
@@ -571,7 +625,7 @@
             font-size: 18px;
         }
 
-        /* Booking Details Modal Styles */
+        /* booking Details Modal Styles */
         .booking-details-modal {
             display: none;
             position: fixed;
@@ -701,7 +755,7 @@
             margin-top: 1em;
         }
 
-        /* Scrollbar styling for modal */
+        /* scrollbar styling for modal */
         .booking-details-content::-webkit-scrollbar {
             width: 8px;
         }

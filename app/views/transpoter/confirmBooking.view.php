@@ -231,34 +231,34 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Get DOM elements
+      // get DOM elements
       const alertBox = document.getElementById('alertBox');
       const printBtn = document.getElementById('print-invoice');
       const downloadBtn = document.getElementById('download-receipt');
       
-      // Show alert function
+      // show alert function
       function showAlert(message, type) {
         alertBox.textContent = message;
         alertBox.className = `alert alert-${type}`;
         alertBox.style.display = 'block';
         
-        // Hide alert after 5 seconds
+        // hide alert after 5 seconds
         setTimeout(() => {
           alertBox.style.display = 'none';
         }, 5000);
       }
       
-      // Print invoice
+      // print invoice
       printBtn.addEventListener('click', function() {
-        // Show loading state
+        // show loading state
         printBtn.disabled = true;
         printBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing...';
         
-        // Simulate processing
+        // simulate processing
         setTimeout(() => {
           window.print();
           
-          // Reset button after success
+          // reset button after success
           setTimeout(() => {
             printBtn.disabled = false;
             printBtn.innerHTML = '<i class="fas fa-print"></i> Print Invoice';
@@ -266,17 +266,17 @@
         }, 1500);
       });
       
-      // Download receipt
+      // download receipt
       downloadBtn.addEventListener('click', function() {
-        // Show loading state
+        // show loading state
         downloadBtn.disabled = true;
         downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Downloading...';
         
-        // Simulate download
+        // simulate download
         setTimeout(() => {
           showAlert('Receipt downloaded successfully!', 'success');
           
-          // Reset button after success
+          // reset button after success
           setTimeout(() => {
             downloadBtn.disabled = false;
             downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download Receipt';
@@ -284,7 +284,7 @@
         }, 1500);
       });
       
-      // Responsive adjustments
+      // responsive adjustments
       function handleResize() {
         if (window.innerWidth < 900) {
           document.querySelector('.detail-summary').style.position = 'relative';
@@ -293,10 +293,10 @@
         }
       }
       
-      // Listen for window resize
+      // listen for window resize
       window.addEventListener('resize', handleResize);
       
-      // Initial call
+      // initial call
       handleResize();
     });
   </script>

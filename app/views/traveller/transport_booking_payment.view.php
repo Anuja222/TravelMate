@@ -1,10 +1,10 @@
 <?php
-// Start session if not already started
+// start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is logged in
+// check if user is logged in
 $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
 if (!$isLoggedIn) {
     header('Location: /TravelMate/public/login');
@@ -13,13 +13,10 @@ if (!$isLoggedIn) {
 
 $firstName = $_SESSION['user']['first_name'] ?? '';
 $lastName = $_SESSION['user']['last_name'] ?? '';
+$bookingId = $_GET['booking_id'] ?? '';
 
-// Get booking data from session
-$bookingData = $_SESSION['transport_booking_temp'] ?? null;
-$personalDetails = $_SESSION['transport_personal_details'] ?? null;
-
-if (!$bookingData || !$personalDetails) {
-    header('Location: /TravelMate/public/transport');
+if (!$bookingId) {
+    header('Location: /TravelMate/public/mytransportbookings');
     exit;
 }
 ?>
@@ -38,10 +35,10 @@ if (!$bookingData || !$personalDetails) {
     
     <div class="booking-details-container">
         <div class="booking-progress">
-            <div class="step done"><span>1</span> Your Selection</div>
-            <div class="step done"><span>2</span> Your Details</div>
-            <div class="step active"><span>3</span> Payment Details</div>
-            <div class="step"><span>4</span> Finish Booking</div>
+            <div class="step done"><span>1</span> Personal Details</div>
+            <div class="step active"><span>2</span> Payment Details</div>
+            <div class="step"><span>3</span> Finish / Review</div>
+            <div class="step"><span>4</span> Complete Booking</div>
         </div>
         
         <h2>Payment Details</h2>
@@ -74,34 +71,37 @@ if (!$bookingData || !$personalDetails) {
             
             <div class="form-group">
                 <label for="billing_address">Billing address <span class="required">*</span></label>
-                <input type="text" id="billing_address" name="billing_address" value="<?php echo htmlspecialchars($personalDetails['address'] ?? ''); ?>" required>
+                <input type="text" id="billing_address" name="billing_address" required>
             </div>
             
             <div class="form-row">
                 <div class="form-group">
                     <label for="billing_city">City <span class="required">*</span></label>
-                    <input type="text" id="billing_city" name="billing_city" value="<?php echo htmlspecialchars($personalDetails['city'] ?? ''); ?>" required>
+                    <input type="text" id="billing_city" name="billing_city" required>
                 </div>
                 <div class="form-group">
                     <label for="billing_zip">Zip Code <span class="optional">(optional)</span></label>
-                    <input type="text" id="billing_zip" name="billing_zip" value="<?php echo htmlspecialchars($personalDetails['zip'] ?? ''); ?>">
+                    <input type="text" id="billing_zip" name="billing_zip">
                 </div>
             </div>
             
             <div class="form-group">
                 <label for="billing_country">Country/Region <span class="required">*</span></label>
                 <select id="billing_country" name="billing_country" required>
-                    <option value="LK" <?php echo ($personalDetails['country'] ?? '') === 'LK' ? 'selected' : ''; ?>>Sri Lanka</option>
-                    <option value="IN" <?php echo ($personalDetails['country'] ?? '') === 'IN' ? 'selected' : ''; ?>>India</option>
-                    <option value="US" <?php echo ($personalDetails['country'] ?? '') === 'US' ? 'selected' : ''; ?>>United States</option>
-                    <option value="UK" <?php echo ($personalDetails['country'] ?? '') === 'UK' ? 'selected' : ''; ?>>United Kingdom</option>
+                    <option value="LK">Sri Lanka</option>
+                    <option value="IN">India</option>
+                    <option value="US">United States</option>
+                    <option value="UK">United Kingdom</option>
                 </select>
             </div>
             
-            <button type="submit" class="finish-booking-btn">Next: Review & Confirm</button>
+            <button type="submit" class="finish-booking-btn">Complete Payment</button>
         </form>
     </div>
 
+    <script>
+        window.transportPaymentBookingId = "<?php echo htmlspecialchars($bookingId, ENT_QUOTES, 'UTF-8'); ?>";
+    </script>
     <script src="/TravelMate/public/assets/js/transport_booking_payment.js"></script>
     <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 </body>

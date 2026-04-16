@@ -1,13 +1,13 @@
-// Global Variables
+// global Variables
 let currentModal = null;
 let isScrolling = false;
 
-// DOM Content Loaded
+// dOM Content Loaded
 document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
 });
 
-// Initialize Application
+// initialize Application
 function initializeApp() {
     setupEventListeners();
     setupIntersectionObserver();
@@ -15,44 +15,44 @@ function initializeApp() {
     setMinimumDates();
 }
 
-// Event Listeners
+// event Listeners
 function setupEventListeners() {
-    // Modal close on outside click
+    // modal close on outside click
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('modal')) {
             closeModal(e.target);
         }
     });
 
-    // Escape key to close modal
+    // escape key to close modal
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && currentModal) {
             closeModal(currentModal);
         }
     });
 
-    // Navbar scroll effect
+    // navbar scroll effect
     window.addEventListener('scroll', handleNavbarScroll);
 
-    // Smooth scroll for anchor links
+    // smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', handleSmoothScroll);
     });
 
-    // Form submission
+    // form submission
     const bookingForm = document.querySelector('.booking-form');
     if (bookingForm) {
         bookingForm.addEventListener('submit', handleBookingSubmit);
     }
 
-    // Newsletter form
+    // newsletter form
     const newsletterForm = document.querySelector('.newsletter-form button');
     if (newsletterForm) {
         newsletterForm.addEventListener('click', handleNewsletterSubmit);
     }
 }
 
-// Navbar Scroll Effect
+// navbar Scroll Effect
 function handleNavbarScroll() {
     if (isScrolling) return;
     isScrolling = true;
@@ -73,7 +73,7 @@ function handleNavbarScroll() {
     });
 }
 
-// Smooth Scroll Handler
+// smooth Scroll Handler
 function handleSmoothScroll(e) {
     e.preventDefault();
     const targetId = this.getAttribute('href');
@@ -91,7 +91,7 @@ function handleSmoothScroll(e) {
     }
 }
 
-// Intersection Observer for Animations
+// intersection Observer for Animations
 function setupIntersectionObserver() {
     const observerOptions = {
         threshold: 0.1,
@@ -103,7 +103,7 @@ function setupIntersectionObserver() {
             if (entry.isIntersecting) {
                 entry.target.classList.add('fade-in');
                 
-                // Add stagger effect for destination cards
+                // add stagger effect for destination cards
                 if (entry.target.classList.contains('destination-card')) {
                     const delay = Array.from(entry.target.parentNode.children).indexOf(entry.target) * 100;
                     entry.target.style.animationDelay = `${delay}ms`;
@@ -112,15 +112,15 @@ function setupIntersectionObserver() {
         });
     }, observerOptions);
 
-    // Observe destination cards and other elements
+    // observe destination cards and other elements
     document.querySelectorAll('.destination-card, .section-header').forEach(el => {
         observer.observe(el);
     });
 }
 
-// Parallax Effect
+// parallax Effect
 function setupParallaxEffect() {
-    if (window.innerWidth < 1024) return; // Disable on mobile for performance
+    if (window.innerWidth < 1024) return; // disable on mobile for performance
     
     window.addEventListener('scroll', () => {
         if (isScrolling) return;
@@ -140,7 +140,7 @@ function setupParallaxEffect() {
     });
 }
 
-// Hero Section Functions
+// hero Section Functions
 function scrollToDestinations() {
     const destinationsSection = document.querySelector('.destinations-section');
     if (destinationsSection) {
@@ -162,7 +162,7 @@ function openBookingModal() {
         currentModal = modal;
         document.body.style.overflow = 'hidden';
         
-        // Focus on first input
+        // focus on first input
         setTimeout(() => {
             const firstInput = modal.querySelector('input, select');
             if (firstInput) firstInput.focus();
@@ -175,7 +175,7 @@ function closeBookingModal() {
     closeModal(modal);
 }
 
-// Modal Functions
+// modal Functions
 function closeModal(modal) {
     if (modal) {
         modal.classList.remove('active');
@@ -184,21 +184,21 @@ function closeModal(modal) {
     }
 }
 
-// Destination Functions
+// destination Functions
 function exploreDestination(category) {
-    // Show loading state
+    // show loading state
     const button = event.target;
     const originalText = button.textContent;
     button.textContent = 'Loading...';
     button.disabled = true;
 
-    // Simulate API call
+    // simulate API call
     setTimeout(() => {
-        // Reset button
+        // reset button
         button.textContent = originalText;
         button.disabled = false;
         
-        // Here you would typically navigate to a destination page or open a detailed modal
+        // here you would typically navigate to a destination page or open a detailed modal
         showDestinationDetails(category);
     }, 1000);
 }
@@ -272,7 +272,7 @@ function showDestinationDetails(category) {
     alert(`${info.title}\n\n${info.description}\n\nTop Destinations:\n• ${info.highlights.join('\n• ')}\n\nContact us to plan your perfect trip!`);
 }
 
-// Form Handlers
+// form Handlers
 function handleBookingSubmit(e) {
     e.preventDefault();
     
@@ -284,30 +284,30 @@ function handleBookingSubmit(e) {
         children: document.getElementById('children').value
     };
 
-    // Validate form
+    // validate form
     if (!validateBookingForm(formData)) {
         return;
     }
 
-    // Show loading state
+    // show loading state
     const submitBtn = e.target.querySelector('.btn-primary');
     const originalText = submitBtn.textContent;
     submitBtn.textContent = 'Searching...';
     submitBtn.disabled = true;
 
-    // Simulate API call
+    // simulate API call
     setTimeout(() => {
-        // Reset button
+        // reset button
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
         
-        // Show success message
+        // show success message
         alert('Great! We found several amazing tours that match your preferences. Our team will contact you shortly with personalized recommendations.');
         
-        // Close modal
+        // close modal
         closeBookingModal();
         
-        // Reset form
+        // reset form
         e.target.reset();
     }, 2000);
 }
@@ -356,26 +356,26 @@ function handleNewsletterSubmit() {
         return;
     }
     
-    // Show loading state
+    // show loading state
     const originalText = button.textContent;
     button.textContent = 'Subscribing...';
     button.disabled = true;
     
-    // Simulate API call
+    // simulate API call
     setTimeout(() => {
-        // Reset button
+        // reset button
         button.textContent = originalText;
         button.disabled = false;
         
-        // Show success message
+        // show success message
         alert('Thank you for subscribing! You\'ll receive our latest travel tips and exclusive offers.');
         
-        // Clear input
+        // clear input
         emailInput.value = '';
     }, 1500);
 }
 
-// Utility Functions
+// utility Functions
 function isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -404,7 +404,7 @@ function setMinimumDates() {
     }
 }
 
-// Submit Booking Function (called from modal)
+// submit Booking Function (called from modal)
 function submitBooking() {
     const form = document.querySelector('.booking-form');
     if (form) {
@@ -413,7 +413,7 @@ function submitBooking() {
     }
 }
 
-// Performance Optimization
+// performance Optimization
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
@@ -426,20 +426,20 @@ function debounce(func, wait) {
     };
 }
 
-// Optimized scroll handler
+// optimized scroll handler
 const optimizedScrollHandler = debounce(handleNavbarScroll, 10);
 window.addEventListener('scroll', optimizedScrollHandler);
 
-// Error Handling
+// error Handling
 window.addEventListener('error', function(e) {
     console.error('JavaScript Error:', e.error);
-    // You could send this to a logging service
+    // you could send this to a logging service
 });
 
 
-// Analytics (placeholder for Google Analytics or similar)
+// analytics (placeholder for Google Analytics or similar)
 function trackEvent(action, category, label) {
-    // Google Analytics 4 event tracking
+    // google Analytics 4 event tracking
     if (typeof gtag !== 'undefined') {
         gtag('event', action, {
             event_category: category,
@@ -448,7 +448,7 @@ function trackEvent(action, category, label) {
     }
 }
 
-// Track destination card clicks
+// track destination card clicks
 document.addEventListener('click', function(e) {
     if (e.target.classList.contains('explore-btn')) {
         const card = e.target.closest('.destination-card');
@@ -457,7 +457,7 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// Lazy loading images (if needed)
+// lazy loading images (if needed)
 function setupLazyLoading() {
     const images = document.querySelectorAll('img[data-src]');
     const imageObserver = new IntersectionObserver((entries, observer) => {
@@ -474,30 +474,30 @@ function setupLazyLoading() {
     images.forEach(img => imageObserver.observe(img));
 }
 
-// Initialize lazy loading if images have data-src attributes
+// initialize lazy loading if images have data-src attributes
 if (document.querySelectorAll('img[data-src]').length > 0) {
     setupLazyLoading();
 }
 
-// Dark mode toggle (optional feature)
+// dark mode toggle (optional feature)
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
     localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
 }
 
-// Load dark mode preference
+// load dark mode preference
 if (localStorage.getItem('darkMode') === 'true') {
     document.body.classList.add('dark-mode');
 }
 
-// Animation on scroll for mobile performance
+// animation on scroll for mobile performance
 function handleMobileAnimations() {
     if (window.innerWidth < 768) {
-        // Disable complex animations on mobile
+        // disable complex animations on mobile
         document.body.classList.add('mobile-optimized');
     }
 }
 
-// Check mobile on load and resize
+// check mobile on load and resize
 window.addEventListener('load', handleMobileAnimations);
 window.addEventListener('resize', debounce(handleMobileAnimations, 250));

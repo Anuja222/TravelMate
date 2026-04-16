@@ -1,2 +1,2 @@
-// JS for Ride Booking Finish Page
-// Add your scripts here
+// jS for Ride Booking Finish Page
+// add your scripts here

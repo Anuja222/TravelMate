@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Helper to compute base URL similar to accommodation.js
+    // helper to compute base URL similar to accommodation.js
     function getBaseUrl() {
         const path = window.location.pathname;
         const parts = path.split('/');
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return '/TravelMate/public';
     }
     const baseUrl = getBaseUrl();
-    // Property Type Selection
+    // property Type Selection
     const propertyTypes = document.querySelectorAll('.property-type');
     propertyTypes.forEach(type => {
         const selectButton = type.querySelector('.list-property-btn');
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Accommodation Features Form
+    // accommodation Features Form
     const featuresForm = document.querySelector('.features-form');
     if (featuresForm) {
         featuresForm.addEventListener('submit', function(e) {
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Property Details Form
+    // property Details Form
     const propertyDetailsForm = document.querySelector('.property-details-form');
     if (propertyDetailsForm) {
         propertyDetailsForm.addEventListener('submit', function(e) {
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Photo Upload Form
+    // photo Upload Form
     const photoForm = document.querySelector('.photo-upload-form');
     if (photoForm) {
         const MAX_IMAGES = 25;
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (container) container.after(previewContainer);
         }
 
-        // Remove image handler (delegated)
+        // remove image handler (delegated)
         document.addEventListener('click', function(e){
             const btn = e.target.closest('.remove-image');
             if (!btn) return;
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
         displayImagePreviewsFromStored();
     }
 
-    // House Rules Form
+    // house Rules Form
     const rulesForm = document.querySelector('.house-rules-form');
     if (rulesForm) {
         rulesForm.addEventListener('submit', async function(e) {
@@ -146,13 +146,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const formData = new FormData();
             
-            // Gather all data from localStorage
+            // gather all data from localStorage
             const propertyType = localStorage.getItem('property_type');
             const features = JSON.parse(localStorage.getItem('property_features') || '[]');
             const details = JSON.parse(localStorage.getItem('property_details') || '{}');
             const description = localStorage.getItem('property_description');
             
-            // Add all data to FormData (normalize detail keys and coerce types)
+            // add all data to FormData (normalize detail keys and coerce types)
             formData.append('property_type', propertyType);
             formData.append('features', JSON.stringify(features));
             // details may use different key names (max_guests or maxGuests). Normalize safely.
@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('max_guests', maxGuests);
             formData.append('description', description);
             
-            // Add house rules data (safe checks)
+            // add house rules data (safe checks)
             const smokingEl = document.querySelector('input[name="smoking"]');
             const partiesEl = document.querySelector('input[name="parties"]');
             const petsEl = document.querySelector('input[name="pets"]:checked');
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('parties', partiesEl ? (partiesEl.checked ? 1 : 0) : 0);
             formData.append('pets', petsEl ? petsEl.value : 'no');
             
-            // Add check-in/out times
+            // add check-in/out times
             const checkInStart = (document.querySelector('select[name="check_in_start"]') || {}).value || '';
             const checkInEnd = (document.querySelector('select[name="check_in_end"]') || {}).value || '';
             // for check out we used names check_out_start / check_out_end in view
@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             formData.append('check_in_start', checkInStart);
             formData.append('check_in_end', checkInEnd);
-            // Send check out as combined or the end value
+            // send check out as combined or the end value
             formData.append('check_out_time', checkOutEnd || checkOutStart);
 
             // include the saved property title if present, otherwise fallback to property_type or a default
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('title', titleToSend);
 
             try {
-                // Append stored images (dataURLs) as Blob files to the final FormData
+                // append stored images (dataURLs) as Blob files to the final FormData
                 const stored = JSON.parse(localStorage.getItem('property_images') || '[]');
                 for (let i = 0; i < stored.length; i++) {
                     const item = stored[i];
@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 if (result && result.success) {
-                    // Clear all localStorage
+                    // clear all localStorage
                     localStorage.removeItem('property_type');
                     localStorage.removeItem('property_features');
                     localStorage.removeItem('property_details');
@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Helper function to display image previews
+    // helper function to display image previews
     function displayImagePreviews(files) {
         const previewContainer = document.createElement('div');
         previewContainer.className = 'image-previews';
@@ -274,7 +274,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('.photo-upload-box').after(previewContainer);
     }
 
-    // Convert dataURL to Blob
+    // convert dataURL to Blob
     function dataURLtoBlob(dataurl) {
         var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1], bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
         while(n--){ u8arr[n] = bstr.charCodeAt(n); }

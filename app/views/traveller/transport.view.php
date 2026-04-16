@@ -6,12 +6,197 @@
   <title>TravelMate - Transportation</title>
   <link rel="stylesheet" href="assets/css/Traveller/transport.css">
   <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* fix grid layout for single items */
+    .transportation-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+    
+    .transport-card {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      min-height: 500px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .transport-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .transport-card .card-image {
+      height: 240px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .transport-card .card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .transport-card:hover .card-image img {
+      transform: scale(1.05);
+    }
+
+    .transport-card .card-status-badge {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: linear-gradient(135deg, #1abc5b 0%, #16a085 100%);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: capitalize;
+      box-shadow: 0 3px 10px rgba(26, 188, 91, 0.3);
+      z-index: 2;
+    }
+
+    .transport-card .card-status-badge.pending {
+      background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+      box-shadow: 0 3px 10px rgba(243, 156, 18, 0.3);
+    }
+
+    .transport-card .card-status-badge.inactive {
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
+    }
+
+    .transport-card .card-content {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .transport-card .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0;
+      gap: 10px;
+    }
+
+    .transport-card .card-content h3 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      color: #2c3e50;
+      line-height: 1.2;
+      min-height: 52px;
+    }
+
+    .transport-card .route {
+      margin: 0;
+      font-size: 14px;
+      color: #666;
+      min-height: 22px;
+    }
+
+    .transport-card .description {
+      margin: 0;
+      min-height: 20px;
+      color: #666;
+    }
+
+    .transport-card .card-rating {
+      margin: 0;
+      min-height: 22px;
+      font-size: 13px;
+      color: #6b7280;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .transport-card .card-rating .rating-stars {
+      color: #f59e0b;
+      display: inline-flex;
+      gap: 2px;
+      line-height: 1;
+    }
+
+    .transport-card .card-features {
+      margin: 0;
+      min-height: 24px;
+    }
+
+    .transport-card .feature {
+      background: #f1f5f9;
+      color: #475569;
+      border-radius: 999px;
+      padding: 0.3em 0.7em;
+    }
+
+    .transport-card .card-footer {
+      margin-top: auto;
+      border-top: 1px solid #e8e8e8;
+      padding-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .transport-card .price {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 0;
+    }
+
+    .transport-card .price-amount {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1abc5b;
+      line-height: 1;
+    }
+
+    .transport-card .price-period {
+      font-size: 12px;
+      color: #999;
+      margin: 0;
+    }
+
+    .transport-card .view-btn {
+      background: linear-gradient(135deg, #1abc5b 0%, #16a085 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      padding: 11px 20px;
+      min-width: 140px;
+      box-shadow: 0 4px 12px rgba(26, 188, 91, 0.2);
+    }
+
+    .transport-card .view-btn:hover {
+      background: linear-gradient(135deg, #16a085 0%, #1abc5b 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(26, 188, 91, 0.3);
+    }
+  </style>
 </head>
 <body>
-  <!-- Header/Navbar -->
+  <!-- header/Navbar -->
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-  <!-- Hero Section -->
+  <!-- hero Section -->
   <section class="hero-section">
     <div class="hero-background">
       <div class="hero-overlay">
@@ -23,7 +208,7 @@
     </div>
   </section>
 
-  <!-- Filter Section -->
+  <!-- filter Section -->
   <section class="filter-section">
     <div class="container">
       <div class="filter-bar">
@@ -74,12 +259,12 @@
     </div>
   </section>
 
-  <!-- Transportation Section -->
+  <!-- transportation Section -->
   <section class="transportation-section">
     <div class="container">
       <div class="transportation-grid" id="transportationGrid">
         
-        <!-- Scenic Train -->
+        <!-- scenic Train -->
         <!-- <div class="transport-card" data-type="train" data-route="kandy-ella" data-price="budget" data-duration="long">
           <div class="card-image">
             <img src="assets/images/scenic-train.jpg" alt="Scenic Train Journey">
@@ -123,7 +308,7 @@
           </div>
         </div> -->
 
-        <!-- Express Bus -->
+        <!-- express Bus -->
         <div class="transport-card" data-type="bus" data-route="colombo-kandy" data-price="budget" data-duration="medium">
           <div class="card-image">
             <img src="assets/images/bus.png" alt="Express Bus">
@@ -167,7 +352,7 @@
           </div>
         </div>
 
-        <!-- Private Taxi -->
+        <!-- private Taxi -->
         <div class="transport-card" data-type="taxi" data-route="colombo-galle" data-price="premium" data-duration="medium">
           <div class="card-image">
             <img src="assets/images/car.png" alt="Private Taxi">
@@ -211,7 +396,7 @@
           </div>
         </div>
 
-        <!-- Tuk-Tuk Experience -->
+        <!-- tuk-Tuk Experience -->
         <div class="transport-card" data-type="tuk-tuk" data-route="galle-mirissa" data-price="mid" data-duration="short">
           <div class="card-image">
             <img src="assets/images/wheel.png" alt="Tuk-Tuk">
@@ -255,7 +440,7 @@
           </div>
         </div>
 
-        <!-- Boat Transfer -->
+        <!-- boat Transfer -->
         <!-- <div class="transport-card" data-type="boat" data-route="colombo-galle" data-price="premium" data-duration="medium">
           <div class="card-image">
             <img src="assets/images/boat-transfer.jpg" alt="Boat Transfer">
@@ -299,7 +484,7 @@
           </div>
         </div> -->
 
-        <!-- Domestic Flight -->
+        <!-- domestic Flight -->
         <!-- <div class="transport-card" data-type="plane" data-route="colombo-jaffna" data-price="premium" data-duration="short">
           <div class="card-image">
             <img src="assets/images/domestic-flight.jpg" alt="Domestic Flight">
@@ -351,7 +536,7 @@
     </div>
   </section>
 
-  <!-- Booking Modal -->
+  <!-- booking Modal -->
   <div class="modal" id="bookingModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -407,7 +592,7 @@
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
   <script>
-    // Load vehicles dynamically
+    // load vehicles dynamically
     document.addEventListener('DOMContentLoaded', function() {
       loadVehicles();
     });
@@ -446,7 +631,7 @@
       const grid = document.getElementById('transportationGrid');
       if (!grid) return;
 
-      // Clear existing static content
+      // clear existing static content
       grid.innerHTML = '';
 
       vehicles.forEach(vehicle => {
@@ -467,13 +652,31 @@
       
       const acBadge = vehicle.ac_type === 'ac' ? '❄️ AC' : '';
       const vehicleTypeIcon = getVehicleIcon(vehicle.vehicle_type);
+      const status = (vehicle.status || 'active').toLowerCase();
+      const statusLabel = status === 'inactive' ? 'Inactive' : status === 'pending' ? 'Pending' : 'Active';
+      const costPerKm = Number(vehicle.cost_per_km || 0);
+      const formattedCost = costPerKm > 0 ? costPerKm.toFixed(2) : '0.00';
+      const ratingCount = parseInt(vehicle.rating_count || 0, 10) || 0;
+      const avgRatingValue = parseFloat(vehicle.avg_rating || 0);
+      const ratingStarsHtml = (() => {
+        let stars = '';
+        for (let index = 1; index <= 5; index++) {
+          if (avgRatingValue >= index) {
+            stars += '<i class="fa-solid fa-star"></i>';
+          } else if (avgRatingValue >= index - 0.5) {
+            stars += '<i class="fa-solid fa-star-half-stroke"></i>';
+          } else {
+            stars += '<i class="fa-regular fa-star"></i>';
+          }
+        }
+        return stars;
+      })();
+      const ratingText = ratingCount > 0 ? `${avgRatingValue.toFixed(1)} (${ratingCount})` : 'Not yet rated';
       
       card.innerHTML = `
         <div class="card-image">
+          <div class="card-status-badge ${status}">${statusLabel}</div>
           <img src="${imageUrl}" alt="${escapeHtml(vehicle.vehicle_model || vehicle.vehicle_type)}" onerror="this.src='assets/images/default-vehicle.png'">
-          <div class="card-overlay">
-            <button class="book-btn" onclick="bookTransport(${vehicle.id})">Book Now</button>
-          </div>
         </div>
         <div class="card-content">
           <div class="card-header">
@@ -485,12 +688,17 @@
           </div>
           <p class="route">📍 ${escapeHtml(vehicle.working_district || 'Sri Lanka')}</p>
           <p class="description">${vehicle.vehicle_year ? vehicle.vehicle_year + ' Model' : ''} ${vehicle.vehicle_color ? '• ' + vehicle.vehicle_color : ''}</p>
+          <p class="card-rating"><span class="rating-stars">${ratingStarsHtml}</span><span>${escapeHtml(ratingText)}</span></p>
           <div class="card-features">
             <span class="feature">👥 ${vehicle.passenger_count || 0} Passengers</span>
             ${acBadge ? '<span class="feature">' + acBadge + '</span>' : ''}
             ${vehicle.vehicle_number ? '<span class="feature">🚗 ' + escapeHtml(vehicle.vehicle_number) + '</span>' : ''}
           </div>
           <div class="card-footer">
+            <div class="price">
+              <span class="price-amount">LKR ${formattedCost}</span>
+              <span class="price-period">per 1km</span>
+            </div>
             <button class="btn-primary view-btn" onclick="viewVehicleDetails(${vehicle.id})">View Details</button>
           </div>
         </div>

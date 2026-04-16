@@ -19,7 +19,7 @@
       <h1 class="page-title">Edit Vehicle Details</h1>
       <p class="page-subtitle">Update your vehicle information</p>
 
-      <form id="edit-vehicle-form">
+      <form id="edit-vehicle-form" enctype="multipart/form-data">
         <input type="hidden" id="vehicle-id" name="id">
 
         <div class="section">
@@ -103,6 +103,14 @@
               <div class="error-message" id="vehicle-number-error"></div>
             </div>
           </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cost-per-km">Cost per 1Km (Rs) <span class="required-asterisk">*</span></label>
+              <input type="number" id="cost-per-km" name="cost_per_km" placeholder="e.g., 150" min="1" step="0.01" required>
+              <div class="error-message" id="cost-per-km-error"></div>
+            </div>
+          </div>
         </div>
 
         <div class="divider"></div>
@@ -171,7 +179,7 @@
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-  <!-- Vehicle Update Success Modal -->
+  <!-- vehicle Update Success Modal -->
   <div id="vehicleUpdateSuccessModal" class="vehicle-update-modal">
     <div class="vehicle-update-content">
       <div class="success-icon">
@@ -296,7 +304,7 @@
       const form = document.getElementById('edit-vehicle-form');
       const continueBtn = document.querySelector('.continue-btn');
       
-      // Get vehicle ID from URL
+      // get vehicle ID from URL
       const urlParams = new URLSearchParams(window.location.search);
       const vehicleId = urlParams.get('id');
       
@@ -306,13 +314,13 @@
         return;
       }
       
-      // Set vehicle ID in hidden field
+      // set vehicle ID in hidden field
       document.getElementById('vehicle-id').value = vehicleId;
       
-      // Load vehicle data
+      // load vehicle data
       loadVehicleData(vehicleId);
       
-      // AC type selection
+      // aC type selection
       const acOption = document.getElementById('ac-option');
       const nonAcOption = document.getElementById('non-ac-option');
       const acInput = document.getElementById('ac');
@@ -332,7 +340,7 @@
         });
       }
       
-      // Form submission
+      // form submission
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         
@@ -350,20 +358,20 @@
         
         if (!isValid) return;
         
-        // Show loading
+        // show loading
         continueBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
         continueBtn.disabled = true;
         
-        // Build FormData
+        // build FormData
         const formData = new FormData(form);
         
-        // Log what we're sending
+        // log what we're sending
         console.log('Updating vehicle with data:');
         for (let [key, value] of formData.entries()) {
           console.log(key + ':', value);
         }
         
-        // Send update request
+        // send update request
         fetch('/TravelMate/public/api/vehicle/update', {
           method: 'POST',
           body: formData,
@@ -387,7 +395,7 @@
         });
       });
       
-      // Load vehicle data function
+      // load vehicle data function
       async function loadVehicleData(id) {
         try {
           const response = await fetch(`/TravelMate/public/api/vehicle/get?id=${id}`, {
@@ -408,21 +416,22 @@
         }
       }
       
-      // Populate form with vehicle data
+      // populate form with vehicle data
       function populateForm(vehicle) {
         console.log('Populating form with:', vehicle);
         
-        // Set all form fields
+        // set all form fields
         if (vehicle.vehicle_type) document.getElementById('vehicle-type').value = vehicle.vehicle_type;
         if (vehicle.working_district) document.getElementById('working-district').value = vehicle.working_district;
         if (vehicle.vehicle_model) document.getElementById('vehicle-model').value = vehicle.vehicle_model;
         if (vehicle.vehicle_year) document.getElementById('vehicle-year').value = vehicle.vehicle_year;
         if (vehicle.vehicle_color) document.getElementById('vehicle-color').value = vehicle.vehicle_color;
         if (vehicle.vehicle_number) document.getElementById('vehicle-number').value = vehicle.vehicle_number;
+        if (vehicle.cost_per_km) document.getElementById('cost-per-km').value = vehicle.cost_per_km;
         if (vehicle.passenger_count) document.getElementById('passenger-count').value = vehicle.passenger_count;
         if (vehicle.status) document.getElementById('vehicle-status').value = vehicle.status;
         
-        // Set AC type
+        // set AC type
         if (vehicle.ac_type === 'ac') {
           document.getElementById('ac').checked = true;
           acOption.classList.add('selected');
@@ -435,7 +444,7 @@
       }
     });
     
-    // Modal functions
+    // modal functions
     function showVehicleUpdateSuccessModal() {
       const modal = document.getElementById('vehicleUpdateSuccessModal');
       if (modal) {

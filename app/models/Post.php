@@ -11,6 +11,7 @@ class Post {
         'location',
         'category',
         'description',
+        'status',
         'image',
         'travel_date',
         'rating',
@@ -43,17 +44,30 @@ class Post {
         return false;
     }
     
-    public function getAllWithUserInfo() {
+    public function getAllWithUserInfo($currentUserId = 0, $category = null) {
         $query = "SELECT 
                     p.*,
                     u.first_name,
                     u.last_name,
-                    u.email
+                    u.email,
+                    u.profile_image,
+                    COALESCE(p.upvotes, 0) as upvotes,
+                    COALESCE(p.downvotes, 0) as downvotes,
+                    (SELECT vote_type FROM post_votes WHERE post_id = p.id AND user_id = :current_user_id LIMIT 1) as user_vote
                 FROM {$this->table} p
                 LEFT JOIN users u ON p.user_id = u.id
-                ORDER BY p.created_at DESC";
+                WHERE p.status = 'approved'";
+                
+        $params = ['current_user_id' => $currentUserId];
         
-        return $this->query($query);
+        if (!empty($category)) {
+            $query .= " AND p.category = :category";
+            $params['category'] = $category;
+        }
+        
+        $query .= " ORDER BY p.created_at DESC";
+        
+        return $this->query($query, $params);
     }
     
     public function getUserPosts($userId) {
@@ -71,7 +85,7 @@ class Post {
     }
     
     public function insert($data) {
-        // Remove keys that are not allowed columns
+        // remove keys that are not allowed columns
         foreach ($data as $key => $value) {
             if (!in_array($key, $this->allowedColumns)) {
                 unset($data[$key]);
@@ -93,7 +107,7 @@ class Post {
             error_log("User ID: $userId (type: " . gettype($userId) . ")");
             error_log("Table: {$this->table}");
             
-            // First verify the post belongs to the user
+            // first verify the post belongs to the user
             $query = "SELECT * FROM {$this->table} WHERE id = :post_id AND user_id = :user_id";
             error_log("SELECT Query: $query");
             error_log("SELECT Parameters: " . json_encode(['post_id' => $postId, 'user_id' => $userId]));
@@ -106,14 +120,14 @@ class Post {
             if (!$result || !is_array($result) || count($result) === 0) {
                 error_log("Post not found or doesn't belong to user. Post ID: $postId, User ID: $userId");
                 error_log("=== DELETE POST FAILED (NOT FOUND) ===");
-                return false; // Post doesn't exist or doesn't belong to user
+                return false; // post doesn't exist or doesn't belong to user
             }
             
-            // Get post data to delete image file
+            // get post data to delete image file
             $post = $result[0];
             error_log("Found post: " . json_encode($post));
             
-            // Delete the post from database using direct connection
+            // delete the post from database using direct connection
             $conn = $this->connect();
             $deleteQuery = "DELETE FROM {$this->table} WHERE id = :post_id AND user_id = :user_id";
             error_log("DELETE Query: $deleteQuery");
@@ -131,7 +145,7 @@ class Post {
                 return false;
             }
             
-            // Delete the image file if it exists
+            // delete the image file if it exists
             if (!empty($post->image)) {
                 $imagePath = '../public/' . $post->image;
                 error_log("Attempting to delete image: $imagePath");

@@ -8,10 +8,10 @@
   <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
 </head>
 <body>
-  <!-- Header/Navbar -->
+  <!-- header/Navbar -->
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-  <!-- Hero Section -->
+  <!-- hero Section -->
   <section class="hero-section">
     <div class="hero-background">
       <div class="hero-overlay">
@@ -23,7 +23,7 @@
     </div>
   </section>
 
-  <!-- Activities Section -->
+  <!-- activities Section -->
   <section class="activities-section">
     <div class="container">
       <div class="section-header">
@@ -31,110 +31,14 @@
         <p>From adrenaline-pumping adventures to peaceful nature experiences</p>
       </div>
 
-      <div class="activities-grid">
-
-        <!-- Surfing -->
-        <div class="card" data-category="surfing">
-          <div class="card-image">
-            <img src="assets/images/surfing.png" alt="Surfing">
-            <div class="card-overlay">
-              <button class="explore-btn" onclick="exploreActivity('surfing')">Explore</button>
-            </div>
-          </div>
-          <div class="card-content">
-            <h3>Surfing</h3>
-            <p>Catch the waves, feel the rhythm of the ocean — surfing is where balance meets pure freedom.</p>
-          </div>
-        </div>
-
-        <!-- Water Rafting -->
-        <div class="card" data-category="water-rafting">
-          <div class="card-image">
-            <img src="assets/images/waterafting.png" alt="Water Rafting">
-            <div class="card-overlay">
-              <button class="explore-btn" onclick="exploreActivity('water-rafting')">Explore</button>
-            </div>
-          </div>
-          <div class="card-content">
-            <h3>Water Rafting</h3>
-            <p>Thrilling rapids, splashing waves, and pure adrenaline — water rafting is where adventure flows wild and free.</p>
-          </div>
-        </div>
-
-        <!-- Bird Watching -->
-        <div class="card" data-category="bird-watching">
-          <div class="card-image">
-            <img src="assets/images/birdwatching.png" alt="Bird Watching">
-            <div class="card-overlay">
-              <button class="explore-btn" onclick="exploreActivity('bird-watching')">Explore</button>
-            </div>
-          </div>
-          <div class="card-content">
-            <h3>Bird watching</h3>
-            <p>Gentle trails, quiet moments, and wings in flight — bird watching is nature’s calmest spectacle.</p>
-          </div>
-        </div>
-
-        <!-- Safari -->
-        <div class="card" data-category="safari">
-          <div class="card-image">
-            <img src="assets/images/safari.png" alt="Safari">
-            <div class="card-overlay">
-              <button class="explore-btn" onclick="exploreActivity('safari')">Explore</button>
-            </div>
-          </div>
-          <div class="card-content">
-            <h3>Safari</h3>
-            <p>Golden plains, roaming wildlife, and untamed beauty — a safari is the closest you’ll get to nature’s wild heart.</p>
-          </div>
-        </div>
-
-        <!-- Photography -->
-        <div class="card" data-category="photography">
-          <div class="card-image">
-            <img src="assets/images/photography.png" alt="Photography">
-            <div class="card-overlay">
-              <button class="explore-btn" onclick="exploreActivity('photography')">Explore</button>
-            </div>
-          </div>
-          <div class="card-content">
-            <h3>Photography</h3>
-            <p>Photography is the art of capturing moments, light, and emotions through images, allowing creativity and storytelling through visual expression.</p>
-          </div>
-        </div>
-
-        <!-- Shopping -->
-        <div class="card" data-category="shopping">
-          <div class="card-image">
-            <img src="assets/images/shopping.png" alt="Shopping">
-            <div class="card-overlay">
-              <button class="explore-btn" onclick="exploreActivity('shopping')">Explore</button>
-            </div>
-          </div>
-          <div class="card-content">
-            <h3>Shopping</h3>
-            <p>Shopping is the activity of exploring and purchasing goods, from everyday essentials to unique items, often reflecting local culture and trends.</p>
-          </div>
-        </div>
-
-        <!-- Hiking -->
-        <div class="card" data-category="hiking">
-          <div class="card-image">
-            <img src="assets/images/hiking.png" alt="Hiking">
-            <div class="card-overlay">
-              <button class="explore-btn" onclick="exploreActivity('hiking')">Explore</button>
-            </div>
-          </div>
-          <div class="card-content">
-            <h3>Hiking</h3>
-            <p>Hiking is an outdoor activity that involves walking through natural trails, mountains, or forests, combining exercise with exploration and adventure.</p>
-          </div>
-        </div>
+      <div class="activities-grid" id="activitiesContainer">
+        <!-- dynamic loaded activities -->
+        <p style="grid-column: 1/-1; text-align: center; padding: 40px 20px; color: #666;">Loading activities...</p>
       </div>
     </div>
   </section>
 
-  <!-- Booking Modal -->
+  <!-- booking Modal -->
   <!-- <div class="modal" id="activityModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -200,6 +104,73 @@
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-  <script src="assets/js/activities.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const container = document.getElementById('activitiesContainer');
+
+      const baseApi = (function() {
+        const origin = window.location.origin;
+        const path = window.location.pathname;
+        const publicIndex = path.indexOf('/public');
+        if (publicIndex !== -1) return origin + path.substring(0, publicIndex + 7);
+        const match = path.match(/(\/[^\/]+\/public)/);
+        if (match) return origin + match[1];
+        return origin + '/TravelMate/public';
+      })();
+
+      // fetch activities from API
+      fetch(baseApi + '/api/activity/list', { credentials: 'same-origin' })
+        .then(r => r.json())
+        .then(resp => {
+          if (!resp.success) {
+            container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px 20px; color: #e74c3c;">Failed to load activities</p>';
+            return;
+          }
+          
+          const activities = resp.data || [];
+          if (activities.length === 0) {
+            container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px 20px; color: #666;">No activities available at the moment</p>';
+            return;
+          }
+
+          // render all activities
+          container.innerHTML = activities.map(activity => {
+            const baseUrl = window.location.origin + '/TravelMate/public';
+            const img = activity.image ? baseUrl + activity.image : 'assets/images/default-activity.png';
+            const description = activity.description ? (activity.description.length > 150 ? activity.description.substring(0, 150) + '...' : activity.description) : 'No description available';
+            
+            return `
+              <div class="card" data-category="${escapeHtml(activity.slug)}">
+                <div class="card-image">
+                  <img src="${img}" alt="${escapeHtml(activity.title)}">
+                  <div class="card-overlay">
+                    <a href="activityview?id=${activity.id}" class="explore-btn">Explore</a>
+                  </div>
+                </div>
+                <div class="card-content">
+                  <h3>${escapeHtml(activity.title)}</h3>
+                  <p>${escapeHtml(description)}</p>
+                </div>
+              </div>
+            `;
+          }).join('');
+        })
+        .catch(err => {
+          console.error('Error loading activities:', err);
+          container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px 20px; color: #e74c3c;">Error loading activities. Please try again later.</p>';
+        });
+
+      function escapeHtml(text) {
+        if (!text) return '';
+        return String(text).replace(/[&<>"']/g, m => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#039;'
+        }[m]));
+      }
+    });
+  </script>
 </body>
 </html>

@@ -8,10 +8,10 @@
   <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
-  <!-- Header/Navbar -->
+  <!-- header/Navbar -->
   <?php include __DIR__ . '../Traveller/header.view.php'; ?>
 
-  <!-- Hero Section -->
+  <!-- hero Section -->
   <section class="hero">
   <img src="assets/images/about.jpg" alt="About Hero">
     <div class="hero-overlay"></div>
@@ -20,7 +20,7 @@
     </div>
   </section>
 
-  <!-- Welcome Section -->
+  <!-- welcome Section -->
   <section class="welcome-section">
     <div class="welcome-container">
       <div class="welcome-content">
@@ -35,7 +35,7 @@
     </div>
   </section>
 
-  <!-- Why Choose Us Section -->
+  <!-- why Choose Us Section -->
   <section class="why-choose-section">
     <div class="why-choose-container">
       <div class="image-section">
@@ -73,14 +73,14 @@
     </div>
   </section>
 
-  <!-- Journey Begins Section -->
+  <!-- journey Begins Section -->
   <section class="journey-section">
     <div class="journey-content">
       <h2>Your journey begins here!</h2>
     </div>
   </section>
 
-  <!-- Footer -->
+  <!-- footer -->
   <footer>
     <div class="footer-content">
       <div class="footer-section company">

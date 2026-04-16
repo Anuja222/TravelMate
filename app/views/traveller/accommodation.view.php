@@ -6,16 +6,17 @@
   <title>TravelMate - Accommodations</title>
   <link rel="stylesheet" href="assets/css/Traveller/accommodation.css">
   <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-  <!-- Hero Section -->
-  <section class="hero-section">
-    <div class="hero-background">
-      <div class="hero-overlay">
-        <div class="hero-content">
+  <!-- hero Section -->
+  <section class="hero-section" style="position: relative; min-height: 60vh; display: flex; align-items: center; justify-content: center;">
+    <div class="hero-background" style="position: absolute; inset: 0; background-image: url('assets/images/accomodationmain.png'); background-size: cover; background-position: center; background-attachment: fixed; z-index: 1;"></div>
+    <div class="hero-overlay" style="position: relative; z-index: 2; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); padding: 50px 20px;">
+      <div class="hero-content" style="text-align: center; color: white;">
           <h1>Find Your Perfect Stay</h1>
           <p>From luxury resorts to cozy guesthouses, discover the best accommodations in Sri Lanka</p>
         </div>
@@ -23,7 +24,7 @@
     </div>
   </section>
 
-  <!-- Filter Section -->
+  <!-- filter Section -->
   <section class="filter-section">
     <div class="container">
       <div class="filter-bar">
@@ -75,7 +76,7 @@
     </div>
   </section>
 
-  <!-- Accommodations Section -->
+  <!-- accommodations Section -->
   <section class="accommodations-section">
     <div class="container">
       <!-- <div class="section-header">
@@ -84,7 +85,7 @@
       </div> -->
 
       <div class="accommodations-grid" id="accommodationsGrid">
-        <!-- Luxury Resort -->
+        <!-- luxury Resort -->
         <div class="accommodation-card" data-type="resort" data-location="bentota" data-price="luxury" data-rating="5">
           <div class="card-image">
             <img src="assets/images/luxuryhotel.png" alt="Luxury Beach Resort">
@@ -95,10 +96,12 @@
           <div class="card-content">
             <div class="card-header">
               <h3>Luxury Beach Resort</h3>
-              <!-- <div class="rating">
-                <span class="stars">★★★★★</span>
-                <span class="rating-score">4.8</span>
-              </div> -->
+              <div class="location" style="font-weight:600; margin-top: 6px;">
+                <span style="color:#f59e0b; display:inline-flex; gap:2px;">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                </span>
+                <span>5.0 (1)</span>
+              </div>
             </div>
             <p class="location">📍 Bentota Beach</p>
             <p class="description">Beachfront luxury resort with world-class amenities and stunning ocean views</p>
@@ -118,7 +121,7 @@
           </div>
         </div>
 
-        <!-- Boutique Hotel -->
+        <!-- boutique Hotel -->
         <div class="accommodation-card" data-type="boutique" data-location="kandy" data-price="mid" data-rating="4">
           <div class="card-image">
             <img src="assets/images/boutiquehotel.png" alt="Kandy Boutique Hotel">
@@ -129,6 +132,12 @@
           <div class="card-content">
             <div class="card-header">
               <h3>Kandy Boutique Hotel</h3>
+              <div class="location" style="font-weight:600; margin-top: 6px;">
+                <span style="color:#f59e0b; display:inline-flex; gap:2px;">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                </span>
+                <span>4.0 (1)</span>
+              </div>
             </div>
             <p class="location">📍 Kandy City Center</p>
             <p class="description">Charming boutique hotel in the heart of the cultural capital</p>
@@ -148,7 +157,7 @@
           </div>
         </div>
 
-        <!-- Mountain Lodge -->
+        <!-- mountain Lodge -->
         <div class="accommodation-card" data-type="mountain" data-location="kandy" data-price="mid" data-rating="4">
           <div class="card-image">
             <img src="assets/images/mountainlodge.png" alt="Mountain Lodge">
@@ -159,6 +168,12 @@
           <div class="card-content">
             <div class="card-header">
               <h3>Mountain Lodge</h3>
+              <div class="location" style="font-weight:600; margin-top: 6px;">
+                <span style="color:#f59e0b; display:inline-flex; gap:2px;">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                </span>
+                <span>4.0 (1)</span>
+              </div>
             </div>
             <p class="location">📍 Kandy City Center</p>
             <p class="description">Charming boutique hotel in the heart of the cultural capital</p>
@@ -178,7 +193,7 @@
           </div>
         </div>
 
-        <!-- Hill Country Villa -->
+        <!-- hill Country Villa -->
         <div class="accommodation-card" data-type="villa" data-location="ella" data-price="mid" data-rating="4">
           <div class="card-image">
             <img src="assets/images/countryvilla.png" alt="Hill Country Villa">
@@ -189,6 +204,12 @@
           <div class="card-content">
             <div class="card-header">
               <h3>Hill Country Villa</h3>
+              <div class="location" style="font-weight:600; margin-top: 6px;">
+                <span style="color:#f59e0b; display:inline-flex; gap:2px;">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                </span>
+                <span>4.0 (1)</span>
+              </div>
             </div>
             <p class="location">📍 Ella Hills</p>
             <p class="description">Private villa with panoramic mountain views and tea plantation walks</p>
@@ -208,7 +229,7 @@
           </div>
         </div>
 
-        <!-- Heritage Hotel -->
+        <!-- heritage Hotel -->
         <div class="accommodation-card" data-type="hotel" data-location="galle" data-price="mid" data-rating="4">
           <div class="card-image">
             <img src="assets/images/heritagevilla.png" alt="Heritage Hotel">
@@ -219,6 +240,12 @@
           <div class="card-content">
             <div class="card-header">
               <h3>Galle Heritage Hotel</h3>
+              <div class="location" style="font-weight:600; margin-top: 6px;">
+                <span style="color:#f59e0b; display:inline-flex; gap:2px;">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                </span>
+                <span>4.0 (1)</span>
+              </div>
             </div>
             <p class="location">📍 Galle Fort</p>
             <p class="description">Historic colonial building within the UNESCO World Heritage Galle Fort</p>
@@ -238,7 +265,7 @@
           </div>
         </div>
 
-        <!-- Budget Guesthouse -->
+        <!-- budget Guesthouse -->
         <div class="accommodation-card" data-type="guesthouse" data-location="sigiriya" data-price="budget" data-rating="3">
           <div class="card-image">
             <img src="assets/images/gardenhouse.png" alt="Sigiriya Guesthouse">
@@ -249,6 +276,12 @@
           <div class="card-content">
             <div class="card-header">
               <h3>Sigiriya Garden House</h3>
+              <div class="location" style="font-weight:600; margin-top: 6px;">
+                <span style="color:#f59e0b; display:inline-flex; gap:2px;">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
+                </span>
+                <span>3.0 (1)</span>
+              </div>
             </div>
             <p class="location">📍 Near Sigiriya Rock</p>
             <p class="description">Comfortable guesthouse with garden views, perfect for exploring ancient sites</p>
@@ -268,7 +301,7 @@
           </div>
         </div>
 
-        <!-- City Hotel -->
+        <!-- city Hotel -->
         <div class="accommodation-card" data-type="hotel" data-location="colombo" data-price="mid" data-rating="4">
           <div class="card-image">
             <img src="assets/images/cityhotel.png" alt="Colombo City Hotel">
@@ -279,6 +312,12 @@
           <div class="card-content">
             <div class="card-header">
               <h3>Colombo City Hotel</h3>
+              <div class="location" style="font-weight:600; margin-top: 6px;">
+                <span style="color:#f59e0b; display:inline-flex; gap:2px;">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                </span>
+                <span>4.0 (1)</span>
+              </div>
             </div>
             <p class="location">📍 Colombo City Center</p>
             <p class="description">Modern business hotel in the heart of Sri Lanka's commercial capital</p>
@@ -304,7 +343,7 @@
       </div> -->
     </div>
   </section>
-  <!-- Booking Modal -->
+  <!-- booking Modal -->
   <!-- <div class="modal" id="bookingModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -360,7 +399,7 @@
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
   
   <script>
-    // Load accommodations dynamically
+    // load accommodations dynamically
     document.addEventListener('DOMContentLoaded', function() {
       loadAccommodations();
     });
@@ -399,16 +438,11 @@
       const grid = document.getElementById('accommodationsGrid');
       if (!grid) return;
 
-      // Clear existing static content
+      // clear existing static content
       grid.innerHTML = '';
 
-      // Set grid layout to maintain card sizing even with one item
-      grid.style.display = 'grid';
-      grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(320px, 1fr))';
-      grid.style.gap = '2rem';
-
       if (accommodations.length === 0) {
-        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No accommodations available</p>';
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: #666;">No accommodations available at the moment.</p>';
         return;
       }
 
@@ -421,8 +455,6 @@
     function createAccommodationCard(accommodation) {
       const card = document.createElement('div');
       card.className = 'accommodation-card';
-      card.style.width = '100%';
-      card.style.maxWidth = '100%';
       card.setAttribute('data-type', accommodation.property_type || '');
       card.setAttribute('data-location', accommodation.location || '');
       
@@ -433,10 +465,33 @@
       const price = accommodation.price_per_night || 0;
       const priceRange = price > 45000 ? 'luxury' : price > 15000 ? 'mid' : 'budget';
       card.setAttribute('data-price', priceRange);
+
+      const ratingCount = parseInt(accommodation.rating_count || 0, 10) || 0;
+      const avgRatingValue = parseFloat(accommodation.avg_rating || 0);
+      const ratingStarsHtml = (() => {
+        let stars = '';
+        for (let index = 1; index <= 5; index++) {
+          if (avgRatingValue >= index) {
+            stars += '<i class="fas fa-star"></i>';
+          } else if (avgRatingValue >= index - 0.5) {
+            stars += '<i class="fas fa-star-half-alt"></i>';
+          } else {
+            stars += '<i class="far fa-star"></i>';
+          }
+        }
+        return stars;
+      })();
+      const ratingText = ratingCount > 0 ? `${avgRatingValue.toFixed(1)} (${ratingCount})` : 'Not yet rated';
+      
+      // format property type for badge
+      const propertyType = accommodation.property_type ? 
+        accommodation.property_type.charAt(0).toUpperCase() + accommodation.property_type.slice(1).replace(/_/g, ' ') : 
+        'Property';
       
       card.innerHTML = `
         <div class="card-image">
           <img src="${imageUrl}" alt="${escapeHtml(accommodation.title)}" onerror="this.src='assets/images/default-accommodation.png'">
+          <div class="card-badge">${escapeHtml(propertyType)}</div>
           <div class="card-overlay">
             <a href="accommodationdetail?id=${accommodation.id}" class="book-btn">Book Now</a>
           </div>
@@ -445,8 +500,15 @@
           <div class="card-header">
             <h3>${escapeHtml(accommodation.title)}</h3>
           </div>
-          <p class="location">📍 ${escapeHtml(accommodation.location || 'Sri Lanka')}</p>
-          <p class="description">${escapeHtml(accommodation.description || '').substring(0, 100)}${accommodation.description && accommodation.description.length > 100 ? '...' : ''}</p>
+          <p class="location">
+            <i class="fas fa-map-marker-alt"></i>
+            ${escapeHtml(accommodation.location || 'Sri Lanka')}
+          </p>
+          <p class="location" style="font-weight:600;">
+            <span style="color:#f59e0b; display:inline-flex; gap:2px;">${ratingStarsHtml}</span>
+            <span>${escapeHtml(ratingText)}</span>
+          </p>
+          <p class="description">${escapeHtml(accommodation.description || 'No description available')}</p>
           <div class="card-features">
             <span class="feature">🛏️ ${accommodation.rooms || 0} Rooms</span>
             <span class="feature">🚿 ${accommodation.bathrooms || 0} Bathrooms</span>
@@ -454,8 +516,8 @@
           </div>
           <div class="card-footer">
             <div class="price">
-              <span class="price-amount">Rs.${formatPrice(price)}</span>
-              <span class="price-period">/ night</span>
+              <span class="price-amount">LKR ${formatPrice(price)}</span>
+              <span class="price-period">per night</span>
             </div>
             <button class="btn-primary view-btn" onclick="viewDetails(${accommodation.id})">View Details</button>
           </div>

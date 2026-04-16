@@ -12,7 +12,7 @@
   <div class="page-container">
 
     <div class="content">
-      <!-- Profile Header -->
+      <!-- profile Header -->
       <div class="profile-header">
         <div class="profile-banner"></div>
         <div class="profile-info">
@@ -51,7 +51,7 @@
         </div>
       </div>
 
-      <!-- Tabs -->
+      <!-- tabs -->
       <div class="profile-tabs">
         <div class="tabs-header">
           <button class="tab active" onclick="switchTab('overview')">Overview</button>
@@ -60,7 +60,7 @@
           <button class="tab" onclick="switchTab('reviews')">Reviews</button>
         </div>
 
-        <!-- Overview Tab -->
+        <!-- overview Tab -->
         <div id="overview" class="tab-content active">
           <div class="info-grid">
             <div class="info-card">
@@ -145,10 +145,10 @@
           </div>
         </div>
 
-        <!-- Listings Tab -->
+        <!-- listings Tab -->
         <div id="listings" class="tab-content">
           <div class="listings-grid">
-            <!-- Listing 1 -->
+            <!-- listing 1 -->
             <div class="listing-card">
               <div class="listing-image">
                 <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Sunrise Resort">
@@ -169,7 +169,7 @@
               </div>
             </div>
 
-            <!-- Listing 2 -->
+            <!-- listing 2 -->
             <div class="listing-card">
               <div class="listing-image">
                 <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Ocean View Villa">
@@ -190,7 +190,7 @@
               </div>
             </div>
 
-            <!-- Listing 3 -->
+            <!-- listing 3 -->
             <div class="listing-card">
               <div class="listing-image">
                 <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="City Center Apartment">
@@ -213,7 +213,7 @@
           </div>
         </div>
 
-        <!-- Activities Tab -->
+        <!-- activities Tab -->
         <div id="activities" class="tab-content">
           <div class="activities-list">
             <div class="activity-item">
@@ -263,7 +263,7 @@
           </div>
         </div>
 
-        <!-- Reviews Tab -->
+        <!-- reviews Tab -->
         <div id="reviews" class="tab-content">
           <div style="text-align: center; padding: 40px; color: #666;">
             <h3>Reviews & Ratings</h3>
@@ -276,20 +276,20 @@
 
   <script>
     function switchTab(tabName) {
-      // Hide all tab contents
+      // hide all tab contents
       document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
       });
       
-      // Remove active class from all tabs
+      // remove active class from all tabs
       document.querySelectorAll('.tab').forEach(tab => {
         tab.classList.remove('active');
       });
       
-      // Show selected tab content
+      // show selected tab content
       document.getElementById(tabName).classList.add('active');
       
-      // Add active class to clicked tab
+      // add active class to clicked tab
       event.target.classList.add('active');
     }
 
