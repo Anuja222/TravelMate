@@ -11,10 +11,11 @@ main {
   gap: 2em;
   max-width: 1300px;
   margin: 0 auto 100px auto;
-  padding: 6em 0 0 0;
+  padding: 6em 2em 0 2em;
 }
 
 .content {
+  flex: 1;
   min-width: 0;
 }
 
@@ -351,22 +352,6 @@ body.modal-open {
     margin-top: 20px;
   }
 
-  .sidebar {
-    width: 100%;
-    max-width: none;
-    height: auto;
-    margin: 0;
-  }
-
-  .sidebar ul {
-    display: flex;
-    gap: 10px;
-  }
-
-  .sidebar ul li {
-    margin: 0;
-  }
-}
 
 @media (max-width: 860px) {
   .filter-bar {
