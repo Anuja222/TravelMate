@@ -45,7 +45,7 @@ if (!$isTransporter) {
     <div class="content">
         <div class="page-title">
             <h1><i class="fas fa-chart-line"></i> Statistics</h1>
-            <p>Analyze your business performance and trends</p>
+            <p>Analyze your business performance and trends for each of your vehicle</p>
         </div>
 
         <!-- Period Selector -->
