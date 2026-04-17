@@ -226,7 +226,7 @@
             <i class="fas fa-images"></i>
             Vehicle Photos
           </h2>
-          <p class="section-subtitle">Upload at least 2 photos of your vehicle from different angles</p>
+          <p class="section-subtitle">Upload at least 2 photos of your vehicle from different angles(This will be seen by traveller)</p>
 
           <div class="upload-group">
             <div class="upload-title">
