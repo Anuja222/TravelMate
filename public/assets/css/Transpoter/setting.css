@@ -705,13 +705,6 @@ margin-bottom: 15px;
     gap: 1em;
   }
   
-  .sidebar {
-    width: 100%;
-    margin: 0 0 1em 0;
-    min-height: unset;
-    padding: 1em 0.5em;
-  }
-  
   .form-row,
   .form-row1 {
     grid-template-columns: 1fr;
