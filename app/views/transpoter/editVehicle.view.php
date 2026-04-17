@@ -17,7 +17,7 @@
   <div class="container">
     <div class="main-content">
       <h1 class="page-title">Edit Vehicle Details</h1>
-      <p class="page-subtitle">Update your vehicle information</p>
+      <p class="page-subtitle">Updatating vehicle information</p>
 
       <form id="edit-vehicle-form" enctype="multipart/form-data">
         <input type="hidden" id="vehicle-id" name="id">
