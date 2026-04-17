@@ -63,7 +63,7 @@ if (!$isTransporter) {
     <div class="content">
         <div class="page-title">
             <h1><i class="fas fa-credit-card"></i> Payment History</h1>
-            <p>View all your transactions and payment details</p>
+            <p>View all your transactions and payment details from here</p>
         </div>
 
         <!-- Summary Cards -->
