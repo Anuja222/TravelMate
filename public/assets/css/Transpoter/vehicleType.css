@@ -13,6 +13,12 @@ main {
   max-width: 1200px;
   margin: 2em auto 50px;
   padding: 5em 1em 1em 1em;
+  align-items: center;
+}
+
+.vehicle-listing {
+  width: 100%;
+  text-align: center;
 }
 
 .vehicle-listing h2 {
@@ -97,7 +103,11 @@ main {
   padding: 2em;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-  margin: 30px 0;
+  margin: 30px auto;
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+}
 }
   
 .section-title {
@@ -111,6 +121,8 @@ main {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  align-items: flex-start;
+  margin: 20px 0;
 }
 
 .radio-option {
