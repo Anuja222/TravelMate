@@ -173,12 +173,11 @@ a {
   font-size: 1.2em;
 }  */
 
-/* Hero Section */
-/* .hero-section {
+.hero-section {
   height: 90vh;
   position: relative;
   overflow: hidden;
-} */
+}
 
 .hero-background {
   position: absolute;
@@ -192,7 +191,7 @@ a {
   background-attachment: fixed;
 } 
 
-/* .hero-overlay {
+.hero-overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -236,7 +235,7 @@ a {
   gap: 1em;
   justify-content: center;
   flex-wrap: wrap;
-} */
+}
 
 @keyframes fadeInUp {
   from {
