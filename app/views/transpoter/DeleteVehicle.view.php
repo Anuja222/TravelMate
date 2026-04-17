@@ -20,10 +20,10 @@
         <i class="fas fa-exclamation-triangle"></i>
       </div>
       <h1 class="page-title">Delete Vehicle</h1>
-      <p class="confirmation-text">Are you sure you want to delete your vehicle? This action cannot be undone.</p>
+      <p class="confirmation-text">Are you sure you want to delete your vehicle? This action cannot be reversed.</p>
 
       <div class="warning-text">
-        <p><strong>Warning:</strong> Deleting this vehicle will remove it from your listings and any future bookings.
+        <p><strong>Warning:</strong> Deleting this vehicle will remove it from any future bookings.
         </p>
       </div>
 
