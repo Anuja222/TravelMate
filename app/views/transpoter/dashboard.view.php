@@ -467,6 +467,20 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
     </div>
   </div>
 
+  <!-- Delete Error Modal -->
+  <div class="status-modal-overlay" id="deleteErrorModalDash">
+    <div class="confirm-modal">
+      <div class="confirm-icon-circle" style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white;">
+        <i class="fas fa-times-circle"></i>
+      </div>
+      <h2 style="color: #ef4444;">Cannot Delete Vehicle</h2>
+      <p id="deleteErrorMessageDash">An error occurred</p>
+      <div class="confirm-modal-buttons">
+        <button class="confirm-modal-btn confirm-modal-btn-cancel" onclick="closeDeleteErrorModalDash()" style="width: 100%;">OK</button>
+      </div>
+    </div>
+  </div>
+
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
   <script src="../public/assets/js/vehicle.js"></script>
@@ -909,17 +923,33 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
                 showDeleteModal();
                 loadDashboardSummary();
             } else {
-                alert('Failed to delete vehicle');
+                const errorMsg = data.errors && data.errors[0] ? data.errors[0] : 'Failed to delete vehicle';
                 closeConfirmModal();
+                showDeleteErrorModalDash(errorMsg);
             }
         })
         .catch(err => {
             btnDelete.innerHTML = 'Delete';
             btnDelete.disabled = false;
-            alert('Failed to delete vehicle');
+            showDeleteErrorModalDash('Failed to delete vehicle');
             closeConfirmModal();
         });
       }
+    }
+
+    // Error Modal Functions
+    function showDeleteErrorModalDash(errorMsg) {
+      const modal = document.getElementById('deleteErrorModalDash');
+      const message = document.getElementById('deleteErrorMessageDash');
+      message.textContent = errorMsg;
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDeleteErrorModalDash() {
+      const modal = document.getElementById('deleteErrorModalDash');
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
     }
     
     // Close modal when clicking overlay
@@ -928,6 +958,15 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
       statusModalEl.addEventListener('click', function(e) {
         if (e.target === this) {
           closeStatusModal();
+        }
+      });
+    }
+
+    const deleteErrorModalDashEl = document.getElementById('deleteErrorModalDash');
+    if (deleteErrorModalDashEl) {
+      deleteErrorModalDashEl.addEventListener('click', function(e) {
+        if (e.target === this) {
+          closeDeleteErrorModalDash();
         }
       });
     }

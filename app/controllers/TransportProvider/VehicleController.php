@@ -578,6 +578,15 @@ class VehicleController
         }
 
         try {
+            // Check for confirmed bookings
+            $checkStmt = $pdo->prepare("SELECT COUNT(*) as count FROM transport_bookings WHERE vehicle_id = ? AND booking_status = 'confirmed'");
+            $checkStmt->execute([$id]);
+            $result = $checkStmt->fetch(\PDO::FETCH_ASSOC);
+            
+            if ($result['count'] > 0) {
+                $this->sendResponse(false, ['error' => 'Cannot delete vehicle with confirmed bookings. Please cancel or complete the bookings first.']);
+            }
+            
             $ok = Vehicle::deleteById($pdo, $id, $userId);
             $this->sendResponse((bool) $ok, $ok ? [] : ['error' => 'Delete failed']);
         } catch (\Exception $e) {
