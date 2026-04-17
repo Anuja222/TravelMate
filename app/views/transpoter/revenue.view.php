@@ -77,7 +77,7 @@ if (session_status() === PHP_SESSION_NONE) {
       background-color: #f1f5f9;
     }
     .property-list {
-      margin-top: 40px;
+      margin-top: 50px;
       background: white;
       border-radius: 8px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.05);
@@ -85,13 +85,13 @@ if (session_status() === PHP_SESSION_NONE) {
       overflow: hidden;
     }
     .property-list h2 {
-      padding: 20px;
+      padding: 10px;
       border-bottom: 1px solid #e1e8f0;
       font-size: 1.2rem;
       color: #0f172a;
     }
     .property-table {
-      width: 100%;
+      width: 80%;
       border-collapse: collapse;
     }
     .property-table th, .property-table td {
@@ -141,7 +141,7 @@ if (session_status() === PHP_SESSION_NONE) {
                     <p style="margin: 5px 0 0 0; color: #64748b; font-size: 14px;"><strong>Provider:</strong> <?php echo htmlspecialchars($_SESSION['USER']->name ?? $_SESSION['user_name'] ?? 'Transport Provider'); ?></p>
                 </div>
             </div>
-            <div style="margin-top: 20px; padding: 12px 15px; background: #f8fafc; border-radius: 6px; border-left: 4px solid #1abc5b;">
+            <div style="margin-top: 20px; padding: 12px 15px; background: #b1cbe6; border-radius: 6px; border-left: 4px solid #1abc5b;">
                 <p style="margin: 0; color: #334155; font-size: 14px; line-height: 1.5;">
                     <strong>Dashboard Activity Summary:</strong> Official documented revenue, booking activity, and statistics for your verified vehicles on the TravelMate platform for the period of <strong><?php echo htmlspecialchars($period_label ?? 'Current Period'); ?></strong>.
                 </p>
@@ -150,7 +150,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
       <div class="page-title">
         <h1><i class="fas fa-chart-line"></i> Revenue Dashboard</h1>
-        <p>Monitor your earnings and vehicle performance</p>
+        <p>Monitor your revenue and performance for each vehicle</p>
       </div>
 
       <div class="filter-container" style="display: flex; justify-content: space-between; align-items: center;">

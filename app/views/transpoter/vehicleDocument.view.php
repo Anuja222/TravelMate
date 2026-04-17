@@ -226,7 +226,7 @@
             <i class="fas fa-images"></i>
             Vehicle Photos
           </h2>
-          <p class="section-subtitle">Upload at least 2 photos of your vehicle from different angles</p>
+          <p class="section-subtitle">Upload at least 2 photos of your vehicle from different angles(This will be seen by traveller)</p>
 
           <div class="upload-group">
             <div class="upload-title">
@@ -268,7 +268,7 @@
         </svg>
       </div>
       <h2>Vehicle Registered Successfully!</h2>
-      <p>Your vehicle has been registered and is under review. You will be notified once it's approved.</p>
+      <p>Your vehicle has been registered and is under review. You will be notified once it's approved. Please wait patiently</p>
       <button class="btn-go-dashboard" onclick="goToDashboard()">Go to Dashboard</button>
     </div>
   </div>
