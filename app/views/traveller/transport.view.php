@@ -4,10 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>TravelMate - Transportation</title>
-  <link rel="stylesheet" href="assets/css/Traveller/transport.css">
+  <link rel="stylesheet" href="assets/css/Traveller/transport.css?v=2">
   <link rel="stylesheet" href="assets/css/Traveller/usermain.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    /* force override for location input to match select */
+    .filter-group input {
+      padding: 0.8em 1em !important;
+      border: 2px solid #e1e5e9 !important;
+      border-radius: 8px !important;
+      font-size: 0.95em !important;
+      background: white !important;
+      transition: all 0.3s ease !important;
+      font-family: inherit !important;
+    }
+    .filter-group input:focus {
+      outline: none !important;
+      border-color: #1abc5b !important;
+      box-shadow: 0 0 0 3px rgba(26, 188, 91, 0.1) !important;
+    }
     /* fix grid layout for single items */
     .transportation-grid {
       display: grid;
@@ -213,45 +228,30 @@
     <div class="container">
       <div class="filter-bar">
         <div class="filter-group">
-          <label for="route">Route</label>
-          <select id="route">
-            <option value="">All Routes</option>
-            <option value="colombo-kandy">Colombo - Kandy</option>
-            <option value="colombo-galle">Colombo - Galle</option>
-            <option value="kandy-ella">Kandy - Ella</option>
-            <option value="colombo-nuwara">Colombo - Nuwara Eliya</option>
-            <option value="galle-mirissa">Galle - Mirissa</option>
-            <option value="anuradhapura-polonnaruwa">Anuradhapura - Polonnaruwa</option>
-          </select>
+          <label for="location">Location</label>
+          <input type="text" id="location" placeholder="e.g. Colombo, Kandy">
         </div>
         <div class="filter-group">
           <label for="transport-type">Transport Type</label>
           <select id="transport-type">
             <option value="">All Types</option>
-            <option value="train">Train</option>
+            <option value="car">Car</option>
+            <option value="van">Van</option>
             <option value="bus">Bus</option>
-            <option value="taxi">Taxi/Car</option>
             <option value="tuk-tuk">Tuk-Tuk</option>
-            <option value="boat">Boat</option>
-            <option value="plane">Domestic Flight</option>
+            <option value="bike">Bike</option>
+            <option value="suv">SUV</option>
+            <option value="luxury">Luxury</option>
+            <option value="taxi">Taxi</option>
           </select>
         </div>
         <div class="filter-group">
           <label for="price-range">Price Range</label>
           <select id="price-range">
             <option value="">All Prices</option>
-            <option value="budget">Budget (Under Rs.500)</option>
-            <option value="mid">Mid-range (Rs.500-2000)</option>
-            <option value="premium">Premium (Rs.2000+)</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label for="duration">Duration</label>
-          <select id="duration">
-            <option value="">All Durations</option>
-            <option value="short">Under 2 hours</option>
-            <option value="medium">2-5 hours</option>
-            <option value="long">5+ hours</option>
+            <option value="budget">Budget (Under Rs.500/km)</option>
+            <option value="mid">Mid-range (Rs.500-2000/km)</option>
+            <option value="premium">Premium (Rs.2000+/km)</option>
           </select>
         </div>
         <button class="btn filter-btn" onclick="applyFilters()">Filter Results</button>
@@ -736,25 +736,37 @@
     }
 
     function applyFilters() {
-      const route = document.getElementById('route').value.toLowerCase();
+      const locationMatch = document.getElementById('location').value.toLowerCase();
       const type = document.getElementById('transport-type').value.toLowerCase();
       const priceRange = document.getElementById('price-range').value;
-      const duration = document.getElementById('duration').value;
       
       const cards = document.querySelectorAll('.transport-card');
       
       cards.forEach(card => {
-        const cardRoute = card.getAttribute('data-route').toLowerCase();
+        const cardLocation = card.getAttribute('data-route').toLowerCase();
         const cardType = card.getAttribute('data-type').toLowerCase();
+        const cardPriceText = card.querySelector('.price-amount')?.textContent || '';
+        let cardPrice = 0;
+        
+        const priceMatch = cardPriceText.match(/[\d,.]+/);
+        if (priceMatch) {
+          cardPrice = parseFloat(priceMatch[0].replace(/,/g, ''));
+        }
         
         let show = true;
         
-        if (route && !cardRoute.includes(route)) {
+        if (locationMatch && !cardLocation.includes(locationMatch)) {
           show = false;
         }
         
         if (type && !cardType.includes(type)) {
           show = false;
+        }
+        
+        if (priceRange) {
+            if (priceRange === 'budget' && cardPrice >= 500) show = false;
+            else if (priceRange === 'mid' && (cardPrice < 500 || cardPrice > 2000)) show = false;
+            else if (priceRange === 'premium' && cardPrice <= 2000) show = false;
         }
         
         card.style.display = show ? 'block' : 'none';

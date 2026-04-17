@@ -258,7 +258,7 @@ function isTransportExpired($pickupDate) {
 
       <div class="bookings-wrapper">
         
-        <!-- aCCOMMODATIONS TAB -->
+        <!-- accommodation tab -->
         <div id="tab-accommodations" class="tab-content active">
             <div class="booking-section">
                 <h2>Accommodation Bookings</h2>

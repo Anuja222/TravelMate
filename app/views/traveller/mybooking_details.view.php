@@ -21,7 +21,7 @@
                         <i class="fas fa-arrow-left"></i> Back to Bookings
                     </button> -->
                     <h1><i class="fas fa-file-invoice"></i> Booking Details</h1>
-                    <p>View and update your booking information</p>
+                    <p>View your booking information</p>
                 </div>
             </div>
 
@@ -44,11 +44,11 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="checkinDate"><i class="fas fa-calendar-check"></i> Check-in Date</label>
-                            <input type="date" id="checkinDate">
+                            <input type="date" id="checkinDate" readonly>
                         </div>
                         <div class="form-group">
                             <label for="checkoutDate"><i class="fas fa-calendar-times"></i> Check-out Date</label>
-                            <input type="date" id="checkoutDate">
+                            <input type="date" id="checkoutDate" readonly>
                         </div>
                     </div>
 
@@ -56,11 +56,11 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="adults"><i class="fas fa-user"></i> Adults</label>
-                            <input type="number" id="adults" min="1">
+                            <input type="number" id="adults" min="1" readonly>
                         </div>
                         <div class="form-group">
                             <label for="children"><i class="fas fa-child"></i> Children</label>
-                            <input type="number" id="children" min="0" value="0">
+                            <input type="number" id="children" min="0" value="0" readonly>
                         </div>
                     </div>
 
@@ -83,10 +83,7 @@
                     <!-- form Actions -->
                     <div class="form-actions">
                         <button type="button" onclick="window.history.back()" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Cancel
-                        </button>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Update Booking
+                            <i class="fas fa-arrow-left"></i> Back
                         </button>
                     </div>
                 </form>
