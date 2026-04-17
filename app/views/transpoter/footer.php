@@ -24,9 +24,9 @@
       </div>
       <div class="footer-section connect">
         <h4>Stay Connected</h4>
-        <p>+94 11 123 4567</p>
-        <p>hello@travelmate.lk</p>
-        <p>123 Galle Road, Colombo 03, Sri Lanka</p>
+        <p>+94 11 123 12345</p>
+        <p>srilanka@travelmate.lk</p>
+        <p>123 Galle Road, Colombo 06, Sri Lanka</p>
         <form>
           <input type="email" placeholder="Your email">
           <button type="submit" class="btn btn-subscribe">Subscribe</button>
