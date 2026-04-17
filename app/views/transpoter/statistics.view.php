@@ -45,7 +45,7 @@ if (!$isTransporter) {
     <div class="content">
         <div class="page-title">
             <h1><i class="fas fa-chart-line"></i> Statistics</h1>
-            <p>Analyze your business performance and trends</p>
+            <p>Analyze your business performance and trends for each of your vehicle</p>
         </div>
 
         <!-- Period Selector -->
@@ -285,7 +285,7 @@ if (!$isTransporter) {
                         <div class="ranking-position">2</div>
                         <div class="ranking-info">
                             <span class="ranking-name">Nissan Caravan (Van)</span>
-                            <span class="ranking-stats">38 bookings · LKR 1,82,000</span>
+                            <span class="ranking-stats">38 bookings · LKR 2,50,000</span>
                         </div>
                         <span class="ranking-trend positive">
                             <i class="fas fa-arrow-up"></i> +8%
