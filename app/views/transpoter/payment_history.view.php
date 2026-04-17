@@ -27,17 +27,9 @@ if (!$isTransporter) {
 
 <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-<!-- Payment Details Modal - This is a hidden modal that pops up when view button is clicked -->
-<div class="modal" id="paymentModal">
-    <div class="modal-content payment-modal-content">
-        <div class="modal-header">
-            <h3><i class="fas fa-receipt"></i> Payment Details</h3>
-            <button class="modal-close-btn" onclick="closePaymentModal()">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="modal-body" id="paymentModalBody">
-            <!-- Dynamic content will be loaded here via JavaScript when view button is clicked -->
+<!-- Payment Details Modal->
+<
+            
         </div>
         <div class="modal-footer">
             <button class="modal-btn download-btn" onclick="downloadInvoice()">
