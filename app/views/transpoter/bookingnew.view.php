@@ -132,10 +132,6 @@ if (!$isTransporter) {
           </div>
           <div class="stat">
             <div class="stat-num">0</div>
-            <div class="stat-label">PENDING BOOKINGS</div>
-          </div>
-          <div class="stat">
-            <div class="stat-num">0</div>
             <div class="stat-label">TOTAL BOOKINGS</div>
           </div>
         </div>
