@@ -27,17 +27,9 @@ if (!$isTransporter) {
 
 <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-<!-- Payment Details Modal - This is a hidden modal that pops up when view button is clicked -->
-<div class="modal" id="paymentModal">
-    <div class="modal-content payment-modal-content">
-        <div class="modal-header">
-            <h3><i class="fas fa-receipt"></i> Payment Details</h3>
-            <button class="modal-close-btn" onclick="closePaymentModal()">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="modal-body" id="paymentModalBody">
-            <!-- Dynamic content will be loaded here via JavaScript when view button is clicked -->
+<!-- Payment Details Modal->
+<
+            
         </div>
         <div class="modal-footer">
             <button class="modal-btn download-btn" onclick="downloadInvoice()">
@@ -71,7 +63,7 @@ if (!$isTransporter) {
     <div class="content">
         <div class="page-title">
             <h1><i class="fas fa-credit-card"></i> Payment History</h1>
-            <p>View all your transactions and payment details</p>
+            <p>View all your transactions and payment details from here</p>
         </div>
 
         <!-- Summary Cards -->
@@ -194,7 +186,7 @@ if (!$isTransporter) {
                                 <span class="customer-email">sarah@email.com</span>
                             </div>
                         </td>
-                        <td><span class="amount">LKR 32,500</span></td>
+                        <td><span class="amount">LKR 33 000</span></td>
                         <td><span class="payment-method"><i class="fas fa-mobile-alt"></i> Digital Wallet</span></td>
                         <td><span class="status-badge completed">Completed</span></td>
                         <td>
