@@ -77,7 +77,7 @@ if (session_status() === PHP_SESSION_NONE) {
       background-color: #f1f5f9;
     }
     .property-list {
-      margin-top: 40px;
+      margin-top: 50px;
       background: white;
       border-radius: 8px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.05);
@@ -85,13 +85,13 @@ if (session_status() === PHP_SESSION_NONE) {
       overflow: hidden;
     }
     .property-list h2 {
-      padding: 20px;
+      padding: 10px;
       border-bottom: 1px solid #e1e8f0;
       font-size: 1.2rem;
       color: #0f172a;
     }
     .property-table {
-      width: 100%;
+      width: 80%;
       border-collapse: collapse;
     }
     .property-table th, .property-table td {
