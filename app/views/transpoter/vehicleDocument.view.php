@@ -268,7 +268,7 @@
         </svg>
       </div>
       <h2>Vehicle Registered Successfully!</h2>
-      <p>Your vehicle has been registered and is under review. You will be notified once it's approved.</p>
+      <p>Your vehicle has been registered and is under review. You will be notified once it's approved. Please wait patiently</p>
       <button class="btn-go-dashboard" onclick="goToDashboard()">Go to Dashboard</button>
     </div>
   </div>
