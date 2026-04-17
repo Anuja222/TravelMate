@@ -178,7 +178,7 @@
           <div class="upload-group">
             <div class="upload-title">
               <i class="fas fa-file-upload"></i>
-              <span>Upload Insurance Document <span class="required-asterisk">*</span></span>
+              <span>Upload Insurance Document (Give accurate ones)<span class="required-asterisk">*</span></span>
             </div>
             <input type="file" id="insurance" name="insurance" accept=".jpg,.jpeg,.png,.pdf" style="display: none;"
               required>
