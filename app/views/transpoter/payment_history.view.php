@@ -30,20 +30,7 @@ if (!$isTransporter) {
 <!-- Payment Details Modal->
 <
             
-        </div>
-        <div class="modal-footer">
-            <button class="modal-btn download-btn" onclick="downloadInvoice()">
-                <i class="fas fa-download"></i> Download Invoice
-            </button>
-            <button class="modal-btn print-btn" onclick="printInvoice()">
-                <i class="fas fa-print"></i> Print
-            </button>
-            <button class="modal-btn close-btn" onclick="closePaymentModal()">
-                <i class="fas fa-times"></i> Close
-            </button>
-        </div>
-    </div>
-</div>
+        
 
 <!-- MAIN CONTENT -->
 <main>
