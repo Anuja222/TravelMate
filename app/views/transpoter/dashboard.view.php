@@ -65,12 +65,12 @@ $lastName = $isLoggedIn ? $_SESSION['user']['last_name'] : '';
             <i class="fas fa-star"></i>
             <i class="fas fa-star"></i>
             <i class="fas fa-star-half-alt"></i>
-            <span>4.5 (12 Reviews)</span>
+            <span>4.5 (20 Reviews)</span>
           </div>
         </div>
       </section>
 
-      <!-- VEHICLES -->
+      <!-- Vehicles -->
       <section class="favourites">
         <div class="section-header">
           <h3>My Vehicles</h3>
