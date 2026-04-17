@@ -264,12 +264,13 @@ body.modal-open {
 .booking-modal {
   position: fixed;
   inset: 0;
-  background: rgba(2, 6, 23, 0.48);
+  background: rgba(2, 6, 23, 0.55);
   display: none;
   align-items: center;
   justify-content: center;
   z-index: 1200;
   padding: 18px;
+  backdrop-filter: blur(2px);
 }
 
 .booking-modal.show {
@@ -279,35 +280,51 @@ body.modal-open {
 .booking-modal-content {
   width: min(760px, 100%);
   background: #ffffff;
-  border-radius: 16px;
-  border: 1px solid #e4eaf1;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22);
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.15);
   overflow: hidden;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .booking-modal-header,
 .booking-modal-footer {
-  padding: 14px 18px;
-  border-bottom: 1px solid #edf2f7;
+  border-bottom: 1px solid #e5eaf1;
 }
 
 .booking-modal-footer {
   border-bottom: none;
-  border-top: 1px solid #edf2f7;
+  border-top: 1px solid #e5eaf1;
   display: flex;
   justify-content: flex-end;
+  padding: 16px 24px;
 }
 
 .booking-modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f0f4f8 100%);
 }
 
 .booking-modal-header h3 {
   margin: 0;
-  font-size: 1.12rem;
+  font-size: 1.35rem;
+  font-weight: 700;
   color: #0f172a;
+  letter-spacing: -0.02em;
 }
 
 .booking-modal-close {
@@ -315,34 +332,53 @@ body.modal-open {
   background: transparent;
   font-size: 1.55rem;
   line-height: 1;
-  color: #64748b;
+  color: #94a3b8;
   cursor: pointer;
-  padding: 2px 8px;
+  padding: 4px 8px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  width: 36px;
+  border-radius: 8px;
+}
+
+.booking-modal-close:hover {
+  background: #f1f5f9;
+  color: #475569;
 }
 
 .booking-modal-body {
-  padding: 18px;
+  padding: 24px;
 }
 
 .modal-grid {
-  display: flex;
+  display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px 16px;
+  gap: 20px;
 }
 
 .modal-grid p {
   margin: 0;
-  background: #f8fafc;
-  border: 1px solid #edf2f7;
-  border-radius: 10px;
-  padding: 10px;
-  font-size: 0.92rem;
-  color: #334155;
-  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .modal-grid strong {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  font-weight: 600;
+  display: block;
+}
+
+.modal-grid p:not(:has(strong)) {
   color: #0f172a;
+  font-size: 0.96rem;
+  font-weight: 500;
 }
 
 @media (max-width: 1080px) {
