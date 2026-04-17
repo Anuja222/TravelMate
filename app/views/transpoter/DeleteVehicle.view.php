@@ -114,7 +114,7 @@
       width: 80px;
       height: 80px;
       margin: 0 auto 20px;
-      background: linear-gradient(135deg, #ef4444, #dc2626);
+      background: linear-gradient(135deg, #420303, #dc2626);
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -137,7 +137,7 @@
 
     .delete-modal-content p {
       font-size: 15px;
-      color: #6b7280;
+      color: #b3c7f0;
       margin-bottom: 30px;
       line-height: 1.6;
     }
