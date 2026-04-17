@@ -285,7 +285,7 @@ if (!$isTransporter) {
                         <div class="ranking-position">2</div>
                         <div class="ranking-info">
                             <span class="ranking-name">Nissan Caravan (Van)</span>
-                            <span class="ranking-stats">38 bookings · LKR 1,82,000</span>
+                            <span class="ranking-stats">38 bookings · LKR 2,50,000</span>
                         </div>
                         <span class="ranking-trend positive">
                             <i class="fas fa-arrow-up"></i> +8%
