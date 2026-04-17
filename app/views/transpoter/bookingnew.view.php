@@ -118,7 +118,7 @@ if (!$isTransporter) {
         </button>
       </div>
 
-      <!-- PERFORMANCE SUMMARY -->
+      <!-- Performance Summary -->
       <section class="activity-summary">
         <h3>Booking Summary</h3>
         <div class="summary-stats">
@@ -129,6 +129,10 @@ if (!$isTransporter) {
           <div class="stat">
             <div class="stat-num">0</div>
             <div class="stat-label">COMPLETED</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">0</div>
+            <div class="stat-label">PENDING BOOKINGS</div>
           </div>
           <div class="stat">
             <div class="stat-num">0</div>
