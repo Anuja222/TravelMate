@@ -186,7 +186,7 @@ if (!$isTransporter) {
                                 <span class="customer-email">sarah@email.com</span>
                             </div>
                         </td>
-                        <td><span class="amount">LKR 32,500</span></td>
+                        <td><span class="amount">LKR 33 000</span></td>
                         <td><span class="payment-method"><i class="fas fa-mobile-alt"></i> Digital Wallet</span></td>
                         <td><span class="status-badge completed">Completed</span></td>
                         <td>
