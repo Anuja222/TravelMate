@@ -18,7 +18,7 @@
 
     <div class="dashboard-content">
       <section class="vehicle-listing">
-        <h2>List your vehicle on TravelMate and get your vehicle booked for a trip!</h2>
+        <h2>List your vehicle on TravelMate and take bookings for your vehicle</h2>
         <p>To get started, select the type of vehicle you have:</p>
 
         <div class="vehicle-cards">
