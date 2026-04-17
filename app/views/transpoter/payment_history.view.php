@@ -81,7 +81,7 @@ if (!$isTransporter) {
                 </div>
                 <div class="summary-details">
                     <span class="summary-label">Pending Payments</span>
-                    <span class="summary-value">LKR 15,000</span>
+                    <span class="summary-value">LKR 30,000</span>
                 </div>
             </div>
             
