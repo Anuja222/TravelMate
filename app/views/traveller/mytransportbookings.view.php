@@ -26,7 +26,7 @@
                 </li>
                 <li class="sidebar-item">
                     <a href="feed" class="sidebar-link">
-                        <span class="sidebar-text">Vlogs</span>
+                        <span class="sidebar-text">Blogs</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
@@ -145,39 +145,10 @@
         </div>
     </div>
 
-    <!-- cancel Confirmation Modal -->
-    <div id="cancelConfirmModal" class="cancel-confirm-modal">
-        <div class="cancel-confirm-content">
-            <div class="cancel-icon">
-                <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="30" cy="30" r="28" stroke="#ef4444" stroke-width="3" fill="#fef2f2"/>
-                    <path d="M30 20V32" stroke="#ef4444" stroke-width="3" stroke-linecap="round"/>
-                    <circle cx="30" cy="40" r="2" fill="#ef4444"/>
-                </svg>
-            </div>
-            <h2>Cancel Booking?</h2>
-            <p>Are you sure you want to cancel this transport booking? This action cannot be undone.</p>
-            <div class="modal-actions">
-                <button class="btn-cancel-action" onclick="closeConfirmModal()">No, Keep It</button>
-                <button class="btn-confirm-cancel" onclick="proceedWithCancel()">Yes, Cancel Booking</button>
-            </div>
-        </div>
+
     </div>
 
-    <!-- cancel Success Modal -->
-    <div id="cancelSuccessModal" class="cancel-success-modal">
-        <div class="cancel-success-content">
-            <div class="success-icon">
-                <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="30" cy="30" r="28" stroke="#10b981" stroke-width="3" fill="#ecfdf5"/>
-                    <path d="M20 30L26 36L40 22" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div>
-            <h2>Booking Cancelled Successfully</h2>
-            <p>Your transport booking has been cancelled and you will receive a confirmation email shortly.</p>
-            <button class="btn-close-success" onclick="closeCancelSuccessModal()">Close</button>
-        </div>
-    </div>
+
 
     <!-- error Modal -->
     <div id="errorModal" class="error-modal">

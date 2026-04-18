@@ -199,12 +199,16 @@
                 <span id="taxesFees">$0</span>
               </div>
               <div class="summary-row total">
-                <span>Total:</span>
-                <span id="totalPrice">$0</span>
+                  <span>Total Price:</span>
+                  <span id="totalPrice">$0</span>
+                </div>
+                <div class="summary-row total" style="color: #1abc5b; border-top: none; font-size: 1.1em; margin-top: 5px;">
+                  <span>Payable Now (30%):</span>
+                  <span id="payablePrice">$0</span>
+                </div>
               </div>
-            </div>
 
-            <button type="button" class="btn-primary book-now-btn" onclick="calculatePrice()">Check Availability</button>
+              <button type="button" class="btn-primary book-now-btn" onclick="calculatePrice()">Check Availability</button>
             <button type="button" class="btn-primary confirm-booking-btn" onclick="confirmBooking()" style="display: none;">Confirm Booking</button>
 
             <div class="booking-notes">

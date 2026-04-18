@@ -39,24 +39,24 @@ $id = $isLoggedIn ? $_SESSION['user']['id'] : '';
             <div class="summary-box">
                 <h3>Your price summary</h3>
                 <div class="summary-row">
-                    <span>Original price</span>
-                    <span class="old-price" id="originalPrice">LKR 52,840</span>
+                    <span>Original price (Base)</span>
+                    <span id="originalPrice">LKR 0</span>
                 </div>
                 <div class="summary-row">
-                    <span>Limited-time Deal</span>
-                    <span class="discount-price" id="discountAmount">LKR 21,136</span>
-                </div>
-                <div class="summary-note">
-                    Limited-time discount because—for a limited time only—this property is offering reduced rates on
-                    some room types. Much cheaper now!
+                    <span>Taxes and fees</span>
+                    <span id="taxAmount">LKR 0</span>
                 </div>
                 <div class="summary-total">
-                    <span>Price</span>
-                    <span class="total-price" id="totalPrice">LKR 31,704</span>
+                    <span>Total Price</span>
+                    <span class="total-price" id="totalPrice">LKR 0</span>
                 </div>
-                <div class="summary-currency">
-                    + <span id="taxAmount">LKR 5,418</span> taxes and fees<br>
-                    In property currency: <span id="usdAmount">US$105</span>
+                <div class="summary-total" style="color: #10b981; border-top: none; padding-top: 5px; font-size: 1.1em;">
+                    <span>Payable Now (30%)</span>
+                    <span class="total-price" id="payablePrice" style="color: #10b981;">LKR 0</span>
+                </div>
+
+                <div class="summary-note" style="color: #ef4444; font-weight: 600; margin-top: 15px; line-height: 1.4;">
+                    Cancellation Policy: We do not refund the payable amount if the traveller cancels this booking.
                 </div>
             </div>
 

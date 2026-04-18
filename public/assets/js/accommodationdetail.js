@@ -538,6 +538,10 @@ function calculatePrice() {
     document.getElementById('taxesFees').textContent = `Rs.${taxes.toLocaleString()}`;
     document.getElementById('totalPrice').textContent = `Rs.${totalPrice.toLocaleString()}`;
     
+    // Calculate and display 30% payable amount
+    const payableAmount = totalPrice * 0.3;
+    document.getElementById('payablePrice').textContent = `Rs.${payableAmount.toLocaleString()}`;
+    
     // show summary and confirm button
     document.getElementById('bookingSummary').style.display = 'block';
     document.querySelector('.book-now-btn').style.display = 'none';

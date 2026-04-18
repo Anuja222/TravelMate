@@ -27,29 +27,23 @@ function loadPriceSummary() {
     if (!bookingData) return;
     
     // calculate prices
-    const totalPrice = bookingData.totalPrice;
-    const discount = bookingData.discount || 0.3;
-    const originalPrice = Math.round(totalPrice / (1 - discount));
-    const discountAmount = originalPrice - totalPrice;
-    const taxes = bookingData.taxes || Math.round(totalPrice * 0.15);
-    
-    // convert to USD (approximate rate: 1 USD = 300 LKR)
-    const usdAmount = Math.round(totalPrice / 300);
+    const totalPrice = bookingData.totalPrice || 0;
+    const basePrice = bookingData.basePrice || Math.round(totalPrice / 1.15);
+    const taxes = bookingData.taxes || Math.round(totalPrice - basePrice);
+    const payableAmount = totalPrice * 0.3;
     
     // update display
     const elements = {
         originalPrice: document.getElementById('originalPrice'),
-        discountAmount: document.getElementById('discountAmount'),
-        totalPrice: document.getElementById('totalPrice'),
         taxAmount: document.getElementById('taxAmount'),
-        usdAmount: document.getElementById('usdAmount')
+        totalPrice: document.getElementById('totalPrice'),
+        payablePrice: document.getElementById('payablePrice')
     };
 
-    if (elements.originalPrice) elements.originalPrice.textContent = `LKR ${originalPrice.toLocaleString()}`;
-    if (elements.discountAmount) elements.discountAmount.textContent = `LKR ${discountAmount.toLocaleString()}`;
-    if (elements.totalPrice) elements.totalPrice.textContent = `LKR ${Math.round(totalPrice).toLocaleString()}`;
+    if (elements.originalPrice) elements.originalPrice.textContent = `LKR ${basePrice.toLocaleString()}`;
     if (elements.taxAmount) elements.taxAmount.textContent = `LKR ${taxes.toLocaleString()}`;
-    if (elements.usdAmount) elements.usdAmount.textContent = `US$${usdAmount}`;
+    if (elements.totalPrice) elements.totalPrice.textContent = `LKR ${Math.round(totalPrice).toLocaleString()}`;
+    if (elements.payablePrice) elements.payablePrice.textContent = `LKR ${Math.round(payableAmount).toLocaleString()}`;
 }
 
 // setup complete booking button
