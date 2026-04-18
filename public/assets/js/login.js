@@ -14,19 +14,21 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(res => res.json())
         .then(data => {
             if (data.success) {
+                const userRole = (data.user && data.user.role ? data.user.role : '').toLowerCase();
+
                 // Show success modal
                 const modal = document.getElementById('successModal');
                 modal.classList.add('show');
                 
                 // Redirect after 1.5 seconds
                 setTimeout(() => {
-                    if (data.user.role === 'transport') {
+                    if (userRole === 'transport') {
                         window.location.href = 'tr_dashboard';
-                    } else if (data.user.role === 'traveller') {
+                    } else if (userRole === 'traveller') {
                         window.location.href = 'homet';
-                    } else if (data.user.role === 'admin') {
+                    } else if (userRole === 'admin') {
                         window.location.href = 'ad_dashboard';
-                    } else if (data.user.role === 'accommodation') {
+                    } else if (userRole === 'accommodation') {
                         window.location.href = 'ac_dashboard';
                     }
                 }, 1500);

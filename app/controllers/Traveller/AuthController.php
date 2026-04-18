@@ -132,7 +132,10 @@ class AuthController
             return;
         }
 
-        if (isset($userData['status']) && $userData['status'] === 'suspended') {
+        $isSuspended = isset($userData['status']) && strtolower(trim((string) $userData['status'])) === 'suspended';
+        $isAdmin = isset($userData['role']) && strtolower(trim((string) $userData['role'])) === 'admin';
+
+        if ($isSuspended && !$isAdmin) {
             $reason = !empty($userData['suspend_reason']) ? $userData['suspend_reason'] : 'Violation of terms';
             $this->sendResponse(false, ['general' => 'Your account has been suspended by Admin. Reason: ' . htmlspecialchars($reason)]);
             return;
