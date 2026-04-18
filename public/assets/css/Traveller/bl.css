@@ -1,0 +1,85 @@
+/* Group 1: Authentication (Test Cases 01 to 06)
+Test Cases: User Registration (Valid, Duplicate, Validation) and User Login/Logout.
+
+View (signupmodel.view.php or login views):
+The user sees a form with fields like email, password, etc.
+For test case 03 (Validation), if a required field is empty, HTML5 or JavaScript in the view might prevent submission, or it shows an error returned from the server.
+
+Controller (AuthController.php):
+When the user submits the signup/login form, it sends a POST request here.
+The controller uses Validator.php to ensure the data is safe.
+For test case 02, it asks the Model: "Does this email exist?"
+For test case 05 (Invalid Password), it hashes the entered password and compares it with what's stored. If it fails, it sends an error message back to the View.
+For test case 06 (Logout), it destroys the session data ($_SESSION) and redirects to the home view.
+
+Model (User.php):
+This interacts with the users table in your database.
+It contains functions to insert() a new user (Registration) or where(['email' => $email]) to fetch user credentials for Login.
+
+
+Group 2: Profile Management (Test Cases 07 to 09)
+Test Cases: View Own Profile, Edit Profile, Upload Profile Photo.
+
+View (profile.view.php / profilesetting.view.php - approximated view names):
+The user sees their details. Upon clicking "Edit", they see a form to change names or upload an image.
+
+Controller (Profile.php and Profilesetting.php):
+View Profile (07): The controller checks who is logged in (via session), asks the Model for their data, and passes that data to the View to be displayed.
+Edit Profile (08): Takes the new name/bio from the form submission.
+Upload Photo (09): Takes the file from $_FILES, checks if it is a valid JPG/PNG, moves it into the profile_images directory, and passes the new file path to the Model.
+
+Model (User.php):
+Receives the updated text fields or the new image path and runs an UPDATE users SET... SQL query to save the changes.
+
+
+Group 3: Accommodations (Test Cases 10 to 13 & 17)
+Test Cases: Search, Create Booking, Cancel Booking, View Bookings, Rate Accommodation.
+
+View (bookings.view.php, mybookings.view.php):
+Users see search bars (location, budget), lists of properties, and their past/upcoming bookings.
+
+Controller (BookingController.php & Mybookings.php):
+Search (10): The controller gets the GET variables (e.g., ?location=Kandy&budget=5000). It passes these to the Model to filter databases.
+Create (11) & Cancel (12): Receives the accommodation_id, dates, etc., checks if it's available, and asks the model to insert a booking. If canceling, it changes the status field to 'cancelled'.
+View (13): Asks the Model for all bookings where user_id = current_user.
+Rate (17): Processes a form containing a star rating (1-5) and text, sending it to the database rating table.
+
+Model (Accommodation.php & booking.php):
+The Accommodation model searches the listings.
+The booking model handles inserting the reservation into the database (checking the rules set by add_accommodation_id_to_bookings.sql).
+
+
+Group 4: Transportation (Test Cases 14 to 16 & 18)
+Test Cases: Transport Search, Create Booking, View Bookings, Rate Transport.
+
+View (mytransportbookings.view.php & search views):
+Shows vehicle lists filtered by type (e.g., TukTuk, Van) and location. Displays past transport bookings.
+
+Controller (BookingController.php processing transport logic):
+Search (14): Extracts location/category filters.
+Booking (15): Records standard booking data and assigns it "pending" status until the Transport Provider approves it.
+View (16): Loads the mytransportbookings view and passes the reservation history to it.
+
+Model (Vehicle.php & TransportBooking.php):
+Executes queries reading from the vehicles table (using cost_per_km from your migrations) and inserting into transport_bookings tables.
+
+
+Group 5: Vlogs, Content & Community (Test Cases 19 & 20)
+Test Cases: Create Travel Post, Vote on Feed Post.
+
+View (Feed and post creation views under views):
+A feed showing cards of images and text (travel stories). A form to upload a photo and write a story. Up/Down vote buttons (often using JavaScript/AJAX).
+
+Controller (PostController.php & Feed.php):
+Create Post (19): Takes the text and image ($_FILES), saves the image to posts, and tells the Model to save the record with a status = pending (based on your migrations).
+Vote (20): When a user clicks upvote, this controller receives the post_id and whether it was an upvote or downvote. It updates the total count.
+
+Model (Post.php):
+Interacts with the posts table (created via create_posts_table.sql). It handles inserting new post records and incrementing/decrementing vote counts.
+Summary of How to "Think" About This:
+When testing any of these cases, ask yourself:
+
+Did I test the View? Did I click the button? Did the error message show up clearly on the screen?
+Did I test the Controller? Did it properly stop me if I tried to book an accommodation in the past, or did it catch an invalid email?
+Did I test the Model/DB? After my action, if I check PHPMyAdmin/my database, did the new row actually show up, and did the status change to "pending" or "cancelled" correctly?
+Gemini 3.1 Pro (Preview) • 1x */
