@@ -502,6 +502,7 @@ class AccommodationController {
         }
     }
 
+//admin methods
     public function approveByAdmin() {
         global $pdo;
 
@@ -509,7 +510,7 @@ class AccommodationController {
             $this->sendResponse(false, ['Invalid request method']);
         }
 
-        if (!isset($_SESSION['user']) || ($_SESSION['user']['role'] ?? '') !== 'admin') {
+        if (!isset($_SESSION['user']) || ($_SESSION['user']['role'] ?? '') !== 'admin') {//check admin authorization
             $this->sendResponse(false, ['Unauthorized']);
         }
 
@@ -635,7 +636,7 @@ class AccommodationController {
             session_start();
         }
         
-        error_log("=== Get Provider Bookings Called ===");
+        error_log(" Get Provider Bookings Called ");
         error_log("Session User: " . print_r($_SESSION['user'] ?? 'NOT SET', true));
         
         if (!isset($_SESSION['user'])) {

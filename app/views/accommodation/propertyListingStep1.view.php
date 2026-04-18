@@ -18,10 +18,10 @@ $savedData = $_SESSION['listing_step1'] ?? [];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>List Your Property - Step 1 - TravelMate</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com"> //build the connection to load filesfrom google fonts - increase speed, reduce font load delay
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"> //load fonts - poppin
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> //font awesome css - load icons
     <link rel="stylesheet" href="/TravelMate/public/assets/css/Accommodation/propertyListingStart.css">
     <link rel="stylesheet" href="/TravelMate/public/assets/css/Traveller/usermain.css">
     <link rel="stylesheet" href="/TravelMate/public/assets/css/main.css">

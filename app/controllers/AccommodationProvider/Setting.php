@@ -9,7 +9,7 @@ class Setting extends Controller {
         
         require_once __DIR__ . '/../../core/config.php';
         
-        $dsn = "mysql:host=" . DBHOST . ";dbname=" . DBNAME . ";charset=utf8mb4";
+        $dsn = "mysql:host=" . DBHOST . ";port=" . DBPORT . ";dbname=" . DBNAME . ";charset=utf8mb4";
         $conn = new PDO($dsn, DBUSER, DBPASS);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
@@ -27,7 +27,7 @@ class Setting extends Controller {
         }
 
         require_once __DIR__ . '/../../core/config.php';
-        $dsn = "mysql:host=" . DBHOST . ";dbname=" . DBNAME . ";charset=utf8mb4";
+        $dsn = "mysql:host=" . DBHOST . ";port=" . DBPORT . ";dbname=" . DBNAME . ";charset=utf8mb4";
         $conn = new PDO($dsn, DBUSER, DBPASS);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
@@ -96,7 +96,7 @@ class Setting extends Controller {
         }
 
         require_once __DIR__ . '/../../core/config.php';
-        $dsn = "mysql:host=" . DBHOST . ";dbname=" . DBNAME . ";charset=utf8mb4";
+        $dsn = "mysql:host=" . DBHOST . ";port=" . DBPORT . ";dbname=" . DBNAME . ";charset=utf8mb4";
         $conn = new PDO($dsn, DBUSER, DBPASS);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 

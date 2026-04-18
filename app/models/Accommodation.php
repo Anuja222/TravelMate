@@ -1,7 +1,7 @@
 <?php
 namespace App\Models;
 
-class Accommodation {
+class Accommodation { //variables that matching database coloumns.
     public $id;
     public $userId;
     public $propertyType;
@@ -29,15 +29,25 @@ class Accommodation {
     public $parking;
     public $status;
 
-    public function __construct($data = []) {
+
+    public function __construct($data = []) { //assign array data to object properties - 
         foreach ($data as $key => $value) {
             if (property_exists($this, $key)) {
                 $this->$key = $value;
             }
         }
     }
+//  $data = [
+//      "title" => "Sea View Hotel",
+//      "location" => "Galle"
+//  ];
 
-    private static function hasBookingRatingsTable($conn) {
+//  convert to
+
+// $this->title = "Sea View Hotel";
+// $this->location = "Galle";
+
+    private static function hasBookingRatingsTable($conn) { //check whether has booking rating table in the DB
         try {
             $stmt = $conn->query("SHOW TABLES LIKE 'booking_ratings'");
             return $stmt && $stmt->fetch(\PDO::FETCH_NUM);
@@ -46,9 +56,9 @@ class Accommodation {
         }
     }
 
-    private static function ratingSelectClause($alias = 'a') {
-        return "
-            COALESCE((
+    private static function ratingSelectClause($alias = 'a') { //get average rating and rating count
+        return " 
+            COALESCE(( 
                 SELECT ROUND(AVG(br.rating), 1)
                 FROM booking_ratings br
                 WHERE br.accommodation_id = {$alias}.id
@@ -61,7 +71,8 @@ class Accommodation {
         ";
     }
 
-    public function create($conn) {
+    //CREATE operation
+    public function create($conn) { // insert a new accommodation to DB and return the ID
         $sql = "INSERT INTO accommodations (
             user_id, property_type, title, description, location, address,
             rooms, bathrooms, max_guests, children_allowed,
@@ -114,7 +125,7 @@ class Accommodation {
         return $conn->lastInsertId();
     }
 
-    public static function findByUser($conn, $userId) {
+    public static function findByUser($conn, $userId) { //It retrieves all accommodations belonging to a specific user along with booking and rating statistics.
         $ratingSelect = self::hasBookingRatingsTable($conn)
             ? self::ratingSelectClause('a')
             : "0 AS avg_rating, 0 AS rating_count";
@@ -135,14 +146,14 @@ class Accommodation {
                     ) AS booked_rooms,
                     {$ratingSelect}
                 FROM accommodations a
-                WHERE a.user_id = ?
+                WHERE a.user_id = ? 
                 ORDER BY a.created_at DESC";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$userId]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public static function findAll($conn) {
+    public static function findAll($conn) { //show active properties only
         $ratingSelect = self::hasBookingRatingsTable($conn)
             ? self::ratingSelectClause('a')
             : "0 AS avg_rating, 0 AS rating_count";
@@ -164,7 +175,7 @@ class Accommodation {
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public static function findById($conn, $id, $userId = null) {
+    public static function findById($conn, $id, $userId = null) { //load one accommodation details by id
         if ($userId) {
             $sql = "SELECT * FROM accommodations WHERE id = ? AND user_id = ?";
             $stmt = $conn->prepare($sql);
@@ -177,7 +188,7 @@ class Accommodation {
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function update($conn) {
+    public function update($conn) { //update accommodation
         $sql = "UPDATE accommodations SET 
                 property_type = ?,
                 title = ?,
@@ -237,7 +248,7 @@ class Accommodation {
         ]);
     }
 
-    public static function deleteById($conn, $id, $userId) {
+    public static function deleteById($conn, $id, $userId) { //delete operation
         // first delete related images
         $sql = "DELETE FROM accommodation_images WHERE accommodation_id = ?";
         $stmt = $conn->prepare($sql);
@@ -249,20 +260,20 @@ class Accommodation {
         return $stmt->execute([$id, $userId]);
     }
 
-    public static function addImage($conn, $accommodationId, $imagePath, $isMain = false) {
+    public static function addImage($conn, $accommodationId, $imagePath, $isMain = false) { //add images
         $sql = "INSERT INTO accommodation_images (accommodation_id, image_path, is_main) VALUES (?, ?, ?)";
         $stmt = $conn->prepare($sql);
         return $stmt->execute([$accommodationId, $imagePath, $isMain ? 1 : 0]);
     }
 
-    public static function getImages($conn, $accommodationId) {
+    public static function getImages($conn, $accommodationId) { //get images
         $sql = "SELECT * FROM accommodation_images WHERE accommodation_id = ? ORDER BY is_main DESC";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$accommodationId]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public static function getMainImage($conn, $accommodationId) {
+    public static function getMainImage($conn, $accommodationId) { //get main image
         $sql = "SELECT image_path FROM accommodation_images WHERE accommodation_id = ? AND is_main = 1 LIMIT 1";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$accommodationId]);

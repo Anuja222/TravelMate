@@ -258,6 +258,12 @@ elseif ($requestUri === '/Accomodation_provider/propertyListingStart') {
     $controller = new Accomodation_provider();
     $controller->newerDashboard();
     exit;
+}elseif ($requestUri === '/CommentsController/createdComments') {
+    require_once '../app/core/Controller.php';
+    require_once '../app/controllers/AccommodationProvider/CommentsController.php';
+    $controller = new CommentsController();
+    $controller->createdComments();
+    exit;
 }
 
 // destination API routes

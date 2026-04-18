@@ -3,7 +3,7 @@
 Trait Database{
 
     protected function connect(){
-        $string = "mysql:hostname=".DBHOST.";dbname=".DBNAME;
+        $string = "mysql:host=".DBHOST.";port=".DBPORT.";dbname=".DBNAME;
         try {
             $conn = new PDO($string,DBUSER,DBPASS);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

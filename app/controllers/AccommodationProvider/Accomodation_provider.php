@@ -10,7 +10,7 @@ class Accomodation_provider extends Controller {
     private $uploadDir;
 
     public function __construct() {
-        if (session_status() === PHP_SESSION_NONE) {
+        if (session_status() === PHP_SESSION_NONE) { //initializes PHP session
             session_start();
         }
         
@@ -20,7 +20,7 @@ class Accomodation_provider extends Controller {
             exit;
         }
         
-        $this->uploadDir = __DIR__ . '/../../../public/uploads/accommodations';
+        $this->uploadDir = __DIR__ . '/../../../public/uploads/accommodations'; //set up the accommodations folder for storing images
         if (!is_dir($this->uploadDir)) {
             mkdir($this->uploadDir, 0777, true);
         }
@@ -31,7 +31,7 @@ class Accomodation_provider extends Controller {
         $this->view('accommodation/newerDashboard');
     }
 
-    // property Listing - Selection View
+    // property type selection page
     public function propertyListingStart() {
         $this->view('accommodation/propertyListingStart');
     }
@@ -81,7 +81,7 @@ class Accomodation_provider extends Controller {
     public function saveProperty() {
         global $pdo;
 
-        error_log("=== SaveProperty Called ===");
+        error_log("SaveProperty Called ");
         error_log("POST Data: " . print_r($_POST, true));
         error_log("FILES Data: " . print_r($_FILES, true));
 
@@ -330,7 +330,7 @@ class Accomodation_provider extends Controller {
         $this->view('accommodation/setting');
     }
 
-    // aPI endpoint for creating property (called from step 2)
+    // API endpoint for creating property (called from step 2)
     public function createProperty() {
         global $pdo;
 
@@ -399,7 +399,7 @@ class Accomodation_provider extends Controller {
         ]);
 
         try {
-            $pdo->beginTransaction();
+            $pdo->beginTransaction(); //it starts a database transaction
             
             // create accommodation record
             $accommodationId = $accommodation->create($pdo);
@@ -436,7 +436,7 @@ class Accomodation_provider extends Controller {
                 // for now, we'll assume there's a features column or you can store in metadata
             }
             
-            $pdo->commit();
+            $pdo->commit(); //save all changes
             
             // clear session data
             unset($_SESSION['listing_step1']);
@@ -444,7 +444,7 @@ class Accomodation_provider extends Controller {
             $this->sendResponse(true, [], ['id' => $accommodationId]);
             
         } catch (\Exception $e) {
-            $pdo->rollBack();
+            $pdo->rollBack(); //undo changes
             error_log("Error creating accommodation: " . $e->getMessage());
             $this->sendResponse(false, ['Failed to create accommodation: ' . $e->getMessage()]);
         }
