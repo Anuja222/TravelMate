@@ -51,7 +51,6 @@
           <option value="suspended">Suspended</option>
           <option value="inactive">Inactive</option>
         </select>
-
         <button id="applyFilter">Apply Filters</button>
       </div>
 
@@ -63,7 +62,7 @@
                  data-email="<?php echo htmlspecialchars(strtolower($user->email ?? ''), ENT_QUOTES); ?>"
                  data-phone="<?php echo htmlspecialchars(strtolower($user->phone ?? ''), ENT_QUOTES); ?>"
                  data-role="<?php echo htmlspecialchars(strtolower($user->role ?? ''), ENT_QUOTES); ?>"
-                 data-status="<?php echo htmlspecialchars(strtolower($user->status ?? 'active'), ENT_QUOTES); ?>">
+                data-status="<?php echo htmlspecialchars(strtolower($user->status ?? 'active'), ENT_QUOTES); ?>">
               <div class="user-card-header">
                 <div class="profile-pic-large">
                   <?php if (!empty($user->profile_picture)): ?>
@@ -424,7 +423,7 @@
       // Show modal
       document.getElementById('viewUserModal').style.display = 'block';
     }
-
+  
     function closeViewUserModal() {
       document.getElementById('viewUserModal').style.display = 'none';
     }
@@ -446,7 +445,6 @@
         const searchTerm = searchBox ? searchBox.value.toLowerCase().trim() : '';
         const selectedType = typeFilter ? typeFilter.value.toLowerCase() : 'all';
         const selectedStatus = statusFilter ? statusFilter.value.toLowerCase() : 'all';
-        
         const userCards = document.querySelectorAll('.user-card');
         let visibleCount = 0;
         
