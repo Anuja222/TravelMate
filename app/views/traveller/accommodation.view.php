@@ -337,65 +337,9 @@
           </div>
         </div>
       </div>
-
-      <!-- <div class="load-more-section">
-        <button class="btn-secondary load-more-btn" onclick="loadMoreAccommodations()">Load More Accommodations</button>
-      </div> -->
     </div>
   </section>
-  <!-- booking Modal -->
-  <!-- <div class="modal" id="bookingModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Book Your Stay</h3>
-        <button class="close-btn" onclick="closeBookingModal()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <form class="booking-form">
-          <div class="form-group">
-            <label>Accommodation</label>
-            <input type="text" id="selectedAccommodation" readonly>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Check-in Date</label>
-              <input type="date" id="checkinDate" required>
-            </div>
-            <div class="form-group">
-              <label>Check-out Date</label>
-              <input type="date" id="checkoutDate" required>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Adults</label>
-              <select id="adults">
-                <option value="1">1 Adult</option>
-                <option value="2">2 Adults</option>
-                <option value="3">3 Adults</option>
-                <option value="4">4+ Adults</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Children</label>
-              <select id="children">
-                <option value="0">0 Children</option>
-                <option value="1">1 Child</option>
-                <option value="2">2 Children</option>
-                <option value="3">3+ Children</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Special Requests</label>
-            <textarea id="specialRequests" rows="3" placeholder="Any special requests or preferences..."></textarea>
-          </div>
-          <button type="button" class="btn-primary full-width" onclick="submitBooking()">Book Now</button>
-        </form>
-      </div>
-    </div>
-  </div> -->
-
+ 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
   
   <script>
