@@ -28,12 +28,12 @@ class Content extends Controller{
         $approvedStmt->execute();
         $approvedPosts = $approvedStmt->fetchAll(PDO::FETCH_OBJ);
         
-        // Pass data to view
+        // Packs and Pass data to view
         $data = [
             'pendingPosts' => $pendingPosts,
             'approvedPosts' => $approvedPosts
         ];
-        
+        //Load admin content with that data
         $this->view('admin/content', $data);
     }
     
@@ -49,7 +49,7 @@ class Content extends Controller{
                 echo json_encode(['success' => false, 'message' => 'Unauthorized']);
                 exit;
             }
-            
+            //Validates that post_id was sent
             if (!isset($_POST['post_id'])) {
                 ob_end_clean();
                 echo json_encode(['success' => false, 'message' => 'Post ID required']);
@@ -120,7 +120,7 @@ class Content extends Controller{
     }
 
     public function delete() {
-        ob_start();
+        ob_start(); // Output buffering to prevent any output before JSON response
 
         try {
             header('Content-Type: application/json');
@@ -131,7 +131,7 @@ class Content extends Controller{
                 exit;
             }
 
-            if (!isset($_POST['post_id'])) {
+            if (!isset($_POST['post_id'])) { // Validate that post_id was sent
                 ob_end_clean();
                 echo json_encode(['success' => false, 'message' => 'Post ID required']);
                 exit;
@@ -141,7 +141,7 @@ class Content extends Controller{
             if (!isset($pdo)) { require_once __DIR__ . '/../../../config/database.php'; }
 
             $postId = intval($_POST['post_id']);
-
+            // Get post image path before deletion
             $imageStmt = $pdo->prepare("SELECT image FROM posts WHERE id = ?");
             $imageStmt->execute([$postId]);
             $post = $imageStmt->fetch(PDO::FETCH_ASSOC);
@@ -149,7 +149,7 @@ class Content extends Controller{
             $stmt = $pdo->prepare("DELETE FROM posts WHERE id = ?");
             $result = $stmt->execute([$postId]);
 
-            if ($result && $stmt->rowCount() > 0 && !empty($post['image'])) {
+            if ($result && $stmt->rowCount() > 0 && !empty($post['image'])) { // If post had an image, attempt to delete it from the filesystem
                 $relativePath = ltrim($post['image'], '/');
                 $filePath = __DIR__ . '/../../../public/' . $relativePath;
                 if (file_exists($filePath)) {
@@ -164,9 +164,9 @@ class Content extends Controller{
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to delete post']);
             }
-        } catch (Throwable $e) {
-            ob_end_clean();
-            echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+        } catch (Throwable $e) { //Catches errors and returns error JSON
+            ob_end_clean(); 
+            echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]); // Catching Throwable to include both Exception and Error
         }
 
         exit;
