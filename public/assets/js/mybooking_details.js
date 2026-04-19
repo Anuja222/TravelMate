@@ -62,7 +62,8 @@ function populateForm(booking) {
     
     document.getElementById('checkinDate').value = checkinDate;
     document.getElementById('checkoutDate').value = checkoutDate;
-    document.getElementById('arrivalTime').value = booking.arrival_time || '';
+    const finalTime = booking.arrival_time ? booking.arrival_time.substring(0, 5) : '';
+    document.getElementById('arrivalTime').value = finalTime;
     document.getElementById('adults').value = booking.adults;
     document.getElementById('children').value = booking.children || 0;
     document.getElementById('nights').value = booking.nights;

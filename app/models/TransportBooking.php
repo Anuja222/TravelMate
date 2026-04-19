@@ -62,10 +62,10 @@ class TransportBooking {
             $sql = "INSERT INTO transport_bookings 
                     (user_id, booking_id, vehicle_id, service_type, pickup_date, pickup_time, 
                      return_date, return_time, pickup_location, dropoff_location, passengers, 
-                     luggage, special_requirements, duration, base_price, service_charge, 
+                     luggage, alternative_contact, special_requirements, duration, base_price, service_charge, 
                      total_price, booking_status, payment_status, booking_date, created_at) 
                     VALUES 
-                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
             error_log('SQL: ' . $sql);
             $stmt = $conn->prepare($sql);
@@ -89,6 +89,7 @@ class TransportBooking {
                 $data['dropoff_location'],
                 $data['passengers'],
                 $data['luggage'],
+                $data['alternative_contact'] ?? null,
                 $data['special_requirements'] ?? null,
                 $data['duration'],
                 $data['base_price'],
@@ -251,7 +252,7 @@ class TransportBooking {
             $sql = "UPDATE transport_bookings 
                     SET pickup_date = ?, pickup_time = ?, return_date = ?, return_time = ?, 
                         pickup_location = ?, dropoff_location = ?, passengers = ?, luggage = ?, 
-                        special_requirements = ?, duration = ?, base_price = ?, service_charge = ?, 
+                        alternative_contact = ?, special_requirements = ?, duration = ?, base_price = ?, service_charge = ?, 
                         total_price = ?, updated_at = NOW() 
                     WHERE booking_id = ? AND user_id = ?";
             $stmt = $conn->prepare($sql);
@@ -264,6 +265,7 @@ class TransportBooking {
                 $data['dropoff_location'],
                 $data['passengers'],
                 $data['luggage'],
+                $data['alternative_contact'] ?? null,
                 $data['special_requirements'] ?? null,
                 $data['duration'],
                 $data['base_price'],

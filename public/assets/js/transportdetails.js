@@ -400,6 +400,7 @@ function validateDates() {
     }
 }
 
+//create booking object and show summary
 function calculatePrice() {
     if (!currentVehicle) {
         alert('Transport details not loaded yet.');
@@ -470,6 +471,7 @@ function calculatePrice() {
         dropoff_location: dropoffLocation,
         passengers: parseInt(document.getElementById('passengers').value, 10),
         luggage: parseInt(document.getElementById('luggage').value, 10),
+        alternative_contact: document.getElementById('alternativeContact').value || null,
         special_requirements: document.getElementById('specialRequirements').value,
         base_price: basePrice,
         service_charge: serviceCharge,

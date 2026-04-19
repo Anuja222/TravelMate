@@ -1,0 +1,1 @@
+ALTER TABLE transport_bookings ADD alternative_contact VARCHAR(20) NULL;

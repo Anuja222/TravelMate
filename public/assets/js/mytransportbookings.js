@@ -515,6 +515,9 @@ function viewBookingDetails(bookingId) {
             <strong>Passengers:</strong> ${booking.passengers}
         </div>
         <div>
+            <strong>Alternative Contact:</strong> ${booking.alternative_contact || 'None'}
+        </div>
+        <div>
             <strong>Luggage:</strong> ${booking.luggage} bag(s)
         </div>
         ${booking.special_requirements ? `

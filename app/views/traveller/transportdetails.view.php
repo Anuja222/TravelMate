@@ -172,6 +172,11 @@
               </div>
             </div>
 
+            <div class="form-group" style="margin-top: 15px;">
+              <label>Alternative Contact Number (Optional)</label>
+              <input type="text" id="alternativeContact" placeholder="E.g., +94 77 123 4567">
+            </div>
+
             <div class="form-group">
               <label>Special Requirements</label>
               <textarea id="specialRequirements" rows="3" placeholder="Child seat, wheelchair accessible, etc."></textarea>
