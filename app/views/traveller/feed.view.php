@@ -133,7 +133,7 @@
                 
                 <?php if (!empty($post->budget)): ?>
                     <p class="post-budget" style="margin-top: 8px; font-size: 0.9em; font-weight: 500; color: #20b2aa;">
-                        💰 Trip Budget: <?php echo htmlspecialchars($post->budget); ?>
+                        Trip Budget: <?php echo htmlspecialchars($post->budget); ?>
                     </p>
                 <?php endif; ?>
               </div>
