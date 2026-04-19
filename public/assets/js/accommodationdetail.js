@@ -493,6 +493,7 @@ function calculatePrice() {
     
     const checkinDate = document.getElementById('checkinDate').value;
     const checkoutDate = document.getElementById('checkoutDate').value;
+    const arrivalTime = document.getElementById('arrivalTime').value;
     const adults = document.getElementById('adults').value;
     const children = document.getElementById('children').value;
     const roomType = document.getElementById('roomType');
@@ -558,6 +559,7 @@ function calculatePrice() {
         numberOfRooms: rooms,
         checkinDate: checkinDate,
         checkoutDate: checkoutDate,
+        arrivalTime: arrivalTime,
         nights: nights,
         adults: parseInt(adults),
         children: parseInt(children || 0),
@@ -620,6 +622,7 @@ function confirmBooking() {
         // stay details
         checkinDate: bookingData.checkinDate,
         checkoutDate: bookingData.checkoutDate,
+        arrivalTime: bookingData.arrivalTime,
         nights: bookingData.nights,
         adults: bookingData.adults,
         children: bookingData.children || 0,

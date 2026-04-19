@@ -10,6 +10,7 @@ class Booking {
     private $roomName;
     private $checkinDate;
     private $checkoutDate;
+    private $arrivalTime;
     private $adults;
     private $children;
     private $nights;
@@ -29,6 +30,7 @@ class Booking {
             $this->roomName      = $data['room_name'] ?? null;
             $this->checkinDate   = $data['checkin_date'] ?? null;
             $this->checkoutDate  = $data['checkout_date'] ?? null;
+            $this->arrivalTime   = $data['arrivalTime'] ?? null;
             $this->adults        = $data['adults'] ?? 1;
             $this->children      = $data['children'] ?? 0;
             $this->nights        = $data['nights'] ?? 1;
@@ -55,9 +57,9 @@ class Booking {
         $sql = "INSERT INTO bookings 
                 (user_id, booking_id{$accommodationIdField}, room_id, room_name{$numberOfRoomsField}, checkin_date, checkout_date, 
                  adults, children, nights, room_price, base_price, taxes, total_price, 
-                 booking_status, payment_status, booking_date, created_at) 
+                 booking_status, payment_status, booking_date, arrival_time, created_at) 
                 VALUES 
-                (?, ?{$accommodationIdValue}, ?, ?{$numberOfRoomsValue}, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                (?, ?{$accommodationIdValue}, ?, ?{$numberOfRoomsValue}, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
         $stmt = $conn->prepare($sql);
         
@@ -89,7 +91,8 @@ class Booking {
             $data['total_price'],
             $data['booking_status'],
             $data['payment_status'],
-            $data['booking_date']
+            $data['booking_date'],
+            $data['arrival_time']
         ]);
         
         return $stmt->execute($params);
@@ -174,7 +177,7 @@ class Booking {
     // update booking details
     public function updateBooking($conn, $bookingId, $userId, $data) {
         $sql = "UPDATE bookings 
-                SET checkin_date = ?, checkout_date = ?, adults = ?, children = ?, 
+                SET checkin_date = ?, checkout_date = ?, arrival_time = ?, adults = ?, children = ?, 
                     nights = ?, room_price = ?, base_price = ?, taxes = ?, 
                     total_price = ?, updated_at = NOW() 
                 WHERE booking_id = ? AND user_id = ?";
@@ -182,6 +185,7 @@ class Booking {
         return $stmt->execute([
             $data['checkin_date'],
             $data['checkout_date'],
+            $data['arrival_time'],
             $data['adults'],
             $data['children'],
             $data['nights'],

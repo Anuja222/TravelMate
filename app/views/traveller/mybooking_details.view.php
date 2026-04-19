@@ -52,6 +52,17 @@
                         </div>
                     </div>
 
+                    <!-- Expected Arrival -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="arrivalTime"><i class="fas fa-clock"></i> Expected Arrival</label>
+                            <input type="time" id="arrivalTime" readonly>
+                        </div>
+                        <div class="form-group">
+                            <!-- Empty block to maintain your 2-column flexbox grid -->
+                        </div>
+                    </div>
+
                     <!-- row 3: Adults & Children -->
                     <div class="form-row">
                         <div class="form-group">

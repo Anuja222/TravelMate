@@ -99,6 +99,7 @@ async function completeBooking() {
         numberOfRooms: bookingData.numberOfRooms || 1,
         checkinDate: bookingData.checkinDate,
         checkoutDate: bookingData.checkoutDate,
+        arrivalTime: bookingData.arrivalTime,
         adults: bookingData.adults,
         children: bookingData.children || 0,
         nights: bookingData.nights,
@@ -143,6 +144,7 @@ async function completeBooking() {
                 // stay details
                 checkinDate: bookingData.checkinDate,
                 checkoutDate: bookingData.checkoutDate,
+                arrivalTime: bookingData.arrivalTime,
                 nights: bookingData.nights,
                 adults: bookingData.adults,
                 children: bookingData.children,

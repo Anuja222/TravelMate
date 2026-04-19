@@ -62,6 +62,7 @@ function populateForm(booking) {
     
     document.getElementById('checkinDate').value = checkinDate;
     document.getElementById('checkoutDate').value = checkoutDate;
+    document.getElementById('arrivalTime').value = booking.arrival_time || '';
     document.getElementById('adults').value = booking.adults;
     document.getElementById('children').value = booking.children || 0;
     document.getElementById('nights').value = booking.nights;
@@ -125,6 +126,7 @@ document.getElementById('bookingForm').addEventListener('submit', async function
         bookingId: document.getElementById('bookingId').value,
         checkinDate: document.getElementById('checkinDate').value,
         checkoutDate: document.getElementById('checkoutDate').value,
+        arrivalTime: document.getElementById('arrivalTime').value,
         adults: parseInt(document.getElementById('adults').value),
         children: parseInt(document.getElementById('children').value),
         nights: parseInt(document.getElementById('nights').value),

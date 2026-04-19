@@ -96,7 +96,8 @@ class BookingController
             'total_price' => $data['totalPrice'],
             'booking_status' => $data['bookingStatus'] ?? 'confirmed',
             'payment_status' => $data['paymentStatus'],
-            'booking_date' => $data['bookingDate'] ?? date('Y-m-d H:i:s')
+            'booking_date' => $data['bookingDate'] ?? date('Y-m-d H:i:s'),
+            'arrival_time' => $data['arrivalTime'] ?? null
         ]);
 
         if ($result) {
@@ -205,6 +206,7 @@ class BookingController
             $updateData = [
                 'checkin_date' => $data['checkinDate'],
                 'checkout_date' => $data['checkoutDate'],
+                'arrival_time' => $data['arrivalTime'],
                 'adults' => $data['adults'],
                 'children' => $data['children'] ?? 0,
                 'nights' => $data['nights'],

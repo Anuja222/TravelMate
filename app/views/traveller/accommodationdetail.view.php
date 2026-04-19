@@ -142,6 +142,10 @@
                 <label>Check-out</label>
                 <input type="date" id="checkoutDate" required>
               </div>
+              <div class="form-group" style="margin-top: 15px;">
+                <label for="arrivalTime">Estimated Arrival Time</label>
+                <input type="time" id="arrivalTime">
+              </div>
             </div>
 
             <div class="guests-group">
@@ -221,42 +225,6 @@
       </div>
     </div>
   </section>
-
-  <!-- similar Hotels Section -->
-  <!-- <section class="similar-hotels-section">
-    <div class="container">
-      <div class="section-header">
-        <h2>Similar Accommodations</h2>
-        <p>You might also like these properties</p>
-      </div>
-      <div class="similar-hotels-grid" id="similarHotelsGrid">
-        
-      </div>
-    </div>
-  </section> -->
-
-  <!-- image Gallery Modal -->
-  <!-- <div class="modal gallery-modal" id="galleryModal">
-    <div class="gallery-modal-content">
-      <div class="gallery-header">
-        <h3 id="galleryTitle">Hotel Gallery</h3>
-        <button class="close-btn" onclick="closeGalleryModal()">&times;</button>
-      </div>
-      <div class="gallery-viewer">
-        <img id="galleryImage" src="" alt="Gallery Image">
-        <div class="gallery-controls">
-          <button class="gallery-nav-btn prev" onclick="previousGalleryImage()">‹</button>
-          <button class="gallery-nav-btn next" onclick="nextGalleryImage()">›</button>
-        </div>
-        <div class="gallery-counter">
-          <span id="galleryCounter">1 / 5</span>
-        </div>
-      </div>
-      <div class="gallery-thumbnails" id="galleryThumbnails">
-         Gallery thumbnails will be populated by JavaScript
-      </div>
-    </div>
-  </div>  -->
 
   <!-- validation Error Modal -->
   <div id="mapModal" class="map-modal">
