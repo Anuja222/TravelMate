@@ -15,7 +15,8 @@ class Post {
         'image',
         'travel_date',
         'rating',
-        'tags'
+        'tags',
+        'budget'
     ];
     
     public function validate($data) {

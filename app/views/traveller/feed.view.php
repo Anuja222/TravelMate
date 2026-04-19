@@ -130,6 +130,12 @@
                   <h3 class="post-title"><?php echo htmlspecialchars($post->title); ?></h3>
                 <?php endif; ?>
                 <p class="post-text"><?php echo htmlspecialchars($post->description ?? ''); ?></p>
+                
+                <?php if (!empty($post->budget)): ?>
+                    <p class="post-budget" style="margin-top: 8px; font-size: 0.9em; font-weight: 500; color: #20b2aa;">
+                        💰 Trip Budget: <?php echo htmlspecialchars($post->budget); ?>
+                    </p>
+                <?php endif; ?>
               </div>
 
               <?php if (!empty($post->image)): ?>

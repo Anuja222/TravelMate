@@ -29,6 +29,10 @@
                     <input type="text" id="location" name="location" placeholder="Where was this photo taken?" required>
                 </div>
                 <div class="form-group">
+                    <label for="budget">Trip Budget (Optional)</label>
+                    <input type="text" id="budget" name="budget" placeholder="E.g., $500 or 15,000 LKR">
+                </div>
+                <div class="form-group">
                     <label for="category">Category</label>
                     <select id="category" name="category" required>
                         <option value="">Select a category</option>

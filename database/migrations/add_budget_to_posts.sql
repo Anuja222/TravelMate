@@ -1,0 +1,1 @@
+ALTER TABLE posts ADD budget VARCHAR(50) NULL;

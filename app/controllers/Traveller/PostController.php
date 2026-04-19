@@ -59,7 +59,8 @@ class PostController extends Controller {
                 'image' => $imagePath,
                 'travel_date' => !empty($_POST['travelDate']) ? $_POST['travelDate'] : null,
                 'rating' => !empty($_POST['rating']) ? $_POST['rating'] : null,
-                'tags' => $_POST['tags'] ?? ''
+                'tags' => $_POST['tags'] ?? '',
+                'budget' => $_POST['budget'] ?? null
             ];
             
             if ($post->validate($data)) {
