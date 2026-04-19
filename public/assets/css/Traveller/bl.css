@@ -83,3 +83,190 @@ Did I test the View? Did I click the button? Did the error message show up clear
 Did I test the Controller? Did it properly stop me if I tried to book an accommodation in the past, or did it catch an invalid email?
 Did I test the Model/DB? After my action, if I check PHPMyAdmin/my database, did the new row actually show up, and did the status change to "pending" or "cancelled" correctly?
 Gemini 3.1 Pro (Preview) • 1x */
+
+
+/* 1. Database
+You must create a place in the database to store the budget string.
+Run this SQL command in phpMyAdmin:
+ALTER TABLE posts ADD budget VARCHAR(50) NULL;
+
+2. Model: Letting the DB Accept the Field
+File: Post.php
+Because your Post model uses the Model trait, you only need to add the new field to the $allowedColumns array so the system knows it's allowed to save it.
+
+Editable Area: Top of the class (Around Line 14)
+<?php
+    protected $allowedColumns = [
+        'user_id',
+        'title',
+        'location',
+        'category',
+        'description',
+        'status',
+        'image',
+        'travel_date',
+        'rating',
+        'tags',
+        'budget' // <-- ADD THIS LINE AT THE BOTTOM
+    ];
+
+3. View: The Share Post Form (Create)
+File: blog.view.php
+Add the HTML input field so the user can type in their budget.
+
+Editable Area: Find the form #createPostForm (Around Line 30-40, maybe near the tags/category section).
+            <!-- Existing Tag Input (or similar area in the form) -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location" placeholder="Where was this photo taken?" required>
+                </div>
+                
+                <!-- ADD THIS NEW BLOCK FOR BUDGET -->
+                <div class="form-group">
+                    <label for="budget">Trip Budget</label>
+                    <input type="text" id="budget" name="budget" placeholder="E.g., $500 or 15,000 LKR">
+                </div>
+            </div>
+
+(Note: Because your JS fetch code uses new FormData(this), placing an input with name="budget" inside the form is enough for JS to send it automatically!)
+
+4. Controller: Capturing the Data
+File: PostController.php
+You need to capture the incoming $_POST['budget'] data and add it to the array before it saves to the database.
+
+Editable Area: Search for the $data = [...] array inside the store() method (Around Line 60).
+<?php
+            $data = [
+                'user_id' => $_SESSION['user']['id'],
+                'title' => $_POST['postTitle'] ?? '',
+                'location' => $_POST['location'] ?? '',
+                'category' => $_POST['category'] ?? '',
+                'description' => $_POST['description'] ?? '',
+                'status' => 'pending', 
+                'image' => $imagePath,
+                'travel_date' => !empty($_POST['travelDate']) ? $_POST['travelDate'] : null,
+                'rating' => !empty($_POST['rating']) ? $_POST['rating'] : null,
+                'tags' => $_POST['tags'] ?? '',
+                
+                // ADD THIS LINE TO CAPTURE THE NEW DATA:
+                'budget' => $_POST['budget'] ?? null
+            ];
+
+5. View: Displaying on the Feed (Read)
+File: feed.view.php
+Now, when travelers look at the Feed, let's show them the budget on the post card.
+
+Editable Area: Inside the <article class="post-card">, look for the .post-body section (Around Line 125).
+              <div class="post-body">
+                <?php if (!empty($post->title)): ?>
+                  <h3 class="post-title"><?php echo htmlspecialchars($post->title); ?></h3>
+                <?php endif; ?>
+                
+                <p class="post-text"><?php echo htmlspecialchars($post->description ?? ''); ?></p>
+                
+                <!-- ADD THIS BLOCK TO SHOW THE BUDGET -->
+                <?php if (!empty($post->budget)): ?>
+                    <div style="margin-top: 10px; font-weight: bold; color: #2ecc71;">
+                        Trip Budget: <?php echo htmlspecialchars($post->budget); ?>
+                    </div>
+                <?php endif; ?>
+              </div> */
+
+/* 1. Database
+You must first add the column to the bookings table.
+Run this SQL command in phpMyAdmin:
+ALTER TABLE bookings ADD arrival_time TIME NULL;
+
+2. View: The Booking Form (Create)
+File: accommodationdetail.view.php
+Add the HTML input field inside the booking selection box where travellers choose their dates.
+
+Editable Area: Search for the booking dates section (Around line 145)
+                <div class="date-input">
+                    <label for="checkoutDate">Check-out Date</label>
+                    <input type="date" id="checkoutDate" required>
+                </div>
+                
+                <!-- ADD THIS NEW BLOCK FOR ARRIVAL TIME -->
+                <div class="date-input" style="margin-top: 15px;">
+                    <label for="arrivalTime">Estimated Arrival Time</label>
+                    <input type="time" id="arrivalTime">
+                </div>
+
+3. JavaScript: The Fetch Payload (JS Part)
+File: accommodationdetail.js
+Your system uses JavaScript to read these inputs and send them to the controller via JSON. You need to tell it to read the new arrivalTime input.
+
+Editable Area: Find the handleBooking() or currentBooking object where you prepare the data for the backend (usually around line 550-600).
+    // Inside your booking configuration or fetch payload:
+    const bookingData = {
+        accommodationId: accommodationData.id,
+        checkinDate: document.getElementById('checkinDate').value,
+        checkoutDate: document.getElementById('checkoutDate').value,
+        
+        // ADD THIS LINE TO CAPTURE YOUR NEW FIELD:
+        arrivalTime: document.getElementById('arrivalTime').value,
+        
+        // ... rest of your parameters (adults, children, etc.)
+    };
+
+4. Controller: Capturing the JSON Data
+File: BookingController.php
+The Controller receives the JSON from JavaScript and passes it to the Model.
+
+Editable Area: Search for the $booking->createBooking($pdo, [...]) execution inside the createBooking() method (Around line 80).
+<?php
+        $result = $booking->createBooking($pdo, [
+            'user_id' => $_SESSION['user']['id'],
+            'booking_id' => $data['bookingId'],
+            'accommodation_id' => $data['accommodationId'],
+            // ... existing variables ...
+            'booking_date' => $data['bookingDate'] ?? date('Y-m-d H:i:s'),
+
+            // ADD THIS LINE TO EXTRACT FROM JSON:
+            'arrival_time' => $data['arrivalTime'] ?? null
+        ]);
+
+5. Model: Allowing the DB Insert
+File: booking.php
+Because this model uses raw SQL execution for insertion, you must add the new column to your INSERT INTO SQL string configuration.
+
+Editable Area 1: Inside the createBooking($conn, $data) method, update the SQL string (Around line 55).
+<?php
+        // Update the INSERT INTO string
+        $sql = "INSERT INTO bookings 
+                (user_id, booking_id{$accommodationIdField}, room_id, room_name{$numberOfRoomsField}, checkin_date, checkout_date, 
+                 adults, children, nights, room_price, base_price, taxes, total_price, 
+                 booking_status, payment_status, booking_date, arrival_time, created_at) -- <-- added arrival_time here
+                VALUES 
+                (?, ?{$accommodationIdValue}, ?, ?{$numberOfRoomsValue}, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())"; // <-- added one ? here at the end
+
+Editable Area 2: In the exact same method, bind the data to the parameterized ? at the end of your $params array (Around line 85).
+<?php
+        $params[] = $data['booking_status'];
+        $params[] = $data['payment_status'];
+        $params[] = $data['booking_date'];
+        
+        // ADD THIS LINE TO BIND TO THE SQL STATEMENT:
+        $params[] = $data['arrival_time'];
+
+        return $stmt->execute($params);
+
+6. View: Displaying it to the Traveller (Read)
+File: mybooking_details.view.php
+Finally, display the saved information when the traveller views their confirmed booking.
+
+Editable Area: Search for the HTML where you show the Check-in/Check-out dates (Around line 50).
+            <div class="detail-group">
+                <label for="checkoutDate"><i class="fas fa-calendar-times"></i> Check-out Date</label>
+                <input type="date" id="checkoutDate" readonly value="<?= htmlspecialchars($booking->checkin_date ?? '') ?>">
+            </div>
+
+            <!-- ADD THIS BLOCK TO DISPLAY ARRIVAL TIME -->
+            <?php if (!empty($booking->arrival_time)): ?>
+            <div class="detail-group">
+                <label><i class="fas fa-clock"></i> Expected Arrival</label>
+                <input type="time" readonly value="<?= htmlspecialchars($booking->arrival_time) ?>">
+            </div>
+            <?php endif; ?> */
