@@ -147,8 +147,8 @@ $placesJson = isset($places) ? json_encode($places) : '[]';
         </div>
 
         <div class="modal-actions">
-            <a href="favdestination" class="modal-action-btn btn-activity">
-                <i class="fas fa-skating"></i> Find Destinations
+            <a href="favactivity" class="modal-action-btn btn-activity">
+                <i class="fas fa-skating"></i> Find Activity
             </a>
             <a href="accommodation" class="modal-action-btn btn-accommodation">
                 <i class="fas fa-hotel"></i> Find Accommodations

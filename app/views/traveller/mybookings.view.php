@@ -146,11 +146,6 @@
         </div>
     </div>
 
-
-    </div>
-
-
-
     <!-- error Modal -->
     <div id="errorModal" class="error-modal">
         <div class="error-modal-content">
