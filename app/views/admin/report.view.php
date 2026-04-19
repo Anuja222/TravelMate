@@ -327,18 +327,6 @@
             <div class="action-icon"><i class="fas fa-hotel"></i></div>
             <div class="action-label">View Listings</div>
           </div>
-          <div class="action-btn" onclick="generateReport()">
-            <div class="action-icon"><i class="fas fa-file-invoice"></i></div>
-            <div class="action-label">Generate Report</div>
-          </div>
-          <div class="action-btn" onclick="systemSettings()">
-            <div class="action-icon"><i class="fas fa-cog"></i></div>
-            <div class="action-label">System Settings</div>
-          </div>
-          <div class="action-btn" onclick="backupSystem()">
-            <div class="action-icon"><i class="fas fa-database"></i></div>
-            <div class="action-label">Backup System</div>
-          </div>
         </div>
       </div>
     </div>
@@ -563,21 +551,6 @@
         this.classList.add('active');
       });
     });
-
-    // Quick action functions
-    function generateReport() {
-      alert('Report generation functionality would open here');
-    }
-
-    function systemSettings() {
-      alert('System settings panel would open here');
-    }
-
-    function backupSystem() {
-      if (confirm('Create a system backup? This may take a few minutes.')) {
-        alert('Backup process started...');
-      }
-    }
 
     // Initialize dashboard with current data
     document.addEventListener('DOMContentLoaded', function() {

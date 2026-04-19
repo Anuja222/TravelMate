@@ -10,6 +10,7 @@ class User
     public $dateOfBirth;
     public $gender;
     public $password;
+    public $role;
     public $profile_image;
 
     public function __construct($firstName, $lastName, $email, $phone, $dateOfBirth, $gender, $password, $profile_image = null)
@@ -50,10 +51,22 @@ class User
 
     public static function findUserByEmail($conn, $email)
     {
-        $sql = "SELECT * FROM users WHERE email = ?";
+        $sql = "SELECT * FROM users WHERE LOWER(email) = LOWER(?) LIMIT 1";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$email]);
         return $stmt->fetch();
+    }
+
+    public static function upgradePasswordHash($conn, $userId, $plainPassword)
+    {
+        try {
+            $sql = "UPDATE users SET password = ? WHERE id = ?";
+            $stmt = $conn->prepare($sql);
+            $hashedPassword = password_hash($plainPassword, PASSWORD_DEFAULT);
+            return $stmt->execute([$hashedPassword, $userId]);
+        } catch (\PDOException $e) {
+            return false;
+        }
     }
 
     public static function updateUser($userId, $data)

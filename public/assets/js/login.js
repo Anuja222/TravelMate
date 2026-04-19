@@ -2,12 +2,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
     if (!loginForm) return;
 
+    function getBasePath() {
+        const path = window.location.pathname;
+        const marker = '/public/';
+        const index = path.indexOf(marker);
+        return index !== -1 ? path.substring(0, index + marker.length - 1) : '';
+    }
+
     loginForm.addEventListener('submit', function(e) {
         e.preventDefault();
 
         const formData = new FormData(loginForm);
+        const loginUrl = `${getBasePath()}/loginUser`;
 
-        fetch('../public/auth.php?action=login', {
+        fetch(loginUrl, {
             method: 'POST',
             body: formData
         })

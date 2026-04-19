@@ -120,14 +120,34 @@ class AuthController
         global $pdo;
         $data = $_POST;
 
+        $email = isset($data['email']) ? trim((string) $data['email']) : '';
+        $password = isset($data['password']) ? (string) $data['password'] : '';
+
+        $data['email'] = $email;
+        $data['password'] = $password;
+
         $errors = $this->validator->validateRequiredFields($data, ['email', 'password']);
         if (!empty($errors)) {
             $this->sendResponse(false, $errors);
             return;
         }
 
-        $userData = User::findUserByEmail($pdo, $data['email']);
-        if (!$userData || !password_verify($data['password'], $userData['password'])) {
+        $userData = User::findUserByEmail($pdo, $email);
+        $passwordMatches = false;
+
+        if ($userData) {
+            $storedPassword = (string) ($userData['password'] ?? '');
+
+            // Support both hashed and legacy plain-text passwords.
+            if ($storedPassword !== '' && password_verify($password, $storedPassword)) {
+                $passwordMatches = true;
+            } elseif ($storedPassword !== '' && hash_equals($storedPassword, $password)) {
+                $passwordMatches = true;
+                User::upgradePasswordHash($pdo, (int) $userData['id'], $password);
+            }
+        }
+
+        if (!$userData || !$passwordMatches) {
             $this->sendResponse(false, ['general' => 'Invalid email or password']);
             return;
         }

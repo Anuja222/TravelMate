@@ -4,7 +4,7 @@ class Report extends Controller {
     use Database;
 
     public function index($a = "", $b = "", $c = "") {
-        // Only admin? (assume admin since it is in Admin folder)
+        // Only admin? (assume admin since it is in Admin folder) / checks session login and loads view
         if (!isset($_SESSION["user"]["id"])) {
             header("Location: login");
             exit;
