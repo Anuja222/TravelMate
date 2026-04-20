@@ -10,6 +10,7 @@ class Destination
     public $image;
 
     public function __construct($data = [])
+    //Constructor loops through input array and assigns matching class properties
     {
         foreach ($data as $k => $v) {
             $prop = lcfirst($k);
