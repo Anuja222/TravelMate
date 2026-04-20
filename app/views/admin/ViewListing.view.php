@@ -36,28 +36,6 @@
         </button>
       </div>
 
-      <!-- Filter Bar -->
-      <!-- <div class="filter-bar">
-        <input type="text" id="searchInput" placeholder="Search destinations..." />
-        <select id="statusFilter">
-          <option value="">All Status</option>
-          <option value="active">Active</option>
-          <option value="pending">Pending</option>
-          <option value="inactive">Inactive</option>
-        </select>
-        <select id="regionFilter">
-          <option value="">All Regions</option>
-          <option value="western">Western Province</option>
-          <option value="central">Central Province</option>
-          <option value="southern">Southern Province</option>
-          <option value="northern">Northern Province</option>
-          <option value="eastern">Eastern Province</option>
-        </select>
-        <button id="btnApplyFilter">
-          <i class="fas fa-filter"></i> Apply Filters
-        </button>
-      </div> -->
-
       <!-- Statistics Summary -->
       <div class="stats-summary">
         <div class="stat-card">
