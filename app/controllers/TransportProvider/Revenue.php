@@ -14,7 +14,7 @@ class Revenue extends Controller {
 
         $userId = $_SESSION['user']['id'];
 
-        // Filter logic
+        // filter logic
         $filter = $_GET['filter'] ?? 'month';
 
         if ($filter === 'week') {
@@ -32,7 +32,7 @@ class Revenue extends Controller {
             $periodLabel = "This Month";
         }
 
-        // 1. Overall Revenue and Bookings Count for Current Period
+        // Current Period
         $stmtCurrent = $conn->prepare("
             SELECT COALESCE(SUM(tb.total_price), 0) AS rev, COUNT(tb.id) AS bookings_count
             FROM transport_bookings tb
@@ -45,7 +45,7 @@ class Revenue extends Controller {
         $currentRevenue = $currentStats['rev'];
         $currentBookings = $currentStats['bookings_count'];
 
-        // 2. Overall Revenue for Previous Period (For Improvement Calculation)
+        //Previous Period
         $stmtPrev = $conn->prepare("
             SELECT COALESCE(SUM(tb.total_price), 0) AS rev
             FROM transport_bookings tb
@@ -56,7 +56,7 @@ class Revenue extends Controller {
         $stmtPrev->execute([$userId]);
         $previousRevenue = $stmtPrev->fetchColumn();
 
-        // 3. Asset Wise Breakdown for Current Period
+        //Asset Wise Breakdown for Current Period
         $stmtProps = $conn->prepare("
             SELECT v.id, v.vehicle_model AS title, v.vehicle_number,
                    COUNT(tb.id) AS property_bookings,
@@ -72,7 +72,6 @@ class Revenue extends Controller {
         $stmtProps->execute([$userId]);
         $properties = $stmtProps->fetchAll(PDO::FETCH_ASSOC);
 
-        // Helper string formatting for UI
         $calcImprovement = function($current, $previous) {
             if ($previous == 0) {
                 return $current > 0 ? 100 : 0;

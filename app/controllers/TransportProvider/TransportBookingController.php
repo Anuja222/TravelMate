@@ -22,7 +22,7 @@ class TransportBookingController
         }
     }
 
-    // Helper to send JSON response
+    // helper to send JSON response
     private function sendResponse($success, $data = [], $errors = [])
     {
         header('Content-Type: application/json');
@@ -39,7 +39,6 @@ class TransportBookingController
         return strtolower(trim((string)$value));
     }
 
-    // Helper to check authentication
     private function checkAuth()
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -51,7 +50,7 @@ class TransportBookingController
         return $_SESSION['user']['id'];
     }
 
-    // Create new transport booking
+    // create new transport booking
     public function create()
     {
         try {
@@ -67,7 +66,6 @@ class TransportBookingController
                 $this->sendResponse(false, [], ['general' => 'Invalid request data']);
             }
 
-            // Validate required fields
             $required = ['vehicle_id', 'service_type', 'pickup_date', 'pickup_time', 'return_date', 
                         'return_time', 'pickup_location', 'dropoff_location', 'passengers'];
             
@@ -77,7 +75,7 @@ class TransportBookingController
                 }
             }
 
-            // Validate dates
+            // validate dates
             $pickupDateTime = strtotime($input['pickup_date'] . ' ' . $input['pickup_time']);
             $returnDateTime = strtotime($input['return_date'] . ' ' . $input['return_time']);
             
@@ -89,7 +87,6 @@ class TransportBookingController
                 $this->sendResponse(false, [], ['date' => 'Pickup date/time cannot be in the past']);
             }
 
-            // Check vehicle availability
             $bookingModel = new TransportBooking();
             $isAvailable = TransportBooking::checkAvailability(
                 $this->db, 
@@ -102,13 +99,10 @@ class TransportBookingController
                 $this->sendResponse(false, [], ['availability' => 'Vehicle is not available for the selected dates']);
             }
 
-            // Calculate duration in days
             $duration = ceil(($returnDateTime - $pickupDateTime) / (60 * 60 * 24));
 
-            // Generate unique booking ID
             $bookingId = 'TB' . time() . rand(1000, 9999);
 
-            // Prepare booking data
             $bookingData = [
                 'user_id' => $userId,
                 'booking_id' => $bookingId,
@@ -132,7 +126,7 @@ class TransportBookingController
                 'booking_date' => date('Y-m-d H:i:s')
             ];
 
-            // Create booking
+            // create booking
             error_log('Creating booking with data: ' . print_r($bookingData, true));
             $result = $bookingModel->createBooking($this->db, $bookingData);
             error_log('Booking creation result: ' . ($result ? 'success' : 'failed'));
@@ -156,7 +150,7 @@ class TransportBookingController
         }
     }
 
-    // Get all transport bookings for user
+    // get all transport bookings for user
     public function getAll()
     {
         try {
@@ -173,7 +167,7 @@ class TransportBookingController
         }
     }
 
-    // Get single transport booking
+    // get single transport booking
     public function get()
     {
         try {
@@ -200,7 +194,7 @@ class TransportBookingController
         }
     }
 
-    // Update transport booking
+    // update transport booking
     public function update()
     {
         try {
@@ -214,7 +208,7 @@ class TransportBookingController
 
             $bookingId = $input['booking_id'];
 
-            // Validate dates
+            // validate dates
             $pickupDateTime = strtotime($input['pickup_date'] . ' ' . $input['pickup_time']);
             $returnDateTime = strtotime($input['return_date'] . ' ' . $input['return_time']);
             
@@ -222,7 +216,6 @@ class TransportBookingController
                 $this->sendResponse(false, [], ['date' => 'Return date/time must be after pickup date/time']);
             }
 
-            // Check if booking exists
             $bookingModel = new TransportBooking();
             $existingBooking = $bookingModel->getBookingById($this->db, $bookingId, $userId);
 
@@ -230,7 +223,7 @@ class TransportBookingController
                 $this->sendResponse(false, [], ['general' => 'Booking not found']);
             }
 
-            // Check availability (excluding current booking)
+            // Check availability
             $isAvailable = TransportBooking::checkAvailability(
                 $this->db, 
                 $existingBooking['vehicle_id'], 
@@ -243,10 +236,8 @@ class TransportBookingController
                 $this->sendResponse(false, [], ['availability' => 'Vehicle is not available for the selected dates']);
             }
 
-            // Calculate duration
             $duration = ceil(($returnDateTime - $pickupDateTime) / (60 * 60 * 24));
 
-            // Prepare update data
             $updateData = [
                 'pickup_date' => $input['pickup_date'],
                 'pickup_time' => $input['pickup_time'],
@@ -263,7 +254,6 @@ class TransportBookingController
                 'total_price' => $input['total_price']
             ];
 
-            // Update booking
             $result = $bookingModel->updateBooking($this->db, $bookingId, $userId, $updateData);
 
             if ($result) {
@@ -278,7 +268,7 @@ class TransportBookingController
         }
     }
 
-    // Cancel transport booking
+    // cancel transport booking
     public function cancel()
     {
         try {
@@ -292,20 +282,18 @@ class TransportBookingController
 
             $bookingId = $input['booking_id'];
 
-            // Validate booking ID is not "null" string
+            // validate booking ID is not "null" string
             if ($bookingId === 'null' || $bookingId === 'undefined') {
                 $this->sendResponse(false, [], ['bookingId' => 'Invalid booking ID']);
             }
 
             $bookingModel = new TransportBooking();
             
-            // Verify booking exists
             $booking = $bookingModel->getBookingById($this->db, $bookingId, $userId);
             if (!$booking) {
                 $this->sendResponse(false, [], ['general' => 'Booking not found']);
             }
 
-            // Cancel booking
             $result = $bookingModel->cancelBooking($this->db, $bookingId, $userId);
 
             if ($result) {
@@ -320,13 +308,12 @@ class TransportBookingController
         }
     }
 
-    // Delete transport booking
+    // delete transport booking
     public function delete()
     {
         try {
             $userId = $this->checkAuth();
 
-            // Handle both JSON and FormData
             $bookingId = null;
             if ($_SERVER['CONTENT_TYPE'] === 'application/json') {
                 $input = json_decode(file_get_contents('php://input'), true);
@@ -341,13 +328,12 @@ class TransportBookingController
 
             $bookingModel = new TransportBooking();
             
-            // Verify booking exists
+            // verify booking exists
             $booking = $bookingModel->getBookingById($this->db, $bookingId, $userId);
             if (!$booking) {
                 $this->sendResponse(false, [], ['general' => 'Booking not found']);
             }
 
-            // Delete booking
             $result = $bookingModel->deleteBooking($this->db, $bookingId, $userId);
 
             if ($result) {
@@ -362,7 +348,7 @@ class TransportBookingController
         }
     }
 
-    // Get bookings by status
+    // get bookings by status
     public function getByStatus()
     {
         try {
@@ -385,7 +371,7 @@ class TransportBookingController
         }
     }
 
-    // Get upcoming bookings
+    // get upcoming bookings
     public function getUpcoming()
     {
         try {
@@ -402,7 +388,7 @@ class TransportBookingController
         }
     }
 
-    // Get booking statistics
+    // get booking statistics
     public function getStats()
     {
         try {
@@ -597,7 +583,7 @@ class TransportBookingController
         }
     }
 
-    // Initialize booking - Save booking data to session
+    // initialize booking
     public function initBooking()
     {
         try {
@@ -609,7 +595,7 @@ class TransportBookingController
                 $this->sendResponse(false, [], ['general' => 'Invalid request data']);
             }
 
-            // Validate required fields
+            // validate 
             $required = ['vehicle_id', 'service_type', 'pickup_date', 'pickup_time', 'return_date', 
                         'return_time', 'pickup_location', 'dropoff_location', 'passengers'];
             
@@ -619,7 +605,6 @@ class TransportBookingController
                 }
             }
 
-            // Validate dates
             $pickupDateTime = strtotime($input['pickup_date'] . ' ' . $input['pickup_time']);
             $returnDateTime = strtotime($input['return_date'] . ' ' . $input['return_time']);
             
@@ -631,7 +616,7 @@ class TransportBookingController
                 $this->sendResponse(false, [], ['date' => 'Pickup date/time cannot be in the past']);
             }
 
-            // Check vehicle availability
+            // check vehicle availability
             $bookingModel = new TransportBooking();
             $isAvailable = TransportBooking::checkAvailability(
                 $this->db, 
@@ -655,7 +640,7 @@ class TransportBookingController
         }
     }
 
-    // Save personal details to session
+    // save personal details to session
     public function saveDetails()
     {
         try {
@@ -689,7 +674,6 @@ class TransportBookingController
                 $this->sendResponse(false, [], ['general' => 'This booking is already paid']);
             }
 
-            // Save to session
             if (!isset($_SESSION['transport_personal_details']) || !is_array($_SESSION['transport_personal_details'])) {
                 $_SESSION['transport_personal_details'] = [];
             }
@@ -703,7 +687,7 @@ class TransportBookingController
         }
     }
 
-    // Save payment details to session
+    // save payment details to session
     public function savePayment()
     {
         try {
@@ -737,7 +721,7 @@ class TransportBookingController
                 $this->sendResponse(false, [], ['general' => 'Please complete personal details first']);
             }
 
-            // Save to session (already masked from frontend)
+            // save to session 
             if (!isset($_SESSION['transport_payment_details']) || !is_array($_SESSION['transport_payment_details'])) {
                 $_SESSION['transport_payment_details'] = [];
             }
@@ -751,13 +735,12 @@ class TransportBookingController
         }
     }
 
-    // Complete booking - Create booking in database
+    // complete booking
     public function completeBooking()
     {
         try {
             $userId = $this->checkAuth();
 
-            // Get data from session
             $bookingData = $_SESSION['transport_booking_temp'] ?? null;
             $personalDetails = $_SESSION['transport_personal_details'] ?? null;
             $paymentDetails = $_SESSION['transport_payment_details'] ?? null;
@@ -766,15 +749,14 @@ class TransportBookingController
                 $this->sendResponse(false, [], ['general' => 'Missing booking information']);
             }
 
-            // Calculate duration in days
             $pickupDateTime = strtotime($bookingData['pickup_date'] . ' ' . $bookingData['pickup_time']);
             $returnDateTime = strtotime($bookingData['return_date'] . ' ' . $bookingData['return_time']);
             $duration = ceil(($returnDateTime - $pickupDateTime) / (60 * 60 * 24));
 
-            // Generate unique booking ID
+            //unique booking ID
             $bookingId = 'TB' . time() . rand(1000, 9999);
 
-            // Prepare final booking data
+            //final booking data
             $finalBookingData = [
                 'user_id' => $userId,
                 'booking_id' => $bookingId,
@@ -798,12 +780,12 @@ class TransportBookingController
                 'booking_date' => date('Y-m-d H:i:s')
             ];
 
-            // Create booking
+            // create booking
             $bookingModel = new TransportBooking();
             $result = $bookingModel->createBooking($this->db, $finalBookingData);
 
             if ($result) {
-                // Clear session data
+                // clear session data
                 unset($_SESSION['transport_booking_temp']);
                 unset($_SESSION['transport_personal_details']);
                 unset($_SESSION['transport_payment_details']);
