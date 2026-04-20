@@ -82,7 +82,7 @@ class DestinationController
         }
     }
 
-    public function list()
+    public function list() //accepts GET only and returns all destinations
     {
         global $pdo;
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') $this->sendResponse(false, ['error'=>'Invalid method']);
@@ -159,7 +159,7 @@ class DestinationController
         
         if (!$destinationId || !$title) $this->sendResponse(false, ['error'=>'Missing data']);
 
-        $slug = trim($_POST['slug'] ?? '');
+        $slug = trim($_POST['slug'] ?? ''); //handling (if)
         if (empty($slug)) $slug = strtolower(preg_replace('/[^a-z0-9]+/','-', $title));
 
         $imagePath = null;

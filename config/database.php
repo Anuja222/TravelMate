@@ -4,7 +4,7 @@ $db   = "travelmate";     // your database name
 $user = "root";           // XAMPP default user
 $pass = "";               // XAMPP default password (empty)
 $charset = 'utf8mb4';
-
+//Creates the PDO database connection object as global $pdo.
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset"; // create database connection
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -17,3 +17,4 @@ try {
 } catch (\PDOException $e) {
     die("Database connection failed: " . $e->getMessage());
 }
+//If this fails, admin actions that read/write DB will not work
