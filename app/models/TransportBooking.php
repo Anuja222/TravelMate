@@ -53,7 +53,7 @@ class TransportBooking {
         }
     }
 
-    // Create transport booking
+    // create transport booking
     public function createBooking($conn, $data) {
         try {
             error_log('TransportBooking Model: Starting createBooking');
@@ -114,7 +114,7 @@ class TransportBooking {
         }
     }
 
-    // Get all transport bookings by user
+    // get all transport bookings by user
     public function getBookingsByUserId($conn, $userId) {
         try {
             $hasRatingsTable = $this->hasTransportRatingsTable($conn);
@@ -177,7 +177,7 @@ class TransportBooking {
         }
     }
 
-    // Get single transport booking
+    // get single transport booking
     public function getBookingById($conn, $bookingId, $userId) {
         try {
                     $sql = "SELECT tb.*, v.vehicle_model, v.vehicle_type, v.vehicle_number, v.ac_type, v.passenger_count, v.working_district,
@@ -199,7 +199,7 @@ class TransportBooking {
         }
     }
 
-    // Update booking status
+    // update booking status
     public function updateBookingStatus($conn, $bookingId, $status, $userId) {
         try {
             $sql = "UPDATE transport_bookings 
@@ -245,7 +245,7 @@ class TransportBooking {
         }
     }
 
-    // Update booking details
+    // update booking details
     public function updateBooking($conn, $bookingId, $userId, $data) {
         try {
             $sql = "UPDATE transport_bookings 
@@ -278,7 +278,7 @@ class TransportBooking {
         }
     }
 
-    // Cancel booking
+    // cancel booking
     public function cancelBooking($conn, $bookingId, $userId) {
         try {
             $sql = "UPDATE transport_bookings 
@@ -292,7 +292,7 @@ class TransportBooking {
         }
     }
 
-    // Delete booking
+    // delete booking
     public function deleteBooking($conn, $bookingId, $userId) {
         try {
             $sql = "DELETE FROM transport_bookings WHERE booking_id = ? AND user_id = ?";
@@ -304,7 +304,7 @@ class TransportBooking {
         }
     }
 
-    // Get bookings by status
+    // get bookings by status
     public function getBookingsByStatus($conn, $userId, $status) {
         try {
             $sql = "SELECT tb.*, v.vehicle_model, v.vehicle_type, v.vehicle_number
@@ -321,7 +321,7 @@ class TransportBooking {
         }
     }
 
-    // Get upcoming bookings
+    // get upcoming bookings
     public function getUpcomingBookings($conn, $userId) {
         try {
             $sql = "SELECT tb.*, v.vehicle_model, v.vehicle_type, v.vehicle_number
@@ -340,7 +340,7 @@ class TransportBooking {
         }
     }
 
-    // Get past bookings
+    // get past bookings
     public function getPastBookings($conn, $userId) {
         try {
             $sql = "SELECT tb.*, v.vehicle_model, v.vehicle_type, v.vehicle_number
@@ -358,7 +358,7 @@ class TransportBooking {
         }
     }
 
-    // Get current bookings (active)
+    // get current bookings (active)
     public function getCurrentBookings($conn, $userId) {
         try {
             $sql = "SELECT tb.*, v.vehicle_model, v.vehicle_type, v.vehicle_number
@@ -378,7 +378,7 @@ class TransportBooking {
         }
     }
 
-    // Get booking statistics
+    // get booking statistics
     public function getBookingStats($conn, $userId) {
         try {
             $sql = "SELECT 
@@ -399,7 +399,7 @@ class TransportBooking {
         }
     }
 
-    // Check vehicle availability
+    // check vehicle availability
     public static function checkAvailability($conn, $vehicleId, $pickupDate, $returnDate, $excludeBookingId = null) {
         try {
             error_log('=== Checking Vehicle Availability ===');
