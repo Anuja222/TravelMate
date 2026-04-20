@@ -11,6 +11,7 @@ class Post {
         'location',
         'category',
         'description',
+        'province',
         'status',
         'image',
         'travel_date',
@@ -29,6 +30,10 @@ class Post {
             $this->errors['location'] = "Location is required";
         }
         
+        if (empty($data['province'])) {
+            $this->errors['province'] = "Province is required";
+        }
+
         if (empty($data['category'])) {
             $this->errors['category'] = "Category is required";
         }

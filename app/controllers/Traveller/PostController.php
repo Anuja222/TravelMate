@@ -55,6 +55,7 @@ class PostController extends Controller {
                 'location' => $_POST['location'] ?? '',
                 'category' => $_POST['category'] ?? '',
                 'description' => $_POST['description'] ?? '',
+                'province' => $_POST['province'] ?? '',
                 'status' => 'pending', // posts require admin approval
                 'image' => $imagePath,
                 'travel_date' => !empty($_POST['travelDate']) ? $_POST['travelDate'] : null,

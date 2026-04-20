@@ -119,6 +119,7 @@
                         <circle cx="12" cy="10" r="3"></circle>
                       </svg>
                       <?php echo htmlspecialchars($post->location ?? ''); ?>
+                      <?php echo htmlspecialchars($post->province ?? ''); ?>
                     </span>
                   </p>
                 </div>

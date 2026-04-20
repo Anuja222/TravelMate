@@ -28,6 +28,12 @@
                     <label for="location">Location</label>
                     <input type="text" id="location" name="location" placeholder="Where was this photo taken?" required>
                 </div>
+
+                <div class="form-group">
+                    <label for="location">province</label>
+                    <input type="text" id="province" name="province" placeholder="Where was this photo taken?" required>
+                </div>
+
                 <div class="form-group">
                     <label for="category">Category</label>
                     <select id="category" name="category" required>
@@ -232,6 +238,28 @@
     </style>
 
     <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            initializeDatePickers();
+        });
+
+
+        function initializeDatePickers() {
+            const today = new Date();
+    
+            const travelDate = document.getElementById('travelDate');
+    
+            // set minimum dates
+            travelDate.min = today.toISOString().split('T')[0];
+            travelDate.value = today.toISOString().split('T')[0];
+
+            travelDate.addEventListener('change', function () {
+                travelDate.min = this.value;
+                if (travelDate.value && travelDate.value < this.value) {
+                    travelDate.value = this.value;
+                }
+            });
+        }
+
         function previewImage(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
