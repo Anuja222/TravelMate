@@ -18,7 +18,7 @@ class Report extends Controller {
             echo json_encode(["error" => "Unauthorized"]);
             exit;
         }
-
+        //Reads period from query string 
         $period = $_GET["period"] ?? "week";
         
         // Build base condition
