@@ -19,7 +19,7 @@
       <div class="detail-form">
         <h1 class="page-title">Accepted Trip Booking</h1>
         <p class="page-subtitle">Manage your confirmed booking</p>
-        
+          $fuelType = isset($_GET['fuel_type']) ? $_GET['fuel_type'] : null;
         <div class="request-header">
           <div class="request-id">Request #: <span>TR-2024-7892</span></div>
           <div class="request-status confirmed">Status: <span>Confirmed</span></div>
@@ -47,7 +47,19 @@
               
               <div class="form-group">
                 <p><strong>Passengers:</strong> <span id="passengers">4</span> (2 Adults, 2 Children)</p>
-              </div>
+              </div> 
+              public static function findByUserAndFuelType($conn, $userId, $fuelType)
+                {
+                    $sql = "SELECT v.*, u.first_name, u.last_name, u.email, u.phone, u.profile_image, 0 AS avg_rating, 0 AS rating_count
+                            FROM vehicles v 
+                            LEFT JOIN users u ON v.user_id = u.id
+                            WHERE v.user_id = ? AND LOWER(v.fuel_type) = LOWER(?)
+                            ORDER BY v.created_at DESC";
+                    
+                    $stmt = $conn->prepare($sql);
+                    $stmt->execute([$userId, $fuelType]);
+                    return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                }
               
               <div class="form-group">
                 <p><strong>Distance:</strong> <span id="distance">35 km</span></p>
