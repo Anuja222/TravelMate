@@ -12,12 +12,12 @@
 
 <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
   
-  <!-- Toast notification -->
+
   <div class="toast" id="toast"></div>
   
-  <!-- MAIN CONTENT -->
+  
   <main>
-    <!-- SIDEBAR -->
+  
     <?php 
       $active_page = 'settings';
       include __DIR__ . '/sidebar.view.php'; 
@@ -37,7 +37,7 @@
           <h2>Profile Settings</h2>
         </div>
             <form class="auth-form" id="profileForm">
-            <!-- Profile Photo Upload -->
+            
             <div class="form-group">
               <label>Profile Photo</label>
               <div class="profile-photo-upload">
@@ -90,7 +90,7 @@
               <div class="error-message" id="phoneError"></div>
             </div>
 
-            <!-- Date of Birth and Gender Row -->
+            
             <div class="form-row">
               <div class="form-group" id="dobGroup">
                 <label for="dateOfBirth">Date of Birth</label>
@@ -119,7 +119,6 @@
           </form>
       </section>
 
-      <!-- Password and Security-->
       <section class="settings-section">
         <div class="section-header">
           <i class="fas fa-lock"></i>
@@ -164,7 +163,7 @@
 <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
 <script>
-// DOM Elements
+// dom elements
 const profileForm = document.getElementById('profileForm');
 const securityForm = document.getElementById('securityForm');
 const toast = document.getElementById('toast');
@@ -175,7 +174,7 @@ const newPasswordInput = document.getElementById('new_password');
 const passwordStrength = document.getElementById('passwordStrength');
 const passwordStrengthText = document.getElementById('passwordStrengthText');
 
-// Event Listeners
+
 document.addEventListener('DOMContentLoaded', initApp);
 profileForm.addEventListener('submit', handleProfileSubmit);
 securityForm.addEventListener('submit', handleSecuritySubmit);
@@ -183,10 +182,10 @@ profilePhoto.addEventListener('change', handleProfilePhotoUpload);
 removePhotoBtn.addEventListener('click', removeProfilePhoto);
 newPasswordInput.addEventListener('input', checkPasswordStrength);
 
-// Initialize the application
+
 function initApp() {}
 
-// Handle profile form submission
+
 function handleProfileSubmit(e) {
   e.preventDefault();
   
@@ -194,7 +193,7 @@ function handleProfileSubmit(e) {
     const submitBtn = document.getElementById('profileSaveBtn');
     const spinner = document.getElementById('profileSpinner');
     
-    // Show loading state
+    // show loading state
     submitBtn.disabled = true;
     spinner.style.display = 'inline-block';
     
@@ -223,28 +222,27 @@ function handleProfileSubmit(e) {
   }
 }
 
-// Validate profile form
+// validate profile form
 function validateProfileForm() {
   let isValid = true;
   
-  // Reset error states
+ 
   resetErrors('profileForm');
-  
-  // Validate first name
+ 
   const firstName = document.getElementById('firstName').value.trim();
   if (!firstName) {
     showError('firstNameGroup', 'First name is required');
     isValid = false;
   }
   
-  // Validate last name
+
   const lastName = document.getElementById('lastName').value.trim();
   if (!lastName) {
     showError('lastNameGroup', 'Last name is required');
     isValid = false;
   }
   
-  // Validate email
+
   const email = document.getElementById('email').value.trim();
   if (!email) {
     showError('emailGroup', 'Email is required');
@@ -254,7 +252,7 @@ function validateProfileForm() {
     isValid = false;
   }
   
-  // Validate phone
+
   const phone = document.getElementById('phone').value.trim();
   if (!phone) {
     showError('phoneGroup', 'Phone number is required');
@@ -264,7 +262,7 @@ function validateProfileForm() {
     isValid = false;
   }
   
-  // Validate date of birth
+ 
   const dob = document.getElementById('dateOfBirth').value;
   if (!dob) {
     showError('dobGroup', 'Date of birth is required');
@@ -280,7 +278,7 @@ function validateProfileForm() {
     }
   }
   
-  // Validate gender
+
   const gender = document.getElementById('gender').value;
   if (!gender) {
     showError('genderGroup', 'Please select your gender');
@@ -290,7 +288,7 @@ function validateProfileForm() {
   return isValid;
 }
 
-// Handle security form submission
+// handle security form submission
 function handleSecuritySubmit(e) {
   e.preventDefault();
   
@@ -298,7 +296,7 @@ function handleSecuritySubmit(e) {
     const submitBtn = document.getElementById('securitySaveBtn');
     const spinner = document.getElementById('securitySpinner');
     
-    // Show loading state
+  
     submitBtn.disabled = true;
     spinner.style.display = 'inline-block';
     
@@ -330,21 +328,21 @@ function handleSecuritySubmit(e) {
   }
 }
 
-// Validate security form
+// validate security form
 function validateSecurityForm() {
   let isValid = true;
   
-  // Reset error states
+ 
   resetErrors('securityForm');
   
-  // Validate current password
+  
   const currentPassword = document.getElementById('current_password').value;
   if (!currentPassword) {
     showError('currentPasswordGroup', 'Current password is required');
     isValid = false;
   }
   
-  // Validate new password
+
   const newPassword = document.getElementById('new_password').value;
   if (!newPassword) {
     showError('newPasswordGroup', 'New password is required');
@@ -357,7 +355,7 @@ function validateSecurityForm() {
     isValid = false;
   }
   
-  // Validate confirm password
+
   const confirmPassword = document.getElementById('confirm_password').value;
   if (!confirmPassword) {
     showError('confirmPasswordGroup', 'Please confirm your password');
@@ -370,18 +368,17 @@ function validateSecurityForm() {
   return isValid;
 }
 
-// Handle profile photo upload
+// handle profile photo upload
 function handleProfilePhotoUpload(e) {
   const file = e.target.files[0];
   if (!file) return;
   
-  // Validate file type
   if (!file.type.match('image.*')) {
     showError('photoPreview', 'Please select an image file');
     return;
   }
   
-  // Validate file size (max 5MB)
+
   if (file.size > 5 * 1024 * 1024) {
     showError('photoPreview', 'File size must be less than 5MB');
     return;
@@ -392,13 +389,13 @@ function handleProfilePhotoUpload(e) {
     photoPreview.innerHTML = `<img src="${e.target.result}" alt="Profile Photo">`;
     removePhotoBtn.style.display = 'block';
     
-    // Save to localStorage
+    // save to localStorage
     localStorage.setItem('profilePhoto', e.target.result);
   };
   reader.readAsDataURL(file);
 }
 
-// Remove profile photo
+
 function removeProfilePhoto() {
   photoPreview.innerHTML = `
     <svg class="default-avatar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -408,13 +405,13 @@ function removeProfilePhoto() {
   `;
   removePhotoBtn.style.display = 'none';
   
-  // Remove from localStorage
+ 
   localStorage.removeItem('profilePhoto');
   
   showToast('Profile photo removed', 'success');
 }
 
-// Check password strength
+// check password strength
 function checkPasswordStrength() {
   const password = newPasswordInput.value;
   const strengthBar = passwordStrength;
@@ -426,25 +423,19 @@ function checkPasswordStrength() {
     return;
   }
   
-  // Calculate strength
+ 
   let strength = 0;
   
-  // Length check
   if (password.length >= 8) strength += 1;
   
-  // Contains lowercase
   if (/[a-z]/.test(password)) strength += 1;
   
-  // Contains uppercase
   if (/[A-Z]/.test(password)) strength += 1;
   
-  // Contains numbers
   if (/\d/.test(password)) strength += 1;
   
-  // Contains special characters
   if (/[^A-Za-z0-9]/.test(password)) strength += 1;
   
-  // Update UI
   if (strength <= 2) {
     strengthBar.className = 'password-strength strength-weak';
     strengthText.textContent = 'Weak password';
@@ -460,7 +451,7 @@ function checkPasswordStrength() {
   }
 }
 
-// Show error message
+// show error message
 function showError(elementId, message) {
   const element = document.getElementById(elementId);
   const errorElement = element.querySelector('.error-message') || document.getElementById(elementId + 'Error');
@@ -472,7 +463,7 @@ function showError(elementId, message) {
   }
 }
 
-// Reset all errors in a form
+// reset all errors in a form
 function resetErrors(formId) {
   const form = document.getElementById(formId);
   const errorElements = form.querySelectorAll('.error-message');
@@ -488,7 +479,6 @@ function resetErrors(formId) {
   });
 }
 
-// Show toast notification
 function showToast(message, type = 'success') {
   toast.textContent = message;
   toast.className = 'toast';
@@ -502,13 +492,13 @@ function showToast(message, type = 'success') {
   
   toast.classList.add('show');
   
-  // Hide after 3 seconds
+ 
   setTimeout(() => {
     toast.classList.remove('show');
   }, 3000);
 }
 
-// Utility functions
+// utility functions
 function isValidEmail(email) {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return re.test(email);

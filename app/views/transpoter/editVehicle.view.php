@@ -179,7 +179,6 @@
 
   <?php include __DIR__ . '/../Traveller/footer.view.php'; ?>
 
-  <!-- Vehicle Update Success Modal -->
   <div id="vehicleUpdateSuccessModal" class="vehicle-update-modal">
     <div class="vehicle-update-content">
       <div class="success-icon">
@@ -304,7 +303,7 @@
       const form = document.getElementById('edit-vehicle-form');
       const continueBtn = document.querySelector('.continue-btn');
       
-      // Get vehicle ID from URL
+      // get vehicle ID from URL
       const urlParams = new URLSearchParams(window.location.search);
       const vehicleId = urlParams.get('id');
       
@@ -314,13 +313,10 @@
         return;
       }
       
-      // Set vehicle ID in hidden field
       document.getElementById('vehicle-id').value = vehicleId;
       
-      // Load vehicle data
       loadVehicleData(vehicleId);
       
-      // AC type selection
       const acOption = document.getElementById('ac-option');
       const nonAcOption = document.getElementById('non-ac-option');
       const acInput = document.getElementById('ac');
@@ -340,7 +336,7 @@
         });
       }
       
-      // Form submission
+      // form submission
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         
@@ -358,20 +354,18 @@
         
         if (!isValid) return;
         
-        // Show loading
         continueBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
         continueBtn.disabled = true;
         
-        // Build FormData
+        // build formData
         const formData = new FormData(form);
         
-        // Log what we're sending
         console.log('Updating vehicle with data:');
         for (let [key, value] of formData.entries()) {
           console.log(key + ':', value);
         }
         
-        // Send update request
+        // send update request
         fetch('/TravelMate/public/api/vehicle/update', {
           method: 'POST',
           body: formData,
@@ -395,7 +389,7 @@
         });
       });
       
-      // Load vehicle data function
+      // load vehicle data function
       async function loadVehicleData(id) {
         try {
           const response = await fetch(`/TravelMate/public/api/vehicle/get?id=${id}`, {
@@ -416,11 +410,10 @@
         }
       }
       
-      // Populate form with vehicle data
       function populateForm(vehicle) {
         console.log('Populating form with:', vehicle);
         
-        // Set all form fields
+        // set all form fields
         if (vehicle.vehicle_type) document.getElementById('vehicle-type').value = vehicle.vehicle_type;
         if (vehicle.working_district) document.getElementById('working-district').value = vehicle.working_district;
         if (vehicle.vehicle_model) document.getElementById('vehicle-model').value = vehicle.vehicle_model;
@@ -431,7 +424,6 @@
         if (vehicle.passenger_count) document.getElementById('passenger-count').value = vehicle.passenger_count;
         if (vehicle.status) document.getElementById('vehicle-status').value = vehicle.status;
         
-        // Set AC type
         if (vehicle.ac_type === 'ac') {
           document.getElementById('ac').checked = true;
           acOption.classList.add('selected');
@@ -444,7 +436,7 @@
       }
     });
     
-    // Modal functions
+    // modal functions
     function showVehicleUpdateSuccessModal() {
       const modal = document.getElementById('vehicleUpdateSuccessModal');
       if (modal) {

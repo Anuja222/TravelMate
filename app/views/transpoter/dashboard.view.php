@@ -1,14 +1,12 @@
 <?php
-// Start session if not already started
+
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
 
-// Check if user is logged in
 $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
 $role = $isLoggedIn ? ($_SESSION['user']['role'] ?? $_SESSION['role'] ?? '') : '';
 
-// Role-based redirect - this is a transport provider page
 if (!$isLoggedIn || $role !== 'transport') {
     if ($role === 'admin') {
         header('Location: ad_dashboard');
@@ -39,7 +37,7 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <style>
-    /* Vehicle Card Delete Button Override */
+  
     .vehicle-card-actions .vehicle-card-btn-delete {
       background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
       color: white !important;
@@ -67,7 +65,6 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
       box-shadow: 0 6px 16px rgba(231, 76, 60, 0.4) !important;
     }
 
-    /* Status Toggle Modal Styles */
     .status-modal-overlay {
       position: fixed;
       top: 0;
@@ -181,7 +178,6 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
       box-shadow: 0 6px 20px rgba(26, 188, 91, 0.4);
     }
 
-    /* Confirmation Modal Styles */
     .confirm-modal {
       background: white;
       border-radius: 20px;
@@ -317,9 +313,7 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
 
   <?php include __DIR__ . '/../Traveller/header.view.php'; ?>
 
-  <!-- MAIN CONTENT -->
   <main>
-    <!-- SIDEBAR -->
     <?php 
       $active_page = 'dashboard';
       include __DIR__ . '/sidebar.view.php'; 
@@ -327,13 +321,11 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
 
     <div class="dashboard-content">
 
-      <!-- COVER -->
       <div class="cover">
         <img src="/TravelMate/public/assets/images/cover.jpg" class="cover-img" alt="cover">
         <span class="cover-text">TRAVEL <span class="cover-sub">more</span></span>
       </div>
 
-      <!-- PROFILE -->
       <section class="profile-section">
         <div class="profile-image-container">
           <img src="<?php echo htmlspecialchars($profileImage); ?>" alt="profile" class="profile-pic" onerror="this.onerror=null; this.src='assets/trimages/profile.jpg';">
@@ -355,7 +347,6 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
         </div>
       </section>
 
-      <!-- PERFORMANCE SUMMARY -->
       <section class="activity-summary">
         <h3>Performance Summary</h3>
         <div class="summary-stats">
@@ -390,7 +381,6 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
         </div>
       </section>
 
-      <!-- VEHICLES -->
       <section class="favourites">
         <div class="section-header">
           <h3>My Vehicles</h3>
@@ -399,10 +389,8 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
           </button>
         </div>
 
-        <!-- <div class="my-vehicle-list"></div> -->
-
         <div class="vehicle-cards-grid">
-          <!-- Cards will be loaded here dynamically -->
+       // cards load 
           <div class="loading-message" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">
             <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i>
             <p>Loading your vehicles...</p>
@@ -413,7 +401,6 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
     </div>
   </main>
 
-  <!-- Status Toggle Modal -->
   <div class="status-modal-overlay" id="statusModal">
     <div class="status-modal">
       <div class="status-icon-circle" id="statusIconCircle">
@@ -425,7 +412,7 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
     </div>
   </div>
 
-  <!-- Delete Success Modal -->
+  //delete Success Modal
   <div class="status-modal-overlay" id="deleteModal">
     <div class="status-modal">
       <div class="status-icon-circle" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
@@ -437,7 +424,7 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
     </div>
   </div>
 
-  <!-- Delete Confirmation Modal -->
+  //delete Confirmation Modal
   <div class="status-modal-overlay" id="confirmDeleteModal">
     <div class="confirm-modal">
       <div class="confirm-icon-circle">
@@ -452,7 +439,7 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
     </div>
   </div>
 
-  <!-- Deactivate Confirmation Modal -->
+  //deactivate
   <div class="status-modal-overlay" id="confirmDeactivateModal">
     <div class="confirm-modal">
       <div class="confirm-icon-circle">
@@ -467,7 +454,7 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
     </div>
   </div>
 
-  <!-- Delete Error Modal -->
+  //delete Error Modal
   <div class="status-modal-overlay" id="deleteErrorModalDash">
     <div class="confirm-modal">
       <div class="confirm-icon-circle" style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white;">
@@ -486,7 +473,7 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
   <script src="../public/assets/js/vehicle.js"></script>
 
   <script>
-    // Card hover effects
+    // card hover effects
     const cards = document.querySelectorAll('.fav-card');
     cards.forEach(card => {
       card.addEventListener('mouseenter', () => {
@@ -606,7 +593,7 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
       }
     }
 
-    // Fetch and display user vehicles
+    // fetch and display user vehicles
     async function loadUserVehicles() {
       try {
         const response = await fetch('<?php echo '/TravelMate/public'; ?>/api/vehicle/list', {
@@ -635,7 +622,6 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
       const container = document.querySelector('.vehicle-cards-grid'); 
       if (!container) return;
 
-      // Add the new class to container
       container.className = 'vehicle-cards-grid';
       container.innerHTML = '';
 
@@ -649,7 +635,7 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
       const card = document.createElement('div');
       card.className = 'vehicle-card-item';
 
-      // Determine badge text and class based on status
+      // determine badge text and class based on status
       const status = (vehicle.status || 'active').toLowerCase();
       const badgeText = status === 'inactive' ? 'Inactive' : status === 'pending' ? 'Pending' : 'Active';
       const badgeClass = `vehicle-status-badge status-${status}`;
@@ -657,10 +643,8 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
       const toggleLabel = status === 'active' ? 'Deactivate' : 'Activate';
       const toggleBtnClass = `vehicle-card-btn-toggle ${status === 'active' ? 'active' : ''}`;
 
-      // Get base URL for images
       const baseUrl = window.location.origin + '/TravelMate/public';
 
-      // Get vehicle image
       let vehicleImage = 'assets/trimages/car.png';
 
       if (vehicle.main_image) {
@@ -748,7 +732,7 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
       return card;
     }
 
-    // Load summary + vehicles when page loads
+    // load summary and vehicles
     document.addEventListener('DOMContentLoaded', function () {
       loadDashboardSummary();
     });
@@ -839,7 +823,7 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
       }
     }
 
-    // Status Modal Functions
+    // status modal functions
     function showStatusModal(isActive) {
       const modal = document.getElementById('statusModal');
       const iconCircle = document.getElementById('statusIconCircle');
@@ -869,7 +853,6 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
       document.body.style.overflow = '';
     }
     
-    // Delete Modal Functions
     function showDeleteModal() {
       const modal = document.getElementById('deleteModal');
       modal.classList.add('active');
@@ -882,7 +865,7 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
       document.body.style.overflow = '';
     }
     
-    // Confirmation Modal Functions
+    // confirmation modal functions
     let pendingDeleteId = null;
     
     function showConfirmDeleteModal(vehicleId) {
@@ -937,7 +920,7 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
       }
     }
 
-    // Error Modal Functions
+    // error modal functions
     function showDeleteErrorModalDash(errorMsg) {
       const modal = document.getElementById('deleteErrorModalDash');
       const message = document.getElementById('deleteErrorMessageDash');
@@ -952,7 +935,6 @@ $profileImage = !empty($_SESSION['user']['profile_image']) ? $_SESSION['user']['
       document.body.style.overflow = '';
     }
     
-    // Close modal when clicking overlay
     const statusModalEl = document.getElementById('statusModal');
     if (statusModalEl) {
       statusModalEl.addEventListener('click', function(e) {
